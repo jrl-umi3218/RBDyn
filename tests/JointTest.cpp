@@ -100,6 +100,22 @@ void testPrismatique(rbd::Joint::Type type, const Eigen::Vector3d& axis)
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
 }
 
+BOOST_AUTO_TEST_CASE(JointTest)
+{
+	using namespace rbd;
+
+	// test operator==
+	Joint j1(Joint::RevX, 0, "j1");
+	Joint j2(Joint::RevX, 1, "j2");
+
+	BOOST_CHECK_EQUAL(j1, j1);
+	BOOST_CHECK_NE(j1, j2);
+
+	// Test operator!=
+	BOOST_CHECK(!(j1 != j1));
+	BOOST_CHECK(j1 != j2);
+}
+
 BOOST_AUTO_TEST_CASE(RevXTest)
 {
 	using namespace Eigen;

@@ -21,3 +21,6 @@ add_executable(JointTest JointTest.cpp)
 target_link_libraries(JointTest ${Boost_LIBRARIES} RBDyn)
 add_test(JointTestUnit JointTest)
 
+add_executable(MultiBodyTest MultiBodyTest.cpp)
+target_link_libraries(MultiBodyTest ${Boost_LIBRARIES} RBDyn)
+add_test(MultiBodyTestUnit MultiBodyTest)

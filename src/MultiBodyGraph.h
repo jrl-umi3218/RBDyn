@@ -62,7 +62,13 @@ public:
 	void linkBodies(int b1Id, const sva::PTransform& tB1,
 		int b2Id, const sva::PTransform& tB2, int jointId);
 
-	MultiBody makeMultibBody(int rootBodyId, bool isFixed);
+	const std::shared_ptr<Node> nodeById(int id) const;
+	const std::shared_ptr<Joint> jointById(int id) const;
+
+	std::size_t nrNodes() const;
+	std::size_t nrJoints() const;
+
+	MultiBody makeMultiBody(int rootBodyId, bool isFixed);
 
 private:
 	std::vector<std::shared_ptr<Node>> nodes_;

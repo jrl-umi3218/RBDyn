@@ -56,11 +56,27 @@ public:
 		return inertia_;
 	}
 
+	bool operator==(const Body& b) const
+	{
+		return id_ == b.id_ && name_ == b.name_;
+	}
+
+	bool operator!=(const Body& b) const
+	{
+		return id_ != b.id_ || name_ != b.name_;
+	}
+
 private:
 	sva::RBInertia inertia_;
 
 	int id_;
 	std::string name_;
 };
+
+inline std::ostream& operator<<(std::ostream& out, const Body& b)
+{
+	out << "Body: " << b.id() << ", " << b.name();
+	return out;
+}
 
 } // namespace rbd

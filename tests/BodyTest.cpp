@@ -60,4 +60,12 @@ BOOST_AUTO_TEST_CASE(BodyTest)
 	BOOST_CHECK_EQUAL(b2.inertia().mass(), mass);
 	BOOST_CHECK_EQUAL(b2.inertia().momentum(), mass*Vector3d::UnitX());
 	BOOST_CHECK_EQUAL(b2.inertia().inertia(), I);
+
+	// Test operator==
+	BOOST_CHECK_EQUAL(b1, b1);
+	BOOST_CHECK_NE(b1, b2);
+
+	// Test operator!=
+	BOOST_CHECK(!(b1 != b1));
+	BOOST_CHECK(b1 != b2);
 }

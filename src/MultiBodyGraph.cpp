@@ -17,6 +17,10 @@
 #include "MultiBodyGraph.h"
 
 // includes
+// std
+#include <sstream>
+#include <stdexcept>
+
 // RBDyn
 #include "Body.h"
 #include "Joint.h"
@@ -32,12 +36,24 @@ MultiBodyGraph::Node::Node(const Body& b):
 
 void MultiBodyGraph::addBody(const Body& B)
 {
+	if(bodyId2Node_.find(B.id()) != bodyId2Node_.end())
+	{
+		std::ostringstream msg;
+		msg << "Body id: "  << B.id() << " already exist.";
+		throw std::domain_error(msg.str());
+	}
 	nodes_.push_back(std::make_shared<Node>(B));
 	bodyId2Node_[B.id()] = nodes_.back();
 }
 
 void MultiBodyGraph::addJoint(const Joint& J)
 {
+	if(jointId2Joint_.find(J.id()) != jointId2Joint_.end())
+	{
+		std::ostringstream msg;
+		msg << "Joint id: "  << J.id() << " already exist.";
+		throw std::domain_error(msg.str());
+	}
 	joints_.push_back(std::make_shared<Joint>(J));
 	jointId2Joint_[J.id()] = joints_.back();
 }
@@ -53,7 +69,27 @@ void MultiBodyGraph::linkBodies(int b1Id, const sva::PTransform& tB1,
 	b2->arcs.emplace_back(tB2, j, b1);
 }
 
-MultiBody MultiBodyGraph::makeMultibBody(int rootBodyId, bool isFixed)
+const std::shared_ptr<MultiBodyGraph::Node> MultiBodyGraph::nodeById(int id) const
+{
+	return bodyId2Node_.at(id);
+}
+
+const std::shared_ptr<Joint> MultiBodyGraph::jointById(int id) const
+{
+	return jointId2Joint_.at(id);
+}
+
+std::size_t MultiBodyGraph::nrNodes() const
+{
+	return nodes_.size();
+}
+
+std::size_t MultiBodyGraph::nrJoints() const
+{
+	return joints_.size();
+}
+
+MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 {
 	using namespace Eigen;
 
@@ -65,7 +101,7 @@ MultiBody MultiBodyGraph::makeMultibBody(int rootBodyId, bool isFixed)
 	std::vector<int> parent;
 	std::vector<sva::PTransform> Xt;
 
-	std::shared_ptr<Node> rootNode = bodyId2Node_[rootBodyId];
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
 	Joint rootJoint = isFixed ? Joint(Joint::Fixed, -1, "Root") :
 		Joint(Joint::Free, -1, "Root");
 
@@ -79,30 +115,39 @@ MultiBody MultiBodyGraph::makeMultibBody(int rootBodyId, bool isFixed)
 		int p, int s, int par,
 		const sva::PTransform& X)
 	{
+		// looking for transformation that come from fromNode
+		sva::PTransform fromLastNode;
+		if(fromNode == nullptr)
+		{
+			fromLastNode = sva::PTransform::Identity();
+		}
+		else
+		{
+			for(Arc& a : curNode->arcs)
+			{
+				if(a.next == fromNode)
+				{
+					fromLastNode = a.X.inv();
+					break;
+				}
+			}
+		}
+
 		bodies.push_back(*(curNode->body));
 		joints.push_back(joint);
 		pred.push_back(p);
 		succ.push_back(s);
 		parent.push_back(par);
-		Xt.push_back(X);
+		Xt.push_back(fromLastNode*X);
+
 
 		int curInd = bodies.size() - 1;
-
-		sva::PTransform fromX;
-		for(Arc& a : curNode->arcs)
-		{
-			if(a.next == fromNode)
-			{
-				fromX =  a.X.inv();
-				break;
-			}
-		}
-
 		for(Arc& a : curNode->arcs)
 		{
 			if(a.next != fromNode)
 			{
-				makeTree(a.next, curNode, *a.joint, curInd, curInd + 1, curInd, a.X*fromX);
+				int nextInd = bodies.size();
+				makeTree(a.next, curNode, *a.joint, curInd, nextInd, curInd, a.X);
 			}
 		}
 	};

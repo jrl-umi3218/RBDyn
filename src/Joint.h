@@ -66,6 +66,16 @@ public:
 	sva::PTransform pose(const std::vector<double>& q) const;
 	sva::MotionVec motion(const std::vector<double>& alpha) const;
 
+	bool operator==(const Joint& b) const
+	{
+		return id_ == b.id_ && name_ == b.name_;
+	}
+
+	bool operator!=(const Joint& b) const
+	{
+		return id_ != b.id_ || name_ != b.name_;
+	}
+
 private:
 	Type type_;
 	Eigen::MatrixXd S_;
@@ -77,6 +87,11 @@ private:
 	std::string name_;
 };
 
+inline std::ostream& operator<<(std::ostream& out, const Joint& b)
+{
+	out << "Joint: " << b.id() << ", " << b.name();
+	return out;
+}
 
 inline Joint::Joint(Type type, int id, std::string name):
 	type_(type),
