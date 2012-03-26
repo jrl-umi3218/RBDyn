@@ -31,6 +31,9 @@ namespace rbd
 class Body
 {
 public:
+	Body()
+	{}
+
 	/**
 		* @param rbInertia Body spatial rigid body inertia.
 		* @param id Body id, must be unique in a multibody.

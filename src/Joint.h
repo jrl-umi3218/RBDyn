@@ -50,6 +50,9 @@ public:
 	};
 
 public:
+	Joint()
+	{}
+
 	/**
 		* @param type Joint type.
 		* @param forward Joint is in forward direction if true.
@@ -71,7 +74,7 @@ public:
 	}
 
 	/// @return true if joint is forward, else false.
-	double forward() const
+	bool forward() const
 	{
 		return dir_ == 1.;
 	}

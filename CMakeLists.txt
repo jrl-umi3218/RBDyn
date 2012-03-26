@@ -11,5 +11,5 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 if(${PYTHON_BINDING})
-	add_subdirectory(binding/python)
+  add_subdirectory(binding/python)
 endif()
