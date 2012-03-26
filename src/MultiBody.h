@@ -29,88 +29,116 @@ namespace rbd
 class Body;
 class Joint;
 
+/**
+	* Kinematic tree of a multibody system.
+	* Same representation as featherstone except joint 0 is the root joint.
+	*/
 class MultiBody
 {
 public:
+	/**
+		* @param bodies Bodies of the multibody system.
+		* @param joints Joints of the mutibody system.
+		* @param pred Predeccesor body index of each joint.
+		* @param succ Successor body index of each joint.
+		* @param parent Parent body index of each body.
+		* @param Xt Transformation from parent joint to joint i.
+		*/
 	MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 		std::vector<int> pred, std::vector<int> succ,
 		std::vector<int> parent, std::vector<sva::PTransform> Xt);
 
+	/// @return Number of bodies.
 	std::size_t nrBodies() const
 	{
 		return bodies_.size();
 	}
 
+	/// @return Number of joints.
 	std::size_t nrJoints() const
 	{
 		return joints_.size();
 	}
 
+	/// @return Bodies of the multibody system.
 	const std::vector<Body>& bodies() const
 	{
 		return bodies_;
 	}
 
+	/// @return Body at num position in bodies list.
 	const Body& body(int num) const
 	{
 		return bodies_[num];
 	}
 
+	/// @return Joints of the multibody system.
 	const std::vector<Joint>& joints() const
 	{
 		return joints_;
 	}
 
+	/// @return Joint at num position in joint list.
 	const Joint& joint(int num) const
 	{
 		return joints_[num];
 	}
 
+	/// @return Predeccesor body index of each joint.
 	const std::vector<int>& predecessors() const
 	{
 		return pred_;
 	}
 
+	/// @return Predecessor body of joint num.
 	int predecessor(int num) const
 	{
 		return pred_[num];
 	}
 
+	/// @return Successor body index of each joint.
 	const std::vector<int>& successors() const
 	{
 		return succ_;
 	}
 
+	/// @return Successor body of joint num.
 	int successor(int num) const
 	{
 		return succ_[num];
 	}
 
+	/// @return Parent body index of each body.
 	const std::vector<int>& parents() const
 	{
 		return parent_;
 	}
 
+	/// @return Parent body of body num.
 	int parent(int num) const
 	{
 		return parent_[num];
 	}
 
+	/// @return Transformation from parent joint to joint i.
 	const std::vector<sva::PTransform>& transforms() const
 	{
 		return Xt_;
 	}
 
+	/// @return Transformation from parent joint to to joint num.
 	const sva::PTransform& transform(int num) const
 	{
 		return Xt_[num];
 	}
 
+	/// @return Index of the body with Id id.
 	int bodyIndexById(int id) const
 	{
 		return bodyId2Ind_.find(id)->second;
 	}
 
+	/// @return Index of the joint with Id id.
 	int jointIndexById(int id) const
 	{
 		return jointId2Ind_.find(id)->second;
@@ -119,41 +147,65 @@ public:
 
 	// safe accessors version for python binding
 
+	/** Safe version of @see body.
+		* @throw std::out_of_range.
+		*/
 	const Body& sBody(int num) const
 	{
 		return bodies_.at(num);
 	}
 
+	/** Safe version of @see joint.
+		* @throw std::out_of_range.
+		*/
 	const Joint& sJoint(int num) const
 	{
 		return joints_.at(num);
 	}
 
+	/** Safe version of @see predecessor.
+		* @throw std::out_of_range.
+		*/
 	int sPredecessor(int num) const
 	{
 		return pred_.at(num);
 	}
 
+	/** Safe version of @see successor.
+		* @throw std::out_of_range.
+		*/
 	int sSuccessor(int num) const
 	{
 		return succ_.at(num);
 	}
 
+	/** Safe version of @see parent.
+		* @throw std::out_of_range.
+		*/
 	int sParent(int num) const
 	{
 		return parent_.at(num);
 	}
 
+	/** Safe version of @see transform.
+		* @throw std::out_of_range.
+		*/
 	const sva::PTransform& sTransform(int num) const
 	{
 		return Xt_.at(num);
 	}
 
+	/** Safe version of @see bodyIndexById.
+		* @throw std::out_of_range.
+		*/
 	int sBodyIndexById(int id) const
 	{
 		return bodyId2Ind_.at(id);
 	}
 
+	/** Safe version of @see jointIndexById.
+		* @throw std::out_of_range.
+		*/
 	int sJointIndexById(int id) const
 	{
 		return jointId2Ind_.at(id);
