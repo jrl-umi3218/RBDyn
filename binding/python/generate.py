@@ -152,7 +152,7 @@ def build_mb(mb):
                 is_const=True, throw=[out_ex], custom_name='parent')
 
   mb.add_method('transforms', retval('std::vector<sva::PTransform>'), [], is_const=True)
-  mb.add_method('stransform', retval('sva::PTransform'), [param('int', 'num')],
+  mb.add_method('sTransform', retval('sva::PTransform'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='transform')
 
   mb.add_method('sBodyIndexById', retval('int'), [param('int', 'id')],
@@ -197,6 +197,7 @@ if __name__ == '__main__':
   build_body(body)
   build_joint(joint)
   build_mbg(mbg)
+  build_mb(mb)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)

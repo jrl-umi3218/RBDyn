@@ -28,7 +28,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${SVA_INCLUDE_DIRS}/SpaceVecAlg)
 
 add_library(_rbdyn SHARED ${SOURCES})
-
+target_link_libraries(_rbdyn RBDyn)
 set_target_properties(_rbdyn PROPERTIES PREFIX "")
 
 # install rules

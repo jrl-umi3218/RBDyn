@@ -11,3 +11,6 @@ include_directories(${SVA_INCLUDE_DIRS}/SpaceVecAlg)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
 
+set(INSTALL_PATH include/RBDyn)
+install(FILES ${HEADERS} DESTINATION ${INSTALL_PATH})
+install(TARGETS RBDyn DESTINATION "lib")
