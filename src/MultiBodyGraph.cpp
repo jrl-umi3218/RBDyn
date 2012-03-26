@@ -29,11 +29,6 @@
 namespace rbd
 {
 
-MultiBodyGraph::Node::Node(const Body& b):
-	body(std::make_shared<Body>(b))
-{
-}
-
 void MultiBodyGraph::addBody(const Body& B)
 {
 	if(bodyId2Node_.find(B.id()) != bodyId2Node_.end())
@@ -59,14 +54,17 @@ void MultiBodyGraph::addJoint(const Joint& J)
 }
 
 void MultiBodyGraph::linkBodies(int b1Id, const sva::PTransform& tB1,
-	int b2Id, const sva::PTransform& tB2, int jointId)
+	int b2Id, const sva::PTransform& tB2, int jointId, bool isB1toB2)
 {
 	std::shared_ptr<Node> b1 = bodyId2Node_.at(b1Id);
 	std::shared_ptr<Node> b2 = bodyId2Node_.at(b2Id);
 	std::shared_ptr<Joint> j = jointId2Joint_.at(jointId);
 
-	b1->arcs.emplace_back(tB1, j, b2);
-	b2->arcs.emplace_back(tB2, j, b1);
+	bool fj1 = isB1toB2 ? j->forward() : !j->forward();
+	bool fj2 = !fj1;
+
+	b1->arcs.emplace_back(tB1, *j, fj1, b2);
+	b2->arcs.emplace_back(tB2, *j, fj2, b1);
 }
 
 const std::shared_ptr<MultiBodyGraph::Node> MultiBodyGraph::nodeById(int id) const
@@ -133,7 +131,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 			}
 		}
 
-		bodies.push_back(*(curNode->body));
+		bodies.push_back(curNode->body);
 		joints.push_back(joint);
 		pred.push_back(p);
 		succ.push_back(s);
@@ -147,7 +145,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 			if(a.next != fromNode)
 			{
 				int nextInd = bodies.size();
-				makeTree(a.next, curNode, *a.joint, curInd, nextInd, curInd, a.X);
+				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd, a.X);
 			}
 		}
 	};

@@ -60,8 +60,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	std::shared_ptr<MultiBodyGraph::Node> node1, node2;
 	BOOST_CHECK_NO_THROW(node1 = mbg1.nodeById(0));
 	BOOST_CHECK_NO_THROW(node2 = mbg1.nodeById(1));
-	BOOST_CHECK_EQUAL(*node1->body, b1);
-	BOOST_CHECK_EQUAL(*node2->body, b2);
+	BOOST_CHECK_EQUAL(node1->body, b1);
+	BOOST_CHECK_EQUAL(node2->body, b2);
 
 	// check non-existant id
 	BOOST_CHECK_THROW(mbg1.nodeById(10), std::out_of_range);
@@ -327,6 +327,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	bodies = {b2, b1, b3, b4};
 
+	j1.forward(false);
 	joints = {Joint(Joint::Fixed, true, -1, "Root"), j1, j2, j3};
 
 	pred = {-1, 0, 1, 2};
@@ -334,6 +335,10 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	parent = {-1, 0, 1, 2};
 
 	Xt = {I, I, I, I};
+
+	// check joint j1 direction
+	// check bodyIndexById
+	BOOST_CHECK_EQUAL(mb3.joint(1).forward(), false);
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb3, bodies, joints, pred, succ, parent, Xt);
