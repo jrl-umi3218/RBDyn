@@ -68,15 +68,15 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 
 
 	// test addJoint
-	Joint j1(Joint::RevX, 0, "j1");
-	Joint j2(Joint::RevX, 1, "j2");
-	Joint j3(Joint::RevX, 2, "j3");
+	Joint j1(Joint::RevX, true, 0, "j1");
+	Joint j2(Joint::RevX, true, 1, "j2");
+	Joint j3(Joint::RevX, true, 2, "j3");
 	BOOST_CHECK_NO_THROW(mbg1.addJoint(j1));
 	BOOST_CHECK_NO_THROW(mbg1.addJoint(j2));
 	BOOST_CHECK_NO_THROW(mbg1.addJoint(j3));
 
 	// id already exist
-	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, 0, "j4")), std::domain_error);
+	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, true, 0, "j4")), std::domain_error);
 
 	// must be 3 joints
 	BOOST_CHECK_EQUAL(mbg1.nrJoints(), 3);
@@ -169,10 +169,10 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 															Body(r, 6, "b3"),
 															Body(r, 5, "b4")};
 
-	std::vector<Joint> joints = {Joint(Joint::RevX, -1, "j0"),
-															 Joint(Joint::RevX, 0, "j1"),
-															 Joint(Joint::RevX, 11, "j2"),
-															 Joint(Joint::RevX, 4, "j3")};
+	std::vector<Joint> joints = {Joint(Joint::RevX, true, -1, "j0"),
+															 Joint(Joint::RevX, true, 0, "j1"),
+															 Joint(Joint::RevX, true, 11, "j2"),
+															 Joint(Joint::RevX, true, 4, "j3")};
 
 	std::vector<int> pred = {-1, 0, 0, 2};
 	std::vector<int> succ = {0, 1, 2, 3};
@@ -254,9 +254,9 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	mbg1.addBody(b3);
 	mbg1.addBody(b4);
 
-	Joint j1(Joint::RevX, 0, "j1");
-	Joint j2(Joint::RevX, 1, "j2");
-	Joint j3(Joint::RevX, 2, "j3");
+	Joint j1(Joint::RevX, true, 0, "j1");
+	Joint j2(Joint::RevX, true, 1, "j2");
+	Joint j3(Joint::RevX, true, 2, "j3");
 	mbg1.addJoint(j1);
 	mbg1.addJoint(j2);
 	mbg1.addJoint(j3);
@@ -281,7 +281,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	std::vector<Body> bodies = {b1, b2, b3, b4};
 
-	std::vector<Joint> joints = {Joint(Joint::Fixed, -1, "Root"),
+	std::vector<Joint> joints = {Joint(Joint::Fixed, true, -1, "Root"),
 		j1, j2, j3};
 
 	std::vector<int> pred = {-1, 0, 0, 2};
@@ -313,7 +313,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	// root -free- b1(0) ---- b3(2) ---- b4(3)
 
 	MultiBody mb2 = mbg1.makeMultiBody(0, false);
-	joints = {Joint(Joint::Free, -1, "Root"), j1, j2, j3};
+	joints = {Joint(Joint::Free, true, -1, "Root"), j1, j2, j3};
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb2, bodies, joints, pred, succ, parent, Xt);
@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	bodies = {b2, b1, b3, b4};
 
-	joints = {Joint(Joint::Fixed, -1, "Root"), j1, j2, j3};
+	joints = {Joint(Joint::Fixed, true, -1, "Root"), j1, j2, j3};
 
 	pred = {-1, 0, 1, 2};
 	succ = {0, 1, 2, 3};
@@ -380,7 +380,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	bodies = {b1, b2, b3, b4};
 
-	joints = {Joint(Joint::Fixed, -1, "Root"), j1, j2, j3};
+	joints = {Joint(Joint::Fixed, true, -1, "Root"), j1, j2, j3};
 
 	pred = {-1, 0, 1, 1};
 	succ = {0, 1, 2, 3};

@@ -28,24 +28,25 @@
 // RBDyn
 #include "Joint.h"
 
-void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis)
+void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forward)
 {
 	using namespace Eigen;
 	using namespace sva;
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(type, 0, "rev");
+	Joint j(type, forward, 0, "rev");
+	double dir = forward ? 1. : -1;
 
 	// test motion
 	Vector6d S;
-	S << axis, 0., 0., 0.;
+	S << dir*axis, 0., 0., 0.;
 
 	// test motion
 	MotionVec motion(S);
 
 	// test motion
-	PTransform rot90(AngleAxisd(-constants::pi<double>()/2., axis).matrix());
+	PTransform rot90(AngleAxisd(-constants::pi<double>()/2., dir*axis).matrix());
 
 	// test accessor
 	BOOST_CHECK_EQUAL(j.type(), type);
@@ -55,32 +56,30 @@ void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis)
 	BOOST_CHECK_EQUAL(j.name(), "rev");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
-	BOOST_CHECK_EQUAL(j.pose({constants::pi<double>()/2.}).rotation(),
-		rot90.rotation());
-	BOOST_CHECK_EQUAL(j.pose({constants::pi<double>()/2.}).translation(),
-		rot90.translation());
+	BOOST_CHECK_EQUAL(j.pose({constants::pi<double>()/2.}), rot90);
 
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
 }
 
-void testPrismatique(rbd::Joint::Type type, const Eigen::Vector3d& axis)
+void testPrismatique(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forward)
 {
 	using namespace Eigen;
 	using namespace sva;
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(type, 0, "prism");
+	Joint j(type, forward, 0, "prism");
+	double dir = forward ? 1. : -1;
 
 	// test motion
 	Vector6d S;
-	S << 0., 0., 0., axis;
+	S << 0., 0., 0., dir*axis;
 
 	// test motion
 	MotionVec motion(S);
 
 	// test motion
-	PTransform trans2(Vector3d(axis*2.));
+	PTransform trans2(Vector3d(dir*axis*2.));
 
 	// test accessor
 	BOOST_CHECK_EQUAL(j.type(), type);
@@ -91,10 +90,7 @@ void testPrismatique(rbd::Joint::Type type, const Eigen::Vector3d& axis)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test motion
-	BOOST_CHECK_EQUAL(j.pose({2.}).rotation(),
-		trans2.rotation());
-	BOOST_CHECK_EQUAL(j.pose({2.}).translation(),
-		trans2.translation());
+	BOOST_CHECK_EQUAL(j.pose({2.}), trans2);
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
@@ -105,8 +101,8 @@ BOOST_AUTO_TEST_CASE(JointTest)
 	using namespace rbd;
 
 	// test operator==
-	Joint j1(Joint::RevX, 0, "j1");
-	Joint j2(Joint::RevX, 1, "j2");
+	Joint j1(Joint::RevX, true, 0, "j1");
+	Joint j2(Joint::RevX, false, 1, "j2");
 
 	BOOST_CHECK_EQUAL(j1, j1);
 	BOOST_CHECK_NE(j1, j2);
@@ -114,48 +110,79 @@ BOOST_AUTO_TEST_CASE(JointTest)
 	// Test operator!=
 	BOOST_CHECK(!(j1 != j1));
 	BOOST_CHECK(j1 != j2);
+
+	// Test direction
+	BOOST_CHECK_EQUAL(j1.direction(), 1.);
+	BOOST_CHECK_EQUAL(j2.direction(), -1.);
+
+	// Test forward (getter)
+	BOOST_CHECK_EQUAL(j1.forward(), true);
+	BOOST_CHECK_EQUAL(j2.forward(), false);
+
+	// Test forward (setter)
+	j1.forward(false);
+	BOOST_CHECK_EQUAL(j1.direction(), -1.);
+	BOOST_CHECK_EQUAL(j1.forward(), false);
+
+	// sPose
+	BOOST_CHECK_THROW(j1.sPose({0., 0.}), std::domain_error);
+	BOOST_CHECK_THROW(j1.sPose({}), std::domain_error);
+	BOOST_CHECK_NO_THROW(j1.sPose({0.}));
+	BOOST_CHECK_EQUAL(j1.sPose({0.}), j1.pose({0.}));
+
+	// sMotion
+	BOOST_CHECK_THROW(j1.sMotion({0., 0.}), std::domain_error);
+	BOOST_CHECK_THROW(j1.sMotion({}), std::domain_error);
+	BOOST_CHECK_NO_THROW(j1.sMotion({0.}));
+	BOOST_CHECK_EQUAL(j1.sMotion({0.}), j1.motion({0.}));
 }
 
 BOOST_AUTO_TEST_CASE(RevXTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testRevolute(Joint::RevX, Vector3d::UnitX());
+	testRevolute(Joint::RevX, Vector3d::UnitX(), true);
+	testRevolute(Joint::RevX, Vector3d::UnitX(), false);
 }
 
 BOOST_AUTO_TEST_CASE(RevYTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testRevolute(Joint::RevY, Vector3d::UnitY());
+	testRevolute(Joint::RevY, Vector3d::UnitY(), true);
+	testRevolute(Joint::RevY, Vector3d::UnitY(), false);
 }
 
 BOOST_AUTO_TEST_CASE(RevZTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testRevolute(Joint::RevZ, Vector3d::UnitZ());
+	testRevolute(Joint::RevZ, Vector3d::UnitZ(), true);
+	testRevolute(Joint::RevZ, Vector3d::UnitZ(), false);
 }
 
 BOOST_AUTO_TEST_CASE(PrismXTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testPrismatique(Joint::PrismX, Vector3d::UnitX());
+	testPrismatique(Joint::PrismX, Vector3d::UnitX(), true);
+	testPrismatique(Joint::PrismX, Vector3d::UnitX(), false);
 }
 
 BOOST_AUTO_TEST_CASE(PrismYTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testPrismatique(Joint::PrismY, Vector3d::UnitY());
+	testPrismatique(Joint::PrismY, Vector3d::UnitY(), true);
+	testPrismatique(Joint::PrismY, Vector3d::UnitY(), false);
 }
 
 BOOST_AUTO_TEST_CASE(PrismZTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testPrismatique(Joint::PrismZ, Vector3d::UnitZ());
+	testPrismatique(Joint::PrismZ, Vector3d::UnitZ(), true);
+	testPrismatique(Joint::PrismZ, Vector3d::UnitZ(), false);
 }
 
 BOOST_AUTO_TEST_CASE(SphericalTest)
@@ -165,7 +192,7 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(Joint::Spherical, 2, "sphere");
+	Joint j(Joint::Spherical, true, 2, "sphere");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,3);
@@ -198,13 +225,17 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test pose
-	BOOST_CHECK_EQUAL(j.pose(q).rotation(),
-		rot.rotation());
-	BOOST_CHECK_EQUAL(j.pose(q).translation(),
-		rot.translation());
+	BOOST_CHECK_EQUAL(j.pose(q), rot);
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), S*alphaE);
+
+	// test inverse polarity
+	j.forward(false);
+	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
+	BOOST_CHECK_EQUAL(j.pose(q), rot.inv());
+	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
+
 }
 
 BOOST_AUTO_TEST_CASE(FreeTest)
@@ -214,7 +245,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(Joint::Free, 2, "free");
+	Joint j(Joint::Free, true, 2, "free");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Identity(6,6);
@@ -231,7 +262,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	std::vector<double> q = {quat.w(), quat.x(), quat.y(), quat.z(),
 		trans.x(), trans.y(), trans.z()};
 
-	PTransform rot(quat, quat.matrix()*trans);
+	PTransform rot(quat.matrix().transpose(), quat.matrix()*trans);
 
 	// motion data
 	std::vector<double> alpha;
@@ -249,13 +280,16 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test pose
-	BOOST_CHECK_EQUAL(j.pose(q).rotation(),
-		rot.rotation());
-	BOOST_CHECK_EQUAL(j.pose(q).translation(),
-		rot.translation());
+	BOOST_CHECK_EQUAL(j.pose(q), rot);
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), S*alphaE);
+
+	// test inverse polarity
+	j.forward(false);
+	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
+	BOOST_CHECK_EQUAL(j.pose(q), rot.inv());
+	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
 }
 
 BOOST_AUTO_TEST_CASE(FixedTest)
@@ -264,7 +298,7 @@ BOOST_AUTO_TEST_CASE(FixedTest)
 	using namespace sva;
 	using namespace rbd;
 
-	Joint j(Joint::Fixed, 2, "fixed");
+	Joint j(Joint::Fixed, true, 2, "fixed");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,0);
@@ -278,10 +312,7 @@ BOOST_AUTO_TEST_CASE(FixedTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test pose
-	BOOST_CHECK_EQUAL(j.pose({}).rotation(),
-		Matrix3d::Identity());
-	BOOST_CHECK_EQUAL(j.pose({}).translation(),
-		Vector3d::Zero());
+	BOOST_CHECK_EQUAL(j.pose({}), PTransform::Identity());
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion({}).vector(), Vector6d::Zero());

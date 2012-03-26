@@ -102,8 +102,8 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 	std::vector<sva::PTransform> Xt;
 
 	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
-	Joint rootJoint = isFixed ? Joint(Joint::Fixed, -1, "Root") :
-		Joint(Joint::Free, -1, "Root");
+	Joint rootJoint = isFixed ? Joint(Joint::Fixed, true, -1, "Root") :
+		Joint(Joint::Free, true, -1, "Root");
 
 	std::function<void(const std::shared_ptr<Node> curNode,
 										 const std::shared_ptr<Node> fromNode, const Joint& joint,

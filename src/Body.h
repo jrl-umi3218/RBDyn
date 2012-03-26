@@ -25,15 +25,30 @@
 namespace rbd
 {
 
+/** Body representation.
+	* Hold body id, name and spatial rigid body inertia of one body.
+	*/
 class Body
 {
 public:
+	/**
+		* @param rbInertia Body spatial rigid body inertia.
+		* @param id Body id, must be unique in a multibody.
+		* @param name Body name.
+		*/
 	Body(const sva::RBInertia& rbInertia, int id, std::string name):
 		inertia_(rbInertia),
 		id_(id),
 		name_(name)
 	{}
 
+	/**
+		* @param mass Body mass.
+		* @param com Body center of mass.
+		* @param inertia Body inertia matrix.
+		* @param id Body id, must be unique in a multibody.
+		* @param name Body name.
+		*/
 	Body(double mass, const Eigen::Vector3d& com, const Eigen::Matrix3d& inertia,
 		int id, std::string name):
 		inertia_(mass, mass*com, inertia),
@@ -41,16 +56,19 @@ public:
 		name_(name)
 	{}
 
+	/// @return Body id.
 	int id() const
 	{
 		return id_;
 	}
 
+	/// @return Body name.
 	const std::string& name() const
 	{
 		return name_;
 	}
 
+	/// @return Body spatial rigid body inertia.
 	const sva::RBInertia& inertia() const
 	{
 		return inertia_;
