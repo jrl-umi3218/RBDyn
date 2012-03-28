@@ -24,10 +24,12 @@
 // SpaceVecAlg
 #include <SpaceVecAlg>
 
+// RBDyn
+#include "Body.h"
+#include "Joint.h"
+
 namespace rbd
 {
-class Body;
-class Joint;
 
 /**
 	* Kinematic tree of a multibody system.
