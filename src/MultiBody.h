@@ -44,11 +44,13 @@ public:
 		* @param pred Predeccesor body index of each joint.
 		* @param succ Successor body index of each joint.
 		* @param parent Parent body index of each body.
-		* @param Xt Transformation from parent joint to joint i.
+		* @param Xfrom Transformation from the center of the predecessor body.
+		* @param Xto Transformation to the center of the successor body.
 		*/
 	MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 		std::vector<int> pred, std::vector<int> succ,
-		std::vector<int> parent, std::vector<sva::PTransform> Xt);
+		std::vector<int> parent, std::vector<sva::PTransform> Xfrom,
+		std::vector<sva::PTransform> Xto);
 
 	/// @return Number of bodies.
 	std::size_t nrBodies() const
@@ -122,16 +124,28 @@ public:
 		return parent_[num];
 	}
 
-	/// @return Transformation from parent joint to joint i.
-	const std::vector<sva::PTransform>& transforms() const
+	/// @return Transformation from the center of the predecessor body
+	const std::vector<sva::PTransform>& transformsFrom() const
 	{
-		return Xt_;
+		return Xfrom_;
 	}
 
-	/// @return Transformation from parent joint to to joint num.
-	const sva::PTransform& transform(int num) const
+	/// @return Transformation from the center of the predecessor body for joint num
+	const sva::PTransform& transformFrom(int num) const
 	{
-		return Xt_[num];
+		return Xfrom_[num];
+	}
+
+	/// @return Transformation to the center of the successor body
+	const std::vector<sva::PTransform>& transformsTo() const
+	{
+		return Xto_;
+	}
+
+	/// @return Transformation to the center of the successor body for joint num
+	const sva::PTransform& transformTo(int num) const
+	{
+		return Xto_[num];
 	}
 
 	/// @return Index of the body with Id id.
@@ -189,12 +203,20 @@ public:
 		return parent_.at(num);
 	}
 
-	/** Safe version of @see transform.
+	/** Safe version of @see transformFrom.
 		* @throw std::out_of_range.
 		*/
-	const sva::PTransform& sTransform(int num) const
+	const sva::PTransform& sTransformFrom(int num) const
 	{
-		return Xt_.at(num);
+		return Xfrom_.at(num);
+	}
+
+	/** Safe version of @see transformTo.
+		* @throw std::out_of_range.
+		*/
+	const sva::PTransform& sTransformTo(int num) const
+	{
+		return Xto_.at(num);
 	}
 
 	/** Safe version of @see bodyIndexById.
@@ -220,7 +242,10 @@ private:
 	std::vector<int> pred_;
 	std::vector<int> succ_;
 	std::vector<int> parent_;
-	std::vector<sva::PTransform> Xt_;
+	/// Transformation from the center of the predecessor body
+	std::vector<sva::PTransform> Xfrom_;
+	/// Transformation to the center of the successor body
+	std::vector<sva::PTransform> Xto_;
 
 	std::unordered_map<int, int> bodyId2Ind_;
 	std::unordered_map<int, int> jointId2Ind_;

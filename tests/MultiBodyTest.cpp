@@ -121,7 +121,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 
 void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	std::vector<rbd::Joint> joints, std::vector<int> pred, std::vector<int> succ,
-	std::vector<int> parent, std::vector<sva::PTransform> Xt)
+	std::vector<int> parent, std::vector<sva::PTransform> Xfrom,
+	std::vector<sva::PTransform> Xto)
 {
 	// bodies
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.bodies().begin(), mb.bodies().end(),
@@ -139,9 +140,15 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.parents().begin(), mb.parents().end(),
 																parent.begin(), parent.end());
 
-	// Xt
-	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transforms().begin(), mb.transforms().end(),
-		Xt.begin(), Xt.end());
+	// Xfrom
+	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transformsFrom().begin(),
+		mb.transformsFrom().end(),
+		Xfrom.begin(), Xfrom.end());
+
+	// Xto
+	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transformsTo().begin(),
+		mb.transformsTo().end(),
+		Xto.begin(), Xto.end());
 
 	// nrBodies
 	BOOST_CHECK_EQUAL(mb.nrBodies(), bodies.size());
@@ -177,12 +184,13 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	Vector3d tmp = Vector3d::Random();
 
 	PTransform I = PTransform::Identity();
-	std::vector<PTransform> Xt = {I, I, PTransform(tmp), I};
+	std::vector<PTransform> Xfrom = {I, I, PTransform(tmp), I};
+	std::vector<PTransform> Xto = {I, I, PTransform(tmp), I};
 
-	MultiBody mb(bodies, joints, pred, succ, parent, Xt);
+	MultiBody mb(bodies, joints, pred, succ, parent, Xfrom, Xto);
 
 	// check MultiBody equality
-	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, Xt);
+	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, Xfrom, Xto);
 
 	// Id2Index
 	// bodyIndexById
@@ -218,9 +226,13 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	BOOST_CHECK_NO_THROW(mb.sParent(0));
 	BOOST_CHECK_THROW(mb.sParent(10), std::out_of_range);
 
-	// transform
-	BOOST_CHECK_NO_THROW(mb.sTransform(0));
-	BOOST_CHECK_THROW(mb.sTransform(10), std::out_of_range);
+	// transformFrom
+	BOOST_CHECK_NO_THROW(mb.sTransformFrom(0));
+	BOOST_CHECK_THROW(mb.sTransformFrom(10), std::out_of_range);
+
+	// transformTo
+	BOOST_CHECK_NO_THROW(mb.sTransformTo(0));
+	BOOST_CHECK_THROW(mb.sTransformTo(10), std::out_of_range);
 
 	// bodyIndexById
 	BOOST_CHECK_NO_THROW(mb.sBodyIndexById(0));
@@ -286,10 +298,11 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	std::vector<int> parent = {-1, 0, 0, 2};
 
 	PTransform I = PTransform::Identity();
-	std::vector<PTransform> Xt = {I, I, I, I};
+	std::vector<PTransform> Xfrom = {I, I, I, I};
+	std::vector<PTransform> Xto = {I, I, I, I};
 
 	// check MultiBody equality
-	checkMultiBodyEq(mb1, bodies, joints, pred, succ, parent, Xt);
+	checkMultiBodyEq(mb1, bodies, joints, pred, succ, parent, Xfrom, Xto);
 
 	// check bodyIndexById
 	BOOST_CHECK_EQUAL(mb1.bodyIndexById(0), 0);
@@ -313,7 +326,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	joints = {Joint(Joint::Free, true, -1, "Root"), j1, j2, j3};
 
 	// check MultiBody equality
-	checkMultiBodyEq(mb2, bodies, joints, pred, succ, parent, Xt);
+	checkMultiBodyEq(mb2, bodies, joints, pred, succ, parent, Xfrom, Xto);
 
 
 
@@ -331,14 +344,15 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	succ = {0, 1, 2, 3};
 	parent = {-1, 0, 1, 2};
 
-	Xt = {I, I, I, I};
+	Xfrom = {I, I, I, I};
+	Xto = {I, I, I, I};
 
 	// check joint j1 direction
 	// check bodyIndexById
 	BOOST_CHECK_EQUAL(mb3.joint(1).forward(), false);
 
 	// check MultiBody equality
-	checkMultiBodyEq(mb3, bodies, joints, pred, succ, parent, Xt);
+	checkMultiBodyEq(mb3, bodies, joints, pred, succ, parent, Xfrom, Xto);
 
 	// check bodyIndexById
 	BOOST_CHECK_EQUAL(mb3.bodyIndexById(0), 1);
@@ -388,9 +402,16 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	succ = {0, 1, 2, 3};
 	parent = {-1, 0, 1, 1};
 
-	Xt = {I, PTransform(Vector3d(1., 0., 0.)), PTransform(Vector3d(1., 1., 0.)),
-				PTransform(sva::RotX(constants::pi<double>()/2.), Vector3d(0., 1., 0.))};
+	Xfrom = {I,
+					 PTransform(Vector3d(1., 0., 0.)),
+					 PTransform(Vector3d(1., 0., 0.)),
+					 PTransform(sva::RotX(constants::pi<double>()/2.))};
+
+	Xto = {I,
+				 PTransform(Vector3d(0., 1., 0.)),
+				 PTransform(Vector3d(0., 0., 1.)),
+				 I};
 
 	// check MultiBody equality
-	checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xt);
+	checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xfrom, Xto);
 }

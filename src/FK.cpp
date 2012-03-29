@@ -33,12 +33,13 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
-	const std::vector<sva::PTransform>& Xt = mb.transforms();
+	const std::vector<sva::PTransform>& Xf = mb.transformsFrom();
+	const std::vector<sva::PTransform>& Xt = mb.transformsTo();
 
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
 		sva::PTransform X_i = joints[i].pose(mbc.q[i]);
-		sva::PTransform X_p_i = X_i*Xt[i];
+		sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
 
 		if(pred[i] != -1)
 			mbc.bodyGlobal[i] = X_p_i*mbc.bodyGlobal[pred[i]];

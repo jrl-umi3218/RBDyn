@@ -97,7 +97,8 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 	std::vector<int> pred;
 	std::vector<int> succ;
 	std::vector<int> parent;
-	std::vector<sva::PTransform> Xt;
+	std::vector<sva::PTransform> Xfrom;
+	std::vector<sva::PTransform> Xto;
 
 	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
 	Joint rootJoint = isFixed ? Joint(Joint::Fixed, true, -1, "Root") :
@@ -106,37 +107,24 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 	std::function<void(const std::shared_ptr<Node> curNode,
 										 const std::shared_ptr<Node> fromNode, const Joint& joint,
 										 int p, int s, int par,
-										 const sva::PTransform& X)> makeTree;
+										 const sva::PTransform& Xfrom,
+										 const sva::PTransform& Xto)> makeTree;
 
 	makeTree = [&](const std::shared_ptr<Node> curNode,
 		const std::shared_ptr<Node> fromNode, const Joint& joint,
 		int p, int s, int par,
-		const sva::PTransform& X)
+		const sva::PTransform& Xf,
+		const sva::PTransform& Xt)
 	{
 		bodies.push_back(curNode->body);
 		joints.push_back(joint);
 		pred.push_back(p);
 		succ.push_back(s);
 		parent.push_back(par);
-		Xt.push_back(X);
+		Xfrom.push_back(Xf);
+		Xto.push_back(Xt);
 
 		// looking for transformation that come from fromNode
-		sva::PTransform fromLastNode;
-		if(fromNode == nullptr)
-		{
-			fromLastNode = sva::PTransform::Identity();
-		}
-		else
-		{
-			for(Arc& a : curNode->arcs)
-			{
-				if(a.next == fromNode)
-				{
-					fromLastNode = a.X.inv();
-					break;
-				}
-			}
-		}
 
 		int curInd = bodies.size() - 1;
 		for(Arc& a : curNode->arcs)
@@ -144,15 +132,29 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 			if(a.next != fromNode)
 			{
 				int nextInd = bodies.size();
-				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd, a.X*fromLastNode);
+
+				sva::PTransform toSuccCenter;
+				for(Arc& aN : a.next->arcs)
+				{
+					if(aN.next == curNode)
+					{
+						toSuccCenter = aN.X.inv();
+						break;
+					}
+				}
+
+				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd,
+					a.X, toSuccCenter);
 			}
 		}
 	};
 
-	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1, sva::PTransform::Identity());
+	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1,
+		sva::PTransform::Identity(), sva::PTransform::Identity());
 
 	return MultiBody(std::move(bodies), std::move(joints),
-		std::move(pred), std::move(succ), std::move(parent), std::move(Xt));
+		std::move(pred), std::move(succ), std::move(parent), std::move(Xfrom),
+		std::move(Xto));
 }
 
 } // namespace rbd

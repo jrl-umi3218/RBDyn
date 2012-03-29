@@ -33,6 +33,8 @@
 #include "MultiBodyConfig.h"
 #include "MultiBodyGraph.h"
 
+const double TOL = 0.0000001;
+
 BOOST_AUTO_TEST_CASE(FKTest)
 {
 	using namespace Eigen;
@@ -69,7 +71,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	PTransform to(Vector3d(0., 0.5, 0.));
 	PTransform from(Vector3d(0., -0.5, 0.));
 
-	mbg.linkBodies(0, PTransform(Vector3d(0., 1., 0.)), 1, from, 0);
+	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
 
@@ -100,13 +102,17 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	forwardKinematics(mb, mbc);
 
 	res = {PTransform(Vector3d(0., 0., 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 1.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 2.))};
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 0.5)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 1.5)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 2.5))};
 
-	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
-
+	for(size_t i = 0; i < res.size(); ++i)
+	{
+		BOOST_CHECK_SMALL((res[i].translation() - mbc.bodyGlobal[i].translation()).norm(),
+			TOL);
+		BOOST_CHECK_SMALL((res[i].rotation() - mbc.bodyGlobal[i].rotation()).norm(),
+			TOL);
+	}
 
 	// check rotY
 	mbc.q = {{}, {0.}, {cst::pi<double>()/2.}, {0.}};
@@ -130,10 +136,11 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	res = {PTransform(Vector3d(0., 0., 0.)),
 		PTransform(Vector3d(0., 1., 0.)),
 		PTransform(Vector3d(0., 2., 0.)),
-		PTransform(RotZ(cst::pi<double>()/2.), Vector3d(0., 3., 0.))};
+		PTransform(RotZ(cst::pi<double>()/2.), Vector3d(-0.5, 2.5, 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+
 
 	//                b4
 	//             j3 | Spherical
@@ -162,11 +169,10 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	res = {PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 1., 0)),
 		PTransform(Vector3d(0., 2., 0.)), PTransform(Vector3d(0., 3., 0)),
-		PTransform(Vector3d(0.5, 1.5, 0.))};
+		PTransform(Vector3d(1., 1., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
-
 	// check sphere rot Y
 	Quaterniond q(AngleAxisd(cst::pi<double>()/2., Vector3d::UnitY()));
 	mbc2.q = {{}, {0.}, {0.}, {0.}, {q.w(), q.x(), q.y(), q.z()}};
@@ -175,11 +181,16 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	res = {PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 1., 0)),
 		PTransform(Vector3d(0., 2., 0.)), PTransform(Vector3d(0., 3., 0)),
-		// PTransform(RotY(cst::pi<double>()/2.), Vector3d(0.5, 1.5, 0.))}; lake of precision
-		PTransform(q.inverse().matrix(), Vector3d(0.5, 1.5, 0.))};
+		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0.5, 1., -0.5))};
 
-	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
+	for(size_t i = 0; i < res.size(); ++i)
+	{
+		BOOST_CHECK_SMALL((res[i].translation() - mbc2.bodyGlobal[i].translation()).norm(),
+			TOL);
+		BOOST_CHECK_SMALL((res[i].rotation() - mbc2.bodyGlobal[i].rotation()).norm(),
+			TOL);
+	}
+
 
 	// check j1 rotX
 	mbc2.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}, {1., 0., 0., 0.}};
@@ -187,14 +198,18 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	forwardKinematics(mb2, mbc2);
 
 	res = {PTransform(Vector3d(0., 0., 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 1.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 2.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0.5, 1., 0.5))};
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 0.5)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 1.5)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 2.5)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(1., 0.5, 0.5))};
 
-	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
-
+	for(size_t i = 0; i < res.size(); ++i)
+	{
+		BOOST_CHECK_SMALL((res[i].translation() - mbc2.bodyGlobal[i].translation()).norm(),
+			TOL);
+		BOOST_CHECK_SMALL((res[i].rotation() - mbc2.bodyGlobal[i].rotation()).norm(),
+			TOL);
+	}
 
 	// test safe version
 	BOOST_CHECK_NO_THROW(sForwardKinematics(mb2, mbc2));

@@ -26,13 +26,15 @@ namespace rbd
 
 MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	std::vector<int> pred, std::vector<int> succ,
-	std::vector<int> parent, std::vector<sva::PTransform> Xt):
+	std::vector<int> parent, std::vector<sva::PTransform> Xfrom,
+	std::vector<sva::PTransform> Xto):
 	bodies_(std::move(bodies)),
 	joints_(std::move(joints)),
 	pred_(std::move(pred)),
 	succ_(std::move(succ)),
 	parent_(std::move(parent)),
-	Xt_(std::move(Xt))
+	Xfrom_(std::move(Xfrom)),
+	Xto_(std::move(Xto))
 {
 	for(std::size_t i = 0; i < bodies_.size(); ++i)
 	{
