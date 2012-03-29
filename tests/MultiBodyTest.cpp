@@ -140,11 +140,8 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 																parent.begin(), parent.end());
 
 	// Xt
-	for(int i = 0; i < 4; ++i)
-	{
-		BOOST_CHECK_EQUAL(mb.transform(i).rotation(), Xt[i].rotation());
-		BOOST_CHECK_EQUAL(mb.transform(i).translation(), Xt[i].translation());
-	}
+	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transforms().begin(), mb.transforms().end(),
+		Xt.begin(), Xt.end());
 
 	// nrBodies
 	BOOST_CHECK_EQUAL(mb.nrBodies(), bodies.size());
@@ -391,8 +388,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	succ = {0, 1, 2, 3};
 	parent = {-1, 0, 1, 1};
 
-	Xt = {I, PTransform(Vector3d(1., 1., 0.)), PTransform(Vector3d(1., 0., 1.)),
-				PTransform(sva::RotX(constants::pi<double>()/2.))};
+	Xt = {I, PTransform(Vector3d(1., 0., 0.)), PTransform(Vector3d(1., 1., 0.)),
+				PTransform(sva::RotX(constants::pi<double>()/2.), Vector3d(0., 1., 0.))};
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xt);

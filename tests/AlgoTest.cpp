@@ -20,6 +20,7 @@
 // boost
 #define BOOST_TEST_MODULE FKTest
 #include <boost/test/unit_test.hpp>
+#include <boost/math/constants/constants.hpp>
 
 // SpaceVecAlg
 #include <SpaceVecAlg>
@@ -37,6 +38,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	using namespace Eigen;
 	using namespace sva;
 	using namespace rbd;
+	namespace cst = boost::math::constants;
 
 	MultiBodyGraph mbg;
 
@@ -49,7 +51,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
 	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b2");
+	Body b3(rbi, 3, "b3");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
@@ -67,26 +69,129 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	PTransform to(Vector3d(0., 0.5, 0.));
 	PTransform from(Vector3d(0., -0.5, 0.));
 
-	mbg.linkBodies(0, to, 1, from, 0);
+	mbg.linkBodies(0, PTransform(Vector3d(0., 1., 0.)), 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
 
+	//  Root     j0      j1     j2
+	//  ---- b0 ---- b1 ---- b2 ----b3
+	//  Fixed    RevX   RevY    RevZ
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
 	MultiBodyConfig mbc(mb);
 
+	// check identity
 	mbc.q = {{}, {0.}, {0.}, {0.}};
 
 	forwardKinematics(mb, mbc);
 
-	for(auto& m: mbc.bodyGlobal)
-		std::cout << m.translation() << std::endl << std::endl;
+	std::vector<PTransform> res = {
+		PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 1., 0)),
+		PTransform(Vector3d(0., 2., 0.)), PTransform(Vector3d(0., 3., 0))};
 
-	mbc.q = {{}, {M_PI/2.}, {0.}, {0.}};
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+
+
+	// check rotX
+	mbc.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}};
 
 	forwardKinematics(mb, mbc);
 
-	for(auto& m: mbc.bodyGlobal)
-		std::cout << m.translation() << std::endl << std::endl;
+	res = {PTransform(Vector3d(0., 0., 0.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 0.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 1.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 2.))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+
+
+	// check rotY
+	mbc.q = {{}, {0.}, {cst::pi<double>()/2.}, {0.}};
+
+	forwardKinematics(mb, mbc);
+
+	res = {PTransform(Vector3d(0., 0., 0.)),
+		PTransform(Vector3d(0., 1., 0.)),
+		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0., 2., 0.)),
+		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0., 3., 0.))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+
+
+	// check rotZ
+	mbc.q = {{}, {0.}, {0.}, {cst::pi<double>()/2.}};
+
+	forwardKinematics(mb, mbc);
+
+	res = {PTransform(Vector3d(0., 0., 0.)),
+		PTransform(Vector3d(0., 1., 0.)),
+		PTransform(Vector3d(0., 2., 0.)),
+		PTransform(RotZ(cst::pi<double>()/2.), Vector3d(0., 3., 0.))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+
+	//                b4
+	//             j3 | Spherical
+	//  Root     j0   |   j1     j2
+	//  ---- b0 ---- b1 ---- b2 ----b3
+	//  Fixed    RevX   RevY    RevZ
+
+	Body b4(rbi, 4, "b4");
+	Joint j3(Joint::Spherical, true, 3, "j3");
+
+	mbg.addBody(b4);
+	mbg.addJoint(j3);
+
+	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
+								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+
+	MultiBody mb2 = mbg.makeMultiBody(0, true);
+
+	MultiBodyConfig mbc2(mb2);
+
+
+	// check identity
+	mbc2.q = {{}, {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
+
+	forwardKinematics(mb2, mbc2);
+
+	res = {PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 1., 0)),
+		PTransform(Vector3d(0., 2., 0.)), PTransform(Vector3d(0., 3., 0)),
+		PTransform(Vector3d(0.5, 1.5, 0.))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
+
+	// check sphere rot Y
+	Quaterniond q(AngleAxisd(cst::pi<double>()/2., Vector3d::UnitY()));
+	mbc2.q = {{}, {0.}, {0.}, {0.}, {q.w(), q.x(), q.y(), q.z()}};
+
+	forwardKinematics(mb2, mbc2);
+
+	res = {PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 1., 0)),
+		PTransform(Vector3d(0., 2., 0.)), PTransform(Vector3d(0., 3., 0)),
+		// PTransform(RotY(cst::pi<double>()/2.), Vector3d(0.5, 1.5, 0.))}; lake of precision
+		PTransform(q.inverse().matrix(), Vector3d(0.5, 1.5, 0.))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
+
+	// check j1 rotX
+	mbc2.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}, {1., 0., 0., 0.}};
+
+	forwardKinematics(mb2, mbc2);
+
+	res = {PTransform(Vector3d(0., 0., 0.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 0.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 1.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 1., 2.)),
+		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0.5, 1., 0.5))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
 }
