@@ -28,6 +28,8 @@ class MultiBody;
 
 struct MultiBodyConfig
 {
+	MultiBodyConfig()
+	{}
 	MultiBodyConfig(const MultiBody& mb);
 
 	/// Generalized position variable.

@@ -128,6 +128,8 @@ def build_mb(mb):
                       param('std::vector<int>', 'parent'),
                       param('std::vector<sva::PTransform>', 'Xt')])
 
+  mb.add_copy_constructor()
+
   mb.add_method('nrBodies', retval('int'), [], is_const=True)
   mb.add_method('nrJoints', retval('int'), [], is_const=True)
 
@@ -163,6 +165,26 @@ def build_mb(mb):
 
 
 
+def build_mbc(mbc):
+  mbc.add_constructor([])
+  mbc.add_constructor([param('const rbd::MultiBody&', 'mb')])
+
+  mbc.add_copy_constructor()
+
+  mbc.add_instance_attribute('q', 'std::vector<std::vector<double> >')
+  mbc.add_instance_attribute('bodyGlobal', 'std::vector<sva::PTransform>')
+
+
+
+def build_algo(mod):
+  mod.add_function('sForwardKinematics', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
+                   custom_name='forwardKinematics',
+                   throw=[out_ex])
+
+
+
 if __name__ == '__main__':
   if len(sys.argv) < 2:
     sys.exit(1)
@@ -170,8 +192,10 @@ if __name__ == '__main__':
   rbd = Module('_rbdyn', cpp_namespace='::rbd')
   rbd.add_include('<Body.h>')
   rbd.add_include('<Joint.h>')
-  rbd.add_include('<MultiBodyGraph.h>')
   rbd.add_include('<MultiBody.h>')
+  rbd.add_include('<MultiBodyConfig.h>')
+  rbd.add_include('<MultiBodyGraph.h>')
+  rbd.add_include('<FK.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -184,12 +208,14 @@ if __name__ == '__main__':
 
   body = rbd.add_class('Body')
   joint = rbd.add_class('Joint')
-  mbg = rbd.add_class('MultiBodyGraph')
   mb = rbd.add_class('MultiBody')
+  mbc = rbd.add_struct('MultiBodyConfig')
+  mbg = rbd.add_class('MultiBodyGraph')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
   rbd.add_container('std::vector<int>', 'int', 'vector')
+  rbd.add_container('std::vector<std::vector<double> >', 'std::vector<double>', 'vector')
   rbd.add_container('std::vector<rbd::Body>', 'rbd::Body', 'vector')
   rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector')
   rbd.add_container('std::vector<sva::PTransform>', 'sva::PTransform', 'vector')
@@ -198,6 +224,9 @@ if __name__ == '__main__':
   build_joint(joint)
   build_mbg(mbg)
   build_mb(mb)
+  build_mbc(mbc)
+
+  build_algo(rbd)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)
