@@ -181,7 +181,7 @@ def build_algo(mod):
                    [param('const MultiBody&', 'mb'),
                     param('MultiBodyConfig&', 'mbc')],
                    custom_name='forwardKinematics',
-                   throw=[out_ex])
+                   throw=[dom_ex])
 
 
 
