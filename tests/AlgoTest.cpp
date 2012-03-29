@@ -194,4 +194,26 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
+
+
+	// test safe version
+	BOOST_CHECK_NO_THROW(sForwardKinematics(mb2, mbc2));
+
+	// bad number of body
+	MultiBodyConfig mbcBadNrBody = mbc2;
+	mbcBadNrBody.bodyGlobal.resize(4);
+
+	BOOST_CHECK_THROW(sForwardKinematics(mb2, mbcBadNrBody), std::domain_error);
+
+	// bad number of generalized position variable
+	MultiBodyConfig mbcBadNrQ = mbc2;
+	mbcBadNrQ.q = {{0.}, {0.}, {0.}, {1., 0., 0., 0.}};
+
+	BOOST_CHECK_THROW(sForwardKinematics(mb2, mbcBadNrQ), std::domain_error);
+
+	// bad generalized position variable size
+	MultiBodyConfig mbcBadQSize = mbc2;
+	mbcBadQSize.q = {{}, {0.}, {0.}, {0.}, {1., 0., 0.}};
+
+	BOOST_CHECK_THROW(sForwardKinematics(mb2, mbcBadQSize), std::domain_error);
 }

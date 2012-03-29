@@ -16,6 +16,9 @@
 #pragma once
 
 // includes
+// std
+#include <vector>
+
 // sva
 #include <SpaceVecAlg>
 
@@ -27,8 +30,10 @@ struct MultiBodyConfig
 {
 	MultiBodyConfig(const MultiBody& mb);
 
+	/// Generalized position variable.
 	std::vector<std::vector<double>> q;
 
+	/// Bodies transformation in world coordinate.
 	std::vector<sva::PTransform> bodyGlobal;
 };
 

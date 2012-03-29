@@ -20,6 +20,18 @@ namespace rbd
 class MultiBody;
 class MultiBodyConfig;
 
+/**
+	* Compute the forward kinematic of a MultiBody.
+	* @param mb MultiBody used has model.
+	* @param mbc Use q generalized position vector. Fill bodyGlobal.
+	*/
 void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+
+/**
+	* Safe version.
+	* @see forwardKinematics.
+	* @throw std::domain_error If there is a mismatch between mb and mbc.
+	*/
+void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
 
 } // namespace rbd
