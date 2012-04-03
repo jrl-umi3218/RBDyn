@@ -179,6 +179,8 @@ def build_mbc(mbc):
   mbc.add_instance_attribute('q', 'std::vector<std::vector<double> >')
   mbc.add_instance_attribute('alpha', 'std::vector<std::vector<double> >')
 
+  mbc.add_instance_attribute('jointConfig', 'std::vector<sva::PTransform>')
+
   mbc.add_instance_attribute('bodyPosW', 'std::vector<sva::PTransform>')
   mbc.add_instance_attribute('bodyVelW', 'std::vector<sva::MotionVec>')
 
@@ -189,6 +191,12 @@ def build_algo(mod):
                    [param('const MultiBody&', 'mb'),
                     param('MultiBodyConfig&', 'mbc')],
                    custom_name='forwardKinematics',
+                   throw=[dom_ex])
+
+  mod.add_function('sForwardVelocity', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
+                   custom_name='forwardVelocity',
                    throw=[dom_ex])
 
 
@@ -204,6 +212,7 @@ if __name__ == '__main__':
   rbd.add_include('<MultiBodyConfig.h>')
   rbd.add_include('<MultiBodyGraph.h>')
   rbd.add_include('<FK.h>')
+  rbd.add_include('<FV.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
