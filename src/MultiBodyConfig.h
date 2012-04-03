@@ -35,8 +35,14 @@ struct MultiBodyConfig
 	/// Generalized position variable.
 	std::vector<std::vector<double>> q;
 
+	/// Generalized speed variable.
+	std::vector<std::vector<double>> alpha;
+
 	/// Bodies transformation in world coordinate.
-	std::vector<sva::PTransform> bodyGlobal;
+	std::vector<sva::PTransform> bodyPosW;
+
+	/// Bodies speed in world coordinate.
+	std::vector<sva::MotionVec> bodyVelW;
 };
 
 } // namespace rbd

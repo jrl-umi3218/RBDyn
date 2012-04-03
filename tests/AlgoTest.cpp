@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 		PTransform(Vector3d(0., 2., 0.)), PTransform(Vector3d(0., 3., 0))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
 
 
 	// check rotX
@@ -108,9 +108,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
-		BOOST_CHECK_SMALL((res[i].translation() - mbc.bodyGlobal[i].translation()).norm(),
+		BOOST_CHECK_SMALL((res[i].translation() - mbc.bodyPosW[i].translation()).norm(),
 			TOL);
-		BOOST_CHECK_SMALL((res[i].rotation() - mbc.bodyGlobal[i].rotation()).norm(),
+		BOOST_CHECK_SMALL((res[i].rotation() - mbc.bodyPosW[i].rotation()).norm(),
 			TOL);
 	}
 
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0., 3., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
 
 
 	// check rotZ
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 		PTransform(RotZ(cst::pi<double>()/2.), Vector3d(-0.5, 2.5, 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc.bodyGlobal.begin(), mbc.bodyGlobal.end());
+		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
 
 
 	//                b4
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 		PTransform(Vector3d(1., 1., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
-		mbc2.bodyGlobal.begin(), mbc2.bodyGlobal.end());
+		mbc2.bodyPosW.begin(), mbc2.bodyPosW.end());
 	// check sphere rot Y
 	Quaterniond q(AngleAxisd(cst::pi<double>()/2., Vector3d::UnitY()));
 	mbc2.q = {{}, {0.}, {0.}, {0.}, {q.w(), q.x(), q.y(), q.z()}};
@@ -185,9 +185,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
-		BOOST_CHECK_SMALL((res[i].translation() - mbc2.bodyGlobal[i].translation()).norm(),
+		BOOST_CHECK_SMALL((res[i].translation() - mbc2.bodyPosW[i].translation()).norm(),
 			TOL);
-		BOOST_CHECK_SMALL((res[i].rotation() - mbc2.bodyGlobal[i].rotation()).norm(),
+		BOOST_CHECK_SMALL((res[i].rotation() - mbc2.bodyPosW[i].rotation()).norm(),
 			TOL);
 	}
 
@@ -205,9 +205,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
-		BOOST_CHECK_SMALL((res[i].translation() - mbc2.bodyGlobal[i].translation()).norm(),
+		BOOST_CHECK_SMALL((res[i].translation() - mbc2.bodyPosW[i].translation()).norm(),
 			TOL);
-		BOOST_CHECK_SMALL((res[i].rotation() - mbc2.bodyGlobal[i].rotation()).norm(),
+		BOOST_CHECK_SMALL((res[i].rotation() - mbc2.bodyPosW[i].rotation()).norm(),
 			TOL);
 	}
 
@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	// bad number of body
 	MultiBodyConfig mbcBadNrBody = mbc2;
-	mbcBadNrBody.bodyGlobal.resize(4);
+	mbcBadNrBody.bodyPosW.resize(4);
 
 	BOOST_CHECK_THROW(sForwardKinematics(mb2, mbcBadNrBody), std::domain_error);
 

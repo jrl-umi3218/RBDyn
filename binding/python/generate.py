@@ -177,7 +177,10 @@ def build_mbc(mbc):
   mbc.add_copy_constructor()
 
   mbc.add_instance_attribute('q', 'std::vector<std::vector<double> >')
-  mbc.add_instance_attribute('bodyGlobal', 'std::vector<sva::PTransform>')
+  mbc.add_instance_attribute('alpha', 'std::vector<std::vector<double> >')
+
+  mbc.add_instance_attribute('bodyPosW', 'std::vector<sva::PTransform>')
+  mbc.add_instance_attribute('bodyVelW', 'std::vector<sva::MotionVec>')
 
 
 
@@ -224,6 +227,7 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<rbd::Body>', 'rbd::Body', 'vector')
   rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector')
   rbd.add_container('std::vector<sva::PTransform>', 'sva::PTransform', 'vector')
+  rbd.add_container('std::vector<sva::MotionVec>', 'sva::MotionVec', 'vector')
 
   build_body(body)
   build_joint(joint)

@@ -42,19 +42,19 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 		sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
 
 		if(pred[i] != -1)
-			mbc.bodyGlobal[i] = X_p_i*mbc.bodyGlobal[pred[i]];
+			mbc.bodyPosW[i] = X_p_i*mbc.bodyPosW[pred[i]];
 		else
-			mbc.bodyGlobal[i] = X_p_i;
+			mbc.bodyPosW[i] = X_p_i;
 	}
 }
 
 void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
-	if(mbc.bodyGlobal.size() != mb.nrBodies())
+	if(mbc.bodyPosW.size() != mb.nrBodies())
 	{
 		std::ostringstream str;
 		str << "bodyGlobal size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.bodyGlobal.size();
+				<< mb.nrBodies() << " gived " << mbc.bodyPosW.size();
 		throw std::domain_error(str.str());
 	}
 

@@ -24,11 +24,14 @@ namespace rbd
 {
 	MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 		q(mb.nrJoints()),
-		bodyGlobal(mb.nrBodies())
+		alpha(mb.nrJoints()),
+		bodyPosW(mb.nrBodies()),
+		bodyVelW(mb.nrBodies())
 	{
 		for(std::size_t i = 0; i < q.size(); ++i)
 		{
 			q[i].resize(mb.joint(i).params());
+			alpha[i].resize(mb.joint(i).dof());
 		}
 	}
 } // namespace rbd
