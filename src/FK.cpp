@@ -17,10 +17,6 @@
 #include "FK.h"
 
 // includes
-// std
-#include <stdexcept>
-#include <sstream>
-
 // RBdyn
 #include "Joint.h"
 #include "MultiBody.h"
@@ -50,33 +46,8 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
-	if(mbc.bodyPosW.size() != mb.nrBodies())
-	{
-		std::ostringstream str;
-		str << "bodyGlobal size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.bodyPosW.size();
-		throw std::domain_error(str.str());
-	}
-
-	if(mbc.q.size() != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "Generalized position variable vector size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.q.size();
-		throw std::domain_error(str.str());
-	}
-
-	for(std::size_t i = 0; i < mbc.q.size(); ++i)
-	{
-		if(mbc.q[i].size() != static_cast<std::size_t>(mb.joint(i).params()))
-		{
-			std::ostringstream str;
-			str << "Bad number of generalized position variabel for Joint "
-					<< mb.joint(i) << " at position " << i << ": expected size "
-					<< mb.joint(i).params() << " gived " << mbc.q[i].size();
-			throw std::domain_error(str.str());
-		}
-	}
+	checkMatchBodyPos(mb, mbc);
+	checkMatchQ(mb, mbc);
 
 	forwardKinematics(mb, mbc);
 }

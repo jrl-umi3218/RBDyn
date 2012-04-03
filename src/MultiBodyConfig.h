@@ -45,4 +45,19 @@ struct MultiBodyConfig
 	std::vector<sva::MotionVec> bodyVelW;
 };
 
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyPosW
+void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyVelW
+void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.q
+void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.alpha
+void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+
+
 } // namespace rbd
