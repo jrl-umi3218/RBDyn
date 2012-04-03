@@ -29,6 +29,7 @@ namespace rbd
 MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 	q(mb.nrJoints()),
 	alpha(mb.nrJoints()),
+	jointConfig(mb.nrJoints()),
 	bodyPosW(mb.nrBodies()),
 	bodyVelW(mb.nrBodies())
 {
@@ -65,6 +66,16 @@ void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc)
 	}
 }
 
+void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.jointConfig.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "jointConfig size mismatch: expected size "
+				<< mb.nrJoints() << " gived " << mbc.jointConfig.size();
+		throw std::domain_error(str.str());
+	}
+}
 
 
 void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc)

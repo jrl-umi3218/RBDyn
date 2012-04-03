@@ -1,6 +1,7 @@
-set(SOURCES MultiBodyGraph.cpp MultiBody.cpp MultiBodyConfig.cpp FK.cpp)
+set(SOURCES MultiBodyGraph.cpp MultiBody.cpp MultiBodyConfig.cpp
+  FK.cpp FV.cpp)
 set(HEADERS Body.h Joint.h MultiBodyGraph.h MultiBody.h MultiBodyConfig.h
-  FK.h)
+  FK.h FV.h)
 
 pkg_check_modules(EIGEN3 REQUIRED eigen3)
 find_path(SVA_INCLUDE_DIRS SpaceVecAlg/SpaceVecAlg

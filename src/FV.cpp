@@ -14,9 +14,10 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "FK.h"
+#include "FV.h"
 
 // includes
+#include <iostream>
 // RBdyn
 #include "Joint.h"
 #include "MultiBody.h"
@@ -25,8 +26,9 @@
 namespace rbd
 {
 
-void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
+void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 {
+	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
 	const std::vector<int>& succ = mb.successors();
@@ -35,25 +37,32 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
-		sva::PTransform X_i = joints[i].pose(mbc.q[i]);
+		sva::PTransform& X_i = mbc.jointConfig[i];
 		sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
 
-		if(pred[i] != -1)
-			mbc.bodyPosW[succ[i]] = X_p_i*mbc.bodyPosW[pred[i]];
-		else
-			mbc.bodyPosW[succ[i]] = X_p_i;
+		sva::MotionVec vj = Xt[i]*X_i*joints[i].motion(mbc.alpha[i]);
 
-		mbc.jointConfig[i] = X_i;
+		if(pred[i] != -1)
+			mbc.bodyVelW[succ[i]] = X_p_i*mbc.bodyVelW[pred[i]] + vj;
+		else
+			mbc.bodyVelW[succ[i]] = vj;
+	}
+
+	for(std::size_t i = 0; i < bodies.size(); ++i)
+	{
+		sva::PTransform X_0_i(mbc.bodyPosW[i].rotation());
+		mbc.bodyVelW[i] = X_0_i.inv()*mbc.bodyVelW[i];
 	}
 }
 
-void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
+void sForwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 {
 	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
 	checkMatchJointConf(mb, mbc);
-	checkMatchQ(mb, mbc);
+	checkMatchAlpha(mb, mbc);
 
-	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
 }
 
 } // namespace rbd

@@ -38,6 +38,9 @@ struct MultiBodyConfig
 	/// Generalized speed variable.
 	std::vector<std::vector<double>> alpha;
 
+	/// Joint configuration
+	std::vector<sva::PTransform> jointConfig;
+
 	/// Bodies transformation in world coordinate.
 	std::vector<sva::PTransform> bodyPosW;
 
@@ -51,6 +54,9 @@ void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.bodyVelW
 void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.jointConfig
+void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.q
 void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc);

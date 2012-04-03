@@ -21,17 +21,18 @@ class MultiBody;
 class MultiBodyConfig;
 
 /**
-	* Compute the forward kinematic of a MultiBody.
+	* Compute the forward velocity of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use q generalized position vector. Fill bodyPosW and jointConfig.
+	* @param mbc Use alpha generalized velocity vector, bodyPosW and jointConfig.
+	* Fill bodyVelW.
 	*/
-void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 
 /**
 	* Safe version.
-	* @see forwardKinematics.
+	* @see forwardVelocity.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+void sForwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 
 } // namespace rbd
