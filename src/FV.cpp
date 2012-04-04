@@ -22,7 +22,6 @@
 #include "Joint.h"
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"
-
 namespace rbd
 {
 
@@ -37,7 +36,7 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
-		sva::PTransform& X_i = mbc.jointConfig[i];
+		const sva::PTransform& X_i = mbc.jointConfig[i];
 		sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
 
 		sva::MotionVec vj = Xt[i]*X_i*joints[i].motion(mbc.alpha[i]);
