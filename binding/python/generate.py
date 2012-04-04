@@ -121,6 +121,8 @@ def build_mbg(mbg):
 
 
 def build_mb(mb):
+  mb.add_constructor([])
+
   mb.add_constructor([param('std::vector<rbd::Body>', 'bodies'),
                       param('std::vector<rbd::Joint>', 'joints'),
                       param('std::vector<int>', 'pred'),
@@ -133,6 +135,9 @@ def build_mb(mb):
 
   mb.add_method('nrBodies', retval('int'), [], is_const=True)
   mb.add_method('nrJoints', retval('int'), [], is_const=True)
+
+  mb.add_method('nrParams', retval('int'), [], is_const=True)
+  mb.add_method('nrDof', retval('int'), [], is_const=True)
 
   mb.add_method('bodies', retval('std::vector<rbd::Body>'), [], is_const=True)
   mb.add_method('sBody', retval('rbd::Body'), [param('int', 'num')],
