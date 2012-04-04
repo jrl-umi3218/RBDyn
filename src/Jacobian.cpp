@@ -27,6 +27,9 @@
 namespace rbd
 {
 
+Jacobian::Jacobian()
+{}
+
 Jacobian::Jacobian(const MultiBody& mb, int bodyId, const Eigen::Vector3d& point):
   jointsPath_(),
   point_(point),

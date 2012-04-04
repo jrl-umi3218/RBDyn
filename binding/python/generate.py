@@ -206,6 +206,29 @@ def build_algo(mod):
 
 
 
+def build_jacobian(jac):
+  jac.add_constructor([])
+  jac.add_constructor([param('const rbd::MultiBody&', 'mb'),
+                       param('int', 'bodyId'),
+                       param('const Eigen::Vector3d&', 'point',
+                             default_value='Eigen::Vector3d::Zero()')],
+                     throw=[out_ex])
+
+  jac.add_method('sJacobian', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='jacobian')
+
+  jac.add_method('sSubMultiBody', retval('rbd::MultiBody'),
+                 [param('const rbd::MultiBody&', 'mb')],
+                 throw=[dom_ex], custom_name='subMultiBody',
+                 is_const=True)
+
+  jac.add_method('jointsPath', retval('std::vector<int>'),
+                 [], is_const=True)
+
+
+
 if __name__ == '__main__':
   if len(sys.argv) < 2:
     sys.exit(1)
@@ -218,6 +241,7 @@ if __name__ == '__main__':
   rbd.add_include('<MultiBodyGraph.h>')
   rbd.add_include('<FK.h>')
   rbd.add_include('<FV.h>')
+  rbd.add_include('<Jacobian.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -233,6 +257,7 @@ if __name__ == '__main__':
   mb = rbd.add_class('MultiBody')
   mbc = rbd.add_struct('MultiBodyConfig')
   mbg = rbd.add_class('MultiBodyGraph')
+  jac = rbd.add_class('Jacobian')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
@@ -248,6 +273,7 @@ if __name__ == '__main__':
   build_mbg(mbg)
   build_mb(mb)
   build_mbc(mbc)
+  build_jacobian(jac)
 
   build_algo(rbd)
 

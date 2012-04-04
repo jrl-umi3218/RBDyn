@@ -27,6 +27,8 @@ class MultiBodyConfig;
 class Jacobian
 {
 public:
+	Jacobian();
+
 	/**
 		* Create a jacobian from the root body to the specified body.
 		* @param mb Multibody where bodyId is in.
