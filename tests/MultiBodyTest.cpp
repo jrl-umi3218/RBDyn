@@ -154,6 +154,16 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	BOOST_CHECK_EQUAL(mb.nrBodies(), bodies.size());
 	// nrJoints
 	BOOST_CHECK_EQUAL(mb.nrJoints(), bodies.size());
+
+	int params = 0, dof = 0;
+	for(std::size_t i = 0; i < joints.size(); ++i)
+	{
+		params += joints[i].params();
+		dof += joints[i].dof();
+	}
+
+	BOOST_CHECK_EQUAL(params, mb.nrParams());
+	BOOST_CHECK_EQUAL(dof, mb.nrDof());
 }
 
 

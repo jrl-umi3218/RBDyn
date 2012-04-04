@@ -24,6 +24,11 @@
 namespace rbd
 {
 
+MultiBody::MultiBody():
+  nrParams_(0),
+  nrDof_(0)
+{}
+
 MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	std::vector<int> pred, std::vector<int> succ,
 	std::vector<int> parent, std::vector<sva::PTransform> Xfrom,
@@ -34,12 +39,17 @@ MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	succ_(std::move(succ)),
 	parent_(std::move(parent)),
 	Xfrom_(std::move(Xfrom)),
-	Xto_(std::move(Xto))
+	Xto_(std::move(Xto)),
+	nrParams_(0),
+	nrDof_(0)
 {
 	for(std::size_t i = 0; i < bodies_.size(); ++i)
 	{
 		bodyId2Ind_[bodies_[i].id()] = i;
 		jointId2Ind_[joints_[i].id()] = i;
+
+		nrParams_ += joints_[i].params();
+		nrDof_ += joints_[i].dof();
 	}
 }
 

@@ -38,6 +38,8 @@ namespace rbd
 class MultiBody
 {
 public:
+	MultiBody();
+
 	/**
 		* @param bodies Bodies of the multibody system.
 		* @param joints Joints of the mutibody system.
@@ -160,6 +162,19 @@ public:
 		return jointId2Ind_.find(id)->second;
 	}
 
+	/// @return Total number of parameters.
+	int nrParams() const
+	{
+		return nrParams_;
+	}
+
+	/// @return Total number of DoF.
+	int nrDof() const
+	{
+		return nrDof_;
+	}
+
+
 
 	// safe accessors version for python binding
 
@@ -249,6 +264,9 @@ private:
 
 	std::unordered_map<int, int> bodyId2Ind_;
 	std::unordered_map<int, int> jointId2Ind_;
+
+	int nrParams_;
+	int nrDof_;
 };
 
 } // namespace rbd
