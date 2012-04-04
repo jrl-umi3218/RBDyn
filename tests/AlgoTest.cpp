@@ -469,3 +469,55 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyVelW.begin(), mbc2.bodyVelW.end());
 }
+
+
+
+BOOST_AUTO_TEST_CASE(FreeFlyerTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace cst = boost::math::constants;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Zero();
+
+	RBInertia rbi(mass, h, I);
+
+	Body b0(rbi, 0, "b0");
+
+	mbg.addBody(b0);
+
+	MultiBody mb = mbg.makeMultiBody(0, false);
+
+	MultiBodyConfig mbc(mb);
+
+	// check identity
+	mbc.q = {{1., 0., 0., 0., 0., 0., 0.}};
+	mbc.alpha = {{0., 0., 0., 0., 0., 0.}};
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	std::vector<MotionVec> res = {MotionVec(Vector6d::Zero())};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
+
+
+	// check Y Rot
+	Quaterniond q = Quaterniond::Identity();
+	mbc.q = {{q.w(), q.x(), q.y(), q.z(), 1., 0., 0.}};
+	mbc.alpha = {{0., 1., 0., 0., 0., 0.}};
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	res = {MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., -1.))};
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
+		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
+}
