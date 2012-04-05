@@ -67,7 +67,7 @@ public:
 
 private:
 	std::vector<int> jointsPath_;
-	Eigen::Vector3d point_;
+	sva::PTransform point_;
 
 	Eigen::MatrixXd jac_;
 };

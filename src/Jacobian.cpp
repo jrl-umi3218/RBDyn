@@ -89,14 +89,14 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	int curJ = 0;
 
+	sva::PTransform X_Np = point_*mbc.bodyPosW[jointsPath_.back()];
 	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
 	{
 		int i = jointsPath_[index];
 
 		const sva::PTransform& X_i = mbc.jointConfig[i];
 		sva::PTransform X_0_i(mbc.bodyPosW[succ[i]].rotation());
-		sva::PTransform X_i_N = mbc.bodyPosW[jointsPath_.back()]*
-			mbc.bodyPosW[i].inv();
+		sva::PTransform X_i_N = X_Np*mbc.bodyPosW[i].inv();
 
 		jac_.block(0, curJ, 6, joints[i].dof()) =
 			(X_0_i.inv()*X_i_N*Xt[i]*X_i).matrix()*joints[i].motionSubspace();
