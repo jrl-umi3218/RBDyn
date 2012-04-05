@@ -137,6 +137,13 @@ public:
 	sva::MotionVec motion(const std::vector<double>& alpha) const;
 
 	/**
+		* Compute the tangential part of the acceleration S*alphaD.
+		* @param alphaD vector of generalized acceleration variable.
+		* @return Tangential part of acceleration
+		*/
+	sva::MotionVec tanAccel(const std::vector<double>& alphaD) const;
+
+	/**
 		* Safe version of pose method.
 		* @see pose
 		* @throw std::domain_error If the number of generalized position variable is
@@ -151,6 +158,14 @@ public:
 		* wrong.
 		*/
 	sva::MotionVec sMotion(const std::vector<double>& alpha) const;
+
+	/**
+		* Safe version of tanAccel method.
+		* @see tanAccel
+		* @throw std::domain_error If the number of generalized acceleration variable is
+		* wrong.
+		*/
+	sva::MotionVec sTanAccel(const std::vector<double>& alphaD) const;
 
 	bool operator==(const Joint& b) const
 	{
@@ -310,6 +325,35 @@ inline sva::MotionVec Joint::motion(const std::vector<double>& alpha) const
 	}
 }
 
+inline sva::MotionVec Joint::tanAccel(const std::vector<double>& alphaD) const
+{
+	using namespace Eigen;
+	using namespace sva;
+	switch(type_)
+	{
+		case RevX:
+			return MotionVec((Vector6d() << dir_*alphaD[0], 0., 0., 0., 0., 0.).finished());
+		case RevY:
+			return MotionVec((Vector6d() << 0., dir_*alphaD[0], 0., 0., 0., 0.).finished());
+		case RevZ:
+			return MotionVec((Vector6d() << 0., 0., dir_*alphaD[0], 0., 0., 0.).finished());
+		case PrismX:
+			return MotionVec((Vector6d() << 0., 0., 0., dir_*alphaD[0], 0., 0.).finished());
+		case PrismY:
+			return MotionVec((Vector6d() << 0., 0., 0., 0., dir_*alphaD[0], 0.).finished());
+		case PrismZ:
+			return MotionVec((Vector6d() << 0., 0., 0., 0., 0., dir_*alphaD[0]).finished());
+		case Spherical:
+			return MotionVec(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+		case Free:
+			return MotionVec(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
+								alphaD[3], alphaD[4], alphaD[5]).finished());
+		case Fixed:
+		default:
+			return MotionVec(Vector6d::Zero());
+	}
+}
+
 inline sva::PTransform Joint::sPose(const std::vector<double>& q) const
 {
 	if(q.size() != static_cast<unsigned int>(params_))
@@ -332,6 +376,18 @@ inline sva::MotionVec Joint::sMotion(const std::vector<double>& alpha) const
 		throw std::domain_error(str.str());
 	}
 	return motion(alpha);
+}
+
+inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
+{
+	if(alphaD.size() != static_cast<unsigned int>(dof_))
+	{
+		std::ostringstream str;
+		str << "Wrong number of generalized acceleration variable: expected " <<
+					 params_ << " gived " << alphaD.size();
+		throw std::domain_error(str.str());
+	}
+	return tanAccel(alphaD);
 }
 
 } // namespace rbd

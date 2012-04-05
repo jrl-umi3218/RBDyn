@@ -27,7 +27,6 @@ namespace rbd
 
 void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 {
-	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
 	const std::vector<int>& succ = mb.successors();
@@ -42,15 +41,12 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 		sva::MotionVec vj = Xt[i]*X_i*joints[i].motion(mbc.alpha[i]);
 
 		if(pred[i] != -1)
-			mbc.bodyVelW[succ[i]] = X_p_i*mbc.bodyVelW[pred[i]] + vj;
+			mbc.bodyVelB[succ[i]] = X_p_i*mbc.bodyVelB[pred[i]] + vj;
 		else
-			mbc.bodyVelW[succ[i]] = vj;
-	}
+			mbc.bodyVelB[succ[i]] = vj;
 
-	for(std::size_t i = 0; i < bodies.size(); ++i)
-	{
-		sva::PTransform X_0_i(mbc.bodyPosW[i].rotation());
-		mbc.bodyVelW[i] = X_0_i.inv()*mbc.bodyVelW[i];
+		sva::PTransform X_0_i(mbc.bodyPosW[succ[i]].rotation());
+		mbc.bodyVelW[i] = X_0_i.inv()*mbc.bodyVelB[i];
 	}
 }
 

@@ -38,14 +38,32 @@ struct MultiBodyConfig
 	/// Generalized speed variable.
 	std::vector<std::vector<double>> alpha;
 
-	/// Joint configuration
+	/// Generalized acceleration variable.
+	std::vector<std::vector<double>> alphaD;
+
+	/// External force acting on each body
+	std::vector<sva::ForceVec> force;
+
+	/// Joints configuration.
 	std::vector<sva::PTransform> jointConfig;
+
+	/// Joints torque.
+	std::vector<std::vector<double>> jointTorque;
 
 	/// Bodies transformation in world coordinate.
 	std::vector<sva::PTransform> bodyPosW;
 
 	/// Bodies speed in world coordinate.
 	std::vector<sva::MotionVec> bodyVelW;
+
+	/// Bodies speed in Body coordinate.
+	std::vector<sva::MotionVec> bodyVelB;
+
+	/// Bodies acceleration in Body coordinate.
+	std::vector<sva::MotionVec> bodyAccB;
+
+	/// gravity acting on the multibody.
+	Eigen::Vector3d gravity;
 };
 
 

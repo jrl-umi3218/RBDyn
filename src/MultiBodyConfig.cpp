@@ -29,14 +29,23 @@ namespace rbd
 MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 	q(mb.nrJoints()),
 	alpha(mb.nrJoints()),
+	alphaD(mb.nrJoints()),
+	force(mb.nrBodies()),
 	jointConfig(mb.nrJoints()),
+	jointTorque(mb.nrJoints()),
 	bodyPosW(mb.nrBodies()),
-	bodyVelW(mb.nrBodies())
+	bodyVelW(mb.nrBodies()),
+	bodyVelB(mb.nrBodies()),
+	bodyAccB(mb.nrBodies()),
+	gravity(0., -9.81, 0.)
 {
 	for(std::size_t i = 0; i < q.size(); ++i)
 	{
 		q[i].resize(mb.joint(i).params());
 		alpha[i].resize(mb.joint(i).dof());
+		alphaD[i].resize(mb.joint(i).dof());
+
+		jointTorque[i].resize(mb.joint(i).dof());
 	}
 }
 
@@ -62,6 +71,14 @@ void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc)
 		std::ostringstream str;
 		str << "bodyVelW size mismatch: expected size "
 				<< mb.nrBodies() << " gived " << mbc.bodyVelW.size();
+		throw std::domain_error(str.str());
+	}
+
+	if(mbc.bodyVelB.size() != mb.nrBodies())
+	{
+		std::ostringstream str;
+		str << "bodyVelB size mismatch: expected size "
+				<< mb.nrBodies() << " gived " << mbc.bodyVelB.size();
 		throw std::domain_error(str.str());
 	}
 }
