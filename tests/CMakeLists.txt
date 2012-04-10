@@ -29,9 +29,9 @@ add_executable(AlgoTest AlgoTest.cpp)
 target_link_libraries(AlgoTest ${Boost_LIBRARIES} RBDyn)
 add_test(AlgoTestUnit AlgoTest)
 
-#add_executable(JacobianTest JacobianTest.cpp)
-#target_link_libraries(JacobianTest ${Boost_LIBRARIES} RBDyn)
-#add_test(JacobianTestUnit JacobianTest)
+add_executable(JacobianTest JacobianTest.cpp)
+target_link_libraries(JacobianTest ${Boost_LIBRARIES} RBDyn)
+add_test(JacobianTestUnit JacobianTest)
 
 #add_executable(DynamicsTest DynamicsTest.cpp)
 #target_link_libraries(DynamicsTest ${Boost_LIBRARIES} RBDyn)

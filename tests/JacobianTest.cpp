@@ -39,8 +39,7 @@ const double TOL = 0.0000001;
 
 void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	std::vector<rbd::Joint> joints, std::vector<int> pred, std::vector<int> succ,
-	std::vector<int> parent, std::vector<sva::PTransform> Xfrom,
-	std::vector<sva::PTransform> Xto)
+	std::vector<int> parent, std::vector<sva::PTransform> Xt)
 {
 	// bodies
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.bodies().begin(), mb.bodies().end(),
@@ -58,15 +57,10 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.parents().begin(), mb.parents().end(),
 																parent.begin(), parent.end());
 
-	// Xfrom
-	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transformsFrom().begin(),
-		mb.transformsFrom().end(),
-		Xfrom.begin(), Xfrom.end());
-
-	// Xto
-	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transformsTo().begin(),
-		mb.transformsTo().end(),
-		Xto.begin(), Xto.end());
+	// Xt
+	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transforms().begin(),
+		mb.transforms().end(),
+		Xt.begin(), Xt.end());
 
 	// nrBodies
 	BOOST_CHECK_EQUAL(mb.nrBodies(), bodies.size());
@@ -171,11 +165,11 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	std::vector<int> succ = {0, 1, 2, 3};
 	std::vector<int> parent = {-1, 0, 1, 2};
 
-	std::vector<PTransform> Xfrom = {I, to, to, to};
-	std::vector<PTransform> Xto = {I, to, to, to};
+	PTransform unitY(Vector3d(0., 1., 0.));
+	std::vector<PTransform> Xt = {I, to, unitY, unitY};
 
 
-	checkMultiBodyEq(chain1, bodies, joints, pred, succ, parent, Xfrom, Xto);
+	checkMultiBodyEq(chain1, bodies, joints, pred, succ, parent, Xt);
 
 	// chain 2
 	bodies = {b0, b1, b4};
@@ -186,11 +180,10 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	succ = {0, 1, 2};
 	parent = {-1, 0, 1};
 
-	Xfrom = {I, to, PTransform(Vector3d(0.5, 0., 0.))};
-	Xto = {I, to, PTransform(Vector3d(0.5, 0., 0.))};
+	Xt = {I, to, PTransform(Vector3d(0.5, 0.5, 0.))};
 
 
-	checkMultiBodyEq(chain2, bodies, joints, pred, succ, parent, Xfrom, Xto);
+	checkMultiBodyEq(chain2, bodies, joints, pred, succ, parent, Xt);
 
 
 	// test subMultiBody safe version
@@ -208,6 +201,7 @@ void checkJacobianMatrix(const rbd::MultiBody& mb,
 	using namespace rbd;
 
 	const MatrixXd& jac_mat = jac.jacobian(mb, mbc);
+	std::cout << jac_mat << std::endl << std::endl;
 	MultiBody subMb = jac.subMultiBody(mb);
 
 	// test jacobian size
@@ -309,7 +303,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	checkJacobianMatrix(mb, mbc, jac1);
 	checkJacobianMatrix(mb, mbc, jac2);
 
-	mbc.q = {{}, {cst::pi<double>()}, {0.}, {0.}, {1., 0., 0., 0.}};
+	mbc.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}, {1., 0., 0., 0.}};
 	forwardKinematics(mb, mbc);
 
 	checkJacobianMatrix(mb, mbc, jac1);
