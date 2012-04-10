@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 
 	double mass = 1.;
 	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
+	Vector3d h = Vector3d(0., 0.5, 0.);
 
 	RBInertia rbi(mass, h, I);
 
@@ -108,7 +108,6 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	id.inverseDynamics(mb, mbc2);
 
 	torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., -9.81, 0.))(0);
-	std::cout << mbc2.jointTorque[1][0] << std::endl;
 	BOOST_CHECK_SMALL(std::abs(torque - mbc2.jointTorque[1][0]), TOL);
 }
 

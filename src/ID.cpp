@@ -30,7 +30,6 @@ InverseDynamics::InverseDynamics(const MultiBody& mb):
 
 void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
-	/*
 	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
@@ -44,8 +43,8 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 		sva::PTransform X_p_i = X_i*Xt[i];
 
-		sva::MotionVec vj_i = X_j_i*joints[i].motion(mbc.alpha[i]);
-		sva::MotionVec ai_tan = X_j_i*joints[i].tanAccel(mbc.alphaD[i]);
+		sva::MotionVec vj_i = X_i*joints[i].motion(mbc.alpha[i]);
+		sva::MotionVec ai_tan = X_i*joints[i].tanAccel(mbc.alphaD[i]);
 
 		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
 
@@ -63,7 +62,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	{
 		const sva::PTransform& X_i = mbc.jointConfig[i];
 		Eigen::MatrixXd S_i = X_i.matrix()*joints[i].motionSubspace();
-		Eigen::Vector6d fj_i = (Xt[i].transMul(f_[i])).vector();
+		Eigen::Vector6d fj_i = f_[i].vector();
 
 		for(int j = 0; j < joints[i].dof(); ++j)
 		{
@@ -72,11 +71,10 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 		if(pred[i] != -1)
 		{
-			sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
+			sva::PTransform X_p_i = X_i*Xt[i];
 			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
 		}
 	}
-	*/
 }
 
 } // namespace rbd

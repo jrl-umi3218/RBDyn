@@ -201,7 +201,6 @@ void checkJacobianMatrix(const rbd::MultiBody& mb,
 	using namespace rbd;
 
 	const MatrixXd& jac_mat = jac.jacobian(mb, mbc);
-	std::cout << jac_mat << std::endl << std::endl;
 	MultiBody subMb = jac.subMultiBody(mb);
 
 	// test jacobian size
