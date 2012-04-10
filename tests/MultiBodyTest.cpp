@@ -403,8 +403,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	Xt = {I,
 				PTransform(Vector3d(1., 0., 0.)),
 				PTransform(Vector3d(1., 1., 0.)),
-				PTransform(RotX(constants::pi<double>()/2.))*
-				PTransform(Vector3d(0., 1., 0.))};
+				PTransform(RotX(constants::pi<double>()/2.), Vector3d(0., 1., 0.))};
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xt);
