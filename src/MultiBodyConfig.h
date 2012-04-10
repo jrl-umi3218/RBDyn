@@ -41,7 +41,7 @@ struct MultiBodyConfig
 	/// Generalized acceleration variable.
 	std::vector<std::vector<double>> alphaD;
 
-	/// External force acting on each body
+	/// External force acting on each body in world coordinate
 	std::vector<sva::ForceVec> force;
 
 	/// Joints configuration.
