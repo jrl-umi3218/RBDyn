@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	mbg.addJoint(j0);
 
 	mbg.linkBodies(0, PTransform::Identity(),
-								 1, PTransform(Vector3d(0., -0.5, 0.)), 0);
+								 1, PTransform::Identity(), 0);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
@@ -100,9 +100,9 @@ BOOST_AUTO_TEST_CASE(OneBody)
 
 	MultiBodyConfig mbc2 = mbc;
 	mbc2.gravity = Vector3d::Zero();
-	ForceVec gravity(Vector3d::Zero(), Vector3d(0., 9.81, 0.));
-	ForceVec gravityB1 = mbc2.bodyPosW[0].dualMul(gravity);
-	ForceVec gravityB2 = PTransform(Vector3d(0., 0., -0.5)).dualMul(gravity);
+	MotionVec gravity(Vector3d::Zero(), Vector3d(0., 9.81, 0.));
+	ForceVec gravityB1 = mb.body(0).inertia()*(mbc2.bodyPosW[0]*gravity);
+	ForceVec gravityB2 = mb.body(1).inertia()*(mbc2.bodyPosW[1]*gravity);
 	mbc2.force = {gravityB1,
 								gravityB2};
 	id.inverseDynamics(mb, mbc2);

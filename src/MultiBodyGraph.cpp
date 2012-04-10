@@ -113,23 +113,24 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 		int p, int s, int par,
 		const sva::PTransform& Xti)
 	{
-		bodies.push_back(curNode->body);
-		joints.push_back(joint);
-		pred.push_back(p);
-		succ.push_back(s);
-		parent.push_back(par);
-		Xt.push_back(Xti);
-
 		// looking for transformation that come from fromNode
 		sva::PTransform XFrom = sva::PTransform::Identity();
 		for(Arc& a : curNode->arcs)
 		{
 			if(a.next == fromNode)
 			{
-				XFrom = a.X.inv();
+				XFrom = a.X;
 				break;
 			}
 		}
+
+		bodies.emplace_back(XFrom.dualMul(curNode->body.inertia()),
+			curNode->body.id(), curNode->body.name());
+		joints.push_back(joint);
+		pred.push_back(p);
+		succ.push_back(s);
+		parent.push_back(par);
+		Xt.push_back(Xti);
 
 		int curInd = bodies.size() - 1;
 		for(Arc& a : curNode->arcs)
@@ -139,7 +140,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 				int nextInd = bodies.size();
 
 				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd,
-					a.X*XFrom);
+					a.X*XFrom.inv());
 			}
 		}
 	};

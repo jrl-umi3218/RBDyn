@@ -254,10 +254,11 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	MultiBodyGraph mbg1;
 
-	Body b1(RBInertia(), 0, "b1");
-	Body b2(RBInertia(), 1, "b2");
-	Body b3(RBInertia(), 2, "b3");
-	Body b4(RBInertia(), 3, "b4");
+	RBInertia rbi(1., Vector3d::Zero(), Matrix3d::Identity());
+	Body b1(rbi, 0, "b1");
+	Body b2(rbi, 1, "b2");
+	Body b3(rbi, 2, "b3");
+	Body b4(rbi, 3, "b4");
 	mbg1.addBody(b1);
 	mbg1.addBody(b2);
 	mbg1.addBody(b3);
@@ -407,4 +408,16 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xt);
+
+
+	// check body com
+	std::vector<Vector3d> bCom = {Vector3d::Zero(),
+																Vector3d(0., 1., 0.),
+																Vector3d(0., 0., 1.),
+																Vector3d(0., 0., 0.)};
+
+	for(std::size_t i = 0; i < mb4.nrBodies(); ++i)
+	{
+		BOOST_CHECK_EQUAL(mb4.body(i).inertia().momentum(), bCom[i]);
+	}
 }
