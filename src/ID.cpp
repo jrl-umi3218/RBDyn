@@ -30,11 +30,11 @@ InverseDynamics::InverseDynamics(const MultiBody& mb):
 
 void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
+	/*
 	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
-	const std::vector<sva::PTransform>& Xf = mb.transformsFrom();
-	const std::vector<sva::PTransform>& Xt = mb.transformsTo();
+	const std::vector<sva::PTransform>& Xt = mb.transforms();
 
 	sva::MotionVec a_0(Eigen::Vector3d::Zero(), mbc.gravity);
 
@@ -42,8 +42,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	{
 		const sva::PTransform& X_i = mbc.jointConfig[i];
 
-		sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
-		sva::PTransform X_j_i = Xt[i]*X_i;
+		sva::PTransform X_p_i = X_i*Xt[i];
 
 		sva::MotionVec vj_i = X_j_i*joints[i].motion(mbc.alpha[i]);
 		sva::MotionVec ai_tan = X_j_i*joints[i].tanAccel(mbc.alphaD[i]);
@@ -77,6 +76,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
 		}
 	}
+	*/
 }
 
 } // namespace rbd

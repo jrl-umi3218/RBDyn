@@ -57,8 +57,7 @@ MultiBody Jacobian::subMultiBody(const MultiBody& mb) const
 	std::vector<int> pred;
 	std::vector<int> succ;
 	std::vector<int> parent;
-	std::vector<sva::PTransform> Xfrom;
-	std::vector<sva::PTransform> Xto;
+	std::vector<sva::PTransform> Xt;
 
 	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
 	{
@@ -71,13 +70,11 @@ MultiBody Jacobian::subMultiBody(const MultiBody& mb) const
 		joints.push_back(mb.joint(i));
 		succ.push_back(index);
 		pred.push_back(index - 1);
-		Xfrom.push_back(mb.transformFrom(i));
-		Xto.push_back(mb.transformTo(i));
+		Xt.push_back(mb.transform(i));
 	}
 
 	return MultiBody(std::move(bodies), std::move(joints),
-					std::move(pred), std::move(succ), std::move(parent), std::move(Xfrom),
-					std::move(Xto));
+					std::move(pred), std::move(succ), std::move(parent), std::move(Xt));
 }
 
 const Eigen::MatrixXd&
@@ -85,7 +82,6 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& succ = mb.successors();
-	const std::vector<sva::PTransform>& Xt = mb.transformsTo();
 
 	int curJ = 0;
 
@@ -99,7 +95,7 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 		sva::PTransform X_i_N = X_Np*mbc.bodyPosW[i].inv();
 
 		jac_.block(0, curJ, 6, joints[i].dof()) =
-			(X_0_i.inv()*X_i_N*Xt[i]*X_i).matrix()*joints[i].motionSubspace();
+			(X_0_i.inv()*X_i_N*X_i).matrix()*joints[i].motionSubspace();
 
 		curJ += joints[i].dof();
 	}

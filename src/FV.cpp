@@ -30,15 +30,14 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
 	const std::vector<int>& succ = mb.successors();
-	const std::vector<sva::PTransform>& Xf = mb.transformsFrom();
-	const std::vector<sva::PTransform>& Xt = mb.transformsTo();
+	const std::vector<sva::PTransform>& Xt = mb.transforms();
 
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
 		const sva::PTransform& X_i = mbc.jointConfig[i];
-		sva::PTransform X_p_i = Xt[i]*X_i*Xf[i];
+		sva::PTransform X_p_i = X_i*Xt[i];
 
-		sva::MotionVec vj = Xt[i]*X_i*joints[i].motion(mbc.alpha[i]);
+		sva::MotionVec vj = X_i*joints[i].motion(mbc.alpha[i]);
 
 		if(pred[i] != -1)
 			mbc.bodyVelB[succ[i]] = X_p_i*mbc.bodyVelB[pred[i]] + vj;

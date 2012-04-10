@@ -97,8 +97,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 	std::vector<int> pred;
 	std::vector<int> succ;
 	std::vector<int> parent;
-	std::vector<sva::PTransform> Xfrom;
-	std::vector<sva::PTransform> Xto;
+	std::vector<sva::PTransform> Xt;
 
 	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
 	Joint rootJoint = isFixed ? Joint(Joint::Fixed, true, -1, "Root") :
@@ -107,24 +106,30 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 	std::function<void(const std::shared_ptr<Node> curNode,
 										 const std::shared_ptr<Node> fromNode, const Joint& joint,
 										 int p, int s, int par,
-										 const sva::PTransform& Xfrom,
-										 const sva::PTransform& Xto)> makeTree;
+										 const sva::PTransform& Xt)> makeTree;
 
 	makeTree = [&](const std::shared_ptr<Node> curNode,
 		const std::shared_ptr<Node> fromNode, const Joint& joint,
 		int p, int s, int par,
-		const sva::PTransform& Xf,
-		const sva::PTransform& Xt)
+		const sva::PTransform& Xti)
 	{
 		bodies.push_back(curNode->body);
 		joints.push_back(joint);
 		pred.push_back(p);
 		succ.push_back(s);
 		parent.push_back(par);
-		Xfrom.push_back(Xf);
-		Xto.push_back(Xt);
+		Xt.push_back(Xti);
 
 		// looking for transformation that come from fromNode
+		sva::PTransform XFrom = sva::PTransform::Identity();
+		for(Arc& a : curNode->arcs)
+		{
+			if(a.next == fromNode)
+			{
+				XFrom = a.X.inv();
+				break;
+			}
+		}
 
 		int curInd = bodies.size() - 1;
 		for(Arc& a : curNode->arcs)
@@ -133,28 +138,17 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 			{
 				int nextInd = bodies.size();
 
-				sva::PTransform toSuccCenter;
-				for(Arc& aN : a.next->arcs)
-				{
-					if(aN.next == curNode)
-					{
-						toSuccCenter = aN.X.inv();
-						break;
-					}
-				}
-
 				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd,
-					a.X, toSuccCenter);
+					a.X*XFrom);
 			}
 		}
 	};
 
 	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1,
-		sva::PTransform::Identity(), sva::PTransform::Identity());
+		sva::PTransform::Identity());
 
 	return MultiBody(std::move(bodies), std::move(joints),
-		std::move(pred), std::move(succ), std::move(parent), std::move(Xfrom),
-		std::move(Xto));
+		std::move(pred), std::move(succ), std::move(parent), std::move(Xt));
 }
 
 } // namespace rbd

@@ -31,15 +31,14 @@ MultiBody::MultiBody():
 
 MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	std::vector<int> pred, std::vector<int> succ,
-	std::vector<int> parent, std::vector<sva::PTransform> Xfrom,
+	std::vector<int> parent,
 	std::vector<sva::PTransform> Xto):
 	bodies_(std::move(bodies)),
 	joints_(std::move(joints)),
 	pred_(std::move(pred)),
 	succ_(std::move(succ)),
 	parent_(std::move(parent)),
-	Xfrom_(std::move(Xfrom)),
-	Xto_(std::move(Xto)),
+	Xt_(std::move(Xto)),
 	nrParams_(0),
 	nrDof_(0)
 {
