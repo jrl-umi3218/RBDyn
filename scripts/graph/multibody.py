@@ -17,38 +17,20 @@ def show_multibody(mb, mbc, v=None):
       Xp = bG[mb.parent(i)]
       XpT = Xp.translation()
 
-      Xpj = mb.transformFrom(i)*Xp
-      Xij = mb.transformTo(i).inv()*Xi
-
-      XpjT = Xpj.translation()
-      XijT = Xij.translation()
-
-      # show link from parent body to joint
+      # show link from body base to joint
       ls = tvtk.LineSource(point1=(XpT[0], XpT[1], XpT[2]),
-                           point2=(XpjT[0], XpjT[1], XpjT[2]))
-      lm = tvtk.PolyDataMapper(input=ls.output)
-      la = tvtk.Actor(mapper=lm)
-      v.scene.add_actors(la)
-
-      # show link from joint to body
-      ls = tvtk.LineSource(point1=(XijT[0], XijT[1], XijT[2]),
                            point2=(XiT[0], XiT[1], XiT[2]))
       lm = tvtk.PolyDataMapper(input=ls.output)
       la = tvtk.Actor(mapper=lm)
       v.scene.add_actors(la)
 
       # show joint
-      ss = tvtk.SphereSource(center=(XijT[0], XijT[1], XijT[2]),
+      ss = tvtk.SphereSource(center=(XiT[0], XiT[1], XiT[2]),
                              radius=0.05)
       sm = tvtk.PolyDataMapper(input=ss.output)
       sa = tvtk.Actor(mapper=sm)
       v.scene.add_actors(sa)
 
-
-    #ss = tvtk.SphereSource(center=(XiT[0], XiT[1], XiT[2]),
-    #                       radius=0.1)
-    #sm = tvtk.PolyDataMapper(input=ss.output)
-    #sa = tvtk.Actor(mapper=sm)
 
     #v.scene.add_actors(sa)
     a = tvtk.Axes()
