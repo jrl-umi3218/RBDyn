@@ -1,4 +1,7 @@
+import math
 import numpy as np
+
+from eigen3 import Quaterniond, toNumpy
 
 from tvtk.tools import ivtk
 from tvtk.api import tvtk
@@ -10,6 +13,9 @@ class GraphicMultiBody:
 
     self.jointS = []
     self.jointA = []
+
+    self.velS = []
+    self.velA = []
 
     self.viewer = v if v is not None else ivtk.IVTKWithCrustAndBrowser(size=(600,600))
     self.viewer.open()
@@ -32,6 +38,15 @@ class GraphicMultiBody:
 
       self.jointS.append(ss)
       self.jointA.append(sa)
+
+      arrs = tvtk.ArrowSource()
+      arrm = tvtk.PolyDataMapper(input=arrs.output)
+      arra = tvtk.Actor(mapper=arrm)
+      arra.visibility = 0
+      self.viewer.scene.add_actors(arra)
+
+      self.velS.append(arrs)
+      self.velA.append(arra)
 
 
   def draw(self, mb, mbc):
@@ -61,6 +76,43 @@ class GraphicMultiBody:
         sa.visibility = 1
 
     self.viewer.scene.render()
+
+
+
+  def drawVel(self, mb, mbc):
+    bG = list(mbc.bodyPosW)
+    bV = list(mbc.bodyVelW)
+
+    for i in range(mb.nrBodies()):
+      XiT = bG[i].translation()
+      ViL = bV[i].linear()
+
+      arrAxe = np.mat([1., 0., 0.]).T
+      nViL = toNumpy(ViL)
+
+
+
+      rotAxe = np.cross(arrAxe.T, nViL.T)
+      if rotAxe.sum() == 0.:
+        rotAxe = np.mat([0., 1., 0.])
+      angle = np.rad2deg(math.acos(arrAxe.T*nViL))
+
+      speed = np.linalg.norm(toNumpy(ViL))
+
+      a = self.velA[i]
+      a.matrix.identity()
+
+      a.position = (XiT[0], XiT[1], XiT[2])
+      a.scale = [speed]*3
+
+      a.rotate_wxyz(angle, rotAxe[0,0], rotAxe[0,1], rotAxe[0,2])
+
+      a.visibility = 1
+
+
+
+    self.viewer.scene.render()
+
 
 
 
