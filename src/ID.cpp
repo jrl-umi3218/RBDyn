@@ -25,13 +25,8 @@ namespace rbd
 {
 
 InverseDynamics::InverseDynamics(const MultiBody& mb):
-  f_(mb.nrBodies()),
-  Si_(mb.nrJoints())
+	f_(mb.nrBodies())
 {
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
-	{
-		Si_[i].resize(6, mb.joint(i).dof());
-	}
 }
 
 void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
@@ -47,7 +42,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 		const sva::PTransform& X_i = mbc.jointConfig[i];
 		const sva::PTransform& X_p_i = mbc.parentToSon[i];
 
-		sva::MotionVec vj_i = X_i*joints[i].motion(mbc.alpha[i]);
+		const sva::MotionVec& vj_i = mbc.jointVelocity[i];
 		sva::MotionVec ai_tan = X_i*joints[i].tanAccel(mbc.alphaD[i]);
 
 		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
@@ -64,12 +59,10 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
 	{
-		const sva::PTransform& X_i = mbc.jointConfig[i];
-		Si_[i] = X_i.matrix()*joints[i].motionSubspace();
-
 		for(int j = 0; j < joints[i].dof(); ++j)
 		{
-			mbc.jointTorque[i][j] = Si_[i].col(j).transpose()*f_[i].vector();
+			mbc.jointTorque[i][j] = mbc.motionSubspace[i].col(j).transpose()*
+				f_[i].vector();
 		}
 
 		if(pred[i] != -1)

@@ -36,7 +36,6 @@ public:
 
 private:
 	std::vector<sva::ForceVec> f_;
-	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> Si_;
 };
 
 } // namespace rbd

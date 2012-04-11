@@ -25,7 +25,7 @@ class MultiBodyConfig;
 	* @param mb MultiBody used has model.
 	* @param mbc Use alpha generalized velocity vector, bodyPosW, jointConfig
 	* and parentToSon.
-	* Fill bodyVelW and bodyVelB.
+	* Fill jointVelocity, motionSubspace, bodyVelW and bodyVelB.
 	*/
 void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 

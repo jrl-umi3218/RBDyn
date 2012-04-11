@@ -41,20 +41,36 @@ struct MultiBodyConfig
 	/// Generalized acceleration variable.
 	std::vector<std::vector<double>> alphaD;
 
+
+
 	/// External force acting on each body in world coordinate.
 	std::vector<sva::ForceVec> force;
 
-	/// Joints configuration.
+
+
+	/// Joints configuration (Xj).
 	std::vector<sva::PTransform> jointConfig;
+
+	/// Joints velocity (Xj*j.motion()).
+	std::vector<sva::MotionVec> jointVelocity;
 
 	/// Joints torque.
 	std::vector<std::vector<double>> jointTorque;
 
+
+
+	/// Motion subspace (Xj.j.subspace).
+	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> motionSubspace;
+
+
+
 	/// Bodies transformation in world coordinate.
 	std::vector<sva::PTransform> bodyPosW;
 
-	/// Transformation from parent(i) to i in body coordinate.
+	/// Transformation from parent(i) to i in body coordinate (Xj*Xt).
 	std::vector<sva::PTransform> parentToSon;
+
+
 
 	/// Bodies speed in world coordinate.
 	std::vector<sva::MotionVec> bodyVelW;

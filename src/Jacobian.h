@@ -42,6 +42,11 @@ public:
 		const Eigen::Vector3d& point=Eigen::Vector3d::Zero());
 
 	/// @return Jacobian of mb with mbc configuration.
+	/**
+		* Compute the jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW and motionSubspace.
+		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/// @return MultiBody that correspond to the path between the root and

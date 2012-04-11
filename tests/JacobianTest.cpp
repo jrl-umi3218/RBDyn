@@ -299,12 +299,14 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 
 	mbc.q = {{}, {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
 	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
 
 	checkJacobianMatrix(mb, mbc, jac1);
 	checkJacobianMatrix(mb, mbc, jac2);
 
 	mbc.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}, {1., 0., 0., 0.}};
 	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
 
 	checkJacobianMatrix(mb, mbc, jac1);
 	checkJacobianMatrix(mb, mbc, jac2);
