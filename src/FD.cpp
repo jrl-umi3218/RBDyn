@@ -1,0 +1,133 @@
+// This file is part of RBDyn.
+//
+// RBDyn is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// RBDyn is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
+
+// associated header
+#include "FD.h"
+
+// includes
+// RBDyn
+#include "MultiBody.h"
+#include "MultiBodyConfig.h"
+
+namespace rbd
+{
+
+ForwardDynamics::ForwardDynamics(const MultiBody& mb):
+  H_(mb.nrDof(), mb.nrDof()),
+  C_(mb.nrDof()),
+  I_st_(mb.nrBodies()),
+  F_(mb.nrJoints()),
+  f_(mb.nrBodies()),
+  dofPos_(mb.nrJoints())
+{
+	int dofP = 0;
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		F_[i].resize(6, mb.joint(i).dof());
+		dofPos_[i] = dofP;
+		dofP += mb.joint(i).dof();
+	}
+}
+
+void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	computeH(mb, mbc);
+	computeC(mb, mbc);
+}
+
+void ForwardDynamics::computeH(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	const std::vector<Body>& bodies = mb.bodies();
+	const std::vector<Joint>& joints = mb.joints();
+	const std::vector<int>& pred = mb.predecessors();
+
+	H_.setZero();
+	for(std::size_t i = 0; i < bodies.size(); ++i)
+	{
+		I_st_[i] = bodies[i].inertia();
+	}
+
+	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
+	{
+		if(pred[i] != -1)
+		{
+			const sva::PTransform& X_p_i = mbc.parentToSon[i];
+			I_st_[pred[i]] = I_st_[pred[i]] + X_p_i.transMul(I_st_[i]);
+		}
+
+		F_[i] = I_st_[i].matrix()*mbc.motionSubspace[i];
+
+		H_.block(dofPos_[i], dofPos_[i], joints[i].dof(), joints[i].dof()) =
+			mbc.motionSubspace[i].transpose()*F_[i];
+
+		int j = i;
+		while(pred[j] != -1)
+		{
+			const sva::PTransform& X_p_j = mbc.parentToSon[j];
+			F_[i] = X_p_j.inv().dualMatrix()*F_[i];
+			j = pred[j];
+
+			if(joints[j].dof() != 0)
+			{
+				H_.block(dofPos_[i], dofPos_[j], joints[i].dof(), joints[j].dof()) =
+					F_[i].transpose()*mbc.motionSubspace[j];
+
+				H_.block(dofPos_[j], dofPos_[i], joints[j].dof(), joints[i].dof()).noalias() =
+					H_.block(dofPos_[i], dofPos_[j], joints[i].dof(), joints[j].dof()).transpose();
+			}
+		}
+	}
+}
+
+void ForwardDynamics::computeC(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	const std::vector<Body>& bodies = mb.bodies();
+	const std::vector<Joint>& joints = mb.joints();
+	const std::vector<int>& pred = mb.predecessors();
+
+	sva::MotionVec a_0(Eigen::Vector3d::Zero(), mbc.gravity);
+
+	for(std::size_t i = 0; i < bodies.size(); ++i)
+	{
+		const sva::PTransform& X_p_i = mbc.parentToSon[i];
+
+		const sva::MotionVec& vj_i = mbc.jointVelocity[i];
+
+		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
+
+		if(pred[i] != -1)
+			mbc.bodyAccB[i] = X_p_i*mbc.bodyAccB[pred[i]] + vb_i.cross(vj_i);
+		else
+			mbc.bodyAccB[i] = a_0 + vb_i.cross(vj_i);
+
+		f_[i] = bodies[i].inertia()*mbc.bodyAccB[i] +
+			vb_i.crossDual(bodies[i].inertia()*vb_i) -
+			mbc.bodyPosW[i].dualMul(mbc.force[i]);
+	}
+
+	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
+	{
+		C_.segment(dofPos_[i], joints[i].dof()) = mbc.motionSubspace[i].transpose()*
+				f_[i].vector();
+
+		if(pred[i] != -1)
+		{
+			const sva::PTransform& X_p_i = mbc.parentToSon[i];
+			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
+		}
+	}
+}
+
+} // namespace rbd
