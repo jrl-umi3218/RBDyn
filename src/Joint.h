@@ -117,7 +117,7 @@ public:
 	}
 
 	/// @return Joint motion subspace in successor frame coordinate.
-	const Eigen::MatrixXd& motionSubspace() const
+	const Eigen::Matrix<double, 6, Eigen::Dynamic>& motionSubspace() const
 	{
 		return S_;
 	}
@@ -180,7 +180,7 @@ public:
 
 private:
 	Type type_;
-	Eigen::MatrixXd S_;
+	Eigen::Matrix<double, 6, Eigen::Dynamic> S_;
 	double dir_; ///< joint direction
 
 	int params_;

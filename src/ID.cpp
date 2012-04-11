@@ -25,8 +25,14 @@ namespace rbd
 {
 
 InverseDynamics::InverseDynamics(const MultiBody& mb):
-	f_(mb.nrBodies())
-{ }
+  f_(mb.nrBodies()),
+  Si_(mb.nrJoints())
+{
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		Si_[i].resize(6, mb.joint(i).dof());
+	}
+}
 
 void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
@@ -61,12 +67,11 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
 	{
 		const sva::PTransform& X_i = mbc.jointConfig[i];
-		Eigen::MatrixXd S_i = X_i.matrix()*joints[i].motionSubspace();
-		Eigen::Vector6d fj_i = f_[i].vector();
+		Si_[i] = X_i.matrix()*joints[i].motionSubspace();
 
 		for(int j = 0; j < joints[i].dof(); ++j)
 		{
-			mbc.jointTorque[i][j] = S_i.col(j).transpose()*fj_i;
+			mbc.jointTorque[i][j] = Si_[i].col(j).transpose()*f_[i].vector();
 		}
 
 		if(pred[i] != -1)
