@@ -23,8 +23,9 @@ class MultiBodyConfig;
 /**
 	* Compute the forward velocity of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use alpha generalized velocity vector, bodyPosW and jointConfig.
-	* Fill bodyVelW.
+	* @param mbc Use alpha generalized velocity vector, bodyPosW, jointConfig
+	* and parentToSon.
+	* Fill bodyVelW and bodyVelB.
 	*/
 void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 

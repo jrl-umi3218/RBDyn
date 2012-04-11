@@ -41,7 +41,7 @@ struct MultiBodyConfig
 	/// Generalized acceleration variable.
 	std::vector<std::vector<double>> alphaD;
 
-	/// External force acting on each body in world coordinate
+	/// External force acting on each body in world coordinate.
 	std::vector<sva::ForceVec> force;
 
 	/// Joints configuration.
@@ -52,6 +52,9 @@ struct MultiBodyConfig
 
 	/// Bodies transformation in world coordinate.
 	std::vector<sva::PTransform> bodyPosW;
+
+	/// Transformation from parent(i) to i in body coordinate.
+	std::vector<sva::PTransform> parentToSon;
 
 	/// Bodies speed in world coordinate.
 	std::vector<sva::MotionVec> bodyVelW;

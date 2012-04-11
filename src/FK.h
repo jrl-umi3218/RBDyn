@@ -23,7 +23,8 @@ class MultiBodyConfig;
 /**
 	* Compute the forward kinematic of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use q generalized position vector. Fill bodyPosW and jointConfig.
+	* @param mbc Use q generalized position vector. Fill bodyPosW, jointConfig
+	* and parentToSon.
 	*/
 void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
 

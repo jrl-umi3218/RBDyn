@@ -34,6 +34,7 @@ MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 	jointConfig(mb.nrJoints()),
 	jointTorque(mb.nrJoints()),
 	bodyPosW(mb.nrBodies()),
+	parentToSon(mb.nrBodies()),
 	bodyVelW(mb.nrBodies()),
 	bodyVelB(mb.nrBodies()),
 	bodyAccB(mb.nrBodies()),

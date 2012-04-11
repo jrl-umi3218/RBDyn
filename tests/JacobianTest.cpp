@@ -213,6 +213,7 @@ void checkJacobianMatrix(const rbd::MultiBody& mb,
 	{
 		subMbc.bodyPosW[i] = mbc.bodyPosW[jac.jointsPath()[i]];
 		subMbc.jointConfig[i] = mbc.jointConfig[jac.jointsPath()[i]];
+		subMbc.parentToSon[i] = mbc.parentToSon[jac.jointsPath()[i]];
 	}
 
 	int col = 0;

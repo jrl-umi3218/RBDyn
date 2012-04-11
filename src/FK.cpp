@@ -34,15 +34,13 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
-		sva::PTransform X_i = joints[i].pose(mbc.q[i]);
-		sva::PTransform X_p_i = X_i*Xt[i];
+		mbc.jointConfig[i] = joints[i].pose(mbc.q[i]);
+		mbc.parentToSon[i] = mbc.jointConfig[i]*Xt[i];
 
 		if(pred[i] != -1)
-			mbc.bodyPosW[succ[i]] = X_p_i*mbc.bodyPosW[pred[i]];
+			mbc.bodyPosW[succ[i]] = mbc.parentToSon[i]*mbc.bodyPosW[pred[i]];
 		else
-			mbc.bodyPosW[succ[i]] = X_p_i;
-
-		mbc.jointConfig[i] = X_i;
+			mbc.bodyPosW[succ[i]] = mbc.parentToSon[i];
 	}
 }
 
