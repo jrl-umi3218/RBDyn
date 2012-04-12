@@ -35,6 +35,7 @@ def import_eigen3_types(mod):
   mod.add_class('Matrix6d', foreign_cpp_namespace='Eigen', import_from_module='eigen3')
 
   mod.add_class('MatrixXd', foreign_cpp_namespace='Eigen', import_from_module='eigen3')
+  mod.add_class('VectorXd', foreign_cpp_namespace='Eigen', import_from_module='eigen3')
 
   mod.add_class('Quaterniond', foreign_cpp_namespace='Eigen', import_from_module='eigen3')
 
@@ -178,13 +179,39 @@ def build_mbc(mbc):
 
   mbc.add_instance_attribute('q', 'std::vector<std::vector<double> >')
   mbc.add_instance_attribute('alpha', 'std::vector<std::vector<double> >')
+  mbc.add_instance_attribute('alphaD', 'std::vector<std::vector<double> >')
+
+  mbc.add_instance_attribute('force', 'std::vector<sva::ForceVec>')
 
   mbc.add_instance_attribute('jointConfig', 'std::vector<sva::PTransform>')
+  mbc.add_instance_attribute('jointVelocity', 'std::vector<sva::MotionVec>')
+  mbc.add_instance_attribute('jointTorque', 'std::vector<std::vector<double> >')
+
+  mbc.add_instance_attribute('motionSubspace', 'std::vector<Eigen::MatrixXd>',
+                             getter='python_motionSubspace',
+                             setter='python_motionSubspace')
 
   mbc.add_instance_attribute('bodyPosW', 'std::vector<sva::PTransform>')
+  mbc.add_instance_attribute('parentToSon', 'std::vector<sva::PTransform>')
+
   mbc.add_instance_attribute('bodyVelW', 'std::vector<sva::MotionVec>')
+  mbc.add_instance_attribute('bodyVelB', 'std::vector<sva::MotionVec>')
+  mbc.add_instance_attribute('bodyAccB', 'std::vector<sva::MotionVec>')
 
+  mbc.add_instance_attribute('gravity', 'Eigen::Vector3d')
 
+def build_utility(mod):
+  mod.add_function('sParamToVector', None,
+                   [param('const std::vector<std::vector<double> >&', 'v'),
+                    param('Eigen::VectorXd&', 'e')],
+                   custom_name='paramToVector',
+                   throw=[out_ex])
+
+  mod.add_function('sVectorToParam', None,
+                   [param('const Eigen::VectorXd&', 'e'),
+                    param('std::vector<std::vector<double> >&', 'v')],
+                   custom_name='vectorToParam',
+                   throw=[out_ex])
 
 def build_algo(mod):
   mod.add_function('sForwardKinematics', None,
@@ -262,6 +289,8 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector')
   rbd.add_container('std::vector<sva::PTransform>', 'sva::PTransform', 'vector')
   rbd.add_container('std::vector<sva::MotionVec>', 'sva::MotionVec', 'vector')
+  rbd.add_container('std::vector<sva::ForceVec>', 'sva::ForceVec', 'vector')
+  rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   build_body(body)
   build_joint(joint)
@@ -270,6 +299,7 @@ if __name__ == '__main__':
   build_mbc(mbc)
   build_jacobian(jac)
 
+  build_utility(rbd)
   build_algo(rbd)
 
   with open(sys.argv[1], 'w') as f:

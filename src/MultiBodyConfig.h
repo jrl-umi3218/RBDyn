@@ -83,6 +83,12 @@ struct MultiBodyConfig
 
 	/// gravity acting on the multibody.
 	Eigen::Vector3d gravity;
+
+
+	// python binding function
+
+	std::vector<Eigen::MatrixXd> python_motionSubspace();
+	void python_motionSubspace(const std::vector<Eigen::MatrixXd>& v);
 };
 
 
