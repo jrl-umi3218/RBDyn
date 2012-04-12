@@ -40,7 +40,7 @@ MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 	bodyVelW(mb.nrBodies()),
 	bodyVelB(mb.nrBodies()),
 	bodyAccB(mb.nrBodies()),
-	gravity(0., -9.81, 0.)
+	gravity(0., 9.81, 0.)
 {
 	for(std::size_t i = 0; i < q.size(); ++i)
 	{

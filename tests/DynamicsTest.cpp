@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	forwardVelocity(mb, mbc);
 	id.inverseDynamics(mb, mbc);
 
-	double torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., -9.81, 0.))(0);
+	double torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., 9.81, 0.))(0);
 	BOOST_CHECK_SMALL(std::abs(torque - mbc.jointTorque[1][0]), TOL);
 
 	MultiBodyConfig mbc2 = mbc;
