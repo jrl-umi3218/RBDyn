@@ -27,12 +27,30 @@ namespace rbd
 class MultiBody;
 class MultiBodyConfig;
 
+/**
+	* Inverse Dynamics algorithm.
+	*/
 class InverseDynamics
 {
 public:
+	/// @param mb MultiBody associated with this algorithm.
 	InverseDynamics(const MultiBody& mb);
 
+	/**
+		* Compute the inverse dynamics.
+		* @param mb MultiBody used has model.
+		* @param mbc Use alphaD generalized acceleration vector, force, jointConfig,
+		* jointVelocity, bodyPosW, parentToSon, bodyVelV, motionSubspace and gravity.
+		* Fill bodyAccB and jointTorque.
+		*/
 	void inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
+
+	// safe version for python binding
+
+	/** safe version of @see inverseDynamics.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
 
 private:
 	std::vector<sva::ForceVec> f_;

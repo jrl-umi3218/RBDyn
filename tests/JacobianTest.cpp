@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	BOOST_CHECK_THROW(jac1.sJacobian(mb, mbcBadNrBodyPos), std::domain_error);
 
 	MultiBodyConfig mbcBadNrJointConf(mbc);
-	mbcBadNrJointConf.jointConfig.resize(1);
+	mbcBadNrJointConf.motionSubspace.resize(1);
 	BOOST_CHECK_THROW(jac1.sJacobian(mb, mbcBadNrJointConf), std::domain_error);
 
 	MultiBody mbErr = jac2.subMultiBody(mb);

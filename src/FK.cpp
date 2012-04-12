@@ -46,9 +46,11 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
+	checkMatchQ(mb, mbc);
+
 	checkMatchBodyPos(mb, mbc);
 	checkMatchJointConf(mb, mbc);
-	checkMatchQ(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
 
 	forwardKinematics(mb, mbc);
 }

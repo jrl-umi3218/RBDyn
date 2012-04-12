@@ -29,6 +29,7 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
   C_(mb.nrDof()),
   I_st_(mb.nrBodies()),
   F_(mb.nrJoints()),
+  acc_(mb.nrBodies()),
   f_(mb.nrBodies()),
   dofPos_(mb.nrJoints())
 {
@@ -108,11 +109,11 @@ void ForwardDynamics::computeC(const MultiBody& mb, MultiBodyConfig& mbc)
 		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
 
 		if(pred[i] != -1)
-			mbc.bodyAccB[i] = X_p_i*mbc.bodyAccB[pred[i]] + vb_i.cross(vj_i);
+			acc_[i] = X_p_i*acc_[pred[i]] + vb_i.cross(vj_i);
 		else
-			mbc.bodyAccB[i] = a_0 + vb_i.cross(vj_i);
+			acc_[i] = a_0 + vb_i.cross(vj_i);
 
-		f_[i] = bodies[i].inertia()*mbc.bodyAccB[i] +
+		f_[i] = bodies[i].inertia()*acc_[i] +
 			vb_i.crossDual(bodies[i].inertia()*vb_i) -
 			mbc.bodyPosW[i].dualMul(mbc.force[i]);
 	}
@@ -128,6 +129,47 @@ void ForwardDynamics::computeC(const MultiBody& mb, MultiBodyConfig& mbc)
 			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
 		}
 	}
+}
+
+
+
+void ForwardDynamics::sForwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	checkMatchParentToSon(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+	checkMatchJointVelocity(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchForce(mb, mbc);
+	checkMatchJointTorque(mb, mbc);
+
+	checkMatchAlphaD(mb, mbc);
+
+	forwardDynamics(mb, mbc);
+}
+
+
+
+void ForwardDynamics::sComputeH(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	checkMatchParentToSon(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	computeH(mb, mbc);
+}
+
+
+
+void ForwardDynamics::sComputeC(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	checkMatchParentToSon(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+	checkMatchJointVelocity(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchForce(mb, mbc);
+
+	computeC(mb, mbc);
 }
 
 } // namespace rbd

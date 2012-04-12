@@ -106,7 +106,7 @@ const Eigen::MatrixXd&
 Jacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	checkMatchBodyPos(mb, mbc);
-	checkMatchJointConf(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
 
 	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
 	if(m >= static_cast<int>(mb.nrJoints()))

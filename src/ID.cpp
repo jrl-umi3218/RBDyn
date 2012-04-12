@@ -73,4 +73,23 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	}
 }
 
+
+
+void InverseDynamics::sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	checkMatchAlphaD(mb, mbc);
+	checkMatchForce(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchJointVelocity(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	checkMatchBodyAcc(mb, mbc);
+	checkMatchJointTorque(mb, mbc);
+
+	inverseDynamics(mb, mbc);
+}
+
 } // namespace rbd

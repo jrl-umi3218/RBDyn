@@ -41,11 +41,11 @@ public:
 	Jacobian(const MultiBody& mb, int bodyId,
 		const Eigen::Vector3d& point=Eigen::Vector3d::Zero());
 
-	/// @return Jacobian of mb with mbc configuration.
 	/**
 		* Compute the jacobian.
 		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW and motionSubspace.
+		* @return Jacobian of mb with mbc configuration.
 		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 

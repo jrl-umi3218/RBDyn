@@ -56,10 +56,14 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 
 void sForwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 {
-	checkMatchBodyPos(mb, mbc);
-	checkMatchBodyVel(mb, mbc);
-	checkMatchJointConf(mb, mbc);
 	checkMatchAlpha(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	checkMatchBodyVel(mb, mbc);
+	checkMatchJointVelocity(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
 
 	forwardVelocity(mb, mbc);
 }
