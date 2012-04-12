@@ -30,6 +30,7 @@
 #include "Joint.h"
 #include "MultiBody.h"
 #include "MultiBodyGraph.h"
+#include "MultiBodyConfig.h"
 
 
 BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
@@ -421,3 +422,29 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 		BOOST_CHECK_EQUAL(mb4.body(i).inertia().momentum(), bCom[i]);
 	}
 }
+
+
+BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction)
+{
+	using namespace std;
+	using namespace Eigen;
+	using namespace rbd;
+
+	std::vector<std::vector<double>> v1 = {{}, {1., 2., 3.}, {4.}, {5., 6.}, {7.}};
+	std::vector<std::vector<double>> v2 = {{}, {0., 0., 0.}, {0.}, {0., 0.}, {0.}};
+	VectorXd e(7);
+
+	BOOST_CHECK_NO_THROW(sParamToVector(v1, e));
+	BOOST_CHECK_NO_THROW(sVectorToParam(e, v2));
+
+	for(std::size_t i = 0; i < v1.size(); ++i)
+	{
+		BOOST_CHECK_EQUAL_COLLECTIONS(v1[i].begin(), v1[i].end(),
+			v2[i].begin(), v2[i].end());
+	}
+
+	e.resize(4);
+	BOOST_CHECK_THROW(sParamToVector(v1, e), out_of_range);
+	BOOST_CHECK_THROW(sVectorToParam(e, v2), out_of_range);
+}
+

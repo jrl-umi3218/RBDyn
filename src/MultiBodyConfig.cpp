@@ -55,6 +55,72 @@ MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 
 
 
+void paramToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e)
+{
+	int pos = 0;
+	for(auto& inV: v)
+	{
+		for(double d: inV)
+		{
+			e(pos) = d;
+			++pos;
+		}
+	}
+}
+
+void sParamToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e)
+{
+	int nb = 0;
+	for(std::size_t i = 0; i < v.size(); ++i)
+	{
+		nb += v[i].size();
+	}
+
+	if(nb != e.rows())
+	{
+		std::ostringstream str;
+		str << "param vector size and eigen vector size mismatch: expected size "
+				<< nb << " gived " << e.rows();
+		throw std::out_of_range(str.str());
+	}
+
+	paramToVector(v, e);
+}
+
+
+
+void vectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v)
+{
+	int pos = 0;
+	for(auto& inV: v)
+	{
+		for(double& d: inV)
+		{
+			d = e(pos);
+			++pos;
+		}
+	}
+}
+
+void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v)
+{
+	int nb = 0;
+	for(std::size_t i = 0; i < v.size(); ++i)
+	{
+		nb += v[i].size();
+	}
+
+	if(nb != e.rows())
+	{
+		std::ostringstream str;
+		str << "param vector size and eigen vector size mismatch: expected size "
+				<< e.rows() << " gived " << nb;
+		throw std::out_of_range(str.str());
+	}
+
+	vectorToParam(e, v);
+}
+
 void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	if(mbc.bodyPosW.size() != mb.nrBodies())
