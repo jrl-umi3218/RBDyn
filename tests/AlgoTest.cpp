@@ -33,6 +33,7 @@
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"
 #include "MultiBodyGraph.h"
+#include "EulerIntegration.h"
 
 const double TOL = 0.0000001;
 
@@ -521,3 +522,48 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
 }
+
+
+
+BOOST_AUTO_TEST_CASE(EulerTest)
+{
+	using namespace std;
+	using namespace Eigen;
+	using namespace rbd;
+
+	// 1 dof joint
+
+	// static
+	vector<double> q = {0.};
+
+	eulerJointIntegration(Joint::RevX, {0.}, 1., q);
+
+	BOOST_CHECK_EQUAL(q[0], 0.);
+
+	// moving
+	eulerJointIntegration(Joint::RevX, {1.}, 1., q);
+
+	BOOST_CHECK_EQUAL(q[0], 1.);
+
+
+	// free
+
+	// static
+	q = {1., 0., 0., 0., 0., 0., 0.};
+	vector<double> goalQ = q;
+	eulerJointIntegration(Joint::Spherical, {0., 0., 0., 0., 0., 0.}, 1., q);
+	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
+
+	// X unit move
+	goalQ = {1., 0., 0., 0., 1., 0., 0.},
+	eulerJointIntegration(Joint::Free, {0., 0., 0., 1., 0., 0.}, 1., q);
+	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
+
+
+	// X unit rot
+	q = {1., 0., 0., 0., 0., 0., 0.};
+	goalQ = {1./std::sqrt(1.25), 0.5/std::sqrt(1.25), 0., 0., 0., 0., 0.},
+	eulerJointIntegration(Joint::Free, {1., 0., 0., 0., 0., 0.}, 1., q);
+	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
+}
+
