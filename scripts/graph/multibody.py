@@ -1,13 +1,13 @@
 import math
 import numpy as np
 
-from eigen3 import Quaterniond, toNumpy
+from eigen3 import toNumpy
 
-from tvtk.tools import ivtk
+from mayavi import mlab
 from tvtk.api import tvtk
 
 class GraphicMultiBody:
-  def __init__(self, mb, v=None):
+  def __init__(self, mb):
     self.bodyS = []
     self.bodyA = []
 
@@ -17,8 +17,7 @@ class GraphicMultiBody:
     self.velS = []
     self.velA = []
 
-    self.viewer = v if v is not None else ivtk.IVTKWithCrustAndBrowser(size=(600,600))
-    self.viewer.open()
+    self.viewer = mlab.gcf()
 
     for i in range(mb.nrBodies()):
       ls = tvtk.LineSource()
@@ -117,11 +116,10 @@ class GraphicMultiBody:
 
 
 
-def show_multibody(mb, mbc, v=None):
+def show_multibody(mb, mbc):
   bG = [i for i in mbc.bodyPosW]
 
-  v = v if v is not None else ivtk.IVTKWithCrustAndBrowser(size=(600,600))
-  v.open()
+  v = mlab.gcf()
 
   for i in range(mb.nrBodies()):
     Xi = bG[i]
