@@ -54,7 +54,7 @@ void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	vectorToParam(tmpFd_, mbc.alphaD);
 }
 
-void ForwardDynamics::computeH(const MultiBody& mb, MultiBodyConfig& mbc)
+void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
@@ -98,7 +98,7 @@ void ForwardDynamics::computeH(const MultiBody& mb, MultiBodyConfig& mbc)
 	}
 }
 
-void ForwardDynamics::computeC(const MultiBody& mb, MultiBodyConfig& mbc)
+void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
@@ -156,7 +156,7 @@ void ForwardDynamics::sForwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc
 
 
 
-void ForwardDynamics::sComputeH(const MultiBody& mb, MultiBodyConfig& mbc)
+void ForwardDynamics::sComputeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	checkMatchParentToSon(mb, mbc);
 	checkMatchMotionSubspace(mb, mbc);
@@ -166,7 +166,7 @@ void ForwardDynamics::sComputeH(const MultiBody& mb, MultiBodyConfig& mbc)
 
 
 
-void ForwardDynamics::sComputeC(const MultiBody& mb, MultiBodyConfig& mbc)
+void ForwardDynamics::sComputeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	checkMatchParentToSon(mb, mbc);
 	checkMatchMotionSubspace(mb, mbc);

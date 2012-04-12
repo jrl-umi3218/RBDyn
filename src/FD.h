@@ -36,6 +36,8 @@ class MultiBodyConfig;
 class ForwardDynamics
 {
 public:
+	ForwardDynamics()
+	{}
 	/// @param mb MultiBody associated with this algorithm.
 	ForwardDynamics(const MultiBody& mb);
 
@@ -53,7 +55,7 @@ public:
 		* @param mb MultiBody used has model.
 		* @param mbc Use parentToSon and motionSubspace.
 		*/
-	void computeH(const MultiBody& mb, MultiBodyConfig& mbc);
+	void computeH(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/**
 		* Compute the non linear effect vector (coriolis, gravity, external force).
@@ -61,7 +63,7 @@ public:
 		* @param mbc Use parentToSon, motionSubspace jointVelocity, bodyVelB,
 		* bodyPosW, force and gravity.
 		*/
-	void computeC(const MultiBody& mb, MultiBodyConfig& mbc);
+	void computeC(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 	/// @return The inertia matrix H.
@@ -86,12 +88,12 @@ public:
 	/** safe version of @see computeH.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
-	void sComputeH(const MultiBody& mb, MultiBodyConfig& mbc);
+	void sComputeH(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/** safe version of @see computeC.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
-	void sComputeC(const MultiBody& mb, MultiBodyConfig& mbc);
+	void sComputeC(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 private:
 	Eigen::MatrixXd H_;

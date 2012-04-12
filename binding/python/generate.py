@@ -250,6 +250,7 @@ def build_jacobian(jac):
                  [], is_const=True)
 
 
+
 def build_id(id):
   id.add_constructor([])
   id.add_constructor([param('const rbd::MultiBody&', 'mb')])
@@ -259,6 +260,33 @@ def build_id(id):
                  [param('const rbd::MultiBody&', 'mb'),
                   param('rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='inverseDynamics')
+
+
+
+def build_fd(id):
+  fd.add_constructor([])
+  fd.add_constructor([param('const rbd::MultiBody&', 'mb')])
+
+
+  fd.add_method('sForwardDynamics', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='forwardDynamics')
+
+  fd.add_method('sComputeH', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='computeH')
+
+  fd.add_method('sComputeC', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='computeC')
+
+
+  fd.add_method('H', retval('const Eigen::MatrixXd&'), [], is_const=True)
+  fd.add_method('C', retval('const Eigen::VectorXd&'), [], is_const=True)
+
 
 
 if __name__ == '__main__':
@@ -275,6 +303,7 @@ if __name__ == '__main__':
   rbd.add_include('<FV.h>')
   rbd.add_include('<Jacobian.h>')
   rbd.add_include('<ID.h>')
+  rbd.add_include('<FD.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -292,6 +321,7 @@ if __name__ == '__main__':
   mbg = rbd.add_class('MultiBodyGraph')
   jac = rbd.add_class('Jacobian')
   id = rbd.add_class('InverseDynamics')
+  fd = rbd.add_class('ForwardDynamics')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
@@ -310,10 +340,11 @@ if __name__ == '__main__':
   build_mb(mb)
   build_mbc(mbc)
   build_jacobian(jac)
-  build_id(id)
 
   build_utility(rbd)
   build_algo(rbd)
+  build_id(id)
+  build_fd(fd)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)
