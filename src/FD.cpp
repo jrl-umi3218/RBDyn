@@ -31,6 +31,7 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
   F_(mb.nrJoints()),
   acc_(mb.nrBodies()),
   f_(mb.nrBodies()),
+  tmpFd_(mb.nrDof()),
   dofPos_(mb.nrJoints())
 {
 	int dofP = 0;
@@ -46,6 +47,11 @@ void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
 	computeH(mb, mbc);
 	computeC(mb, mbc);
+
+	paramToVector(mbc.jointTorque, tmpFd_);
+	tmpFd_ = H_.ldlt().solve(tmpFd_ - C_);
+
+	vectorToParam(tmpFd_, mbc.alphaD);
 }
 
 void ForwardDynamics::computeH(const MultiBody& mb, MultiBodyConfig& mbc)

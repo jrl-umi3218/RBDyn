@@ -105,6 +105,9 @@ private:
 	std::vector<sva::MotionVec> acc_;
 	std::vector<sva::ForceVec> f_;
 
+	// torque computation
+	Eigen::VectorXd tmpFd_;
+
 	std::vector<int> dofPos_;
 };
 

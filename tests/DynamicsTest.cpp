@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	BOOST_CHECK_SMALL(std::abs(torque - mbc2.jointTorque[1][0]), TOL);
 }
 
-void makeRandomVecVec(std::vector<std::vector<double>> vec)
+void makeRandomVecVec(std::vector<std::vector<double>>& vec)
 {
 	typedef Eigen::Matrix<double, 1, 1> EScalar;
 	for(auto& v1: vec)
@@ -125,6 +125,7 @@ void makeRandomConfig(rbd::MultiBodyConfig& mbc)
 	makeRandomVecVec(mbc.q);
 	makeRandomVecVec(mbc.alpha);
 	makeRandomVecVec(mbc.alphaD);
+	makeRandomVecVec(mbc.jointTorque);
 }
 
 Eigen::MatrixXd makeHFromID(const rbd::MultiBody& mb,
@@ -286,4 +287,50 @@ BOOST_AUTO_TEST_CASE(IDvsFD)
 
 
 	BOOST_CHECK_SMALL((fd.H() - ID_H).norm(), 1e-10);
+
+
+	// check symmetry
+
+	MatrixXd L = fd.H().triangularView<Lower>();
+	MatrixXd U = fd.H().triangularView<Upper>().transpose();
+
+	BOOST_CHECK_SMALL((L - U).norm(), 1e-10);
+
+
+	// check torque and acceleration output
+
+	// torque -> FD -> alphaD -> ID -> torque
+	makeRandomConfig(mbc);
+
+	VectorXd vT1(mb.nrDof()), vT2(mb.nrDof());
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	paramToVector(mbc.jointTorque, vT1);
+
+	fd.forwardDynamics(mb, mbc);
+	id.inverseDynamics(mb, mbc);
+
+	paramToVector(mbc.jointTorque, vT2);
+
+	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-10);
+
+
+	// alphaD -> ID -> torque -> FD -> alphaD
+	makeRandomConfig(mbc);
+
+	VectorXd vA1(mb.nrDof()), vA2(mb.nrDof());
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	paramToVector(mbc.alphaD, vA1);
+
+	id.inverseDynamics(mb, mbc);
+	fd.forwardDynamics(mb, mbc);
+
+	paramToVector(mbc.alphaD, vA2);
+
+	BOOST_CHECK_SMALL((vA1 - vA2).norm(), 1e-10);
 }
