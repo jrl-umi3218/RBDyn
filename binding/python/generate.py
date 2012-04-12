@@ -226,6 +226,12 @@ def build_algo(mod):
                    custom_name='forwardVelocity',
                    throw=[dom_ex])
 
+  mod.add_function('sEulerIntegration', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc'),
+                    param('double', 'step')],
+                   custom_name='eulerIntegration',
+                   throw=[dom_ex])
 
 
 def build_jacobian(jac):
@@ -304,6 +310,7 @@ if __name__ == '__main__':
   rbd.add_include('<Jacobian.h>')
   rbd.add_include('<ID.h>')
   rbd.add_include('<FD.h>')
+  rbd.add_include('<EulerIntegration.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
