@@ -250,6 +250,16 @@ def build_jacobian(jac):
                  [], is_const=True)
 
 
+def build_id(id):
+  id.add_constructor([])
+  id.add_constructor([param('const rbd::MultiBody&', 'mb')])
+
+
+  id.add_method('sInverseDynamics', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='inverseDynamics')
+
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
@@ -264,6 +274,7 @@ if __name__ == '__main__':
   rbd.add_include('<FK.h>')
   rbd.add_include('<FV.h>')
   rbd.add_include('<Jacobian.h>')
+  rbd.add_include('<ID.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -280,6 +291,7 @@ if __name__ == '__main__':
   mbc = rbd.add_struct('MultiBodyConfig')
   mbg = rbd.add_class('MultiBodyGraph')
   jac = rbd.add_class('Jacobian')
+  id = rbd.add_class('InverseDynamics')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
@@ -298,6 +310,7 @@ if __name__ == '__main__':
   build_mb(mb)
   build_mbc(mbc)
   build_jacobian(jac)
+  build_id(id)
 
   build_utility(rbd)
   build_algo(rbd)

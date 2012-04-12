@@ -33,6 +33,8 @@ class MultiBodyConfig;
 class InverseDynamics
 {
 public:
+	InverseDynamics()
+	{}
 	/// @param mb MultiBody associated with this algorithm.
 	InverseDynamics(const MultiBody& mb);
 
