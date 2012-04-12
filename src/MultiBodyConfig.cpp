@@ -121,6 +121,8 @@ void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& 
 	vectorToParam(e, v);
 }
 
+
+
 void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	if(mbc.bodyPosW.size() != mb.nrBodies())
@@ -132,6 +134,19 @@ void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc)
 	}
 }
 
+
+
+void checkMatchParentToSon(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.parentToSon.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "parentToSon size mismatch: expected size "
+				<< mb.nrBodies() << " gived " << mbc.parentToSon.size();
+		throw std::domain_error(str.str());
+	}
+
+}
 
 
 void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc)
@@ -153,6 +168,21 @@ void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc)
 	}
 }
 
+
+
+void checkMatchBodyAcc(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.bodyAccB.size() != mb.nrBodies())
+	{
+		std::ostringstream str;
+		str << "bodyAccB size mismatch: expected size "
+				<< mb.nrBodies() << " gived " << mbc.bodyAccB.size();
+		throw std::domain_error(str.str());
+	}
+}
+
+
+
 void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	if(mbc.jointConfig.size() != mb.nrJoints())
@@ -163,6 +193,70 @@ void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc)
 		throw std::domain_error(str.str());
 	}
 }
+
+
+
+void checkMatchJointVelocity(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.jointVelocity.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "jointVelocity size mismatch: expected size "
+				<< mb.nrJoints() << " gived " << mbc.jointVelocity.size();
+		throw std::domain_error(str.str());
+	}
+}
+
+
+
+void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.jointTorque.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "jointTorque vector size mismatch: expected size "
+				<< mb.nrJoints() << " gived " << mbc.jointTorque.size();
+		throw std::domain_error(str.str());
+	}
+
+	for(std::size_t i = 0; i < mbc.jointTorque.size(); ++i)
+	{
+		if(mbc.jointTorque[i].size() != static_cast<std::size_t>(mb.joint(i).dof()))
+		{
+			std::ostringstream str;
+			str << "Bad number of torque variable for Joint "
+					<< mb.joint(i) << " at position " << i << ": expected size "
+					<< mb.joint(i).dof() << " gived " << mbc.jointTorque[i].size();
+			throw std::domain_error(str.str());
+		}
+	}
+}
+
+
+
+void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.motionSubspace.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "motionSubspace vector size mismatch: expected size "
+				<< mb.nrJoints() << " gived " << mbc.motionSubspace.size();
+		throw std::domain_error(str.str());
+	}
+
+	for(std::size_t i = 0; i < mbc.motionSubspace.size(); ++i)
+	{
+		if(mbc.motionSubspace[i].cols() != static_cast<std::size_t>(mb.joint(i).dof()))
+		{
+			std::ostringstream str;
+			str << "Bad motionSubspace matrix size for Joint "
+					<< mb.joint(i) << " at position " << i << ": expected column number "
+					<< mb.joint(i).dof() << " gived " << mbc.motionSubspace[i].cols();
+			throw std::domain_error(str.str());
+		}
+	}
+}
+
 
 
 void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc)
@@ -180,7 +274,7 @@ void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc)
 		if(mbc.q[i].size() != static_cast<std::size_t>(mb.joint(i).params()))
 		{
 			std::ostringstream str;
-			str << "Bad number of generalized position variabel for Joint "
+			str << "Bad number of generalized position variable for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected size "
 					<< mb.joint(i).params() << " gived " << mbc.q[i].size();
 			throw std::domain_error(str.str());
@@ -205,11 +299,49 @@ void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc)
 		if(mbc.alpha[i].size() != static_cast<std::size_t>(mb.joint(i).dof()))
 		{
 			std::ostringstream str;
-			str << "Bad number of generalized velocity variabel for Joint "
+			str << "Bad number of generalized velocity variable for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected size "
 					<< mb.joint(i).dof() << " gived " << mbc.alpha[i].size();
 			throw std::domain_error(str.str());
 		}
+	}
+}
+
+
+
+void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.alphaD.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "Generalized acceleration variable vector size mismatch: expected size "
+				<< mb.nrJoints() << " gived " << mbc.alphaD.size();
+		throw std::domain_error(str.str());
+	}
+
+	for(std::size_t i = 0; i < mbc.alphaD.size(); ++i)
+	{
+		if(mbc.alphaD[i].size() != static_cast<std::size_t>(mb.joint(i).dof()))
+		{
+			std::ostringstream str;
+			str << "Bad number of generalized acceleration variable for Joint "
+					<< mb.joint(i) << " at position " << i << ": expected size "
+					<< mb.joint(i).dof() << " gived " << mbc.alphaD[i].size();
+			throw std::domain_error(str.str());
+		}
+	}
+}
+
+
+
+void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	if(mbc.force.size() != mb.nrBodies())
+	{
+		std::ostringstream str;
+		str << "External force vector size mismatch: expected size "
+				<< mb.nrBodies() << " gived " << mbc.force.size();
+		throw std::domain_error(str.str());
 	}
 }
 

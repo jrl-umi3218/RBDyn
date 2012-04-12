@@ -113,21 +113,43 @@ void vectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v
 	*/
 void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v);
 
-/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyPosW
+
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyPosW.
 void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc);
 
-/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyVelW
+/// @throw std::domain_error If there is a mismatch between mb and mbc.parentToSon.
+void checkMatchParentToSon(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and
+/// (mbc.bodyVelW, mbc.bodyVelB).
 void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc);
 
-/// @throw std::domain_error If there is a mismatch between mb and mbc.jointConfig
+/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyAccB.
+void checkMatchBodyAcc(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.jointConfig.
 void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc);
 
-/// @throw std::domain_error If there is a mismatch between mb and mbc.q
+/// @throw std::domain_error If there is a mismatch between mb and mbc.jointVelocity.
+void checkMatchJointVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.jointTorque.
+void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.motionSubspace.
+void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+/// @throw std::domain_error If there is a mismatch between mb and mbc.q.
 void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc);
 
-/// @throw std::domain_error If there is a mismatch between mb and mbc.alpha
+/// @throw std::domain_error If there is a mismatch between mb and mbc.alpha.
 void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+/// @throw std::domain_error If there is a mismatch between mb and mbc.alphaD.
+void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+/// @throw std::domain_error If there is a mismatch between mb and mbc.force.
+void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 } // namespace rbd
