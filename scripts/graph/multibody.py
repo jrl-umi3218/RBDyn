@@ -114,20 +114,26 @@ class GraphicMultiBody:
     bV = list(mbc.bodyVelW)
 
     for i in range(mb.nrBodies()):
+      a = self.velA[i]
+
       XiT = bG[i].translation()
       ViL = bV[i].linear()
 
       arrAxe = np.mat([1., 0., 0.]).T
       nViL = toNumpy(ViL)
+      speed = np.linalg.norm(ViL)
+
+      if speed == 0.:
+        a.visibility = 0
+        continue
+
+      nViL = nViL/speed
 
       rotAxe = np.cross(arrAxe.T, nViL.T)
       if rotAxe.sum() == 0.:
         rotAxe = np.mat([0., 1., 0.])
+
       angle = np.rad2deg(math.acos(arrAxe.T*nViL))
-
-      speed = np.linalg.norm(toNumpy(ViL))
-
-      a = self.velA[i]
 
       a.position = (XiT[0], XiT[1], XiT[2])
       a.scale = [speed]*3
