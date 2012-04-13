@@ -1,4 +1,5 @@
 import rbdyn as rbd
+from eigen3 import Vector3d
 from graph.multibody import GraphicMultiBody
 
 from mayavi import mlab
@@ -7,14 +8,26 @@ from mayavi import mlab
 def run(mb, mbc):
   g = GraphicMultiBody(mb)
 
+  id = rbd.InverseDynamics(mb)
   fd = rbd.ForwardDynamics(mb)
   rbd.forwardKinematics(mb, mbc)
   g.draw(mb, mbc)
+
+  mbcID = rbd.MultiBodyConfig(mbc)
+  # mbcID.gravity = Vector3d(0., 0., 0.)
 
   while True:
     for i in range(33):
       rbd.forwardKinematics(mb, mbc)
       rbd.forwardVelocity(mb, mbc)
+
+      mbcID.q = mbc.q
+      rbd.forwardKinematics(mb, mbcID)
+      rbd.forwardVelocity(mb, mbcID)
+
+      id.inverseDynamics(mb, mbcID)
+
+      mbc.jointTorque = mbcID.jointTorque
       fd.forwardDynamics(mb, mbc)
 
       rbd.eulerIntegration(mb, mbc, 0.001)

@@ -48,6 +48,12 @@ class GraphicMultiBody:
       self.velA.append(arra)
 
 
+
+  def render(self):
+    self.viewer.scene.render()
+
+
+
   def draw(self, mb, mbc):
     bG = list(mbc.bodyPosW)
 
@@ -74,7 +80,6 @@ class GraphicMultiBody:
         sa = self.jointA[i]
         sa.visibility = 1
 
-    self.viewer.scene.render()
 
 
 
@@ -88,8 +93,6 @@ class GraphicMultiBody:
 
       arrAxe = np.mat([1., 0., 0.]).T
       nViL = toNumpy(ViL)
-
-
 
       rotAxe = np.cross(arrAxe.T, nViL.T)
       if rotAxe.sum() == 0.:
@@ -108,9 +111,6 @@ class GraphicMultiBody:
 
       a.visibility = 1
 
-
-
-    self.viewer.scene.render()
 
 
 

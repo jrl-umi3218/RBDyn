@@ -1,4 +1,4 @@
-from eigen3 import Vector3d, Matrix3d
+from eigen3 import Vector3d, Matrix3d, Vector6d
 import spacevecalg as sva
 import rbdyn as rbd
 
@@ -40,6 +40,18 @@ def make_leg():
            [1., 0., 0., 0.],
            [1., 0., 0., 0.]]
 
+  mbc.alpha = [[0., 0., 0., 0., 0., 0.],
+               [0., 0., 0.],
+               [0., 0., 0.],
+               [0., 0., 0.]]
+
+  mbc.alphaD = [[0., 0., 0., 0., 0., 0.],
+                [0., 0., 0.],
+                [0., 0., 0.],
+                [0., 0., 0.]]
+
+  mbc.force = [sva.ForceVec(Vector6d.Zero())]*4
+
   return (mb, mbc, mbg)
 
 
@@ -78,6 +90,10 @@ def make_XYZ_ARM():
   mb = mbg.makeMultiBody(0, True);
 
   mbc = rbd.MultiBodyConfig(mb)
+  mbc.q = [[], [0.], [0.], [0.]]
+  mbc.alpha = [[], [0.], [0.], [0.]]
+  mbc.alphaD = [[], [0.], [0.], [0.]]
+  mbc.force = [sva.ForceVec(Vector6d.Zero())]*4
 
   return (mb, mbc, mbg)
 
@@ -117,6 +133,12 @@ def make_XZX_ARM():
   mb = mbg.makeMultiBody(0, True);
 
   mbc = rbd.MultiBodyConfig(mb)
+
+  mbc.q = [[], [0.], [0.], [0.]]
+  mbc.alpha = [[], [0.], [0.], [0.]]
+  mbc.alphaD = [[], [0.], [0.], [0.]]
+  mbc.force = [sva.ForceVec(Vector6d.Zero())]*4
+
 
   return (mb, mbc, mbg)
 
