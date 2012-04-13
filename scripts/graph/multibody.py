@@ -1,7 +1,8 @@
 import math
 import numpy as np
 
-from eigen3 import toNumpy
+from eigen3 import toNumpy, toEigen
+import spacevecalg as sva
 
 from mayavi import mlab
 from tvtk.api import tvtk
@@ -10,6 +11,9 @@ class GraphicMultiBody:
   def __init__(self, mb):
     self.bodyS = []
     self.bodyA = []
+
+    self.comS = []
+    self.comA = []
 
     self.jointS = []
     self.jointA = []
@@ -30,6 +34,15 @@ class GraphicMultiBody:
 
       self.bodyS.append(ls)
       self.bodyA.append(la)
+
+      coms = tvtk.CubeSource(x_length=0.25, y_length=0.25, z_length=0.25)
+      comm = tvtk.PolyDataMapper(input=coms.output)
+      coma = tvtk.Actor(mapper=comm)
+      coma.visibility = 0
+      self.viewer.scene.add_actors(coma)
+
+      self.comS.append(coms)
+      self.comA.append(coma)
 
       ss = tvtk.SphereSource(radius=0.05)
       sm = tvtk.PolyDataMapper(input=ss.output)
@@ -63,6 +76,16 @@ class GraphicMultiBody:
     for i in range(mb.nrBodies()):
       Xi = bG[i]
       XiT = Xi.translation()
+
+      com = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
+      com = toEigen(com)
+
+      comPos = sva.PTransform(com)*Xi
+      comT = comPos.translation()
+
+      comA = self.comA[i]
+      comA.position = (comT[0], comT[1], comT[2])
+      comA.visibility = 1
 
       if mb.parent(i) != -1:
         Xp = bG[mb.parent(i)]
