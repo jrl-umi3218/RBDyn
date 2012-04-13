@@ -19,6 +19,8 @@ class GraphicMultiBody:
 
     self.viewer = mlab.gcf()
 
+    self.transformVel = [(0., 0., 0., 0.)]*mb.nrJoints()
+
     for i in range(mb.nrBodies()):
       ls = tvtk.LineSource()
       lm = tvtk.PolyDataMapper(input=ls.output)
@@ -42,6 +44,7 @@ class GraphicMultiBody:
       arrm = tvtk.PolyDataMapper(input=arrs.output)
       arra = tvtk.Actor(mapper=arrm)
       arra.visibility = 0
+      self.IMat = arra.matrix
       self.viewer.scene.add_actors(arra)
 
       self.velS.append(arrs)
@@ -102,12 +105,14 @@ class GraphicMultiBody:
       speed = np.linalg.norm(toNumpy(ViL))
 
       a = self.velA[i]
-      a.matrix.identity()
 
       a.position = (XiT[0], XiT[1], XiT[2])
       a.scale = [speed]*3
 
+      a.rotate_wxyz(*self.transformVel[i])
       a.rotate_wxyz(angle, rotAxe[0,0], rotAxe[0,1], rotAxe[0,2])
+
+      self.transformVel[i] = (-angle, rotAxe[0,0], rotAxe[0,1], rotAxe[0,2])
 
       a.visibility = 1
 

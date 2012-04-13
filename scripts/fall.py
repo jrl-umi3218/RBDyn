@@ -20,7 +20,7 @@ def run(mb, mbc):
       rbd.eulerIntegration(mb, mbc, 0.001)
 
     g.draw(mb, mbc)
-    # g.drawVel(mb, mbc)
+    g.drawVel(mb, mbc)
     g.render()
 
     yield
