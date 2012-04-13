@@ -50,6 +50,11 @@ def make_leg():
                 [0., 0., 0.],
                 [0., 0., 0.]]
 
+  mbc.jointTorque = [[0., 0., 0., 0., 0., 0.],
+                     [0., 0., 0.],
+                     [0., 0., 0.],
+                     [0., 0., 0.]]
+
   mbc.force = [sva.ForceVec(Vector6d.Zero())]*4
 
   return (mb, mbc, mbg)
@@ -93,6 +98,7 @@ def make_XYZ_ARM():
   mbc.q = [[], [0.], [0.], [0.]]
   mbc.alpha = [[], [0.], [0.], [0.]]
   mbc.alphaD = [[], [0.], [0.], [0.]]
+  mbc.jointTorque = [[], [0.], [0.], [0.]]
   mbc.force = [sva.ForceVec(Vector6d.Zero())]*4
 
   return (mb, mbc, mbg)
@@ -108,7 +114,7 @@ def make_XZX_ARM():
   b3 = rbd.Body(rbi, 3, 'b3')
 
   j0 = rbd.Joint(rbd.Joint.RevX, True, 0, 'j0')
-  j1 = rbd.Joint(rbd.Joint.RevZ, True, 1, 'j1')
+  j1 = rbd.Joint(rbd.Joint.RevX, True, 1, 'j1')
   j2 = rbd.Joint(rbd.Joint.RevX, True, 2, 'j2')
 
   mbg = rbd.MultiBodyGraph()
@@ -137,6 +143,7 @@ def make_XZX_ARM():
   mbc.q = [[], [0.], [0.], [0.]]
   mbc.alpha = [[], [0.], [0.], [0.]]
   mbc.alphaD = [[], [0.], [0.], [0.]]
+  mbc.jointTorque = [[], [0.], [0.], [0.]]
   mbc.force = [sva.ForceVec(Vector6d.Zero())]*4
 
 
