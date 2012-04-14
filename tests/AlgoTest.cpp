@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., -1.))};
+	res = {MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());

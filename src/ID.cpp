@@ -39,11 +39,10 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	for(std::size_t i = 0; i < bodies.size(); ++i)
 	{
-		const sva::PTransform& X_i = mbc.jointConfig[i];
 		const sva::PTransform& X_p_i = mbc.parentToSon[i];
 
 		const sva::MotionVec& vj_i = mbc.jointVelocity[i];
-		sva::MotionVec ai_tan = X_i*joints[i].tanAccel(mbc.alphaD[i]);
+		sva::MotionVec ai_tan = joints[i].tanAccel(mbc.alphaD[i]);
 
 		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
 
