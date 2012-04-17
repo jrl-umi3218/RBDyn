@@ -90,12 +90,11 @@ void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step)
 	// integrate
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
+		eulerJointIntegration(joints[i].type(), mbc.alpha[i], step, mbc.q[i]);
 		for(int j = 0; j < joints[i].dof(); ++j)
 		{
 			mbc.alpha[i][j] += mbc.alphaD[i][j]*step;
 		}
-
-		eulerJointIntegration(joints[i].type(), mbc.alpha[i], step, mbc.q[i]);
 	}
 }
 
