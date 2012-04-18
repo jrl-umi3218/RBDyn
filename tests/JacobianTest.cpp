@@ -34,6 +34,7 @@
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"
 #include "MultiBodyGraph.h"
+#include "EulerIntegration.h"
 
 const double TOL = 0.0000001;
 
@@ -436,3 +437,260 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	checkJacobianMatrix(mb, mbc, jac1);
 }
 
+
+Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody& mb,
+													const rbd::MultiBodyConfig& mbc,
+													rbd::Jacobian& jac)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+
+	double step = 1e-8;
+
+	MultiBodyConfig mbcTmp(mbc);
+
+	MatrixXd oJ = jac.jacobian(mb, mbcTmp);
+	eulerIntegration(mb, mbcTmp, step);
+	forwardKinematics(mb, mbcTmp);
+	forwardVelocity(mb, mbcTmp);
+	MatrixXd nJ = jac.jacobian(mb, mbcTmp);
+
+	return (nJ - oJ)/step;
+}
+
+BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace cst = boost::math::constants;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Zero();
+
+	RBInertia rbi(mass, h, I);
+
+	Body b0(rbi, 0, "b0");
+	Body b1(rbi, 1, "b1");
+	Body b2(rbi, 2, "b2");
+	Body b3(rbi, 3, "b3");
+
+	mbg.addBody(b0);
+	mbg.addBody(b1);
+	mbg.addBody(b2);
+	mbg.addBody(b3);
+
+	Joint j0(Joint::Spherical, true, 0, "j0");
+	Joint j1(Joint::Spherical, true, 1, "j1");
+	Joint j2(Joint::Spherical, true, 2, "j2");
+
+	mbg.addJoint(j0);
+	mbg.addJoint(j1);
+	mbg.addJoint(j2);
+
+	//  Root     j0       j1     j2
+	//  ---- b0 ---- b1 ---- b2 ----b3
+	//  Fixed    S       S       S
+
+
+	PTransform to(Vector3d(0., 0.5, 0.));
+	PTransform from(Vector3d(0., -0.5, 0.));
+
+
+	mbg.linkBodies(0, PTransform::Identity(), 1, from, 0);
+	mbg.linkBodies(1, to, 2, from, 1);
+	mbg.linkBodies(2, to, 3, from, 2);
+
+	MultiBody mb = mbg.makeMultiBody(0, true);
+
+	MultiBodyConfig mbc(mb);
+
+	Jacobian jac1(mb, 3);
+
+	mbc.q = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
+	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+	mbc.alphaD = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+	forwardKinematics(mb, mbc);
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
+			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), TOL);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+
+
+
+
+	Quaterniond q1 = AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*AngleAxisd(cst::pi<double>()/4., Vector3d::UnitY());
+	Quaterniond q2 = Quaterniond::Identity();
+	Quaterniond q3 = Quaterniond::Identity();
+	mbc.q = {{},
+					 {q1.w(), q1.x(), q1.y(), q1.z()},
+					 {q2.w(), q2.x(), q2.y(), q2.z()},
+					 {q3.w(), q3.x(), q3.y(), q3.z()}};
+	forwardKinematics(mb, mbc);
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
+			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+
+
+	q2 = AngleAxisd(cst::pi<double>()/4., Vector3d::UnitX());
+	mbc.q = {{},
+					 {q1.w(), q1.x(), q1.y(), q1.z()},
+					 {q2.w(), q2.x(), q2.y(), q2.z()},
+					 {q3.w(), q3.x(), q3.y(), q3.z()}};
+	forwardKinematics(mb, mbc);
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
+			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+
+
+	q3 = AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ());
+	mbc.q = {{},
+					 {q1.w(), q1.x(), q1.y(), q1.z()},
+					 {q2.w(), q2.x(), q2.y(), q2.z()},
+					 {q3.w(), q3.x(), q3.y(), q3.z()}};
+	forwardKinematics(mb, mbc);
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
+			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+
+
+
+	// test with all joint velocity
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
+			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+		}
+	}
+	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+
+
+
+	// test with a point
+	Jacobian jacP(mb, 3, Vector3d::Random()*10.);
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jacP);
+			MatrixXd JD = jacP.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+		}
+	}
+	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+
+
+
+	// test with free flyier
+
+	MultiBody mbF = mbg.makeMultiBody(0, false);
+
+	MultiBodyConfig mbcF(mbF);
+
+	Jacobian jacF(mbF, 3);
+
+	mbcF.q = {{1., 0., 0., 0., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
+	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+	mbcF.alphaD = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+	forwardKinematics(mbF, mbcF);
+
+	for(std::size_t i = 0; i < mbF.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mbF.joint(i).dof(); ++j)
+		{
+			mbcF.alpha[i][j] = 1.;
+			forwardVelocity(mbF, mbcF);
+
+			MatrixXd JD_diff = makeJDotFromStep(mbF, mbcF, jacF);
+			MatrixXd JD = jacF.jacobianDot(mbF, mbcF);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+		}
+	}
+	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+
+
+	Quaterniond qF = AngleAxisd(1.2, Vector3d::UnitX())*AngleAxisd(-0.4, Vector3d::UnitZ());
+	mbc.q = {{qF.w(), qF.x(), qF.y(), qF.z(), 1., 2., 3.},
+					 {q1.w(), q1.x(), q1.y(), q1.z()},
+					 {q2.w(), q2.x(), q2.y(), q2.z()},
+					 {q3.w(), q3.x(), q3.y(), q3.z()}};
+	forwardKinematics(mbF, mbcF);
+
+	for(std::size_t i = 0; i < mbF.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mbF.joint(i).dof(); ++j)
+		{
+			mbcF.alpha[i][j] = 1.;
+			forwardVelocity(mbF, mbcF);
+
+			MatrixXd JD_diff = makeJDotFromStep(mbF, mbcF, jacF);
+			MatrixXd JD = jacF.jacobianDot(mbF, mbcF);
+
+			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+		}
+	}
+	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+}

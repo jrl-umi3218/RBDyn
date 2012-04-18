@@ -49,6 +49,8 @@ public:
 		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc);
+
 	/// @return MultiBody that correspond to the path between the root and
 	/// the specified body.
 	MultiBody subMultiBody(const MultiBody& mb) const;
@@ -77,6 +79,7 @@ private:
 	sva::PTransform point_;
 
 	Eigen::MatrixXd jac_;
+	Eigen::MatrixXd jacDot_;
 };
 
 } // namespace rbd

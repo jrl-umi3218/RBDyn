@@ -33,7 +33,8 @@ Jacobian::Jacobian()
 Jacobian::Jacobian(const MultiBody& mb, int bodyId, const Eigen::Vector3d& point):
   jointsPath_(),
   point_(point),
-  jac_()
+  jac_(),
+  jacDot_()
 {
   int index = mb.sBodyIndexById(bodyId);
 
@@ -47,6 +48,7 @@ Jacobian::Jacobian(const MultiBody& mb, int bodyId, const Eigen::Vector3d& point
 	}
 
 	jac_.resize(6, dof);
+	jacDot_.resize(6, dof);
 }
 
 MultiBody Jacobian::subMultiBody(const MultiBody& mb) const
@@ -83,9 +85,10 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	const std::vector<Joint>& joints = mb.joints();
 
 	int curJ = 0;
+	int N = jointsPath_.back();
 
-	sva::PTransform X_Np = point_*mbc.bodyPosW[jointsPath_.back()];
-	sva::PTransform E_0_N(mbc.bodyPosW[jointsPath_.back()].rotation());
+	sva::PTransform X_Np = point_*mbc.bodyPosW[N];
+	sva::PTransform E_N_0(Eigen::Matrix3d(mbc.bodyPosW[N].rotation().transpose()));
 	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
 	{
 		int i = jointsPath_[index];
@@ -93,12 +96,54 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 		sva::PTransform X_i_N = X_Np*mbc.bodyPosW[i].inv();
 
 		jac_.block(0, curJ, 6, joints[i].dof()) =
-			(E_0_N.inv()*X_i_N).matrix()*mbc.motionSubspace[i];
+			(E_N_0*X_i_N).matrix()*mbc.motionSubspace[i];
 
 		curJ += joints[i].dof();
 	}
 
 	return jac_;
+}
+
+const Eigen::MatrixXd&
+Jacobian::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	int curJ = 0;
+	int N = jointsPath_.back();
+
+	sva::PTransform X_0_Np = point_*mbc.bodyPosW[N];
+	// speed of point in body N
+	sva::MotionVec X_VNp = point_*mbc.bodyVelB[N];
+
+	sva::PTransform E_N_0(Eigen::Matrix3d(mbc.bodyPosW[N].rotation().transpose()));
+	// angular velocity of rotation N to O
+	sva::MotionVec E_VN(mbc.bodyVelW[N].angular(), Eigen::Vector3d::Zero());
+
+	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	{
+		int i = jointsPath_[index];
+
+		sva::PTransform X_i_Np = X_0_Np*mbc.bodyPosW[i].inv();
+		// speed of X_i_N in Np coordinate
+		sva::MotionVec X_VNp_i_Np = X_i_Np*mbc.bodyVelB[i] - X_VNp;
+
+		for(int j = 0; j < joints[i].dof(); ++j)
+		{
+			sva::MotionVec S_ij(mbc.motionSubspace[i].col(j));
+
+			// JD_i = E_N_0_d*X_i_N*S_i + E_N_0*X_i_N_d*S_i
+			// E_N_0_d = (ANG_VN)_0 x E_N_0
+			// X_i_N_d = (Vi - VN)_N x X_i_N
+
+			jacDot_.block<6, 1>(0, curJ) =
+				(E_VN.cross(E_N_0*X_i_Np*S_ij) +
+				E_N_0*X_VNp_i_Np.cross(X_i_Np*S_ij)).vector();
+			++curJ;
+		}
+	}
+
+	return jacDot_;
 }
 
 const Eigen::MatrixXd&
