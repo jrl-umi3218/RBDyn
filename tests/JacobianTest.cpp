@@ -694,3 +694,96 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	}
 	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
 }
+
+
+BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace cst = boost::math::constants;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Zero();
+
+	RBInertia rbi(mass, h, I);
+
+	Body b0(rbi, 0, "b0");
+	Body b1(rbi, 1, "b1");
+	Body b2(rbi, 2, "b2");
+	Body b3(rbi, 3, "b3");
+
+	mbg.addBody(b0);
+	mbg.addBody(b1);
+	mbg.addBody(b2);
+	mbg.addBody(b3);
+
+	Joint j0(Joint::Spherical, true, 0, "j0");
+	Joint j1(Joint::Spherical, true, 1, "j1");
+	Joint j2(Joint::Spherical, true, 2, "j2");
+
+	mbg.addJoint(j0);
+	mbg.addJoint(j1);
+	mbg.addJoint(j2);
+
+	//  Root     j0       j1     j2
+	//  ---- b0 ---- b1 ---- b2 ----b3
+	//  Fixed    S       S       S
+
+
+	PTransform to(Vector3d(0., 0.5, 0.));
+	PTransform from(Vector3d(0., -0.5, 0.));
+
+
+	mbg.linkBodies(0, PTransform::Identity(), 1, from, 0);
+	mbg.linkBodies(1, to, 2, from, 1);
+	mbg.linkBodies(2, to, 3, from, 2);
+
+	MultiBody mb = mbg.makeMultiBody(0, true);
+
+	MultiBodyConfig mbc(mb);
+
+	Vector3d point = Vector3d::Random()*10.;
+
+	Jacobian jac0(mb, 3);
+	Jacobian jacP(mb, 3, point);
+
+
+
+	mbc.q = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
+	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+	mbc.alphaD = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	MatrixXd J0 = jac0.jacobian(mb, mbc);
+	MatrixXd JP = jacP.jacobian(mb, mbc);
+
+	MatrixXd J0_P = J0;
+	jac0.translateJacobian(J0, mbc, point, J0_P);
+
+	BOOST_CHECK_SMALL((J0_P - JP).norm(), TOL);
+
+
+
+	Quaterniond q1 = AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*AngleAxisd(cst::pi<double>()/4., Vector3d::UnitY());
+	Quaterniond q2(AngleAxisd(cst::pi<double>()/4., Vector3d::UnitX()));
+	Quaterniond q3(AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ()));
+	mbc.q = {{},
+					 {q1.w(), q1.x(), q1.y(), q1.z()},
+					 {q2.w(), q2.x(), q2.y(), q2.z()},
+					 {q3.w(), q3.x(), q3.y(), q3.z()}};
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	J0 = jac0.jacobian(mb, mbc);
+	JP = jacP.jacobian(mb, mbc);
+
+	jac0.translateJacobian(J0, mbc, point, J0_P);
+
+	BOOST_CHECK_SMALL((J0_P - JP).norm(), TOL);
+}

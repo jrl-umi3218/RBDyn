@@ -146,6 +146,25 @@ Jacobian::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 	return jacDot_;
 }
 
+
+void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+	Eigen::MatrixXd& res)
+{
+	int N = jointsPath_.back();
+	sva::PTransform E_N_0(Eigen::Matrix3d(mbc.bodyPosW[N].rotation().transpose()));
+	sva::PTransform t(point);
+
+	t = E_N_0*t*E_N_0.inv();
+
+	for(int i = 0; i < jac.cols(); ++i)
+	{
+		sva::MotionVec mv(jac.col(i));
+		res.col(i) = (t*mv).vector();
+	}
+}
+
+
 const Eigen::MatrixXd&
 Jacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {

@@ -51,6 +51,10 @@ public:
 
 	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	void translateJacobian(const Eigen::MatrixXd& jac,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+		Eigen::MatrixXd& res);
+
 	/// @return MultiBody that correspond to the path between the root and
 	/// the specified body.
 	MultiBody subMultiBody(const MultiBody& mb) const;
