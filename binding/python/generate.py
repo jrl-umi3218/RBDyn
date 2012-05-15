@@ -208,6 +208,8 @@ def build_mbc(mbc):
 
   mbc.add_instance_attribute('gravity', 'Eigen::Vector3d')
 
+
+
 def build_utility(mod):
   mod.add_function('sParamToVector', None,
                    [param('const std::vector<std::vector<double> >&', 'v'),
@@ -220,6 +222,32 @@ def build_utility(mod):
                     param('std::vector<std::vector<double> >&', 'v')],
                    custom_name='vectorToParam',
                    throw=[out_ex])
+
+  mod.add_function('sParamToVector', retval('Eigen::VectorXd'),
+                   [param('const MultiBody&', 'mb'),
+                    param('const std::vector<std::vector<double> >&', 'v')],
+                   custom_name='paramToVector',
+                   throw=[out_ex])
+
+  mod.add_function('sVectorToParam', retval('std::vector<std::vector<double> >'),
+                   [param('const MultiBody&', 'mb'),
+                    param('const Eigen::VectorXd&', 'e')],
+                   custom_name='vectorToParam',
+                   throw=[out_ex])
+
+  mod.add_function('sDofToVector', retval('Eigen::VectorXd'),
+                   [param('const MultiBody&', 'mb'),
+                    param('const std::vector<std::vector<double> >&', 'v')],
+                   custom_name='dofToVector',
+                   throw=[out_ex])
+
+  mod.add_function('sVectorToDof', retval('std::vector<std::vector<double> >'),
+                   [param('const MultiBody&', 'mb'),
+                    param('const Eigen::VectorXd&', 'e')],
+                   custom_name='vectorToDof',
+                   throw=[out_ex])
+
+
 
 def build_algo(mod):
   mod.add_function('sForwardKinematics', None,
