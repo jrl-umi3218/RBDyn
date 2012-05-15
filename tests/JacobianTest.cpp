@@ -202,12 +202,19 @@ void checkJacobianMatrix(const rbd::MultiBody& mb,
 	using namespace rbd;
 
 	const MatrixXd& jac_mat = jac.jacobian(mb, mbc);
+	MatrixXd full_jac_mat(6, mb.nrDof());
 	MultiBody subMb = jac.subMultiBody(mb);
 
 	// test jacobian size
 	BOOST_CHECK_EQUAL(jac_mat.rows(), 6);
 	BOOST_CHECK_EQUAL(jac_mat.cols(), subMb.nrDof());
 
+	// test fullJacobian
+	MatrixXd fake_full1(5, mb.nrDof());
+	MatrixXd fake_full2(6, mb.nrDof() + 1);
+	BOOST_CHECK_THROW(jac.sFullJacobian(mb, jac_mat, fake_full1), std::domain_error);
+	BOOST_CHECK_THROW(jac.sFullJacobian(mb, jac_mat, fake_full2), std::domain_error);
+	BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jac_mat, full_jac_mat));
 
 	MultiBodyConfig subMbc(subMb);
 	for(std::size_t i = 0; i < subMb.nrJoints(); ++i)
@@ -232,6 +239,11 @@ void checkJacobianMatrix(const rbd::MultiBody& mb,
 			subMbc.alpha[i][j] = 0.;
 			++col;
 		}
+
+		int joint = jac.jointsPath()[i];
+		int dof = mb.joint(i).dof();
+		BOOST_CHECK_EQUAL(jac_mat.block(0, subMb.jointPosInDof(i), 6, dof),
+			full_jac_mat.block(0, mb.jointPosInDof(joint), 6, dof));
 	}
 }
 

@@ -49,10 +49,33 @@ public:
 		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
-	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc);
+	/**
+		* Compute the time derivative of the jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
+		* @return Time derivativo of the jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
 
+	/**
+		* Translate a jacobian at a given position.
+		* @param jac Jacobian to translate.
+		* @param mbc Use bodyPosW.
+		* @param point Point to translate jacobian.
+		* @param res Translated jacobian (must be allocated).
+		*/
 	void translateJacobian(const Eigen::MatrixXd& jac,
 		const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+		Eigen::MatrixXd& res);
+
+	/**
+		* Project the jacobian in the full robot parameters vector.
+		* @param mb MuliBody used has model.
+		* @param jac Jacobian to project.
+		* @param res Projected Jacobian (must be allocated).
+		*/
+	void fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 		Eigen::MatrixXd& res);
 
 	/// @return MultiBody that correspond to the path between the root and
@@ -64,6 +87,8 @@ public:
 	{
 		return jointsPath_;
 	}
+
+
 
 	// safe version for python binding
 
@@ -77,6 +102,26 @@ public:
 		*/
 	MultiBody sSubMultiBody(const MultiBody& mb) const;
 
+	/** safe version of @see jacobianDot.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sJacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+	/** safe version of @see translateJacobian.
+		* @throw std::domain_error If mb don't match mbc or jointPath or res
+		* size missmatch.
+		*/
+	void sTranslateJacobian(const Eigen::MatrixXd& jac,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+		Eigen::MatrixXd& res);
+
+	/** safe version of @see fullJacobian.
+		* @throw std::domain_error If mb don't match jointPath or res
+		* size missmatch.
+		*/
+	void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+		Eigen::MatrixXd& res);
 
 private:
 	std::vector<int> jointsPath_;

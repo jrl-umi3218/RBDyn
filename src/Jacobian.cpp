@@ -165,6 +165,24 @@ void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
 }
 
 
+
+void Jacobian::fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+	Eigen::MatrixXd& res)
+{
+	res.setZero();
+	int jacPos = 0;
+	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	{
+		int i = jointsPath_[index];
+		int dof = mb.joint(i).dof();
+		res.block(0, mb.jointPosInDof(i), 6, dof) =
+			jac.block(0, jacPos, 6, dof);
+		jacPos += dof;
+	}
+}
+
+
+
 const Eigen::MatrixXd&
 Jacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
@@ -189,6 +207,85 @@ MultiBody Jacobian::sSubMultiBody(const MultiBody& mb) const
 	}
 
 	return subMultiBody(mb);
+}
+
+
+const Eigen::MatrixXd& Jacobian::sJacobianDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	return jacobianDot(mb, mbc);
+}
+
+
+void Jacobian::sTranslateJacobian(const Eigen::MatrixXd& jac,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+	Eigen::MatrixXd& res)
+{
+	if(jointsPath_.back() >= static_cast<int>(mbc.bodyPosW.size()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBodyConfig");
+	}
+
+	if(jac.cols() != jac_.cols() || jac.rows() != jac_.rows())
+	{
+		std::ostringstream str;
+		str << "jac matrix size mismatch: expected size ("
+				<< jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+				<< jac.rows() << " x " << jac.cols() << ")" ;
+		throw std::domain_error(str.str());
+	}
+
+	if(res.cols() != jac_.cols() || res.rows() != jac_.rows())
+	{
+		std::ostringstream str;
+		str << "res matrix size mismatch: expected size ("
+				<< jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+				<< res.rows() << " x " << res.cols() << ")" ;
+		throw std::domain_error(str.str());
+	}
+
+	translateJacobian(jac, mbc, point, res);
+}
+
+
+void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+	Eigen::MatrixXd& res)
+{
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	if(jac.cols() != jac_.cols() || jac.rows() != jac_.rows())
+	{
+		std::ostringstream str;
+		str << "jac matrix size mismatch: expected size ("
+				<< jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+				<< jac.rows() << " x " << jac.cols() << ")" ;
+		throw std::domain_error(str.str());
+	}
+
+	if(res.cols() != mb.nrDof() || res.rows() != 6)
+	{
+		std::ostringstream str;
+		str << "res matrix size mismatch: expected size ("
+				<< mb.nrDof() << " x " << "6 )" << " gived ("
+				<< res.rows() << " x " << res.cols() << ")" ;
+		throw std::domain_error(str.str());
+	}
+
+	fullJacobian(mb, jac, res);
 }
 
 } // namespace rbd
