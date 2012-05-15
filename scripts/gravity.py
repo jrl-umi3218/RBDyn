@@ -40,7 +40,7 @@ def run(mb, mbc):
 
 
 
-def main():
+def mainXZX():
   from robots.test_bots import make_XZX_ARM
 
   mb, mbc, mbg = make_XZX_ARM()
@@ -51,6 +51,24 @@ def main():
 
 
 
+def main3S():
+  from robots.test_bots import make_3S_ARM
+  from eigen3 import Quaterniond, Vector3d
+  import numpy as np
+
+  mb, mbc, mbg = make_3S_ARM()
+
+  q1 = Quaterniond(np.pi/2., Vector3d.UnitX())
+  q2 = Quaterniond(np.pi/4., Vector3d.UnitY())
+  mbc.q = [[],
+           [q1.w(), q1.x(), q1.y(), q1.z()],
+           [q2.w(), q2.x(), q2.y(), q2.z()],
+           [1., 0., 0., 0]]
+
+  a = run(mb, mbc)
+
+
+
 if __name__ == '__main__':
-  main()
+  mainXZX()
 
