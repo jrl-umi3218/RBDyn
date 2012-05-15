@@ -39,6 +39,8 @@ MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	succ_(std::move(succ)),
 	parent_(std::move(parent)),
 	Xt_(std::move(Xto)),
+	jointPosInParam_(joints_.size()),
+	jointPosInDof_(joints_.size()),
 	nrParams_(0),
 	nrDof_(0)
 {
@@ -46,6 +48,9 @@ MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	{
 		bodyId2Ind_[bodies_[i].id()] = i;
 		jointId2Ind_[joints_[i].id()] = i;
+
+		jointPosInParam_[i] = nrParams_;
+		jointPosInDof_[i] = nrDof_;
 
 		nrParams_ += joints_[i].params();
 		nrDof_ += joints_[i].dof();

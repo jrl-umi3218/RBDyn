@@ -154,12 +154,23 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	int params = 0, dof = 0;
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
+		BOOST_CHECK_EQUAL(mb.jointPosInParam(i), params);
+		BOOST_CHECK_EQUAL(mb.jointsPosInParam()[i], params);
+		BOOST_CHECK_EQUAL(mb.sJointPosInParam(i), params);
+
+		BOOST_CHECK_EQUAL(mb.jointPosInDof(i), dof);
+		BOOST_CHECK_EQUAL(mb.jointsPosInDof()[i], dof);
+		BOOST_CHECK_EQUAL(mb.sJointPosInDof(i), dof);
+
 		params += joints[i].params();
 		dof += joints[i].dof();
 	}
 
 	BOOST_CHECK_EQUAL(params, mb.nrParams());
 	BOOST_CHECK_EQUAL(dof, mb.nrDof());
+
+	BOOST_CHECK_THROW(mb.sJointPosInParam(mb.nrJoints()), std::out_of_range);
+	BOOST_CHECK_THROW(mb.sJointPosInDof(mb.nrJoints()), std::out_of_range);
 }
 
 

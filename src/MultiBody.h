@@ -149,6 +149,30 @@ public:
 		return jointId2Ind_.find(id)->second;
 	}
 
+	/// @return the joint i position in parameter vector (q).
+	int jointPosInParam(int i) const
+	{
+		return jointPosInParam_[i];
+	}
+
+	/// @return the joint i position in dof vector (alpha, alphaD…).
+	int jointPosInDof(int i) const
+	{
+		return jointPosInDof_[i];
+	}
+
+	/// @return the joint position in parameter vector (q).
+	const std::vector<int>& jointsPosInParam() const
+	{
+		return jointPosInParam_;
+	}
+
+	/// @return the joint position in dof vector (alpha, alphaD…).
+	const std::vector<int>& jointsPosInDof() const
+	{
+		return jointPosInDof_;
+	}
+
 	/// @return Total number of parameters.
 	int nrParams() const
 	{
@@ -213,6 +237,22 @@ public:
 		return Xt_.at(num);
 	}
 
+	/** Safe version of @see jointPosInParam.
+		* @throw std::out_of_range.
+		*/
+	int sJointPosInParam(int i) const
+	{
+		return jointPosInParam_.at(i);
+	}
+
+	/** Safe version of @see jointPosInDof.
+		* @throw std::out_of_range.
+		*/
+	int sJointPosInDof(int i) const
+	{
+		return jointPosInDof_.at(i);
+	}
+
 	/** Safe version of @see bodyIndexById.
 		* @throw std::out_of_range.
 		*/
@@ -241,6 +281,11 @@ private:
 
 	std::unordered_map<int, int> bodyId2Ind_;
 	std::unordered_map<int, int> jointId2Ind_;
+
+	/// Position of joint i in parameter vector.
+	std::vector<int> jointPosInParam_;
+	/// Position of joint i in dof vector (velocity, acceleration…).
+	std::vector<int> jointPosInDof_;
 
 	int nrParams_;
 	int nrDof_;
