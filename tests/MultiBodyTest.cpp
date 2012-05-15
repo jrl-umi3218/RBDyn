@@ -459,3 +459,97 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction)
 	BOOST_CHECK_THROW(sVectorToParam(e, v2), out_of_range);
 }
 
+
+BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
+{
+	using namespace std;
+	using namespace Eigen;
+	using namespace rbd;
+	using namespace sva;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Zero();
+
+	RBInertia rbi(mass, h, I);
+
+	Body b0(rbi, 0, "b0");
+	Body b1(rbi, 1, "b1");
+	Body b2(rbi, 2, "b2");
+	Body b3(rbi, 3, "b3");
+
+	mbg.addBody(b0);
+	mbg.addBody(b1);
+	mbg.addBody(b2);
+	mbg.addBody(b3);
+
+	Joint j0(Joint::Spherical, true, 0, "j0");
+	Joint j1(Joint::Spherical, true, 1, "j1");
+	Joint j2(Joint::RevX, true, 2, "j2");
+
+	mbg.addJoint(j0);
+	mbg.addJoint(j1);
+	mbg.addJoint(j2);
+
+	mbg.linkBodies(0, PTransform::Identity(), 1, PTransform::Identity(), 0);
+	mbg.linkBodies(1, PTransform::Identity(), 2, PTransform::Identity(), 1);
+	mbg.linkBodies(2, PTransform::Identity(), 3, PTransform::Identity(), 2);
+
+	MultiBody mb = mbg.makeMultiBody(0, true);
+
+	MultiBodyConfig mbc(mb);
+
+
+
+	// test paramToVector
+	vector<vector<double>> confP = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {2.}};
+	vector<vector<double>> confD = {{}, {1., 2., 3.}, {3., 4., 5.}, {7.}};
+	VectorXd eTestP(9);
+	VectorXd eTestD(7);
+	VectorXd e;
+
+	paramToVector(confP, eTestP);
+	paramToVector(confD, eTestD);
+
+	BOOST_CHECK_NO_THROW(e = sParamToVector(mb, confP));
+	BOOST_CHECK_THROW(sParamToVector(mb, confD), std::out_of_range);
+
+	BOOST_CHECK_EQUAL(e, eTestP);
+
+
+
+	// test dofToVector
+	BOOST_CHECK_NO_THROW(e = sDofToVector(mb, confD));
+	BOOST_CHECK_THROW(sDofToVector(mb, confP), std::out_of_range);
+
+	BOOST_CHECK_EQUAL(e, eTestD);
+
+
+
+	// test vectorToParam
+	vector<vector<double>> conf;
+	BOOST_CHECK_NO_THROW(conf = sVectorToParam(mb, eTestP));
+	BOOST_CHECK_THROW(sVectorToParam(mb, eTestD), std::out_of_range);
+
+	BOOST_CHECK_EQUAL(conf.size(), confP.size());
+	for(std::size_t i = 0; i < conf.size(); ++i)
+	{
+		BOOST_CHECK_EQUAL_COLLECTIONS(conf[i].begin(), conf[i].end(),
+			confP[i].begin(), confP[i].end());
+	}
+
+
+
+	// test vectorToDof
+	BOOST_CHECK_NO_THROW(conf = sVectorToDof(mb, eTestD));
+	BOOST_CHECK_THROW(sVectorToDof(mb, eTestP), std::out_of_range);
+
+	BOOST_CHECK_EQUAL(conf.size(), confD.size());
+	for(std::size_t i = 0; i < conf.size(); ++i)
+	{
+		BOOST_CHECK_EQUAL_COLLECTIONS(conf[i].begin(), conf[i].end(),
+			confD[i].begin(), confD[i].end());
+	}
+}

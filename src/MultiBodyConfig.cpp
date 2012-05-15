@@ -111,6 +111,79 @@ void sParamToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& 
 
 
 
+Eigen::VectorXd paramToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v)
+{
+	Eigen::VectorXd e(mb.nrParams());
+	paramToVector(v, e);
+
+	return std::move(e);
+}
+
+Eigen::VectorXd sParamToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v)
+{
+	if(v.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "Param vector size and MultiBody mismatch: expected size "
+				<< mb.nrJoints() << " gived " << v.size();
+		throw std::out_of_range(str.str());
+	}
+
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		if(mb.joint(i).params() != static_cast<int>(v[i].size()))
+		{
+			std::ostringstream str;
+			str << "Parameters of joint " << i << " mismatch: expected size "
+					<< mb.joint(i).params() << " gived " << v[i].size();
+			throw std::out_of_range(str.str());
+		}
+	}
+
+	return std::move(paramToVector(mb, v));
+}
+
+
+
+Eigen::VectorXd dofToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v)
+{
+	Eigen::VectorXd e(mb.nrDof());
+	paramToVector(v, e);
+
+	return std::move(e);
+}
+
+
+Eigen::VectorXd sDofToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v)
+{
+	if(v.size() != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << "Dof vector size and MultiBody mismatch: expected size "
+				<< mb.nrJoints() << " gived " << v.size();
+		throw std::out_of_range(str.str());
+	}
+
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		if(mb.joint(i).dof() != static_cast<int>(v[i].size()))
+		{
+			std::ostringstream str;
+			str << "Dof of joint " << i << " mismatch: expected size "
+					<< mb.joint(i).dof() << " gived " << v[i].size();
+			throw std::out_of_range(str.str());
+		}
+	}
+
+	return std::move(dofToVector(mb, v));
+}
+
+
+
 void vectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v)
 {
 	int pos = 0;
@@ -141,6 +214,62 @@ void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& 
 	}
 
 	vectorToParam(e, v);
+}
+
+
+
+std::vector<std::vector<double>> vectorToParam(const MultiBody& mb,
+	const Eigen::VectorXd& e)
+{
+	std::vector<std::vector<double>> ret(mb.nrJoints());
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+		ret[i].resize(mb.joint(i).params());
+
+	vectorToParam(e, ret);
+
+	return std::move(ret);
+}
+
+
+std::vector<std::vector<double>> sVectorToParam(const MultiBody& mb,
+	const Eigen::VectorXd& e)
+{
+	if(mb.nrParams() != e.rows())
+	{
+		std::ostringstream str;
+		str << "Parameter vector size mismatch: expected size "
+				<< mb.nrParams() << " gived " << e.rows();
+		throw std::out_of_range(str.str());
+	}
+	return std::move(vectorToParam(mb, e));
+}
+
+
+
+std::vector<std::vector<double>> vectorToDof(const MultiBody& mb,
+	const Eigen::VectorXd& e)
+{
+	std::vector<std::vector<double>> ret(mb.nrJoints());
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+		ret[i].resize(mb.joint(i).dof());
+
+	vectorToParam(e, ret);
+
+	return std::move(ret);
+}
+
+
+std::vector<std::vector<double>> sVectorToDof(const MultiBody& mb,
+	const Eigen::VectorXd& e)
+{
+	if(mb.nrDof() != e.rows())
+	{
+		std::ostringstream str;
+		str << "Dof vector size mismatch: expected size "
+				<< mb.nrDof() << " gived " << e.rows();
+		throw std::out_of_range(str.str());
+	}
+	return std::move(vectorToDof(mb, e));
 }
 
 

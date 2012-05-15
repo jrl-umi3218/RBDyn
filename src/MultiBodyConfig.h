@@ -106,6 +106,44 @@ void paramToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e
 	*/
 void sParamToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e);
 
+
+
+/**
+	* Convert parameter vector to Eigen Vector.
+	* @param mb MultiBody used has model.
+	* @param v Parameter vector.
+	* @return Parameter converted in eigen vector.
+	*/
+Eigen::VectorXd paramToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v);
+
+/**
+	* Safe version of @see paramToVector.
+	* @throw std::out_of_range if param and Eigen vector mismatch.
+	*/
+Eigen::VectorXd sParamToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v);
+
+
+
+/**
+	* Convert dof vector to Eigen Vector.
+	* @param mb MultiBody used has model.
+	* @param v dof vector.
+	* @return dof converted in eigen vector.
+	*/
+Eigen::VectorXd dofToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v);
+
+/**
+	* Safe version of @see paramToDof.
+	* @throw std::out_of_range if dof and Eigen vector mismatch.
+	*/
+Eigen::VectorXd sDofToVector(const MultiBody& mb,
+	const std::vector<std::vector<double>>& v);
+
+
+
 /**
 	* Convert parameter vector to Eigen Vector.
 	* @param e Eigen vector.
@@ -118,6 +156,42 @@ void vectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
 void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v);
+
+
+
+/**
+	* Convert parameter vector to Eigen Vector.
+	* @param mb MultiBody used has model.
+	* @param e Eigen vector.
+	* @return Eigen vector converted in parameter vector.
+	*/
+std::vector<std::vector<double>> vectorToParam(const MultiBody& mb,
+	const Eigen::VectorXd& e);
+
+/**
+	* Safe version of @see vectorToParam.
+	* @throw std::out_of_range if param and Eigen vector mismatch.
+	*/
+std::vector<std::vector<double>> sVectorToParam(const MultiBody& mb,
+	const Eigen::VectorXd& e);
+
+
+
+/**
+	* Convert dof vector to Eigen Vector.
+	* @param mb MultiBody used has model.
+	* @param e Eigen vector.
+	* @return Eigen vector converted in parameter vector.
+	*/
+std::vector<std::vector<double>> vectorToDof(const MultiBody& mb,
+	const Eigen::VectorXd& e);
+
+/**
+	* Safe version of @see vectorToDof.
+	* @throw std::out_of_range if dof and Eigen vector mismatch.
+	*/
+std::vector<std::vector<double>> sVectorToDof(const MultiBody& mb,
+	const Eigen::VectorXd& e);
 
 
 
