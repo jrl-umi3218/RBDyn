@@ -3,6 +3,7 @@ import numpy as np
 
 from eigen3 import toNumpy, toEigen, Quaterniond, Vector3d
 import spacevecalg as sva
+import rbdyn as rbd
 
 from mayavi import mlab
 from tvtk.api import tvtk
@@ -24,6 +25,7 @@ def setTransform(actor, transform):
 
 
 
+
 class GraphicMultiBody:
   def __init__(self, mb):
     self.bodyS = []
@@ -35,6 +37,7 @@ class GraphicMultiBody:
 
     self.jointS = []
     self.jointA = []
+    self.jointT = []
 
     self.velS = []
     self.velA = []
@@ -44,6 +47,7 @@ class GraphicMultiBody:
     self.transformVel = [(0., 0., 0., 0.)]*mb.nrJoints()
 
     for i in range(mb.nrBodies()):
+      # create links
       cs = tvtk.CylinderSource()
 
       cs.height = np.linalg.norm(toNumpy(mb.transform(i).translation()))
@@ -69,6 +73,7 @@ class GraphicMultiBody:
 
 
 
+      # create bodies
       comPos = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
       lBody = np.minimum(np.zeros(3).T, comPos)
       uBody = np.maximum(np.zeros(3).T, comPos)
@@ -101,17 +106,42 @@ class GraphicMultiBody:
 
 
 
-      ss = tvtk.SphereSource(radius=0.02)
+      # create joints
+      def jointGeom(type):
+        if type == rbd.Joint.RevX:
+          s = tvtk.CylinderSource(height=0.1, radius=0.02)
+          t = sva.PTransform(sva.RotZ(np.pi/2.))
+          color = (1., 0., 0.)
+        elif type == rbd.Joint.RevY:
+          s = tvtk.CylinderSource(height=0.1, radius=0.02)
+          t = sva.PTransform.Identity()
+          color = (0., 1., 0.)
+        elif type == rbd.Joint.RevZ:
+          s = tvtk.CylinderSource(height=0.1, radius=0.02)
+          t = sva.PTransform(sva.RotX(np.pi/2.))
+          color = (0., 0., 1.)
+        else:
+          s = tvtk.SphereSource(radius=0.02)
+          t = sva.PTransform.Identity()
+          color = (1., 1., 1.)
+        return s, t, color
+
+      ss, st, color = jointGeom(mb.joint(i).type())
+
       sm = tvtk.PolyDataMapper(input=ss.output)
       sa = tvtk.Actor(mapper=sm)
+      sa.property.color = color
+      sa.user_transform = tvtk.Transform()
       sa.visibility = 0
       self.viewer.scene.add_actors(sa)
 
       self.jointS.append(ss)
       self.jointA.append(sa)
+      self.jointT.append(st)
 
 
 
+      # create velocity arrows
       arrs = tvtk.ArrowSource()
       arrm = tvtk.PolyDataMapper(input=arrs.output)
       arra = tvtk.Actor(mapper=arrm)
@@ -134,7 +164,6 @@ class GraphicMultiBody:
 
     for i in range(mb.nrBodies()):
       Xi = bG[i]
-      XiT = Xi.translation()
 
       com = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
       com = toEigen(com)
@@ -156,7 +185,7 @@ class GraphicMultiBody:
 
         # show joint
         sa = self.jointA[i]
-        sa.position = (XiT[0], XiT[1], XiT[2])
+        setTransform(sa, self.jointT[i]*Xi)
         sa.visibility = 1
 
 
@@ -198,46 +227,4 @@ class GraphicMultiBody:
 
       a.visibility = 1
 
-
-
-
-
-
-def show_multibody(mb, mbc):
-  bG = [i for i in mbc.bodyPosW]
-
-  v = mlab.gcf()
-
-  for i in range(mb.nrBodies()):
-    Xi = bG[i]
-    XiT = Xi.translation()
-
-    if mb.parent(i) != -1:
-      Xp = bG[mb.parent(i)]
-      XpT = Xp.translation()
-
-      # show link from body base to joint
-      ls = tvtk.LineSource(point1=(XpT[0], XpT[1], XpT[2]),
-                           point2=(XiT[0], XiT[1], XiT[2]))
-      lm = tvtk.PolyDataMapper(input=ls.output)
-      la = tvtk.Actor(mapper=lm)
-      v.scene.add_actors(la)
-
-      # show joint
-      ss = tvtk.SphereSource(center=(XiT[0], XiT[1], XiT[2]),
-                             radius=0.05)
-      sm = tvtk.PolyDataMapper(input=ss.output)
-      sa = tvtk.Actor(mapper=sm)
-      v.scene.add_actors(sa)
-
-
-    #v.scene.add_actors(sa)
-    a = tvtk.Axes()
-    a.scale_factor = 0.1
-    #a.origin = np.array([XiT[0], XiT[1], XiT[2]])
-    am = tvtk.PolyDataMapper(input=a.output)
-    aa = tvtk.Actor(mapper=am)
-    v.scene.add_actors(aa)
-
-  return v
 
