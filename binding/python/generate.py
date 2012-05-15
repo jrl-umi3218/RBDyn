@@ -163,6 +163,14 @@ def build_mb(mb):
   mb.add_method('sTransform', retval('sva::PTransform'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='transform')
 
+  mb.add_method('jointsPosInParam', retval('std::vector<int>'), [], is_const=True)
+  mb.add_method('sJointPosInParam', retval('int'), [param('int', 'num')],
+                is_const=True, throw=[out_ex], custom_name='jointPosInParam')
+
+  mb.add_method('jointsPosInDof', retval('std::vector<int>'), [], is_const=True)
+  mb.add_method('sJointPosInDof', retval('int'), [param('int', 'num')],
+                is_const=True, throw=[out_ex], custom_name='jointPosInDof')
+
   mb.add_method('sBodyIndexById', retval('int'), [param('int', 'id')],
                 is_const=True, throw=[out_ex], custom_name='bodyIndexById')
 
@@ -246,6 +254,24 @@ def build_jacobian(jac):
                  [param('const rbd::MultiBody&', 'mb'),
                   param('const rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='jacobian')
+
+  jac.add_method('sJacobianDot', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='jacobianDot')
+
+  jac.add_method('sTranslateJacobian', None,
+                 [param('const Eigen::MatrixXd&', 'jac'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'point'),
+                  param('Eigen::MatrixXd&', 'res')],
+                 throw=[dom_ex], custom_name='translateJacobian')
+
+  jac.add_method('sFullJacobian', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const Eigen::MatrixXd&', 'jac'),
+                  param('Eigen::MatrixXd&', 'res')],
+                 throw=[dom_ex], custom_name='fullJacobian')
 
   jac.add_method('sSubMultiBody', retval('rbd::MultiBody'),
                  [param('const rbd::MultiBody&', 'mb')],
