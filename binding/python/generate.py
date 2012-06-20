@@ -117,7 +117,8 @@ def build_mbg(mbg):
   mbg.add_method('nrJoints', retval('int'), [], is_const=True)
 
   mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
-                 [param('int', 'rootById'), param('bool', 'isFixed')])
+                 [param('int', 'rootById'), param('bool', 'isFixed'),
+                  param('sva::PTransform', 'initTrans', default_value='sva::PTransform::Identity()')])
 
 
 
