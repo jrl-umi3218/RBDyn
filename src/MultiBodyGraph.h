@@ -131,9 +131,11 @@ public:
 		* Create a MultiBody from the graph.
 		* @param rootBodyId Id of the root body.
 		* @param isFixed True if the root is fixed, false if the root is free.
+		* @param initTrans Initial transformation of the robot root.
 		* @throw std::out_of_rang If rootBodyId don't exist.
 		*/
-	MultiBody makeMultiBody(int rootBodyId, bool isFixed);
+	MultiBody makeMultiBody(int rootBodyId, bool isFixed,
+		const sva::PTransform& initTrans=sva::PTransform::Identity());
 
 private:
 	std::vector<std::shared_ptr<Node>> nodes_;

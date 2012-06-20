@@ -87,7 +87,8 @@ std::size_t MultiBodyGraph::nrJoints() const
 	return joints_.size();
 }
 
-MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
+MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
+	const sva::PTransform& initTrans)
 {
 	using namespace Eigen;
 
@@ -145,8 +146,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed)
 		}
 	};
 
-	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1,
-		sva::PTransform::Identity());
+	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1, initTrans);
 
 	return MultiBody(std::move(bodies), std::move(joints),
 		std::move(pred), std::move(succ), std::move(parent), std::move(Xt));

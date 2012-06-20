@@ -402,7 +402,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	mbg2.linkBodies(1, PTransform(Matrix3d(sva::RotX(constants::pi<double>()/2.))),
 									3, PTransform::Identity(), 2);
 
-	MultiBody mb4 = mbg2.makeMultiBody(0, true);
+	sva::PTransform root(Vector3d(Vector3d::Random()));
+	MultiBody mb4 = mbg2.makeMultiBody(0, true, root);
 
 
 	bodies = {b1, b2, b3, b4};
@@ -413,7 +414,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	succ = {0, 1, 2, 3};
 	parent = {-1, 0, 1, 1};
 
-	Xt = {I,
+	Xt = {root,
 				PTransform(Vector3d(1., 0., 0.)),
 				PTransform(Vector3d(1., 1., 0.)),
 				PTransform(RotX(constants::pi<double>()/2.), Vector3d(0., 1., 0.))};
