@@ -7,9 +7,9 @@ import rbdyn as rbd
 
 from tvtk.api import tvtk
 
+from wavefront_obj import readObj
 
-
-class Geometry:
+class Geometry(object):
   def joint(self, pos):
     return None
 
@@ -23,13 +23,13 @@ class Geometry:
 
 class DefaultGeometry(Geometry):
   def __init__(self, mb):
-    self.__createLinks(mb)
-    self.__createBodies(mb)
-    self.__createJoints(mb)
+    self._createLinks(mb)
+    self._createBodies(mb)
+    self._createJoints(mb)
 
 
 
-  def __createLinks(self, mb):
+  def _createLinks(self, mb):
     self.links = []
 
     for i in range(mb.nrBodies()):
@@ -55,7 +55,7 @@ class DefaultGeometry(Geometry):
 
 
 
-  def __createBodies(self, mb):
+  def _createBodies(self, mb):
     self.bodies = []
 
     for i in range(mb.nrBodies()):
@@ -88,7 +88,7 @@ class DefaultGeometry(Geometry):
 
 
 
-  def __createJoints(self, mb):
+  def _createJoints(self, mb):
     self.joints = []
 
     for i in range(mb.nrBodies()):
@@ -133,5 +133,29 @@ class DefaultGeometry(Geometry):
 
   def link(self, pos):
     return self.links[pos]
+
+
+
+class MeshGeometry(DefaultGeometry):
+  def __init__(self, mb, files):
+    self._createLinks(mb)
+    self._createBodies(mb, files)
+    self._createJoints(mb)
+
+
+  def _createBodies(self, mb, files):
+    self.bodies = []
+
+    for i in range(mb.nrBodies()):
+      vert, face = readObj(files[i][0])
+
+      bodys = tvtk.PolyData(points=vert, polys=face)
+      bodym = tvtk.PolyDataMapper(input=bodys)
+
+      bodya = tvtk.Actor(mapper=bodym)
+      bodya.property.opacity = 0.2
+      bodya.user_transform = tvtk.Transform()
+
+      self.bodies.append((bodya, sva.PTransform.Identity()))
 
 
