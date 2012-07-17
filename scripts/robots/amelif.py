@@ -1,3 +1,4 @@
+import os.path
 from xml.dom.minidom import parse
 
 import numpy as np
@@ -34,7 +35,12 @@ def jointType(type, axis):
 def make_amelif_robot(file, isFixed):
   mbg = rbd.MultiBodyGraph()
 
+  xmlpath = os.path.dirname(file)
+  sep = os.path.sep
+  objpath = xmlpath + sep + '..' + sep + 'mesh' + sep
   dom = parse(file)
+
+  objFiles = []
 
   for bodyNode in dom.getElementsByTagName('Body'):
     id = int(bodyNode.getAttribute('id'))
@@ -48,9 +54,14 @@ def make_amelif_robot(file, isFixed):
     inertiaLF = [float(i) for i in inertiaL]
     inertia = toEigen(np.matrix(inertiaLF).reshape((3, 3)))
 
-    file = []
+    obj = []
     for f in bodyNode.getElementsByTagName('File'):
-      file.append(f.firstChild.data)
+      file = f.firstChild.data
+      filename, fileext = os.path.splitext(file)
+      filename = os.path.basename(filename)
+      obj.append(objpath + filename + '.obj')
+
+    objFiles.append(obj)
 
     body = rbd.Body(mass, com, inertia, id, label)
     mbg.addBody(body)
@@ -99,6 +110,6 @@ def make_amelif_robot(file, isFixed):
 
   mbc.force = [sva.ForceVec(Vector6d.Zero())]*mb.nrBodies()
 
-  return mb, mbc, mbg
+  return mb, mbc, mbg, objFiles
 
 
