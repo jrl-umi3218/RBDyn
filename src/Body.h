@@ -48,7 +48,7 @@ public:
 	/**
 		* @param mass Body mass.
 		* @param com Body center of mass.
-		* @param inertia Body inertia matrix.
+		* @param inertia Body inertia matrix at body origin.
 		* @param id Body id, must be unique in a multibody.
 		* @param name Body name.
 		*/
