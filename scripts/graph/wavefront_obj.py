@@ -13,5 +13,5 @@ def readObj(filename):
         elif l[0] == 'f':
           face.append(l[1:])
 
-  return (np.array(vert, np.double), np.array(face, np.int))
+  return (np.array(vert, np.double), np.array(face, np.int) - 1)
 
