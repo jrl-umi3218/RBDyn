@@ -3,7 +3,7 @@ from xml.dom.minidom import parse
 
 import numpy as np
 
-from eigen3 import Vector3d, Matrix3d, Vector6d, toEigen
+from eigen3 import Vector3d, Vector6d, toEigen
 
 import spacevecalg as sva
 import rbdyn as rbd
@@ -40,7 +40,7 @@ def make_amelif_robot(file, isFixed):
   objpath = xmlpath + sep + '..' + sep + 'mesh' + sep
   dom = parse(file)
 
-  objFiles = []
+  objFiles = {}
 
   for bodyNode in dom.getElementsByTagName('Body'):
     id = int(bodyNode.getAttribute('id'))
@@ -61,9 +61,12 @@ def make_amelif_robot(file, isFixed):
       filename = os.path.basename(filename)
       obj.append(objpath + filename + '.obj')
 
-    objFiles.append(obj)
+    objFiles[id] = obj
 
-    body = rbd.Body(mass, com, inertia, id, label)
+    # Transform rotational inertia to body origin
+    I_o = sva.PTransform(com).dualMul(sva.RBInertia(mass, Vector3d.Zero(), inertia))
+
+    body = rbd.Body(mass, com, I_o.inertia(), id, label)
     mbg.addBody(body)
 
 
@@ -102,6 +105,10 @@ def make_amelif_robot(file, isFixed):
   for i in range(mb.nrJoints()):
     zeroParam.append([0.]*mb.joint(i).params())
     zeroDoF.append([0.]*mb.joint(i).dof())
+
+  # identity quaternion
+  if not isFixed:
+    zeroParam[0][0] = 1.
 
   mbc.q = zeroParam
   mbc.alpha = zeroDoF
