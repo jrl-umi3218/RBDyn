@@ -147,13 +147,13 @@ class MeshGeometry(DefaultGeometry):
     self.bodies = []
 
     for i in range(mb.nrBodies()):
-      vert, face = readObj(files[i][0])
+      vert, face = readObj(files[mb.body(i).id()][0])
 
       bodys = tvtk.PolyData(points=vert, polys=face)
       bodym = tvtk.PolyDataMapper(input=bodys)
 
       bodya = tvtk.Actor(mapper=bodym)
-      bodya.property.opacity = 0.2
+      bodya.property.opacity = 0.6
       bodya.user_transform = tvtk.Transform()
 
       self.bodies.append((bodya, sva.PTransform.Identity()))
