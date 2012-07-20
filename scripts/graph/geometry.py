@@ -147,9 +147,12 @@ class MeshGeometry(DefaultGeometry):
     self.bodies = []
 
     for i in range(mb.nrBodies()):
-      vert, face = readObj(files[mb.body(i).id()][0])
+      vert, face, color = readObj(files[mb.body(i).id()][0])
+      vtkColor = tvtk.UnsignedCharArray()
+      vtkColor.from_array(color)
 
       bodys = tvtk.PolyData(points=vert, polys=face)
+      bodys.cell_data.scalars = vtkColor
       bodym = tvtk.PolyDataMapper(input=bodys)
 
       bodya = tvtk.Actor(mapper=bodym)
