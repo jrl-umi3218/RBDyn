@@ -147,7 +147,15 @@ class MeshGeometry(DefaultGeometry):
     self.bodies = []
 
     for i in range(mb.nrBodies()):
-      vert, face, color = readObj(files[mb.body(i).id()][0])
+      vert = np.empty((0,3))
+      face = np.empty((0,3))
+      color = []
+      for objfile in files[mb.body(i).id()]:
+        v, f, c = readObj(objfile)
+        face = np.vstack((face, f + vert.shape[0]))
+        vert = np.vstack((vert, v))
+        color.extend(c)
+
       vtkColor = tvtk.UnsignedCharArray()
       vtkColor.from_array(color)
 
