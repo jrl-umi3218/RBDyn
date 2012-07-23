@@ -38,11 +38,14 @@ class GraphicMultiBody:
 
     self.transformVel = [(0., 0., 0., 0.)]*mb.nrJoints()
 
+    actors = []
     for i in range(mb.nrBodies()):
-      self.viewer.scene.add_actors(self.geom.body(i)[0])
+      actors.append(self.geom.body(i)[0])
       if mb.parent(i) != -1:
-        self.viewer.scene.add_actors(self.geom.link(i)[0])
-        self.viewer.scene.add_actors(self.geom.joint(i)[0])
+        actors.append(self.geom.link(i)[0])
+        actors.append(self.geom.joint(i)[0])
+
+    self.viewer.scene.add_actors(actors)
 
 
     # todo : Replace by fixture
