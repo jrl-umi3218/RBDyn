@@ -1,14 +1,10 @@
-import numpy as np
-
-from eigen3 import toEigen
+from eigen3 import Vector3d
 import spacevecalg as sva
 
 def dhToTransform(a, alpha, d, theta):
-  t = np.mat([a*np.cos(theta), a*np.sin(theta), d]).T
-  r = np.mat([[np.cos(theta), -np.cos(alpha)*np.sin(theta), np.sin(alpha)*np.sin(theta)],
-              [np.sin(theta), np.cos(alpha)*np.cos(theta), -np.cos(theta)*np.sin(alpha)],
-              [0., np.sin(alpha), np.cos(alpha)]])
+  rx = sva.PTransform(sva.RotX(alpha))
+  tx = sva.PTransform(Vector3d.UnitX()*a)
+  rz = sva.PTransform(sva.RotZ(theta))
+  tz = sva.PTransform(Vector3d.UnitZ()*d)
 
-  return sva.PTransform(toEigen(r), toEigen(t))
-
-
+  return tz*rz*tx*rx
