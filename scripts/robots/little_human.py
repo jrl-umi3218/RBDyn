@@ -259,11 +259,11 @@ def make_little_human():
   # rarm
   rarmT = dh.dhToTransform(0., np.deg2rad(-90.), -ARM_LINK1, 0.)*chestT
   mbg.linkBodies(body1_b.id(), dh.dhToTransform(0., 0., 0., 0.)*rarmT,
-                 rarm1_b.id(), sva.PTransform.Identity(), rarm2_j.id())
+                 rarm1_b.id(), sva.PTransform.Identity(), rarm1_j.id())
   mbg.linkBodies(rarm1_b.id(), dh.dhToTransform(0., np.deg2rad(90.), 0., np.deg2rad(90)),
-                 rarm2_b.id(), sva.PTransform.Identity(), rarm3_j.id())
+                 rarm2_b.id(), sva.PTransform.Identity(), rarm2_j.id())
   mbg.linkBodies(rarm2_b.id(), dh.dhToTransform(0., np.deg2rad(90.), ARM_LINK2, np.deg2rad(90)),
-                 rarm3_b.id(), sva.PTransform.Identity(), rarm4_j.id())
+                 rarm3_b.id(), sva.PTransform.Identity(), rarm3_j.id())
   mbg.linkBodies(rarm3_b.id(), dh.dhToTransform(0., np.deg2rad(90.), 0., 0.),
                  rarm4_b.id(), sva.PTransform.Identity(), rarm4_j.id())
 
