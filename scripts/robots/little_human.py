@@ -187,7 +187,7 @@ head2_m = (4.12e-01, Vector3d(-1.03952e+00,-5.17985e+00, 1.82267e-02),
 
 
 
-def make_little_human():
+def make_little_human(objPath):
   rleg1_b, rleg1_j = make_joint_link(rleg1_m[0], rleg1_m[1], rleg1_m[2], 1, 'RLEG', 1)
   rleg2_b, rleg2_j = make_joint_link(rleg2_m[0], rleg2_m[1], rleg2_m[2], 2, 'RLEG', 2)
   rleg3_b, rleg3_j = make_joint_link(rleg3_m[0], rleg3_m[1], rleg3_m[2], 3, 'RLEG', 3)
@@ -288,7 +288,6 @@ def make_little_human():
                  lleg5_b.id(), sva.PTransform.Identity(), lleg5_j.id())
   mbg.linkBodies(lleg5_b.id(), dh.dhToTransform(0., np.deg2rad(-90), 0., 0.),
                  lleg6_b.id(), sva.PTransform.Identity(), lleg6_j.id())
-
   # rleg
   mbg.linkBodies(body2_b.id(), dh.dhToTransform(-LEG_LINK1, 0., 0., 0.)*leg0T,
                  rleg1_b.id(), sva.PTransform.Identity(), rleg1_j.id())
@@ -302,6 +301,40 @@ def make_little_human():
                  rleg5_b.id(), sva.PTransform.Identity(), rleg5_j.id())
   mbg.linkBodies(rleg5_b.id(), dh.dhToTransform(0., np.deg2rad(-90), 0., 0.),
                  rleg6_b.id(), sva.PTransform.Identity(), rleg6_j.id())
+
+
+  # obj
+  objFiles = {
+    body1_b.id():[objPath + 'BODY_LINK01.obj'],
+    body2_b.id():[objPath + 'BODY_LINK02.obj'],
+
+    head1_b.id():[objPath + 'HEAD_LINK01.obj'],
+    head2_b.id():[objPath + 'HEAD_LINK02.obj'],
+
+    rarm1_b.id():[objPath + 'RARM_LINK01.obj'],
+    rarm2_b.id():[objPath + 'RARM_LINK02.obj'],
+    rarm3_b.id():[objPath + 'RARM_LINK03.obj'],
+    rarm4_b.id():[objPath + 'RARM_LINK04.obj'],
+
+    larm1_b.id():[objPath + 'LARM_LINK01.obj'],
+    larm2_b.id():[objPath + 'LARM_LINK02.obj'],
+    larm3_b.id():[objPath + 'LARM_LINK03.obj'],
+    larm4_b.id():[objPath + 'LARM_LINK04.obj'],
+
+    rleg1_b.id():[objPath + 'RLEG_LINK01.obj'],
+    rleg2_b.id():[objPath + 'RLEG_LINK02.obj'],
+    rleg3_b.id():[objPath + 'RLEG_LINK03.obj'],
+    rleg4_b.id():[objPath + 'RLEG_LINK04.obj'],
+    rleg5_b.id():[objPath + 'RLEG_LINK05.obj'],
+    rleg6_b.id():[objPath + 'RLEG_LINK06.obj'],
+
+    lleg1_b.id():[objPath + 'LLEG_LINK01.obj'],
+    lleg2_b.id():[objPath + 'LLEG_LINK02.obj'],
+    lleg3_b.id():[objPath + 'LLEG_LINK03.obj'],
+    lleg4_b.id():[objPath + 'LLEG_LINK04.obj'],
+    lleg5_b.id():[objPath + 'LLEG_LINK05.obj'],
+    lleg6_b.id():[objPath + 'LLEG_LINK06.obj'],
+  }
 
 
   mb = mbg.makeMultiBody(21, True)
@@ -322,5 +355,5 @@ def make_little_human():
 
   mbc.force = [sva.ForceVec(Vector6d.Zero())]*mb.nrBodies()
 
-  return mb, mbc, mbg
+  return mb, mbc, mbg, objFiles
 

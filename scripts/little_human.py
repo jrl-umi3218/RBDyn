@@ -7,7 +7,7 @@ from eigen3 import *
 import rbdyn as rbd
 
 from graph.multibody import GraphicMultiBody
-from graph.geometry import DefaultGeometry
+from graph.geometry import MeshGeometry
 
 from robots.little_human import make_little_human
 
@@ -61,9 +61,11 @@ class Controller(object):
 
 
 if __name__ == '__main__':
-  mb, mbc, mbg = make_little_human()
+  mb, mbc, mbg, objfile = make_little_human('../../robots/hoap_3/mesh/')
+
   mbc.gravity = Vector3d(0., 0., 9.81)
-  geom = DefaultGeometry(mb)
+
+  geom = MeshGeometry(mb, objfile)
 
   cont = Controller(mb, mbc, geom)
 
