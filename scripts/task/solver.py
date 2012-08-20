@@ -1,6 +1,6 @@
 import numpy as np
 
-from eigen3 import toEigen
+from eigen3 import toEigenX
 import rbdyn as rbd
 
 class WLSSolver(object):
@@ -31,5 +31,5 @@ class WLSSolver(object):
     #alpha1 = np.linalg.lstsq(jac, err)[0]
     alpha2 = np.linalg.pinv(jac)*err
 
-    mbc.alpha = rbd.vectorToDof(mb, toEigen(alpha2))
+    mbc.alpha = rbd.vectorToDof(mb, toEigenX(alpha2))
 
