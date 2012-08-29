@@ -14,10 +14,12 @@ import geometry
 def setTransform(actor, transform):
   R = transform.rotation()
   T = transform.translation()
+
   actor.user_transform.set_matrix((R[0], R[1], R[2], T[0],
                                    R[3], R[4], R[5], T[1],
                                    R[6], R[7], R[8], T[2],
                                      0.,   0.,   0.,   1.))
+
 
   #actor.user_transform.set_matrix((R[0], R[3], R[6], T[0],
   #                                 R[1], R[4], R[7], T[1],
@@ -28,13 +30,15 @@ def setTransform(actor, transform):
 
 
 class GraphicMultiBody:
-  def __init__(self, mb, geom=None):
+  def __init__(self, mb, geom=None, staticTransform=sva.PTransform.Identity()):
     self.viewer = mlab.gcf()
 
     if geom == None:
       self.geom = geometry.DefaultGeometry(mb)
     else:
       self.geom = geom
+
+    self.staticTransform = staticTransform
 
     self.transformVel = [(0., 0., 0., 0.)]*mb.nrJoints()
 
@@ -73,11 +77,11 @@ class GraphicMultiBody:
     for i in range(mb.nrBodies()):
       Xi = bG[i]
 
-      com = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
-      com = toEigen(com)
+      #com = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
+      #com = toEigen(com)
       com = Vector3d.Zero()
 
-      comPos = sva.PTransform(com)*Xi
+      comPos = sva.PTransform(com)*Xi*self.staticTransform
 
       comA, comS = self.geom.body(i)
       setTransform(comA, comPos)
@@ -87,11 +91,11 @@ class GraphicMultiBody:
 
         # show link from body base to joint
         linkA, linkS = self.geom.link(i)
-        setTransform(linkA, linkS*Xp)
+        setTransform(linkA, linkS*Xp*self.staticTransform)
 
         # show joint
         jointA, jointS = self.geom.joint(i)
-        setTransform(jointA, jointS*Xi)
+        setTransform(jointA, jointS*Xi*self.staticTransform)
 
 
 

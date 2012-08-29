@@ -137,13 +137,13 @@ class DefaultGeometry(Geometry):
 
 
 class MeshGeometry(DefaultGeometry):
-  def __init__(self, mb, files):
+  def __init__(self, mb, files, opacity=1.):
     self._createLinks(mb)
-    self._createBodies(mb, files)
+    self._createBodies(mb, files, opacity)
     self._createJoints(mb)
 
 
-  def _createBodies(self, mb, files):
+  def _createBodies(self, mb, files, opacity):
     self.bodies = []
 
     for i in range(mb.nrBodies()):
@@ -164,7 +164,7 @@ class MeshGeometry(DefaultGeometry):
       bodym = tvtk.PolyDataMapper(input=bodys)
 
       bodya = tvtk.Actor(mapper=bodym)
-      bodya.property.opacity = 0.6
+      bodya.property.opacity = opacity
       bodya.user_transform = tvtk.Transform()
 
       self.bodies.append((bodya, sva.PTransform.Identity()))
