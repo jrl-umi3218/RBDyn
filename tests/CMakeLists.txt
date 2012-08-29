@@ -35,4 +35,8 @@ add_test(JacobianTestUnit JacobianTest)
 
 add_executable(DynamicsTest DynamicsTest.cpp)
 target_link_libraries(DynamicsTest ${Boost_LIBRARIES} RBDyn)
-add_test(DynamicsUnit DynamicsTest)
+add_test(DynamicsTestUnit DynamicsTest)
+
+add_executable(CoMTest CoMTest.cpp)
+target_link_libraries(CoMTest ${Boost_LIBRARIES} RBDyn)
+add_test(CoMTestUnit CoMTest)

@@ -1,7 +1,7 @@
 set(SOURCES MultiBodyGraph.cpp MultiBody.cpp MultiBodyConfig.cpp
-  FK.cpp FV.cpp Jacobian.cpp ID.cpp FD.cpp EulerIntegration.cpp)
+  FK.cpp FV.cpp Jacobian.cpp ID.cpp FD.cpp EulerIntegration.cpp CoM.cpp)
 set(HEADERS Body.h Joint.h MultiBodyGraph.h MultiBody.h MultiBodyConfig.h
-  FK.h FV.h Jacobian.h ID.h FD.h EulerIntegration.h)
+  FK.h FV.h Jacobian.h ID.h FD.h EulerIntegration.h CoM.h)
 
 pkg_check_modules(EIGEN3 REQUIRED eigen3)
 find_path(SVA_INCLUDE_DIRS SpaceVecAlg/SpaceVecAlg
