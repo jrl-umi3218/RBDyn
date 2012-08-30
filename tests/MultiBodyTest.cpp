@@ -554,3 +554,95 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 			confD[i].begin(), confD[i].end());
 	}
 }
+
+
+void checkConfig(const rbd::MultiBodyConfig& mbc1, const rbd::MultiBodyConfig& mbc2)
+{
+	for(std::size_t i = 0; i < mbc1.q.size(); ++i)
+	{
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc1.q[i].begin(), mbc1.q[i].end(),
+			mbc2.q[i].begin(), mbc2.q[i].end());
+
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc1.alpha[i].begin(), mbc1.alpha[i].end(),
+			mbc2.alpha[i].begin(), mbc2.alpha[i].end());
+
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc1.alphaD[i].begin(), mbc1.alphaD[i].end(),
+			mbc2.alphaD[i].begin(), mbc2.alphaD[i].end());
+	}
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(mbc1.force.begin(), mbc1.force.end(),
+		mbc2.force.begin(), mbc2.force.end());
+}
+
+BOOST_AUTO_TEST_CASE(ConfigConverterTest)
+{
+	using namespace std;
+	using namespace Eigen;
+	using namespace rbd;
+	using namespace sva;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Zero();
+
+	RBInertia rbi(mass, h, I);
+
+	Body b0(rbi, 0, "b0");
+	Body b1(rbi, 1, "b1");
+	Body b2(rbi, 2, "b2");
+	Body b3(rbi, 3, "b3");
+
+	mbg.addBody(b0);
+	mbg.addBody(b1);
+	mbg.addBody(b2);
+	mbg.addBody(b3);
+
+	Joint j0(Joint::Spherical, true, 0, "j0");
+	Joint j1(Joint::RevY, true, 1, "j1");
+	Joint j2(Joint::RevX, true, 2, "j2");
+
+	mbg.addJoint(j0);
+	mbg.addJoint(j1);
+	mbg.addJoint(j2);
+
+	mbg.linkBodies(0, PTransform::Identity(), 1, PTransform::Identity(), 0);
+	mbg.linkBodies(1, PTransform::Identity(), 2, PTransform::Identity(), 1);
+	mbg.linkBodies(2, PTransform::Identity(), 3, PTransform::Identity(), 2);
+
+	MultiBody mb1 = mbg.makeMultiBody(0, true);
+	MultiBody mb2 = mbg.makeMultiBody(3, true);
+	MultiBody mb3 = mbg.makeMultiBody(1, true);
+
+	ConfigConverter* mb1tomb2 = ConfigConverter::sConstructor(mb1, mb2);
+	ConfigConverter* mb1tomb3 = ConfigConverter::sConstructor(mb1, mb3);
+
+	ConfigConverter* mb2tomb1 = ConfigConverter::sConstructor(mb2, mb1);
+	ConfigConverter* mb3tomb1 = ConfigConverter::sConstructor(mb3, mb1);
+
+
+	MultiBodyConfig mbc1(mb1);
+	MultiBodyConfig mbc1Tmp(mb1);
+	MultiBodyConfig mbc2(mb2);
+	MultiBodyConfig mbc3(mb3);
+
+	mbc1.q = {{}, {1., 0., 0., 0.}, {1.}, {2.}};
+	mbc1.alpha = {{}, {1., 0., 0., 0.}, {1.2}, {2.2}};
+	mbc1.alphaD = {{}, {0., 3., 2.}, {1.4}, {2.3}};
+	mbc1.force = {ForceVec(Vector6d::Random()), ForceVec(Vector6d::Random()),
+								ForceVec(Vector6d::Random()), ForceVec(Vector6d::Random())};
+
+	mb1tomb2->sConvert(mbc1, mbc2);
+	mb2tomb1->sConvert(mbc2, mbc1Tmp);
+	checkConfig(mbc1, mbc1Tmp);
+
+	mb1tomb3->sConvert(mbc1, mbc3);
+	mb3tomb1->sConvert(mbc3, mbc1Tmp);
+	checkConfig(mbc1, mbc1Tmp);
+
+	delete mb1tomb2;
+	delete mb1tomb3;
+	delete mb2tomb1;
+	delete mb3tomb1;
+}

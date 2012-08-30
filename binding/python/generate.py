@@ -368,6 +368,19 @@ def build_com(mod, comD):
                  throw=[dom_ex], custom_name='jacobian')
 
 
+def build_confconv(conf):
+  const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',
+                                   [param('const rbd::MultiBody&', 'mb1'),
+                                    param('const rbd::MultiBody&', 'mb2')])
+  const.throw = [dom_ex]
+
+  conf.add_method('sConvert', None,
+                 [param('const rbd::MultiBodyConfig&', 'mbc1'),
+                  param('rbd::MultiBodyConfig&', 'mbc2')],
+                 throw=[dom_ex], custom_name='convert')
+
+
+
 if __name__ == '__main__':
   if len(sys.argv) < 2:
     sys.exit(1)
@@ -404,6 +417,7 @@ if __name__ == '__main__':
   id = rbd.add_class('InverseDynamics')
   fd = rbd.add_class('ForwardDynamics')
   comDummy = rbd.add_class('CoMJacobianDummy')
+  confconv = rbd.add_class('ConfigConverter')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
@@ -428,6 +442,7 @@ if __name__ == '__main__':
   build_id(id)
   build_fd(fd)
   build_com(rbd, comDummy)
+  build_confconv(confconv)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)

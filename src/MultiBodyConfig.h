@@ -94,6 +94,36 @@ struct MultiBodyConfig
 
 
 /**
+	* Convert a MultiBodyConfig to another MultiBodyConfig of the same MultiBodyGraph.
+	* This class only convert q, alpha, alphaD and force.
+	*/
+class ConfigConverter
+{
+public:
+	ConfigConverter(const MultiBody& from, const MultiBody& to);
+
+	void convert(const MultiBodyConfig& from, MultiBodyConfig& to) const;
+
+	// safe version for python binding
+
+	/** safe version of @see ConfigConverter.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	static ConfigConverter* sConstructor(const MultiBody& from, const MultiBody& to);
+
+	/** safe version of @see convert.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sConvert(const MultiBodyConfig& from, MultiBodyConfig& to) const;
+
+private:
+	std::vector<int> jInd_;
+	std::vector<int> bInd_;
+};
+
+
+
+/**
 	* Convert parameter vector to Eigen Vector.
 	* @param v Parameter vector.
 	* @param e Output Eigen vector (must be of the good size).

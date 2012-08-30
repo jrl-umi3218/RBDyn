@@ -77,6 +77,127 @@ void MultiBodyConfig::python_motionSubspace(const std::vector<Eigen::MatrixXd>& 
 }
 
 
+/**
+	*													ConfigConverter
+	*/
+
+
+ConfigConverter::ConfigConverter(const MultiBody& from, const MultiBody& to):
+  jInd_(from.nrJoints() - 1),
+  bInd_(from.nrBodies())
+{
+  using namespace Eigen;
+
+	const std::vector<Body>& bodies = from.bodies();
+	const std::vector<Joint>& joints = from.joints();
+
+	for(std::size_t i = 0; i < joints.size() - 1; ++i)
+	{
+		jInd_[i] = to.jointIndexById(joints[i + 1].id());
+	}
+
+	for(std::size_t i = 0; i < bodies.size(); ++i)
+	{
+		bInd_[i] = to.bodyIndexById(bodies[i].id());
+	}
+}
+
+
+void ConfigConverter::convert(const MultiBodyConfig& from, MultiBodyConfig& to) const
+{
+	for(std::size_t i = 0; i < jInd_.size(); ++i)
+	{
+		to.q[jInd_[i]] = from.q[i + 1];
+		to.alpha[jInd_[i]] = from.alpha[i + 1];
+		to.alphaD[jInd_[i]] = from.alphaD[i + 1];
+	}
+
+	for(std::size_t i = 0; i < bInd_.size(); ++i)
+	{
+		to.force[bInd_[i]] = from.force[i];
+	}
+}
+
+
+ConfigConverter* ConfigConverter::sConstructor(const MultiBody& from, const MultiBody& to)
+{
+	bool isOk = true;
+
+	if(from.nrBodies() != to.nrBodies())
+		isOk = false;
+
+	if(from.nrJoints() != to.nrJoints())
+		isOk = false;
+
+	if(isOk)
+	{
+		const std::vector<Joint>& joints = from.joints();
+		const std::unordered_map<int, int>& jI2Ito = to.jointIndexById();
+
+		for(const Joint& j: joints)
+		{
+			if(jI2Ito.find(j.id()) == jI2Ito.end())
+			{
+				isOk = false;
+				break;
+			}
+		}
+	}
+
+	if(isOk)
+	{
+		const std::vector<Body>& bodies = from.bodies();
+		const std::unordered_map<int, int>& bI2Ito = to.bodyIndexById();
+
+		for(const Body& b: bodies)
+		{
+			if(bI2Ito.find(b.id()) == bI2Ito.end())
+			{
+				isOk = false;
+				break;
+			}
+		}
+	}
+
+	if(!isOk)
+	{
+		throw std::domain_error("MultiBody mismatch");
+	}
+
+	return new ConfigConverter(from, to);
+}
+
+
+void ConfigConverter::sConvert(const MultiBodyConfig& from, MultiBodyConfig& to) const
+{
+	bool isOk = true;
+
+	if(from.q.size() != to.q.size())
+		isOk = false;
+
+	if(from.alpha.size() != to.alpha.size())
+		isOk = false;
+
+	if(from.alphaD.size() != to.alphaD.size())
+		isOk = false;
+
+	if(from.force.size() != to.force.size())
+		isOk = false;
+
+	if(!isOk)
+	{
+		throw std::domain_error("MultiBody mismatch");
+	}
+
+	convert(from, to);
+}
+
+
+/**
+	*													Param convertion
+	*/
+
+
 void paramToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e)
 {
 	int pos = 0;

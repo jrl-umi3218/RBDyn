@@ -149,6 +149,18 @@ public:
 		return jointId2Ind_.find(id)->second;
 	}
 
+	/// @return Hash map of body index by id.
+	const std::unordered_map<int, int>& bodyIndexById() const
+	{
+		return bodyId2Ind_;
+	}
+
+	/// @return Hash map of joint index by id.
+	const std::unordered_map<int, int>& jointIndexById() const
+	{
+		return jointId2Ind_;
+	}
+
 	/// @return the joint i position in parameter vector (q).
 	int jointPosInParam(int i) const
 	{
