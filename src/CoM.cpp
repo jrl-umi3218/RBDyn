@@ -44,6 +44,13 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
+Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	return computeCoM(mb, mbc);
+}
+
+
 
 CoMJacobianDummy::CoMJacobianDummy()
 {}
@@ -88,6 +95,17 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	jac_ /= mb.nrBodies();
 
 	return jac_;
+}
+
+
+
+const Eigen::MatrixXd&
+CoMJacobianDummy::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	return jacobian(mb, mbc);
 }
 
 

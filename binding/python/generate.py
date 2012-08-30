@@ -350,6 +350,24 @@ def build_fd(id):
 
 
 
+def build_com(mod, comD):
+  mod.add_function('sComputeCoM', retval('Eigen::Vector3d'),
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
+                   custom_name='computeCoM',
+                   throw=[dom_ex])
+
+
+  comD.add_constructor([])
+  comD.add_constructor([param('const rbd::MultiBody&', 'mb')])
+
+
+  comD.add_method('sJacobian', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='sJacobian')
+
+
 if __name__ == '__main__':
   if len(sys.argv) < 2:
     sys.exit(1)
@@ -366,6 +384,7 @@ if __name__ == '__main__':
   rbd.add_include('<ID.h>')
   rbd.add_include('<FD.h>')
   rbd.add_include('<EulerIntegration.h>')
+  rbd.add_include('<CoM.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -384,6 +403,7 @@ if __name__ == '__main__':
   jac = rbd.add_class('Jacobian')
   id = rbd.add_class('InverseDynamics')
   fd = rbd.add_class('ForwardDynamics')
+  comDummy = rbd.add_class('CoMJacobianDummy')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
@@ -407,6 +427,7 @@ if __name__ == '__main__':
   build_algo(rbd)
   build_id(id)
   build_fd(fd)
+  build_com(rbd, comDummy)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)

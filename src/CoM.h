@@ -57,11 +57,30 @@ public:
 		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+
+	// safe version for python binding
+
+	/** safe version of @see jacobian.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
+
 private:
 	Eigen::MatrixXd jac_;
 	Eigen::MatrixXd jacFull_;
 
 	std::vector<Jacobian> jacVec_;
 };
+
+
+// safe version for python binding
+
+/**
+	* Safe version.
+	* @see computeCoM.
+	* @throw std::domain_error If there is a mismatch between mb and mbc.
+	*/
+Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
+
 
 } // namespace rbd
