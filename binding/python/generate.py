@@ -365,7 +365,7 @@ def build_com(mod, comD):
   comD.add_method('sJacobian', retval('Eigen::MatrixXd'),
                  [param('const rbd::MultiBody&', 'mb'),
                   param('rbd::MultiBodyConfig&', 'mbc')],
-                 throw=[dom_ex], custom_name='sJacobian')
+                 throw=[dom_ex], custom_name='jacobian')
 
 
 if __name__ == '__main__':
