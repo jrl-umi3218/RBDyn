@@ -36,6 +36,7 @@ class PositionTask(object):
     self.jac = rbd.Jacobian(mb, bodyId)
     self.fullJacMat = MatrixXd(6, mb.nrDof())
 
+
   def update(self, mb, mbc):
     objCur = toNumpy(list(mbc.bodyPosW)[self.bodyInd].translation())
 
@@ -51,4 +52,49 @@ class PositionTask(object):
   def jacobian(self):
     return toNumpy(self.fullJacMat)[3:,:]
 
+
+class NoRotationTask(object):
+  def __init__(self, mb, bodyId):
+    self.bodyInd = mb.bodyIndexById(bodyId)
+
+    self.err = np.mat(np.zeros((3,1)))
+    self.jac = rbd.Jacobian(mb, bodyId)
+    self.fullJacMat = MatrixXd(6, mb.nrDof())
+
+
+  def update(self, mb, mbc):
+    jacMat = self.jac.jacobian(mb, mbc)
+    self.jac.fullJacobian(mb, jacMat, self.fullJacMat)
+
+
+  def error(self):
+    return self.err
+
+
+  def jacobian(self):
+    return toNumpy(self.fullJacMat)[:3,:]
+
+
+
+class CoMTask(object):
+  def __init__(self, mb, obj):
+    self.obj = toNumpy(obj)
+    self.err = None
+
+    self.jac = rbd.CoMJacobianDummy(mb)
+    self.fullJacMat = MatrixXd(6, mb.nrDof())
+
+  def update(self, mb, mbc):
+    comCur = toNumpy(rbd.computeCoM(mb, mbc))
+
+    self.err = self.obj - comCur
+    self.fullJacMat = self.jac.jacobian(mb, mbc)
+
+
+  def error(self):
+    return self.err
+
+
+  def jacobian(self):
+    return toNumpy(self.fullJacMat)[3:,:]
 
