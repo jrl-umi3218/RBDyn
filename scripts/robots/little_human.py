@@ -187,7 +187,7 @@ head2_m = (4.12e-01, Vector3d(-1.03952e+00,-5.17985e+00, 1.82267e-02),
 
 
 
-def make_little_human(objPath):
+def make_little_human(objPath, fixed=True):
   rleg1_b, rleg1_j = make_joint_link(rleg1_m[0], rleg1_m[1], rleg1_m[2], 1, 'RLEG', 1)
   rleg2_b, rleg2_j = make_joint_link(rleg2_m[0], rleg2_m[1], rleg2_m[2], 2, 'RLEG', 2)
   rleg3_b, rleg3_j = make_joint_link(rleg3_m[0], rleg3_m[1], rleg3_m[2], 3, 'RLEG', 3)
@@ -337,14 +337,21 @@ def make_little_human(objPath):
   }
 
 
-  mb = mbg.makeMultiBody(21, True)
+  mb = mbg.makeMultiBody(21, fixed)
 
   mbc = rbd.MultiBodyConfig(mb)
 
   zeroParam = []
   zeroDoF = []
 
-  for i in range(mb.nrJoints()):
+  if fixed:
+    zeroParam.append([])
+    zeroDoF.append([])
+  else:
+    zeroParam.append([1., 0., 0., 0., 0., 0., 0.])
+    zeroDoF.append([0., 0., 0., 0., 0., 0.])
+
+  for i in range(1, mb.nrJoints()):
     zeroParam.append([0.]*mb.joint(i).params())
     zeroDoF.append([0.]*mb.joint(i).dof())
 
