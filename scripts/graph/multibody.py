@@ -3,6 +3,7 @@ import numpy as np
 
 from eigen3 import toNumpy, toEigen, Vector3d
 import spacevecalg as sva
+import rbdyn as rbd
 
 from mayavi import mlab
 from tvtk.api import tvtk
@@ -42,8 +43,27 @@ class GraphicMultiBody:
 
     self.transformVel = [(0., 0., 0., 0.)]*mb.nrJoints()
 
-    actors = []
+    ss = tvtk.SphereSource(radius=0.05)
+    sm = tvtk.PolyDataMapper(input=ss.output)
+    sa = tvtk.Actor(mapper=sm)
+    sa.property.color = (1., 0., 0.)
+    sa.user_transform = tvtk.Transform()
+    sa.visibility = 1
+    self.globalCoM = sa
+
+    self.com = []
+    actors = [sa]
     for i in range(mb.nrBodies()):
+      ss = tvtk.SphereSource(radius=0.02*mb.body(i).inertia().mass())
+      sm = tvtk.PolyDataMapper(input=ss.output)
+      sa = tvtk.Actor(mapper=sm)
+      sa.user_transform = tvtk.Transform()
+      sa.property.color = (0., 1., 0.)
+      sa.visibility = 1
+
+      self.com.append(sa)
+      actors.append(sa)
+
       actors.append(self.geom.body(i)[0])
       if mb.parent(i) != -1:
         actors.append(self.geom.link(i)[0])
@@ -74,17 +94,20 @@ class GraphicMultiBody:
   def draw(self, mb, mbc):
     bG = list(mbc.bodyPosW)
 
+    tCoM = sva.PTransform(rbd.computeCoM(mb, mbc))
+    setTransform(self.globalCoM, tCoM)
+
     for i in range(mb.nrBodies()):
       Xi = bG[i]
 
-      #com = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
-      #com = toEigen(com)
-      com = Vector3d.Zero()
+      com = toNumpy(mb.body(i).inertia().momentum())/mb.body(i).inertia().mass()
+      comPos = sva.PTransform(toEigen(com))*Xi*self.staticTransform
+      setTransform(self.com[i], comPos)
 
-      comPos = sva.PTransform(com)*Xi*self.staticTransform
+      bodyA, bodyS = self.geom.body(i)
+      bodyPos = Xi*self.staticTransform
+      setTransform(bodyA, bodyPos)
 
-      comA, comS = self.geom.body(i)
-      setTransform(comA, comPos)
 
       if mb.parent(i) != -1:
         Xp = bG[mb.parent(i)]
