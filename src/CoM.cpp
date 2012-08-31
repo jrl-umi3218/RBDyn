@@ -31,16 +31,18 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 	const std::vector<Body>& bodies = mb.bodies();
 
 	Vector3d com = Vector3d::Zero();
+	double totalMass = 0.;
 
 	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
 	{
 		double mass = bodies[i].inertia().mass();
 		Vector3d comT = bodies[i].inertia().momentum()/mass;
 
+		totalMass += mass;
 		com += (sva::PTransform(comT)*mbc.bodyPosW[i]).translation()*mass;
 	}
 
-	return com/mb.nrBodies();
+	return com/totalMass;
 }
 
 
@@ -59,7 +61,8 @@ CoMJacobianDummy::CoMJacobianDummy()
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
   jac_(6, mb.nrDof()),
   jacFull_(6, mb.nrDof()),
-  jacVec_(mb.nrBodies())
+  jacVec_(mb.nrBodies()),
+  totalMass_(0.)
 {
   using namespace Eigen;
 
@@ -68,6 +71,7 @@ CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
 		Vector3d comT = mb.body(i).inertia().momentum()/
 			mb.body(i).inertia().mass();
 		jacVec_[i] = Jacobian(mb, mb.body(i).id(), comT);
+		totalMass_ += mb.body(i).inertia().mass();
 	}
 }
 
@@ -92,7 +96,7 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 		jac_ += jacFull_*bodies[i].inertia().mass();
 	}
 
-	jac_ /= mb.nrBodies();
+	jac_ /= totalMass_;
 
 	return jac_;
 }

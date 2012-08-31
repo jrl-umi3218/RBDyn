@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	Vector3d CoM = computeCoM(mb, mbc);
 
 	double handCoMX = 0.;
-	double handCoMY = (0.5*1. + 1.*2. + 1.5*1.)/4.;
+	double handCoMY = (0.5*1. + 1.*2. + 1.5*1.)/5.;
 	double handCoMZ = 0.;
 	BOOST_CHECK_EQUAL(CoM, Vector3d(handCoMX, handCoMY, handCoMZ));
 
@@ -104,8 +104,8 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	CoM = sComputeCoM(mb, mbc);
 
 	handCoMX = 0.;
-	handCoMY = (0.5*1. + 0.5*2 + 0.5*1.)/4.;
-	handCoMZ = (0.5*2. + 1.*1.)/4.;
+	handCoMY = (0.5*1. + 0.5*2 + 0.5*1.)/5.;
+	handCoMZ = (0.5*2. + 1.*1.)/5.;
 
 	BOOST_CHECK_EQUAL(CoM, Vector3d(handCoMX, handCoMY, handCoMZ));
 

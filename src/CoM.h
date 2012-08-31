@@ -70,6 +70,7 @@ private:
 	Eigen::MatrixXd jacFull_;
 
 	std::vector<Jacobian> jacVec_;
+	double totalMass_;
 };
 
 
