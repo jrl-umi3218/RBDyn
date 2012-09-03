@@ -175,8 +175,8 @@ void Jacobian::fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 	{
 		int i = jointsPath_[index];
 		int dof = mb.joint(i).dof();
-		res.block(0, mb.jointPosInDof(i), 6, dof) =
-			jac.block(0, jacPos, 6, dof);
+		res.block(0, mb.jointPosInDof(i), res.rows(), dof) =
+			jac.block(0, jacPos, res.rows(), dof);
 		jacPos += dof;
 	}
 }
