@@ -57,6 +57,14 @@ public:
 		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	/**
+		* Compute the time derivative of the CoM jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
+		* @return Time derivativo of the jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
 
 	// safe version for python binding
 
@@ -65,8 +73,15 @@ public:
 		*/
 	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	/** safe version of @see jacobianDot.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	const Eigen::MatrixXd& sJacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
 private:
 	Eigen::MatrixXd jac_;
+	Eigen::MatrixXd jacDot_;
 	Eigen::MatrixXd jacFull_;
 
 	std::vector<Jacobian> jacVec_;

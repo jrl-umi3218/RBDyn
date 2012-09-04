@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 }
 
 
-Eigen::Vector3d makeCoMDotFormStep(const rbd::MultiBody& mb,
+Eigen::Vector3d makeCoMDotFromStep(const rbd::MultiBody& mb,
 	const rbd::MultiBodyConfig& mbc)
 {
 	using namespace Eigen;
@@ -133,6 +133,28 @@ Eigen::Vector3d makeCoMDotFormStep(const rbd::MultiBody& mb,
 	Vector3d nC = computeCoM(mb, mbcTmp);
 
 	return (nC - oC)/step;
+}
+
+
+Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody& mb,
+													const rbd::MultiBodyConfig& mbc,
+													rbd::CoMJacobianDummy& jac)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+
+	double step = 1e-8;
+
+	MultiBodyConfig mbcTmp(mbc);
+
+	MatrixXd oJ = jac.jacobian(mb, mbcTmp);
+	eulerIntegration(mb, mbcTmp, step);
+	forwardKinematics(mb, mbcTmp);
+	forwardVelocity(mb, mbcTmp);
+	MatrixXd nJ = jac.jacobian(mb, mbcTmp);
+
+	return (nJ - oJ)/step;
 }
 
 
@@ -197,6 +219,12 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
 	MultiBodyConfig mbc(mb);
 
+
+	/**
+		*						Test jacobian with the com speed get by differentiation.
+		*/
+
+
 	mbc.q = {{}, {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
 	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
 	mbc.alphaD = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
@@ -210,7 +238,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			Vector3d CDot_diff = makeCoMDotFormStep(mb, mbc);
+			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.jacobian(mb, mbc);
 
 			BOOST_CHECK_EQUAL(CJac.rows(), 6);
@@ -232,7 +260,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			Vector3d CDot_diff = makeCoMDotFormStep(mb, mbc);
+			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.jacobian(mb, mbc);
 
 			VectorXd alpha = dofToVector(mb, mbc.alpha);
@@ -244,6 +272,10 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	}
 	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
 
+
+	/**
+		* Same test but with a different q.
+		*/
 
 
 	Quaterniond q;
@@ -258,7 +290,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			Vector3d CDot_diff = makeCoMDotFormStep(mb, mbc);
+			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.sJacobian(mb, mbc);
 
 			VectorXd alpha = dofToVector(mb, mbc.alpha);
@@ -277,7 +309,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			Vector3d CDot_diff = makeCoMDotFormStep(mb, mbc);
+			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.sJacobian(mb, mbc);
 
 			VectorXd alpha = dofToVector(mb, mbc.alpha);
@@ -289,9 +321,120 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	}
 	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
 
+	// test safe functions
 
 	mbc.bodyPosW = {I, I, I};
 	BOOST_CHECK_THROW(comJac.sJacobian(mb, mbc), std::domain_error);
+	mbc = MultiBodyConfig(mb);
+
+
+	/**
+		*						Test jacobianDot with the jacobianDot get by differentiation.
+		*/
+
+	mbc.q = {{}, {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
+	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
+	mbc.alphaD = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
+
+	forwardKinematics(mb, mbc);
+
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
+			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
+			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
+
+
+	/**
+		* Same test but with a different q.
+		*/
+
+
+	q = AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ());
+	mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
+	forwardKinematics(mb, mbc);
+
+
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
+			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
+			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
+
+	// test safe functions
+
+	mbc.bodyPosW = {I, I, I};
+	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
+	mbc = MultiBodyConfig(mb);
+
+	MotionVec mv;
+	mbc.bodyVelB = {mv, mv, mv};
+	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
+	mbc = MultiBodyConfig(mb);
+
+	mbc.bodyVelW = {mv, mv, mv};
+	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
+	mbc = MultiBodyConfig(mb);
 }
-
-

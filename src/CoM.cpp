@@ -60,6 +60,7 @@ CoMJacobianDummy::CoMJacobianDummy()
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
   jac_(6, mb.nrDof()),
+  jacDot_(6, mb.nrDof()),
   jacFull_(6, mb.nrDof()),
   jacVec_(mb.nrBodies()),
   totalMass_(0.)
@@ -102,6 +103,27 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
+const Eigen::MatrixXd&
+CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	using namespace Eigen;
+
+	const std::vector<Body>& bodies = mb.bodies();
+
+	jacDot_.setZero();
+
+	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	{
+		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
+		jacVec_[i].fullJacobian(mb, jac, jacFull_);
+		jacDot_ += jacFull_*bodies[i].inertia().mass();
+	}
+
+	jacDot_ /= totalMass_;
+
+	return jacDot_;
+}
+
 
 const Eigen::MatrixXd&
 CoMJacobianDummy::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
@@ -112,6 +134,16 @@ CoMJacobianDummy::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	return jacobian(mb, mbc);
 }
 
+
+const Eigen::MatrixXd&
+CoMJacobianDummy::sJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	return jacobianDot(mb, mbc);
+}
 
 } // namespace rbd
 

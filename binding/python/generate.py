@@ -368,6 +368,12 @@ def build_com(mod, comD):
                  throw=[dom_ex], custom_name='jacobian')
 
 
+  comD.add_method('sJacobianDot', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='jacobianDot')
+
+
 def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',
                                    [param('const rbd::MultiBody&', 'mb1'),
