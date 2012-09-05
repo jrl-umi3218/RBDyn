@@ -88,6 +88,12 @@ public:
 		return jointsPath_;
 	}
 
+	/// @return The number of degree of freedom in the joint path
+	int dof() const
+	{
+		return jac_.cols();
+	}
+
 
 
 	// safe version for python binding

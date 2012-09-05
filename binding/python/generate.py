@@ -310,6 +310,8 @@ def build_jacobian(jac):
   jac.add_method('jointsPath', retval('std::vector<int>'),
                  [], is_const=True)
 
+  jac.add_method('dof', retval('int'), [], is_const=True)
+
 
 
 def build_id(id):
