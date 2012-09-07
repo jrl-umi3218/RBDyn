@@ -21,6 +21,16 @@ hoap_init = np.array([0, 40,  3697,  9537, -5840, -344,  18810, -2000,  0,  8800
                       418])
 
 
+hoap_l_bound = np.array([-19019, -6479, -14839, -209, -12749, -5225, -19019, -20064, -19019, -209,
+                         -6479, -4389, -17138, -27170, -12749, -5225, -31559, -209, -19019, -24035,
+                         209])
+
+
+hoap_u_bound = np.array([6479, 4389, 17138, 27170, 12249, 5225, 31559, 209, 19019, 24035,
+                         19019, 6479, 14839, 209, 12749, 5225, 19019, 20064, 19019, 209,
+                         18810])
+
+
 
 class FakeHoap3(object):
   def __init__(self, host, port, mb):
@@ -49,7 +59,7 @@ class FakeHoap3(object):
   def control(self, q):
     q = np.array(q).reshape((21,))
     qHoap = np.rad2deg(q[self.index])*thetaToPulse
-    self.curQ = np.array(qHoap, dtype='short')
+    self.curQ = np.minimum(np.maximum(np.array(qHoap, dtype='short'), hoap_l_bound), hoap_u_bound)
 
 
   def sensor(self):
@@ -92,7 +102,9 @@ class NetHoap3(object):
 
   def control(self, q):
     qHoap = np.rad2deg(np.array(q)[self.index].T)*thetaToPulse
-    qnHoap = np.array(qHoap, dtype='short').T
+    qnHoap = np.array(qHoap, dtype='short').reshape((21,))
+
+    qnHoap = np.minimum(np.maximum(qnHoap, hoap_l_bound), hoap_u_bound)
 
     self.sock.sendall(controlStruct.pack(*qnHoap))
 

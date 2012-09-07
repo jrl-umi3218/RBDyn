@@ -143,7 +143,7 @@ class Controller(object):
     self.mbcReal.q = rbd.vectorToParam(self.mbReal, q)
 
     # update desired config
-    self.realToPlan(self.mbcReal, self.mbcPlan);
+    # self.realToPlan(self.mbcReal, self.mbcPlan);
     rbd.forwardKinematics(self.mbPlan, self.mbcPlan)
     rbd.forwardVelocity(self.mbPlan, self.mbcPlan)
 
@@ -154,8 +154,8 @@ def controllerProcess(ns, startCond, started, qDes, qReal):
   HOST = '10.59.145.197'
   PORT = 55000
 
-  # net = nethoap.NetHoap3(HOST, PORT, mb)
-  net = nethoap.FakeHoap3(HOST, PORT, mb)
+  net = nethoap.NetHoap3(HOST, PORT, mb)
+  # net = nethoap.FakeHoap3(HOST, PORT, mb)
   cont = Controller(mb, mbc, mbg, net)
 
   startCond.acquire()
@@ -267,7 +267,6 @@ if __name__ == '__main__':
   startCond = Condition()
 
   contProc = Process(target=controllerProcess, args=(namespace, startCond, started, qDes, qReal))
-  contProc.start()
 
   mb, mbc, mbg, objfile = make_little_human('../../robots/hoap_3/mesh/', False)
   geomReal = MeshGeometry(mb, objfile, 0.3)
@@ -281,6 +280,8 @@ if __name__ == '__main__':
 
 
   def start():
+    contProc.start()
+
     startCond.acquire()
     started.value = True
     startCond.notify()
