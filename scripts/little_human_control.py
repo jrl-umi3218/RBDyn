@@ -122,6 +122,12 @@ class Controller(object):
     cont.points = [Vector3d.Zero()]
     cont.normals = [Vector3d.UnitZ()]
 
+    # MotionConstraint
+    self.motionConstr = tasks.qp.MotionConstr(self.mbPlan)
+    self.solver.addEqualityConstraint(self.motionConstr)
+    self.solver.addBoundConstraint(self.motionConstr)
+    self.solver.addConstraint(self.motionConstr)
+
     # ContactConstraint
     self.contactConstr = tasks.qp.ContactAccConstr(self.mbPlan)
 
