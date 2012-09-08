@@ -9,8 +9,7 @@ from eigen3 import *
 import rbdyn as rbd
 import spacevecalg as sva
 
-from task.tasks import PositionTask, PostureTask, CoMTask, NoRotationTask
-from task.solver import WLSSolver
+import tasks
 
 from graph.multibody import GraphicMultiBody
 from graph.geometry import MeshGeometry, DefaultGeometry
@@ -24,6 +23,11 @@ timeLog = []
 qLog = []
 
 
+def paramToPython(param):
+  res = list(param)
+  for i in range(len(res)):
+    res[i] = list(res[i])
+  return res
 
 
 
@@ -66,7 +70,7 @@ class Controller(object):
     self.lToReal = rbd.ConfigConverter(self.mbLF, self.mbReal).convert
     self.planToReal = self.rToReal
 
-    self.solver = WLSSolver()
+    self.solver = tasks.qp.QPSolver()
 
     self.robot = robot
 
@@ -90,12 +94,11 @@ class Controller(object):
     rbd.forwardKinematics(self.mbPlan, self.mbcPlan)
     rbd.forwardVelocity(self.mbPlan, self.mbcPlan)
 
-    # compute foot pos objective
+    # take foots pos
     lFootInd = self.mbPlan.bodyIndexById(16)
     rFootInd = self.mbPlan.bodyIndexById(6)
     self.lFootPos = list(self.mbcPlan.bodyPosW)[lFootInd].translation()
     self.rFootPos = list(self.mbcPlan.bodyPosW)[rFootInd].translation()
-    obj = Vector3d(self.lFootPos[0], self.lFootPos[1], self.lFootPos[2])
 
     # compute CoM pos objective
     comObj = rbd.computeCoM(self.mbPlan, self.mbcPlan)
@@ -103,31 +106,52 @@ class Controller(object):
     comObj = Vector3d(self.lFootPos[0], self.lFootPos[1], comObj[2])
     self.com = 'l'
 
-    posTask = PositionTask(self.mbPlan, 16, obj)
-    noRotTask = NoRotationTask(self.mbPlan, 16)
-    postureTask = PostureTask(self.mbPlan, rbd.paramToVector(self.mbPlan, self.mbcPlan.q))
-    comTask = CoMTask(self.mbPlan, comObj)
+    # PostureTask
+    self.postureTask = tasks.qp.PostureTask(self.mbPlan, paramToPython(self.mbcPlan.q), 1., 1.)
 
-    self.posTask = self.solver.addTask(posTask, 1000000.)
-    self.noRotTask = self.solver.addTask(noRotTask, 1000000.)
-    self.postureTask = self.solver.addTask(postureTask, 10.)
-    self.comTask = self.solver.addTask(comTask, 100.)
+    # CoMTask
+    self.comTask = tasks.qp.CoMTask(self.mbPlan, comObj)
+    self.comTaskSP = tasks.qp.SetPointTask(self.mbPlan, self.comTask, 10., 100.)
+
+    # add tasks
+    self.solver.addTask(self.comTaskSP)
+    self.solver.addTask(self.postureTask)
+
+    cont = tasks.qp.Contact()
+    cont.bodyId = 16
+    cont.points = [Vector3d.Zero()]
+    cont.normals = [Vector3d.UnitZ()]
+
+    # ContactConstraint
+    self.contactConstr = tasks.qp.ContactAccConstr(self.mbPlan)
+
+    self.solver.addEqualityConstraint(self.contactConstr)
+    self.solver.addConstraint(self.contactConstr)
+
+    self.solver.nrVars(self.mbPlan, [cont])
+    self.solver.updateEqConstrSize()
+    self.solver.updateInEqConstrSize()
+
 
 
   def run(self):
     # compute next desired position
-    self.solver.solve(self.mbPlan, self.mbcPlan)
+    self.solver.update(self.mbPlan, self.mbcPlan)
     rbd.eulerIntegration(self.mbPlan, self.mbcPlan, 0.005)
 
 
-    if np.linalg.norm(self.comTask[0].error()) < 0.025:
+    if np.linalg.norm(toNumpy(self.comTask.eval())) < 0.025:
       if self.com == 'l':
-        self.comTask[0].obj[0] = self.rFootPos[0]
-        self.comTask[0].obj[1] = self.rFootPos[1]
+        obj = self.comTask.com()
+        obj[0] = self.rFootPos[0]
+        obj[1] = self.rFootPos[1]
+        self.comTask.com(obj)
         self.com = 'r'
       else:
-        self.comTask[0].obj[0] = self.lFootPos[0]
-        self.comTask[0].obj[1] = self.lFootPos[1]
+        obj = self.comTask.com()
+        obj[0] = self.lFootPos[0]
+        obj[1] = self.lFootPos[1]
+        self.comTask.com(obj)
         self.com = 'l'
 
 
@@ -154,8 +178,8 @@ def controllerProcess(ns, startCond, started, qDes, qReal):
   HOST = '10.59.145.197'
   PORT = 55000
 
-  net = nethoap.NetHoap3(HOST, PORT, mb)
-  # net = nethoap.FakeHoap3(HOST, PORT, mb)
+  # net = nethoap.NetHoap3(HOST, PORT, mb)
+  net = nethoap.FakeHoap3(HOST, PORT, mb)
   cont = Controller(mb, mbc, mbg, net)
 
   startCond.acquire()
@@ -269,9 +293,15 @@ if __name__ == '__main__':
   contProc = Process(target=controllerProcess, args=(namespace, startCond, started, qDes, qReal))
 
   mb, mbc, mbg, objfile = make_little_human('../../robots/hoap_3/mesh/', False)
+  r = np.mat([[0., 0., 1.],
+              [0., -1., 0.],
+              [1., 0., 0.]])
+  tr = sva.PTransform(toEigen(r))
+  # mb = mbg.makeMultiBody(6, True, tr)
+  # mbc = rbd.MultiBodyConfig(mb)
   geomReal = MeshGeometry(mb, objfile, 0.3)
   # geomDes = MeshGeometry(mb, objfile, 0.5)
-  # geomReal = DefaultGeometry(mb)
+  #geomReal = DefaultGeometry(mb)
   geomDes = DefaultGeometry(mb)
   graph = Displayer(mb, mbc, geomReal, geomDes, qDes, qReal)
 
