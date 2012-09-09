@@ -31,13 +31,20 @@ def setTransform(actor, transform):
 
 
 class GraphicMultiBody:
-  def __init__(self, mb, geom=None, staticTransform=sva.PTransform.Identity()):
+  def __init__(self, mb, geom=None,
+               staticTransform=sva.PTransform.Identity(),
+               bodyBase=[]):
     self.viewer = mlab.gcf()
 
     if geom == None:
       self.geom = geometry.DefaultGeometry(mb)
     else:
       self.geom = geom
+
+    if len(bodyBase) == 0:
+      self.bodyBase = [sva.PTransform.Identity()]*mb.nrBodies()
+    else:
+      self.bodyBase = bodyBase
 
     self.staticTransform = staticTransform
 
@@ -105,7 +112,7 @@ class GraphicMultiBody:
       setTransform(self.com[i], comPos)
 
       bodyA, bodyS = self.geom.body(i)
-      bodyPos = Xi*self.staticTransform
+      bodyPos = self.bodyBase[i]*Xi*self.staticTransform
       setTransform(bodyA, bodyPos)
 
 

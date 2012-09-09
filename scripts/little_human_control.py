@@ -31,6 +31,36 @@ def paramToPython(param):
 
 
 
+def computeTransform(mbOrig, mbTrans):
+  """
+  Compute the transformations to apply a mesh in mbOrig coordinate
+  in mbTrans coordiante.
+  """
+  trans = [sva.PTransform.Identity()]*mbTrans.nrBodies()
+
+  origRootId = mbOrig.body(0).id()
+
+  curTransId = mbTrans.body(0).id()
+  curBody = 0
+  curJoint = 1
+
+  while curTransId != origRootId:
+    trans[curBody] = mb.transform(curJoint)
+
+    curBody += 1
+    curJoint += 1
+    curTransId = mbTrans.body(curBody).id()
+
+
+  if curJoint > 1:
+    bodyId = mbTrans.body(mbTrans.predecessor(curJoint - 1)).id()
+    posInOrig = mbOrig.bodyIndexById(bodyId)
+    # index of support joint and his body is the same
+    trans[curBody] = mbOrig.transform(posInOrig).inv()
+
+  return trans
+
+
 
 class Controller(object):
   def __init__(self, mb, mbc, mbg, robot):
@@ -208,16 +238,21 @@ def controllerProcess(ns, startCond, started, qDes, qReal):
     waistN = toNumpy(waistT)
     waistN = toNumpy(waistR*waistT)
 
-    with qDes.get_lock():
-      qDesData = np.frombuffer(qDes.get_obj())
-      qRealData = np.frombuffer(qReal.get_obj())
+    #with qDes.get_lock():
+    if qDes.get_lock().acquire(False):
+      try:
+        qDesData = np.frombuffer(qDes.get_obj())
+        qRealData = np.frombuffer(qReal.get_obj())
 
-      qDesData[:4] = waistRN
-      qRealData[:4] = waistRN
-      qDesData[4:7] = waistN.T
-      qRealData[4:7] = waistN.T
-      qDesData[7:] = toNumpy(rbd.paramToVector(cont.mbReal, cont.mbcControl.q)).T
-      qRealData[7:] = toNumpy(rbd.paramToVector(cont.mbReal, cont.mbcReal.q)).T
+        qDesData[:4] = waistRN
+        qRealData[:4] = waistRN
+        qDesData[4:7] = waistN.T
+        qRealData[4:7] = waistN.T
+        qDesData[7:] = toNumpy(rbd.paramToVector(cont.mbReal, cont.mbcControl.q)).T
+        qRealData[7:] = toNumpy(rbd.paramToVector(cont.mbReal, cont.mbcReal.q)).T
+      finally:
+        qDes.get_lock().release()
+
 
 
 
@@ -244,7 +279,8 @@ class Displayer(object):
     rbd.forwardKinematics(self.mb, self.mbcDes)
 
     self.graphReal = GraphicMultiBody(self.mb, geomReal)
-    self.graphDes = GraphicMultiBody(self.mb, geomDes, sva.PTransform(Vector3d(0., 0.5, 0.)))
+    self.graphDes = GraphicMultiBody(self.mb, geomDes,
+                                     sva.PTransform(Vector3d(0., 0.5, 0.)))
 
     self.graphReal.draw(self.mb, self.mbcReal)
     self.graphDes.draw(self.mb, self.mbcDes)
@@ -278,6 +314,7 @@ class Displayer(object):
 
 
 
+
 if __name__ == '__main__':
   manager = Manager()
   namespace = manager.Namespace()
@@ -299,16 +336,11 @@ if __name__ == '__main__':
   contProc = Process(target=controllerProcess, args=(namespace, startCond, started, qDes, qReal))
 
   mb, mbc, mbg, objfile = make_little_human('../../robots/hoap_3/mesh/', False)
-  r = np.mat([[0., 0., 1.],
-              [0., -1., 0.],
-              [1., 0., 0.]])
-  tr = sva.PTransform(toEigen(r))
-  # mb = mbg.makeMultiBody(6, True, tr)
-  # mbc = rbd.MultiBodyConfig(mb)
   geomReal = MeshGeometry(mb, objfile, 0.3)
   # geomDes = MeshGeometry(mb, objfile, 0.5)
-  #geomReal = DefaultGeometry(mb)
+  # geomReal = DefaultGeometry(mb)
   geomDes = DefaultGeometry(mb)
+
   graph = Displayer(mb, mbc, geomReal, geomDes, qDes, qReal)
 
   a = Animator(33, graph.run().next)
