@@ -312,6 +312,8 @@ def build_jacobian(jac):
 
   jac.add_method('dof', retval('int'), [], is_const=True)
 
+  jac.add_method('point', retval('Eigen::Vector3d'), [], is_const=True)
+  jac.add_method('point', None, [param('const Eigen::Vector3d&', 'point')])
 
 
 def build_id(id):

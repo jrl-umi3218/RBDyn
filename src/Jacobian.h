@@ -94,6 +94,17 @@ public:
 		return jac_.cols();
 	}
 
+	/// @return Static translation in the body exprimed in body coordinate.
+	Eigen::Vector3d point() const
+	{
+		return point_.translation();
+	}
+
+	/// @param point Static translation in the body exprimed in body coordinate.
+	void point(const Eigen::Vector3d& point)
+	{
+		point_ = sva::PTransform(point);
+	}
 
 
 	// safe version for python binding
