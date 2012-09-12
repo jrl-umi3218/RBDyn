@@ -637,9 +637,34 @@ BOOST_AUTO_TEST_CASE(ConfigConverterTest)
 	mb2tomb1->sConvert(mbc2, mbc1Tmp);
 	checkConfig(mbc1, mbc1Tmp);
 
+	mbc1.q = {{}, {1., 0., 0., 0.}, {5.}, {6.}};
 	mb1tomb3->sConvert(mbc1, mbc3);
 	mb3tomb1->sConvert(mbc3, mbc1Tmp);
 	checkConfig(mbc1, mbc1Tmp);
+
+
+	// sConvertJoint
+	mbc1.q = {{}, {1., 0., 0., 0.}, {5.}, {3.}};
+	mb1tomb2->sConvertJoint(mbc1.q, mbc2.q);
+	mb2tomb1->sConvertJoint(mbc2.q, mbc1Tmp.q);
+	checkConfig(mbc1, mbc1Tmp);
+
+	mbc1.q = {{}, {1., 0., 0., 0.}, {2.}, {3.}};
+	mb1tomb3->sConvertJoint(mbc1.q, mbc3.q);
+	mb3tomb1->sConvertJoint(mbc3.q, mbc1Tmp.q);
+	checkConfig(mbc1, mbc1Tmp);
+
+	// sConvertJoint return version
+	mbc1.q = {{}, {1., 0., 0., 0.}, {5.}, {3.}};
+	mbc2.q = mb1tomb2->convertJoint(mbc1.q);
+	mbc1Tmp.q = mb2tomb1->convertJoint(mbc2.q);
+	checkConfig(mbc1, mbc1Tmp);
+
+	mbc1.q = {{}, {1., 0., 0., 0.}, {2.}, {3.}};
+	mbc3.q = mb1tomb3->convertJoint(mbc1.q);
+	mbc1Tmp.q = mb3tomb1->convertJoint(mbc3.q);
+	checkConfig(mbc1, mbc1Tmp);
+
 
 	delete mb1tomb2;
 	delete mb1tomb3;

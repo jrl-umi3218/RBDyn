@@ -18,6 +18,7 @@
 // includes
 // std
 #include <vector>
+#include <stdexcept>
 
 // sva
 #include <SpaceVecAlg>
@@ -104,6 +105,16 @@ public:
 
 	void convert(const MultiBodyConfig& from, MultiBodyConfig& to) const;
 
+	/**
+		* Convert a vector representing joint data.
+		* The first joint (base) is ignored.
+		*/
+	template<typename T>
+	void convertJoint(const std::vector<T>& from, std::vector<T>& to) const;
+
+	template<typename T>
+	std::vector<T> convertJoint(const std::vector<T>& from) const;
+
 	// safe version for python binding
 
 	/** safe version of @see ConfigConverter.
@@ -115,6 +126,12 @@ public:
 		* @throw std::domain_error If mb don't match mbc.
 		*/
 	void sConvert(const MultiBodyConfig& from, MultiBodyConfig& to) const;
+
+	/** safe version of @see convertJoint.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	template<typename T>
+	void sConvertJoint(const std::vector<T>& from, std::vector<T>& to) const;
 
 private:
 	std::vector<int> jInd_;
@@ -261,5 +278,48 @@ void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.force.
 void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+
+
+
+template<typename T>
+inline void
+ConfigConverter::convertJoint(const std::vector<T>& from, std::vector<T>& to) const
+{
+	for(std::size_t i = 0; i < jInd_.size(); ++i)
+	{
+		to[jInd_[i]] = from[i + 1];
+	}
+}
+
+
+
+template<typename T>
+inline void
+ConfigConverter::sConvertJoint(const std::vector<T>& from, std::vector<T>& to) const
+{
+	if(from.size() != to.size())
+	{
+		throw std::domain_error("from and to vector must have the same size");
+	}
+
+	convertJoint(from, to);
+}
+
+
+
+template<typename T>
+inline std::vector<T>
+ConfigConverter::convertJoint(const std::vector<T>& from) const
+{
+	std::vector<T> to(from.size());
+	for(std::size_t i = 0; i < jInd_.size(); ++i)
+	{
+		to[jInd_[i]] = from[i + 1];
+	}
+
+	return std::move(to);
+}
+
 
 } // namespace rbd

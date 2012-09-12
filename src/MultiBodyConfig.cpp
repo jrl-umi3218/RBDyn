@@ -19,7 +19,6 @@
 // includes
 // std
 #include <sstream>
-#include <stdexcept>
 
 // RBDyn
 #include "MultiBody.h"

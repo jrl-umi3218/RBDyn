@@ -389,6 +389,11 @@ def build_confconv(conf):
                   param('rbd::MultiBodyConfig&', 'mbc2')],
                  throw=[dom_ex], custom_name='convert')
 
+  conf.add_method('convertJoint', retval('std::vector<std::vector<double> >'),
+                  [param('const std::vector<std::vector<double> >&', 'from')])
+  conf.add_method('convertJoint', retval('std::vector<double>'),
+                  [param('const std::vector<double>&', 'from')])
+
 
 
 if __name__ == '__main__':
