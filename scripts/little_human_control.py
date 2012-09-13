@@ -1,5 +1,6 @@
 import time
-from multiprocessing import Process, Manager, Array, Value, Condition
+import pickle
+from multiprocessing import Process, Array, Value, Condition
 
 import numpy as np
 
@@ -10,17 +11,26 @@ import rbdyn as rbd
 import spacevecalg as sva
 
 import tasks
+import scd
 
 from graph.multibody import GraphicMultiBody
-from graph.geometry import MeshGeometry, DefaultGeometry
+from graph.geometry import MeshGeometry
 
-from robots.little_human import make_little_human
+import robots.little_human as hoap
 
 import nethoap
 
 
-timeLog = []
-qLog = []
+started = Value('b', False)
+qDes = Array('d', 21)
+qReal = Array('d', 21)
+startCond = Condition()
+
+qDesData = np.frombuffer(qDes.get_obj())
+qRealData = np.frombuffer(qReal.get_obj())
+
+qDesData[:] = np.mat(np.zeros((21,)))
+qRealData[:] = np.mat(np.zeros((21,)))
 
 
 def paramToPython(param):
@@ -28,6 +38,12 @@ def paramToPython(param):
   for i in range(len(res)):
     res[i] = list(res[i])
   return res
+
+
+stpbv = {}
+def initSTPBV(stpbvFiles):
+  for id, file in stpbvFiles.items():
+    stpbv[id] = scd.STPBV(file)
 
 
 
@@ -45,7 +61,7 @@ def computeTransform(mbOrig, mbTrans):
   curJoint = 1
 
   while curTransId != origRootId:
-    trans[curBody] = mb.transform(curJoint)
+    trans[curBody] = mbTrans.transform(curJoint)
 
     curBody += 1
     curJoint += 1
@@ -62,47 +78,61 @@ def computeTransform(mbOrig, mbTrans):
 
 
 
-class Controller(object):
-  def __init__(self, mb, mbc, mbg, robot):
-    self.mbReal = rbd.MultiBody(mb)
+# create real robot
+mb, mbc, mbg = hoap.robot()
+bound = hoap.bound(mb)
+objfile, stpbvfiles, convexfiles = hoap.ressources('../../robots/hoap_3/')
 
-    r = np.mat([[0., 0., 1.],
-                [0., -1., 0.],
-                [1., 0., 0.]])
-    tr = sva.PTransform(toEigen(r))
-    self.mbRF = mbg.makeMultiBody(6, True, tr)
-    self.mbLF = mbg.makeMultiBody(16, True, tr)
-    self.mbPlan = self.mbRF
+initSTPBV(stpbvfiles)
+
+
+
+class littleHuman(object):
+  def __init__(self, bodyId, transform):
+    self.mb = mbg.makeMultiBody(bodyId, True, transform)
+    self.mbc = rbd.MultiBodyConfig(self.mb)
+
+    self.toLocal = rbd.ConfigConverter(mb, self.mb)
+    self.toReal = rbd.ConfigConverter(self.mb, mb)
+
+    self.toLocal.convert(mbc, self.mbc)
+
+    self.transform = computeTransform(mb, self.mb)
+
+    self.transformById = {}
+    for i, t in enumerate(self.transform):
+      self.transformById[self.mb.body(i).id()] = t
+
+    self.bound = hoap.bound(self.mb)
+
+
+
+# create Right Foot and Left Foot robot
+r = np.mat([[0., 0., 1.],
+            [0., -1., 0.],
+            [1., 0., 0.]])
+tr = sva.PTransform(toEigen(r))
+
+robotRF = littleHuman(6, tr)
+robotLF = littleHuman(16, tr)
+
+
+
+
+class Controller(object):
+  def __init__(self):
+    HOST = '10.59.145.197'
+    PORT = 55000
+
+    # self.robot = nethoap.NetHoap3(HOST, PORT, mb)
+    self.robot = nethoap.FakeHoap3(HOST, PORT, mb)
+
+    self.robotPlan = robotRF
 
     self.mbcReal = rbd.MultiBodyConfig(mbc)
     self.mbcControl = rbd.MultiBodyConfig(mbc)
 
-    self.mbcRF = rbd.MultiBodyConfig(self.mbRF)
-    self.mbcRF = rbd.MultiBodyConfig(self.mbLF)
-    self.mbcPlan = self.mbcRF
-
-    rfPos = self.mbReal.bodyIndexById(22)
-    lfPos = self.mbReal.bodyIndexById(22)
-
-    self.rfToWaist = self.mbReal.transform(rfPos).inv()
-    self.lfToWaist = self.mbReal.transform(lfPos).inv()
-    self.planToWaist = self.rfToWaist
-
-    self.rfWaistPos = self.mbRF.bodyIndexById(21)
-    self.lfWaistPos = self.mbLF.bodyIndexById(21)
-    self.planWaistPos = self.rfWaistPos
-
-    self.realToR = rbd.ConfigConverter(self.mbReal, self.mbRF).convert
-    self.realToL = rbd.ConfigConverter(self.mbReal, self.mbLF).convert
-    self.realToPlan = self.realToR
-
-    self.rToReal = rbd.ConfigConverter(self.mbRF, self.mbReal).convert
-    self.lToReal = rbd.ConfigConverter(self.mbLF, self.mbReal).convert
-    self.planToReal = self.rToReal
-
     self.solver = tasks.qp.QPSolver()
-
-    self.robot = robot
 
 
   def begin(self):
@@ -115,75 +145,130 @@ class Controller(object):
 
 
   def initTask(self):
+    mbP = self.robotPlan.mb
+    mbcP = self.robotPlan.mbc
+
     # take current q
-    q = toEigenX(self.robot.sensor())
-    self.mbcReal.q = rbd.vectorToParam(self.mbReal, q)
-    self.realToPlan(self.mbcReal, self.mbcPlan);
+    q, alpha = self.robot.sensor()
+    q = toEigenX(q)
+    alpha = toEigenX(alpha)
+
+    self.mbcReal.q = rbd.vectorToParam(mb, q)
+    # self.mbcReal.alpha = rbd.vectorToDof(mb, alpha)
+
+    self.robotPlan.toLocal.convert(self.mbcReal, mbcP);
 
     # update desired config
-    rbd.forwardKinematics(self.mbPlan, self.mbcPlan)
-    rbd.forwardVelocity(self.mbPlan, self.mbcPlan)
+    rbd.forwardKinematics(mbP, mbcP)
+    rbd.forwardVelocity(mbP, mbcP)
 
-    # take foots pos
-    lFootInd = self.mbPlan.bodyIndexById(16)
-    rFootInd = self.mbPlan.bodyIndexById(6)
-    self.lFootPos = list(self.mbcPlan.bodyPosW)[lFootInd].translation()
-    self.rFootPos = list(self.mbcPlan.bodyPosW)[rFootInd].translation()
+    bodyPosW = list(mbcP.bodyPosW)
 
     # compute CoM pos objective
-    comObj = rbd.computeCoM(self.mbPlan, self.mbcPlan)
-    comObj = Vector3d(comObj[0], comObj[1] + 0.01, comObj[2])
-    comObj = Vector3d(self.lFootPos[0], self.lFootPos[1], comObj[2])
-    self.com = 'l'
+    com = rbd.computeCoM(mbP, mbcP)
+    comObj = Vector3d(com[0], com[1], com[2])
+    # comObj = Vector3d(self.lFootPos[0], self.lFootPos[1], comObj[2])
+    self.com = 'e'
 
     # PostureTask
-    self.postureTask = tasks.qp.PostureTask(self.mbPlan, paramToPython(self.mbcPlan.q), 1., 1.)
+    self.postureTask = tasks.qp.PostureTask(mbP, paramToPython(mbcP.q), 3., 10.)
 
     # CoMTask
-    self.comTask = tasks.qp.CoMTask(self.mbPlan, comObj)
-    self.comTaskSP = tasks.qp.SetPointTask(self.mbPlan, self.comTask, 10., 100.)
+    self.comTask = tasks.qp.CoMTask(mbP, comObj)
+    self.comTaskSP = tasks.qp.SetPointTask(mbP, self.comTask, 4., 5000.)
+
+    # HandsTask
+    lhandI = mbP.bodyIndexById(20)
+    self.lhandPTask = tasks.qp.PositionTask(mbP, 20, Vector3d(0.22, 0.05 - 0.15, 0.37 - 0.03),
+                                            Vector3d(0., 0.16, 0.))
+    rhandI = mbP.bodyIndexById(10)
+    self.rhandPTask = tasks.qp.PositionTask(mbP, 10, Vector3d(0.22, 0.05 + 0.15, 0.37 + 0.03),
+                                            Vector3d(0., 0.16, 0.))
+    self.lhandPTaskSP = tasks.qp.SetPointTask(mbP, self.lhandPTask, 4., 1000.)
+    self.rhandPTaskSP = tasks.qp.SetPointTask(mbP, self.rhandPTask, 4., 1000.)
+    self.handS = 'i'
 
     # add tasks
     self.solver.addTask(self.comTaskSP)
+    self.solver.addTask(self.lhandPTaskSP)
+    self.solver.addTask(self.rhandPTaskSP)
     self.solver.addTask(self.postureTask)
 
-    cont = tasks.qp.Contact()
-    cont.bodyId = 16
-    cont.points = [Vector3d.Zero()]
-    cont.normals = [Vector3d.UnitZ()]
+    cont = []
+
+    c = tasks.qp.Contact()
+    c.bodyId = 16
+    c.points = [Vector3d.Zero()]
+    c.normals = [Vector3d.UnitZ()]
+    cont.append(c)
+
+    c = tasks.qp.Contact()
+    c.bodyId = 6
+    c.points = [Vector3d.Zero()]
+    c.normals = [Vector3d.UnitZ()]
+    cont.append(c)
+
+
 
     # MotionConstraint
-    self.motionConstr = tasks.qp.MotionConstr(self.mbPlan)
+    self.motionConstr = tasks.qp.MotionConstr(mbP)
     self.solver.addEqualityConstraint(self.motionConstr)
     self.solver.addBoundConstraint(self.motionConstr)
     self.solver.addConstraint(self.motionConstr)
 
     # ContactConstraint
-    self.contactConstr = tasks.qp.ContactAccConstr(self.mbPlan)
+    self.contactConstr = tasks.qp.ContactAccConstr(mbP)
 
     self.solver.addEqualityConstraint(self.contactConstr)
     self.solver.addConstraint(self.contactConstr)
 
-    self.solver.nrVars(self.mbPlan, [cont])
+    # JointLimitsConstraint
+    lBound = paramToPython(self.robotPlan.bound[0])
+    uBound = paramToPython(self.robotPlan.bound[1])
+    self.jointLimitsConstr = tasks.qp.JointLimitsConstr(mbP, lBound, uBound, 0.005)
+    self.solver.addBoundConstraint(self.jointLimitsConstr)
+    self.solver.addConstraint(self.jointLimitsConstr)
+
+    # SelfCollisionConstraint
+    self.selfCollConstr = tasks.qp.SelfCollisionConstr(mbP, 0.005)
+    def addColl(id1, id2, di, ds, damp):
+      self.selfCollConstr.addCollision(mbP, id1, stpbv[id1], self.robotPlan.transformById[id1],
+                                       id2, stpbv[id2], self.robotPlan.transformById[id2], di, ds, damp)
+
+    addColl(10, 20, 0.1, 0.01, 0.5)
+    addColl(10, 21, 0.02, 0.005, 0.05)
+    addColl(20, 21, 0.02, 0.005, 0.05)
+    addColl(13, 3, 0.01, 0.001, 0.05)
+
+    self.pair = scd.CD_Pair(stpbv[10], stpbv[20])
+
+    self.solver.addInequalityConstraint(self.selfCollConstr)
+    self.solver.addConstraint(self.selfCollConstr)
+
+    self.solver.nrVars(mbP, cont)
     self.solver.updateEqConstrSize()
     self.solver.updateInEqConstrSize()
 
 
-
   def run(self):
+    mbP = self.robotPlan.mb
+    mbcP = self.robotPlan.mbc
+
     # compute next desired position
-    self.solver.update(self.mbPlan, self.mbcPlan)
-    rbd.eulerIntegration(self.mbPlan, self.mbcPlan, 0.005)
+    self.solver.update(mbP, mbcP)
+    rbd.eulerIntegration(mbP, mbcP, 0.005)
 
 
     if np.linalg.norm(toNumpy(self.comTask.eval())) < 0.025:
       if self.com == 'l':
+        print 'left com'
         obj = self.comTask.com()
         obj[0] = self.rFootPos[0]
         obj[1] = self.rFootPos[1]
         self.comTask.com(obj)
         self.com = 'r'
-      else:
+      elif self.com == 'r':
+        print 'right com'
         obj = self.comTask.com()
         obj[0] = self.lFootPos[0]
         obj[1] = self.lFootPos[1]
@@ -191,32 +276,61 @@ class Controller(object):
         self.com = 'l'
 
 
-    self.planToReal(self.mbcPlan, self.mbcControl);
+    dist = np.sqrt(self.pair.distance())
+    if dist < 0.005:
+      print np.sqrt(self.pair.distance())
+
+    if self.handS == 'i' and np.linalg.norm(toNumpy(self.lhandPTask.eval())) < 0.18\
+       and np.linalg.norm(toNumpy(self.rhandPTask.eval())) < 0.18:
+      # print 'init'
+      pl = self.lhandPTask.position()
+      pr = self.rhandPTask.position()
+      pr[0] = pr[0] - 0.05
+      pl[0] = pl[0] + 0.05
+      pr[2] = pr[2] - 0.2
+      pl[2] = pl[2] + 0.2
+      self.lhandPTask.position(pl)
+      self.rhandPTask.position(pr)
+      self.handS = 'r'
+    if self.handS == 'r' and np.linalg.norm(toNumpy(self.lhandPTask.eval())) < 0.16\
+       and np.linalg.norm(toNumpy(self.rhandPTask.eval())) < 0.16:
+      # print 'switch'
+      pl = self.lhandPTask.position()
+      pr = self.rhandPTask.position()
+      t = pr[2]
+      pr[2] = pl[2]
+      pl[2] = t
+      t = pr[0]
+      pr[0] = pl[0]
+      pl[0] = t
+      self.lhandPTask.position(pl)
+      self.rhandPTask.position(pr)
+
+
+    self.robotPlan.toReal.convert(mbcP, self.mbcControl);
 
     # control the robot
-    self.robot.control(toNumpy(rbd.paramToVector(self.mbReal, self.mbcControl.q)))
+    self.robot.control(toNumpy(rbd.paramToVector(mb, self.mbcControl.q)),
+                       toNumpy(rbd.dofToVector(mb, self.mbcControl.alpha)))
 
     # read sensors
-    q = toEigenX(self.robot.sensor())
+    q, alpha = self.robot.sensor()
+    q = toEigenX(q)
+    alpha = toEigenX(alpha)
 
     # update real config
-    self.mbcReal.q = rbd.vectorToParam(self.mbReal, q)
+    self.mbcReal.q = rbd.vectorToParam(mb, q)
+    # self.mbcReal.alpha = rbd.vectorToDof(mb, alpha)
 
     # update desired config
-    # self.realToPlan(self.mbcReal, self.mbcPlan);
-    rbd.forwardKinematics(self.mbPlan, self.mbcPlan)
-    rbd.forwardVelocity(self.mbPlan, self.mbcPlan)
+    # self.robotPlan.toLocal(mbcReal, mbcP);
+    rbd.forwardKinematics(mbP, mbcP)
+    rbd.forwardVelocity(mbP, mbcP)
 
 
 
-def controllerProcess(ns, startCond, started, qDes, qReal):
-  mb, mbc, mbg, objfile = make_little_human('../../robots/hoap_3/mesh/')
-  HOST = '10.59.145.197'
-  PORT = 55000
-
-  # net = nethoap.NetHoap3(HOST, PORT, mb)
-  net = nethoap.FakeHoap3(HOST, PORT, mb)
-  cont = Controller(mb, mbc, mbg, net)
+def controllerProcess():
+  cont = Controller()
 
   startCond.acquire()
   if not started.value:
@@ -225,35 +339,30 @@ def controllerProcess(ns, startCond, started, qDes, qReal):
 
   cont.begin()
 
+  des = []
+  real = []
+
   while started.value:
     cmpTimeDeb = time.time()
     cont.run()
 
-    waist = cont.planToWaist*list(cont.mbcPlan.bodyPosW)[cont.planWaistPos]
-    waistR = waist.rotation()
-    waistQ = Quaterniond(waist.rotation()).inverse()
-    waistRN = np.mat([waistQ.w(), waistQ.x(), waistQ.y(), waistQ.z()])
+    realParamInLocal = cont.robotPlan.toLocal.convertJoint(cont.mbcReal.q)
 
-    waistT = waist.translation()
-    waistN = toNumpy(waistT)
-    waistN = toNumpy(waistR*waistT)
+    desQ = toNumpy(rbd.paramToVector(cont.robotPlan.mb, cont.robotPlan.mbc.q)).T
+    realQ = toNumpy(rbd.paramToVector(cont.robotPlan.mb, realParamInLocal)).T
 
-    #with qDes.get_lock():
+    des.append(desQ)
+    real.append(realQ)
+
     if qDes.get_lock().acquire(False):
       try:
         qDesData = np.frombuffer(qDes.get_obj())
         qRealData = np.frombuffer(qReal.get_obj())
 
-        qDesData[:4] = waistRN
-        qRealData[:4] = waistRN
-        qDesData[4:7] = waistN.T
-        qRealData[4:7] = waistN.T
-        qDesData[7:] = toNumpy(rbd.paramToVector(cont.mbReal, cont.mbcControl.q)).T
-        qRealData[7:] = toNumpy(rbd.paramToVector(cont.mbReal, cont.mbcReal.q)).T
+        qDesData[:] = desQ
+        qRealData[:] = realQ
       finally:
         qDes.get_lock().release()
-
-
 
 
     cmpTimeEnd = time.time()
@@ -264,87 +373,163 @@ def controllerProcess(ns, startCond, started, qDes, qReal):
 
   cont.end()
 
+  pkl_file = open('data.pkl', 'wb')
+  pickle.dump((des, real), pkl_file)
+  pkl_file.close()
+
+
+
+def replayProcess():
+  pkl_file = open('data.pkl', 'rb')
+  des, real = pickle.load(pkl_file)
+
+  for d, r in zip(des, real):
+    with qDes.get_lock():
+      qDesData = np.frombuffer(qDes.get_obj())
+      qRealData = np.frombuffer(qReal.get_obj())
+
+      qDesData[:] = d
+      qRealData[:] = r
+
+    time.sleep(0.005)
+
+  pkl_file.close()
+
 
 
 class Displayer(object):
-  def __init__(self, mb, mbc, geomReal, geomDes, qDes, qReal):
-    self.mb = rbd.MultiBody(mb)
-    self.mbcReal = rbd.MultiBodyConfig(mbc)
-    self.mbcDes = rbd.MultiBodyConfig(mbc)
-    self.qDes = qDes
-    self.qReal = qReal
+  def __init__(self):
+    self.robotPlan = robotRF
 
-    # display hoap3
-    rbd.forwardKinematics(self.mb, self.mbcReal)
-    rbd.forwardKinematics(self.mb, self.mbcDes)
+    mbP = self.robotPlan.mb
+    mbcP = self.robotPlan.mbc
 
-    self.graphReal = GraphicMultiBody(self.mb, geomReal)
-    self.graphDes = GraphicMultiBody(self.mb, geomDes,
-                                     sva.PTransform(Vector3d(0., 0.5, 0.)))
+    geomReal = MeshGeometry(mbP, objfile, 1.)
+    geomDes = MeshGeometry(mbP, objfile, 1.)
 
-    self.graphReal.draw(self.mb, self.mbcReal)
-    self.graphDes.draw(self.mb, self.mbcDes)
+    self.mbcDes = rbd.MultiBodyConfig(mbcP)
+    self.mbcReal = rbd.MultiBodyConfig(mbcP)
+
+    rbd.forwardKinematics(mbP, self.mbcDes)
+    rbd.forwardKinematics(mbP, self.mbcReal)
+
+    self.graphDes = GraphicMultiBody(mbP, geomDes,
+                                     sva.PTransform(Vector3d(0., 0.5, 0.)),
+                                     bodyBase=self.robotPlan.transform)
+    self.graphReal = GraphicMultiBody(mbP, geomReal, bodyBase=self.robotPlan.transform)
+
+    self.graphDes.draw(mbP, self.mbcDes)
+    self.graphReal.draw(mbP, self.mbcReal)
 
     self.graphReal.render()
 
 
   def run(self):
-    qDes = np.mat(np.zeros((28,1)))
-    qReal = np.mat(np.zeros((28,1)))
+    mbP = self.robotPlan.mb
+
+    qDesVec = np.mat(np.zeros((21,1)))
+    qRealVec = np.mat(np.zeros((21,1)))
+
+    pair = [(20, 10)]
+    cdPair = []
+
+    for p in pair:
+      b1 = p[0]
+      b2 = p[1]
+      l = line()
+      s1 = sphere(0.005)
+      s2 = sphere(0.005)
+      pa = scd.CD_Pair(stpbv[b1], stpbv[b2])
+      cdPair.append((pa, l, s1, s2, b1, b2))
 
     while True:
-      with self.qDes.get_lock():
-        qDesData = np.frombuffer(self.qDes.get_obj())
-        qRealData = np.frombuffer(self.qReal.get_obj())
-        qDes[:] = np.mat(qDesData).T
-        qReal[:] = np.mat(qRealData).T
+      with qDes.get_lock():
+        qDesData = np.frombuffer(qDes.get_obj())
+        qRealData = np.frombuffer(qReal.get_obj())
+        qDesVec[:] = np.mat(qDesData).T
+        qRealVec[:] = np.mat(qRealData).T
 
-      self.mbcReal.q = rbd.vectorToParam(self.mb, toEigenX(qReal))
-      self.mbcDes.q = rbd.vectorToParam(self.mb, toEigenX(qDes))
+      self.mbcDes.q = rbd.vectorToParam(mbP, toEigenX(qDesVec))
+      self.mbcReal.q = rbd.vectorToParam(mbP, toEigenX(qRealVec))
 
-      rbd.forwardKinematics(self.mb, self.mbcReal)
-      rbd.forwardKinematics(self.mb, self.mbcDes)
+      rbd.forwardKinematics(mbP, self.mbcDes)
+      rbd.forwardKinematics(mbP, self.mbcReal)
 
-      self.graphReal.draw(self.mb, self.mbcReal)
-      self.graphDes.draw(self.mb, self.mbcDes)
+      self.graphDes.draw(mbP, self.mbcDes)
+      self.graphReal.draw(mbP, self.mbcReal)
+
+
+      p1 = Vector3d()
+      p2 = Vector3d()
+      for pa, l, s1, s2, b1, b2 in cdPair:
+        ib1 = mbP.bodyIndexById(b1)
+        ib2 = mbP.bodyIndexById(b2)
+        stpbv[b1].transform(self.robotPlan.transformById[ib1]*list(self.mbcReal.bodyPosW)[ib1])
+        stpbv[b2].transform(self.robotPlan.transformById[ib2]*list(self.mbcReal.bodyPosW)[ib2])
+
+        d1 = np.sqrt(pa.distance(p1, p2))
+        lp1 = list(p1)
+        lp2 = list(p2)
+        l.point1 = lp1
+        l.point2 = lp2
+        s1.position = lp1
+        s2.position = lp2
+
+        stpbv[b1].transform(self.robotPlan.transformById[ib1]*list(self.mbcDes.bodyPosW)[ib1])
+        stpbv[b2].transform(self.robotPlan.transformById[ib2]*list(self.mbcDes.bodyPosW)[ib2])
+        d2 = np.sqrt(pa.distance())
+
 
       self.graphReal.render()
 
       yield
 
 
+def line():
+  from tvtk.api import tvtk
+  from mayavi import mlab
+
+  l = tvtk.LineSource()
+  m = tvtk.PolyDataMapper(input=l.output)
+  a = tvtk.Actor(mapper=m)
+  mlab.gcf().scene.add_actor(a)
+
+  return l
+
+
+
+def sphere(r=0.03):
+  from tvtk.api import tvtk
+  from mayavi import mlab
+
+  s = tvtk.SphereSource(radius=r)
+  m = tvtk.PolyDataMapper(input=s.output)
+  a = tvtk.Actor(mapper=m)
+  mlab.gcf().scene.add_actor(a)
+
+  return a
+
 
 
 if __name__ == '__main__':
-  manager = Manager()
-  namespace = manager.Namespace()
+  contProc = Process(target=controllerProcess)
+  repProc = Process(target=replayProcess)
 
-  started = Value('b', False)
-  qDes = Array('d', 28)
-  qReal = Array('d', 28)
-
-  qDesData = np.frombuffer(qDes.get_obj())
-  qRealData = np.frombuffer(qReal.get_obj())
-
-  qDesData[1:] = np.mat(np.zeros((27,)))
-  qRealData[1:] = np.mat(np.zeros((27,)))
-  qDesData[0] = 1.
-  qRealData[0] = 1.
-
-  startCond = Condition()
-
-  contProc = Process(target=controllerProcess, args=(namespace, startCond, started, qDes, qReal))
-
-  mb, mbc, mbg, objfile = make_little_human('../../robots/hoap_3/mesh/', False)
-  geomReal = MeshGeometry(mb, objfile, 0.3)
-  # geomDes = MeshGeometry(mb, objfile, 0.5)
-  # geomReal = DefaultGeometry(mb)
-  geomDes = DefaultGeometry(mb)
-
-  graph = Displayer(mb, mbc, geomReal, geomDes, qDes, qReal)
+  graph = Displayer()
 
   a = Animator(33, graph.run().next)
   a.timer.Stop()
+
+
+  def replay():
+    repProc.start()
+    a.timer.Start()
+
+
+  def replayStop():
+    a.timer.Stop()
+    repProc.terminate()
+    repProc.join()
 
 
   def start():

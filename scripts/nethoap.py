@@ -25,11 +25,13 @@ hoap_l_bound = np.array([-19019, -6479, -14839, -209, -12749, -5225, -19019, -20
                          -6479, -4389, -17138, -27170, -12749, -5225, -31559, -209, -19019, -24035,
                          209])
 
+hoap_l_bound += 209
 
 hoap_u_bound = np.array([6479, 4389, 17138, 27170, 12249, 5225, 31559, 209, 19019, 24035,
                          19019, 6479, 14839, 209, 12749, 5225, 19019, 20064, 19019, 209,
                          18810])
 
+hoap_u_bound -= 209
 
 
 class FakeHoap3(object):
@@ -38,6 +40,7 @@ class FakeHoap3(object):
     self.index = np.array([mb.jointPosInParam(mb.jointIndexById(i)) for i in range(1, 22)])
 
     self.curQ = hoap_init
+    self.curA = np.zeros(21)
 
 
   def __enter__(self):
@@ -56,10 +59,14 @@ class FakeHoap3(object):
     pass
 
 
-  def control(self, q):
+  def control(self, q, alpha):
     q = np.array(q).reshape((21,))
     qHoap = np.rad2deg(q[self.index])*thetaToPulse
     self.curQ = np.minimum(np.maximum(np.array(qHoap, dtype='short'), hoap_l_bound), hoap_u_bound)
+
+    alpha = np.array(alpha).reshape((21,))
+    aHoap = np.rad2deg(alpha[self.index])*thetaToPulse
+    self.curA = np.array(aHoap, dtype='short')
 
 
   def sensor(self):
@@ -68,7 +75,12 @@ class FakeHoap3(object):
     qn[self.index] = q
     qn = np.mat(qn).T
 
-    return qn
+    a = np.deg2rad(self.curA*pulseToTheta)
+    an = a.copy()
+    an[self.index] = a
+    an = np.mat(an).T
+
+    return qn, an
 
 
 
@@ -100,7 +112,7 @@ class NetHoap3(object):
     print 'Disconnected'
 
 
-  def control(self, q):
+  def control(self, q, alpha):
     qHoap = np.rad2deg(np.array(q)[self.index].T)*thetaToPulse
     qnHoap = np.array(qHoap, dtype='short').reshape((21,))
 
@@ -121,5 +133,10 @@ class NetHoap3(object):
     qn[self.index] = q
     qn = np.mat(qn).T
 
-    return qn
+    a = np.deg2rad(np.array(pyData[21:21+21])*pulseToTheta)
+    an = a.copy()
+    an[self.index] = a
+    an = np.mat(an).T
+
+    return qn, an
 

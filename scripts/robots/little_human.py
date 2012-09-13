@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 from eigen3 import Vector3d, Vector6d, toEigen
@@ -22,6 +24,38 @@ WAIST_LINK2 = 0.035
 
 bodies = []
 joints = []
+
+
+rleg1_id = 1
+rleg2_id = 2
+rleg3_id = 3
+rleg4_id = 4
+rleg5_id = 5
+rleg6_id = 6
+
+rarm1_id = 7
+rarm2_id = 8
+rarm3_id = 9
+rarm4_id = 10
+
+lleg1_id = 11
+lleg2_id = 12
+lleg3_id = 13
+lleg4_id = 14
+lleg5_id = 15
+lleg6_id = 16
+
+larm1_id = 17
+larm2_id = 18
+larm3_id = 19
+larm4_id = 20
+
+body1_id = 21
+body2_id = 22
+
+head1_id = 23
+head2_id = 24
+
 
 def make_joint_link(mass, com, inertia, id, prefix, suffix, fixed=False):
   mass = mass
@@ -187,39 +221,121 @@ head2_m = (4.12e-01, Vector3d(-1.03952e+00,-5.17985e+00, 1.82267e-02),
 
 
 
-def make_little_human(objPath, fixed=True):
-  rleg1_b, rleg1_j = make_joint_link(rleg1_m[0], rleg1_m[1], rleg1_m[2], 1, 'RLEG', 1)
-  rleg2_b, rleg2_j = make_joint_link(rleg2_m[0], rleg2_m[1], rleg2_m[2], 2, 'RLEG', 2)
-  rleg3_b, rleg3_j = make_joint_link(rleg3_m[0], rleg3_m[1], rleg3_m[2], 3, 'RLEG', 3)
-  rleg4_b, rleg4_j = make_joint_link(rleg4_m[0], rleg4_m[1], rleg4_m[2], 4, 'RLEG', 4)
-  rleg5_b, rleg5_j = make_joint_link(rleg5_m[0], rleg5_m[1], rleg5_m[2], 5, 'RLEG', 5)
-  rleg6_b, rleg6_j = make_joint_link(rleg6_m[0], rleg6_m[1], rleg6_m[2], 6, 'RLEG', 6)
+def bound(mb):
+  low  = np.array([-91., -31., -82., -1., -61., -25., -91., -96., -91., -115.,
+                   -31., -21., -82., -1., -61., -25., -91., -1., -91., -115.,
+                   1.])
 
-  rarm1_b, rarm1_j = make_joint_link(rarm1_m[0], rarm1_m[1], rarm1_m[2], 7, 'RARM', 1)
-  rarm2_b, rarm2_j = make_joint_link(rarm2_m[0], rarm2_m[1], rarm2_m[2], 8, 'RARM', 2)
-  rarm3_b, rarm3_j = make_joint_link(rarm3_m[0], rarm3_m[1], rarm3_m[2], 9, 'RARM', 3)
-  rarm4_b, rarm4_j = make_joint_link(rarm4_m[0], rarm4_m[1], rarm4_m[2], 10, 'RARM', 4)
+  low += 1.
 
+  upp = np.array([31., 21., 71., 130., 58.6076555,  25., 151., 1., 91., 1.,
+                  91., 31., 71., 130., 61., 25., 151., 96., 91., 1.,
+                  90.])
 
-  lleg1_b, lleg1_j = make_joint_link(lleg1_m[0], lleg1_m[1], lleg1_m[2], 11, 'LLEG', 1)
-  lleg2_b, lleg2_j = make_joint_link(lleg2_m[0], lleg2_m[1], lleg2_m[2], 12, 'LLEG', 2)
-  lleg3_b, lleg3_j = make_joint_link(lleg3_m[0], lleg3_m[1], lleg3_m[2], 13, 'LLEG', 3)
-  lleg4_b, lleg4_j = make_joint_link(lleg4_m[0], lleg4_m[1], lleg4_m[2], 14, 'LLEG', 4)
-  lleg5_b, lleg5_j = make_joint_link(lleg5_m[0], lleg5_m[1], lleg5_m[2], 15, 'LLEG', 5)
-  lleg6_b, lleg6_j = make_joint_link(lleg6_m[0], lleg6_m[1], lleg6_m[2], 16, 'LLEG', 6)
+  upp -= 1.
 
-  larm1_b, larm1_j = make_joint_link(larm1_m[0], larm1_m[1], larm1_m[2], 17, 'LARM', 1)
-  larm2_b, larm2_j = make_joint_link(larm2_m[0], larm2_m[1], larm2_m[2], 18, 'LARM', 2)
-  larm3_b, larm3_j = make_joint_link(larm3_m[0], larm3_m[1], larm3_m[2], 19, 'LARM', 3)
-  larm4_b, larm4_j = make_joint_link(larm4_m[0], larm4_m[1], larm4_m[2], 20, 'LARM', 4)
+  low = np.deg2rad(low)
+  upp = np.deg2rad(upp)
+
+  ql = [[]]*mb.nrJoints()
+  qu = [[]]*mb.nrJoints()
+
+  for i,(l, u) in enumerate(zip(low, upp)):
+    id = i + 1
+    ql[mb.jointIndexById(id)] = [l]
+    qu[mb.jointIndexById(id)] = [u]
 
 
-  body1_b, body1_j = make_joint_link(body1_m[0], body1_m[1], body1_m[2], 21, 'BODY', 1)
-  body2_b, body2_j = make_joint_link(body2_m[0], body2_m[1], body2_m[2], 22, 'BODY', 2)
+  return (ql, qu)
 
 
-  head1_b, head1_j = make_joint_link(head1_m[0], head1_m[1], head1_m[2], 23, 'HEAD', 1, True)
-  head2_b, head2_j = make_joint_link(head2_m[0], head2_m[1], head2_m[2], 24, 'HEAD', 2, True)
+
+def ressources(path):
+  objPath = path + os.sep + 'mesh' + os.sep
+  stpbvPath = path + os.sep + 'stpbv' + os.sep
+  convexPath = path + os.sep + 'convex' + os.sep
+
+  id2files = {
+    body1_id:'BODY_LINK01',
+    body2_id:'BODY_LINK02',
+
+    head1_id:'HEAD_LINK01',
+    head2_id:'HEAD_LINK02',
+
+    rarm1_id:'RARM_LINK01',
+    rarm2_id:'RARM_LINK02',
+    rarm3_id:'RARM_LINK03',
+    rarm4_id:'RARM_LINK04',
+
+    larm1_id:'LARM_LINK01',
+    larm2_id:'LARM_LINK02',
+    larm3_id:'LARM_LINK03',
+    larm4_id:'LARM_LINK04',
+
+    rleg1_id:'RLEG_LINK01',
+    rleg2_id:'RLEG_LINK02',
+    rleg3_id:'RLEG_LINK03',
+    rleg4_id:'RLEG_LINK04',
+    rleg5_id:'RLEG_LINK05',
+    rleg6_id:'RLEG_LINK06',
+
+    lleg1_id:'LLEG_LINK01',
+    lleg2_id:'LLEG_LINK02',
+    lleg3_id:'LLEG_LINK03',
+    lleg4_id:'LLEG_LINK04',
+    lleg5_id:'LLEG_LINK05',
+    lleg6_id:'LLEG_LINK06'
+  }
+
+  # obj
+  objFiles = {}
+  for id, name in id2files.items():
+    objFiles[id] = [objPath + name + '.obj']
+
+  # stpbv
+  stpbvFiles = {}
+  for id, name in id2files.items():
+    stpbvFiles[id] = stpbvPath + name + '.txt'
+
+  # convex
+  convexFiles = {}
+  for id, name in id2files.items():
+    convexFiles[id] = convexPath + name + '.txt'
+
+  return objFiles, stpbvFiles, convexFiles
+
+
+
+def robot(fixed=True):
+  rleg1_b, rleg1_j = make_joint_link(rleg1_m[0], rleg1_m[1], rleg1_m[2], rleg1_id, 'RLEG', 1)
+  rleg2_b, rleg2_j = make_joint_link(rleg2_m[0], rleg2_m[1], rleg2_m[2], rleg2_id, 'RLEG', 2)
+  rleg3_b, rleg3_j = make_joint_link(rleg3_m[0], rleg3_m[1], rleg3_m[2], rleg3_id, 'RLEG', 3)
+  rleg4_b, rleg4_j = make_joint_link(rleg4_m[0], rleg4_m[1], rleg4_m[2], rleg4_id, 'RLEG', 4)
+  rleg5_b, rleg5_j = make_joint_link(rleg5_m[0], rleg5_m[1], rleg5_m[2], rleg5_id, 'RLEG', 5)
+  rleg6_b, rleg6_j = make_joint_link(rleg6_m[0], rleg6_m[1], rleg6_m[2], rleg6_id, 'RLEG', 6)
+
+  rarm1_b, rarm1_j = make_joint_link(rarm1_m[0], rarm1_m[1], rarm1_m[2], rarm1_id, 'RARM', 1)
+  rarm2_b, rarm2_j = make_joint_link(rarm2_m[0], rarm2_m[1], rarm2_m[2], rarm2_id, 'RARM', 2)
+  rarm3_b, rarm3_j = make_joint_link(rarm3_m[0], rarm3_m[1], rarm3_m[2], rarm3_id, 'RARM', 3)
+  rarm4_b, rarm4_j = make_joint_link(rarm4_m[0], rarm4_m[1], rarm4_m[2], rarm4_id, 'RARM', 4)
+
+  lleg1_b, lleg1_j = make_joint_link(lleg1_m[0], lleg1_m[1], lleg1_m[2], lleg1_id, 'LLEG', 1)
+  lleg2_b, lleg2_j = make_joint_link(lleg2_m[0], lleg2_m[1], lleg2_m[2], lleg2_id, 'LLEG', 2)
+  lleg3_b, lleg3_j = make_joint_link(lleg3_m[0], lleg3_m[1], lleg3_m[2], lleg3_id, 'LLEG', 3)
+  lleg4_b, lleg4_j = make_joint_link(lleg4_m[0], lleg4_m[1], lleg4_m[2], lleg4_id, 'LLEG', 4)
+  lleg5_b, lleg5_j = make_joint_link(lleg5_m[0], lleg5_m[1], lleg5_m[2], lleg5_id, 'LLEG', 5)
+  lleg6_b, lleg6_j = make_joint_link(lleg6_m[0], lleg6_m[1], lleg6_m[2], lleg6_id, 'LLEG', 6)
+
+  larm1_b, larm1_j = make_joint_link(larm1_m[0], larm1_m[1], larm1_m[2], larm1_id, 'LARM', 1)
+  larm2_b, larm2_j = make_joint_link(larm2_m[0], larm2_m[1], larm2_m[2], larm2_id, 'LARM', 2)
+  larm3_b, larm3_j = make_joint_link(larm3_m[0], larm3_m[1], larm3_m[2], larm3_id, 'LARM', 3)
+  larm4_b, larm4_j = make_joint_link(larm4_m[0], larm4_m[1], larm4_m[2], larm4_id, 'LARM', 4)
+
+  body1_b, body1_j = make_joint_link(body1_c_m[0], body1_c_m[1], body1_c_m[2], body1_id, 'BODY', 1)
+  body2_b, body2_j = make_joint_link(body2_m[0], body2_m[1], body2_m[2], body2_id, 'BODY', 2)
+
+  head1_b, head1_j = make_joint_link(head1_m[0], head1_m[1], head1_m[2], head1_id, 'HEAD', 1, True)
+  head2_b, head2_j = make_joint_link(head2_m[0], head2_m[1], head2_m[2], head2_id, 'HEAD', 2, True)
 
 
   mbg = rbd.MultiBodyGraph()
@@ -303,39 +419,6 @@ def make_little_human(objPath, fixed=True):
                  rleg6_b.id(), sva.PTransform.Identity(), rleg6_j.id())
 
 
-  # obj
-  objFiles = {
-    body1_b.id():[objPath + 'BODY_LINK01.obj'],
-    body2_b.id():[objPath + 'BODY_LINK02.obj'],
-
-    head1_b.id():[objPath + 'HEAD_LINK01.obj'],
-    head2_b.id():[objPath + 'HEAD_LINK02.obj'],
-
-    rarm1_b.id():[objPath + 'RARM_LINK01.obj'],
-    rarm2_b.id():[objPath + 'RARM_LINK02.obj'],
-    rarm3_b.id():[objPath + 'RARM_LINK03.obj'],
-    rarm4_b.id():[objPath + 'RARM_LINK04.obj'],
-
-    larm1_b.id():[objPath + 'LARM_LINK01.obj'],
-    larm2_b.id():[objPath + 'LARM_LINK02.obj'],
-    larm3_b.id():[objPath + 'LARM_LINK03.obj'],
-    larm4_b.id():[objPath + 'LARM_LINK04.obj'],
-
-    rleg1_b.id():[objPath + 'RLEG_LINK01.obj'],
-    rleg2_b.id():[objPath + 'RLEG_LINK02.obj'],
-    rleg3_b.id():[objPath + 'RLEG_LINK03.obj'],
-    rleg4_b.id():[objPath + 'RLEG_LINK04.obj'],
-    rleg5_b.id():[objPath + 'RLEG_LINK05.obj'],
-    rleg6_b.id():[objPath + 'RLEG_LINK06.obj'],
-
-    lleg1_b.id():[objPath + 'LLEG_LINK01.obj'],
-    lleg2_b.id():[objPath + 'LLEG_LINK02.obj'],
-    lleg3_b.id():[objPath + 'LLEG_LINK03.obj'],
-    lleg4_b.id():[objPath + 'LLEG_LINK04.obj'],
-    lleg5_b.id():[objPath + 'LLEG_LINK05.obj'],
-    lleg6_b.id():[objPath + 'LLEG_LINK06.obj'],
-  }
-
 
   mb = mbg.makeMultiBody(21, fixed)
 
@@ -362,5 +445,5 @@ def make_little_human(objPath, fixed=True):
 
   mbc.force = [sva.ForceVec(Vector6d.Zero())]*mb.nrBodies()
 
-  return mb, mbc, mbg, objFiles
+  return mb, mbc, mbg
 

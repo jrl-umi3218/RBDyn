@@ -74,7 +74,9 @@ class GraphicMultiBody:
       actors.append(self.geom.body(i)[0])
       if mb.parent(i) != -1:
         actors.append(self.geom.link(i)[0])
+        self.geom.link(i)[0].visibility = 0
         actors.append(self.geom.joint(i)[0])
+        self.geom.joint(i)[0].visibility = 0
 
     self.viewer.scene.add_actors(actors)
 
