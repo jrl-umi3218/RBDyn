@@ -19,7 +19,10 @@ from graph.geometry import MeshGeometry
 import robots.little_human as hoap
 
 import nethoap
+import kinect
 
+staticRad = 0.021
+staticObs = Vector3d(0.151, 0.151, 0.351)
 
 started = Value('b', False)
 qDes = Array('d', 21)
@@ -31,6 +34,15 @@ qRealData = np.frombuffer(qReal.get_obj())
 
 qDesData[:] = np.mat(np.zeros((21,)))
 qRealData[:] = np.mat(np.zeros((21,)))
+
+def kinectRHandPos():
+  kinPos = np.mat(kinect.rHandPos[:])/1000. - np.mat([-0.14, -0.21, 2.66 + 0.15])
+  kinRot = np.mat([[0., 0., -1.],
+                   [1., 0., 0.],
+                   [0., 1., 0.]])
+  kinPos = kinRot*kinPos.T
+
+  return kinPos
 
 
 def paramToPython(param):
@@ -245,12 +257,28 @@ class Controller(object):
     self.solver.addInequalityConstraint(self.selfCollConstr)
     self.solver.addConstraint(self.selfCollConstr)
 
+    # StaticEnvCollisionConstraint
+    self.seCollConstr = tasks.qp.StaticEnvCollisionConstr(mbP, 0.005)
+    staticSphere = scd.Sphere(staticRad)
+    staticSphere.transform(sva.PTransform(staticObs))
+    self.seCollConstr.addCollision(mbP, 20, stpbv[20], self.robotPlan.transformById[20],
+                                   0, staticSphere, 0.1, 0.01, 0.5)
+    self.seCollConstr.addCollision(mbP, 19, stpbv[19], self.robotPlan.transformById[19],
+                                   0, staticSphere, 0.1, 0.01, 0.5)
+    self.seCollConstr.addCollision(mbP, 18, stpbv[18], self.robotPlan.transformById[18],
+                                   0, staticSphere, 0.1, 0.01, 0.5)
+    self.ss = staticSphere
+
+    self.solver.addInequalityConstraint(self.seCollConstr)
+    self.solver.addConstraint(self.seCollConstr)
+
     self.solver.nrVars(mbP, cont)
     self.solver.updateEqConstrSize()
     self.solver.updateInEqConstrSize()
 
 
   def run(self):
+    self.ss.transform(sva.PTransform(toEigen(kinectRHandPos())))
     mbP = self.robotPlan.mb
     mbcP = self.robotPlan.mbc
 
@@ -364,7 +392,6 @@ def controllerProcess():
       finally:
         qDes.get_lock().release()
 
-
     cmpTimeEnd = time.time()
     ellapsed = cmpTimeEnd - cmpTimeDeb
     ellapsed = min(0.005, ellapsed)
@@ -421,6 +448,9 @@ class Displayer(object):
     self.graphDes.draw(mbP, self.mbcDes)
     self.graphReal.draw(mbP, self.mbcReal)
 
+    self.obj = sphere(staticRad)
+    self.obj.position = list(kinect.rHandPos[:])
+
     self.graphReal.render()
 
 
@@ -448,6 +478,11 @@ class Displayer(object):
         qRealData = np.frombuffer(qReal.get_obj())
         qDesVec[:] = np.mat(qDesData).T
         qRealVec[:] = np.mat(qRealData).T
+
+
+      self.obj.position = kinectRHandPos().T.tolist()[0]
+      #print np.array(kinect.rHandPos[:])/1000.
+
 
       self.mbcDes.q = rbd.vectorToParam(mbP, toEigenX(qDesVec))
       self.mbcReal.q = rbd.vectorToParam(mbP, toEigenX(qRealVec))
@@ -514,25 +549,35 @@ def sphere(r=0.03):
 if __name__ == '__main__':
   contProc = Process(target=controllerProcess)
   repProc = Process(target=replayProcess)
+  kinectProc = Process(target=kinect.kinect)
 
   graph = Displayer()
 
   a = Animator(33, graph.run().next)
   a.timer.Stop()
 
+  def kinectV():
+    kinectProc.start()
+    a.timer.Start()
+
+  def kinectVS():
+    a.timer.Stop()
+    kinectProc.terminate()
+    kinectProc.join()
+
 
   def replay():
     repProc.start()
     a.timer.Start()
 
-
-  def replayStop():
+  def replayS():
     a.timer.Stop()
     repProc.terminate()
     repProc.join()
 
 
   def start():
+    kinectProc.start()
     contProc.start()
 
     startCond.acquire()
@@ -541,11 +586,12 @@ if __name__ == '__main__':
     startCond.release()
     a.timer.Start()
 
-
   def stop():
     a.timer.Stop()
     started.value = False
+    kinectProc.terminate()
     contProc.join()
+    kinectProc.join()
 
 
   #a.edit_traits()
