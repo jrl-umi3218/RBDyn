@@ -68,7 +68,7 @@ def make_joint_link(mass, com, inertia, id, prefix, suffix, fixed=False):
   b = rbd.Body(mass, com, I_o.inertia(), id, '%s_LINK%s' % (prefix, suffix))
 
   jType = rbd.Joint.Fixed if fixed else rbd.Joint.RevZ
-  j = rbd.Joint(jType, True, id, '%r_JOINT%r' % (prefix, suffix))
+  j = rbd.Joint(jType, True, id, '%s_JOINT%s' % (prefix, suffix))
 
   bodies.append(b)
   joints.append(j)
