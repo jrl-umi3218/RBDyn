@@ -11,73 +11,54 @@ Specifically, it prints out the location of the users' head,
 as they are tracked.
 """
 
-# Pose to use to calibrate the user
-pose_to_use = 'Psi'
-
-
 from multiprocessing import Array
 from openni import *
 
-rHandPos = Array('d', 3)
+handPos = Array('d', 3)
 
 def kinect():
-  ctx = Context()
-  ctx.init()
+  context = Context()
+  context.init()
 
-  # Create the user generator
-  user = UserGenerator()
-  user.create(ctx)
+  depth_generator = DepthGenerator()
+  depth_generator.create(context)
+  depth_generator.set_resolution_preset(RES_VGA)
+  depth_generator.fps = 30
 
-  # Obtain the skeleton & pose detection capabilities
-  skel_cap = user.skeleton_cap
-  pose_cap = user.pose_detection_cap
+  gesture_generator = GestureGenerator()
+  gesture_generator.create(context)
+  gesture_generator.add_gesture('Wave')
+
+  hands_generator = HandsGenerator()
+  hands_generator.create(context)
+  hands_generator.set_smoothing(0.2)
 
   # Declare the callbacks
-  def new_user(src, id):
-      print "1/4 User {} detected. Looking for pose..." .format(id)
-      pose_cap.start_detection(pose_to_use, id)
+  # gesture
+  def gesture_detected(src, gesture, id, end_point):
+    print "Detected gesture:", gesture
+    hands_generator.start_tracking(end_point)
 
-  def pose_detected(src, pose, id):
-      print "2/4 Detected pose {} on user {}. Requesting calibration..." .format(pose,id)
-      pose_cap.stop_detection(id)
-      skel_cap.request_calibration(id, True)
+  def gesture_progress(src, gesture, point, progress):
+    pass
 
-  def calibration_start(src, id):
-      print "3/4 Calibration started for user {}." .format(id)
+  def create(src, id, pos, time):
+    print 'Create ', id, pos
 
-  def calibration_complete(src, id, status):
-      if status == CALIBRATION_STATUS_OK:
-          print "4/4 User {} calibrated successfully! Starting to track." .format(id)
-          skel_cap.start_tracking(id)
-      else:
-          print "ERR User {} failed to calibrate. Restarting process." .format(id)
-          new_user(user, id)
+  def update(src, id, pos, time):
+    handPos[:] = pos
 
-  def lost_user(src, id):
-      print "--- User {} lost." .format(id)
+  def destroy(src, id, time):
+    print 'Destroy ', id
 
-  # Register them
-  user.register_user_cb(new_user, lost_user)
-  pose_cap.register_pose_detected_cb(pose_detected)
-  skel_cap.register_c_start_cb(calibration_start)
-  skel_cap.register_c_complete_cb(calibration_complete)
-
-  # Set the profile
-  skel_cap.set_profile(SKEL_PROFILE_ALL)
+  # Register the callbacks
+  gesture_generator.register_gesture_cb(gesture_detected, gesture_progress)
+  hands_generator.register_hand_cb(create, update, destroy)
 
   # Start generating
-  ctx.start_generating_all()
-  print "0/4 Starting to detect users. Press Ctrl-C to exit."
+  context.start_generating_all()
+
+  print 'Make a Wave to start tracking...'
 
   while True:
-      # Update to next frame
-      ctx.wait_and_update_all()
-
-      # Extract head position of each tracked user
-      if len(user.users) > 0:
-        id = user.users[0]
-        if skel_cap.is_tracking(id):
-            hand = skel_cap.get_joint_position(id, SKEL_LEFT_HAND)
-            rHandPos[:] = hand.point
-
-
+    context.wait_any_update_all()

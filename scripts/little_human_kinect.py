@@ -19,7 +19,9 @@ from graph.geometry import MeshGeometry
 import robots.little_human as hoap
 
 import nethoap
+import kinect
 
+# staticRad = 0.08
 staticRad = 0.021
 staticObs = Vector3d(0.151, 0.151, 0.351)
 
@@ -33,6 +35,24 @@ qRealData = np.frombuffer(qReal.get_obj())
 
 qDesData[:] = np.mat(np.zeros((21,)))
 qRealData[:] = np.mat(np.zeros((21,)))
+
+from collections import deque
+handPos = deque(maxlen=1)
+def kinectRHandPos():
+  #kinPos = np.mat(kinect.handPos[:])/1000. - np.mat([-0.14, -0.21, 2.66 + 0.15])
+  handPos.append(np.mat(kinect.handPos[:])/1000.)
+  sumHandPos = np.mat(np.zeros(3))
+  for p in handPos:
+    sumHandPos += p
+  meanHandPos = sumHandPos/len(handPos)
+  kinPos = meanHandPos - np.mat([0.158 - 0.02, 0.137 - 0.1, 2.37 + 0.05])
+  # kinPos = np.mat(kinect.handPos[:])/1000. - np.mat([-0.1, -0.3, 1.])
+  kinRot = np.mat([[0., 0., -1.],
+                   [1., 0., 0.],
+                   [0., 1., 0.]])
+  kinPos = kinRot*kinPos.T
+
+  return kinPos
 
 
 def paramToPython(param):
@@ -169,8 +189,6 @@ class Controller(object):
     # compute CoM pos objective
     com = rbd.computeCoM(mbP, mbcP)
     comObj = Vector3d(com[0], com[1], com[2])
-    # comObj = Vector3d(self.lFootPos[0], self.lFootPos[1], comObj[2])
-    self.com = 'e'
 
     # PostureTask
     self.postureTask = tasks.qp.PostureTask(mbP, paramToPython(mbcP.q), 3., 10.)
@@ -181,14 +199,13 @@ class Controller(object):
 
     # HandsTask
     lhandI = mbP.bodyIndexById(20)
-    self.lhandPTask = tasks.qp.PositionTask(mbP, 20, Vector3d(0.22, 0.05 - 0.15, 0.37 - 0.03),
+    self.lhandPTask = tasks.qp.PositionTask(mbP, 20, bodyPosW[lhandI].translation() + Vector3d(0.3, 0., 0.2),
                                             Vector3d(0., 0.16, 0.))
     rhandI = mbP.bodyIndexById(10)
-    self.rhandPTask = tasks.qp.PositionTask(mbP, 10, Vector3d(0.22, 0.05 + 0.15, 0.37 + 0.03),
+    self.rhandPTask = tasks.qp.PositionTask(mbP, 10, bodyPosW[rhandI].translation() + Vector3d(0.3, 0., 0.2),
                                             Vector3d(0., 0.16, 0.))
     self.lhandPTaskSP = tasks.qp.SetPointTask(mbP, self.lhandPTask, 4., 1000.)
     self.rhandPTaskSP = tasks.qp.SetPointTask(mbP, self.rhandPTask, 4., 1000.)
-    self.handS = 'i'
 
     # add tasks
     self.solver.addTask(self.comTaskSP)
@@ -242,25 +259,29 @@ class Controller(object):
     addColl(20, 21, 0.02, 0.005, 0.05)
     addColl(13, 3, 0.01, 0.001, 0.05)
 
-    self.pair = scd.CD_Pair(stpbv[10], stpbv[20])
-
     self.solver.addInequalityConstraint(self.selfCollConstr)
     self.solver.addConstraint(self.selfCollConstr)
 
     # StaticEnvCollisionConstraint
     self.seCollConstr = tasks.qp.StaticEnvCollisionConstr(mbP, 0.005)
     staticSphere = scd.Sphere(staticRad)
-    staticSphere.transform(sva.PTransform(staticObs))
+    staticSphere.transform(sva.PTransform(Vector3d(10., 10., 10.)))
     self.seCollConstr.addCollision(mbP, 20, stpbv[20], self.robotPlan.transformById[20],
                                    0, staticSphere, 0.1, 0.01, 0.5)
     self.seCollConstr.addCollision(mbP, 19, stpbv[19], self.robotPlan.transformById[19],
                                    0, staticSphere, 0.1, 0.01, 0.5)
     self.seCollConstr.addCollision(mbP, 18, stpbv[18], self.robotPlan.transformById[18],
                                    0, staticSphere, 0.1, 0.01, 0.5)
+    self.seCollConstr.addCollision(mbP, 10, stpbv[10], self.robotPlan.transformById[10],
+                                   0, staticSphere, 0.1, 0.01, 0.5)
+    self.seCollConstr.addCollision(mbP, 9, stpbv[9], self.robotPlan.transformById[9],
+                                   0, staticSphere, 0.1, 0.01, 0.5)
+    self.seCollConstr.addCollision(mbP, 8, stpbv[8], self.robotPlan.transformById[8],
+                                   0, staticSphere, 0.1, 0.01, 0.5)
     self.ss = staticSphere
 
-    # self.solver.addInequalityConstraint(self.seCollConstr)
-    # self.solver.addConstraint(self.seCollConstr)
+    self.solver.addInequalityConstraint(self.seCollConstr)
+    self.solver.addConstraint(self.seCollConstr)
 
     self.solver.nrVars(mbP, cont)
     self.solver.updateEqConstrSize()
@@ -268,61 +289,14 @@ class Controller(object):
 
 
   def run(self):
+    self.ss.transform(sva.PTransform(toEigen(kinectRHandPos())))
     mbP = self.robotPlan.mb
     mbcP = self.robotPlan.mbc
 
     # compute next desired position
-    self.solver.update(mbP, mbcP)
+    if not self.solver.update(mbP, mbcP):
+      raise RuntimeError('Solver fail')
     rbd.eulerIntegration(mbP, mbcP, 0.005)
-
-
-    if np.linalg.norm(toNumpy(self.comTask.eval())) < 0.025:
-      if self.com == 'l':
-        print 'left com'
-        obj = self.comTask.com()
-        obj[0] = self.rFootPos[0]
-        obj[1] = self.rFootPos[1]
-        self.comTask.com(obj)
-        self.com = 'r'
-      elif self.com == 'r':
-        print 'right com'
-        obj = self.comTask.com()
-        obj[0] = self.lFootPos[0]
-        obj[1] = self.lFootPos[1]
-        self.comTask.com(obj)
-        self.com = 'l'
-
-
-    # dist = np.sqrt(self.pair.distance())
-    # if dist < 0.005:
-    #   print np.sqrt(self.pair.distance())
-
-    if self.handS == 'i' and np.linalg.norm(toNumpy(self.lhandPTask.eval())) < 0.18\
-       and np.linalg.norm(toNumpy(self.rhandPTask.eval())) < 0.18:
-      # print 'init'
-      pl = self.lhandPTask.position()
-      pr = self.rhandPTask.position()
-      pr[0] = pr[0] - 0.05
-      pl[0] = pl[0] + 0.05
-      pr[2] = pr[2] - 0.2
-      pl[2] = pl[2] + 0.2
-      self.lhandPTask.position(pl)
-      self.rhandPTask.position(pr)
-      self.handS = 'r'
-    if self.handS == 'r' and np.linalg.norm(toNumpy(self.lhandPTask.eval())) < 0.16\
-       and np.linalg.norm(toNumpy(self.rhandPTask.eval())) < 0.16:
-      # print 'switch'
-      pl = self.lhandPTask.position()
-      pr = self.rhandPTask.position()
-      t = pr[2]
-      pr[2] = pl[2]
-      pl[2] = t
-      t = pr[0]
-      pr[0] = pl[0]
-      pl[0] = t
-      self.lhandPTask.position(pl)
-      self.rhandPTask.position(pr)
-
 
     self.robotPlan.toReal.convert(mbcP, self.mbcControl);
 
@@ -384,7 +358,6 @@ def controllerProcess():
     cmpTimeEnd = time.time()
     ellapsed = cmpTimeEnd - cmpTimeDeb
     ellapsed = min(0.005, ellapsed)
-    # print ellapsed
 
     time.sleep(0.005 - ellapsed)
 
@@ -430,16 +403,16 @@ class Displayer(object):
     rbd.forwardKinematics(mbP, self.mbcDes)
     rbd.forwardKinematics(mbP, self.mbcReal)
 
-    self.graphDes = GraphicMultiBody(mbP, geomDes,
-                                     sva.PTransform(Vector3d(0., 0.5, 0.)),
-                                     bodyBase=self.robotPlan.transform)
+    # self.graphDes = GraphicMultiBody(mbP, geomDes,
+    #                                  sva.PTransform(Vector3d(0., 0.5, 0.)),
+    #                                  bodyBase=self.robotPlan.transform)
     self.graphReal = GraphicMultiBody(mbP, geomReal, bodyBase=self.robotPlan.transform)
 
-    self.graphDes.draw(mbP, self.mbcDes)
+    # self.graphDes.draw(mbP, self.mbcDes)
     self.graphReal.draw(mbP, self.mbcReal)
 
-    # self.obj = sphere(staticRad)
-    # self.obj.position = list(staticObs)
+    self.obj = sphere(staticRad)
+    self.obj.position = (10., 10., 10.)
 
     self.graphReal.render()
 
@@ -450,7 +423,7 @@ class Displayer(object):
     qDesVec = np.mat(np.zeros((21,1)))
     qRealVec = np.mat(np.zeros((21,1)))
 
-    pair = [(20, 10)]
+    pair = []
     cdPair = []
 
     for p in pair:
@@ -469,6 +442,7 @@ class Displayer(object):
         qDesVec[:] = np.mat(qDesData).T
         qRealVec[:] = np.mat(qRealData).T
 
+      self.obj.position = kinectRHandPos().T.tolist()[0]
 
       self.mbcDes.q = rbd.vectorToParam(mbP, toEigenX(qDesVec))
       self.mbcReal.q = rbd.vectorToParam(mbP, toEigenX(qRealVec))
@@ -476,7 +450,7 @@ class Displayer(object):
       rbd.forwardKinematics(mbP, self.mbcDes)
       rbd.forwardKinematics(mbP, self.mbcReal)
 
-      self.graphDes.draw(mbP, self.mbcDes)
+      # self.graphDes.draw(mbP, self.mbcDes)
       self.graphReal.draw(mbP, self.mbcReal)
 
 
@@ -535,6 +509,7 @@ def sphere(r=0.03):
 if __name__ == '__main__':
   contProc = Process(target=controllerProcess)
   repProc = Process(target=replayProcess)
+  kinectProc = Process(target=kinect.kinect)
 
   graph = Displayer()
 
@@ -552,6 +527,7 @@ if __name__ == '__main__':
 
 
   def start():
+    kinectProc.start()
     contProc.start()
 
     startCond.acquire()
@@ -563,7 +539,10 @@ if __name__ == '__main__':
   def stop():
     a.timer.Stop()
     started.value = False
+    kinectProc.terminate()
     contProc.join()
+    kinectProc.join()
+
 
   #a.edit_traits()
 
