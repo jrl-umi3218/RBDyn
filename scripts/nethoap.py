@@ -12,7 +12,7 @@ thetaToPulse = np.array([209, 209, -209, 209, 209, -209, 209, 209, -209, -209,
 pulseToTheta = 1./thetaToPulse
 
 
-sensorStruct = struct.Struct('21h21h')
+sensorStruct = struct.Struct('21h21h4h4h6h')
 controlStruct = struct.Struct('21h')
 
 
