@@ -63,9 +63,10 @@ def make_joint_link(mass, com, inertia, id, prefix, suffix, fixed=False):
   inertia = toEigen(inertia)*1e-6
 
   # Transform rotational inertia to body origin
-  I_o = sva.PTransform(com).dualMul(sva.RBInertia(mass, Vector3d.Zero(), inertia))
+  # I_o = I_c + mc_x*c_x^T
+  I_o = inertia + sva.vector3ToCrossMatrix(mass*com)*sva.vector3ToCrossMatrix(com).transpose()
 
-  b = rbd.Body(mass, com, I_o.inertia(), id, '%s_LINK%s' % (prefix, suffix))
+  b = rbd.Body(mass, com, I_o, id, '%s_LINK%s' % (prefix, suffix))
 
   jType = rbd.Joint.Fixed if fixed else rbd.Joint.RevZ
   j = rbd.Joint(jType, True, id, '%s_JOINT%s' % (prefix, suffix))

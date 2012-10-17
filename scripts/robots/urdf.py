@@ -4,6 +4,7 @@ from xml.dom.minidom import Document
 
 import numpy as np
 
+import spacevecalg as sva
 import rbdyn as rbd
 from eigen3 import toNumpy
 
@@ -127,7 +128,6 @@ def to_urdf(name, mb, bound, mesh):
 
     rRot, pRot, yRot = rotToRPY(r)
 
-    import spacevecalg as sva
     rr = sva.PTransform(sva.RotX(rRot))
     pr = sva.PTransform(sva.RotY(pRot))
 
