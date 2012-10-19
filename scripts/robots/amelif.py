@@ -25,7 +25,7 @@ def rotToRPY(r):
     gamma = math.atan2(r[2,1]/np.cos(beta), r[2,2]/np.cos(beta));
 
   # rpy
-  return -gamma, -beta, -alpha
+  return gamma, beta, alpha
 
 
 
@@ -60,7 +60,7 @@ def to_jointType(jointDom, joint):
   elif joint.type() == rbd.Joint.RevY:
     setTypeAxis('revolute', 'y')
   elif joint.type() == rbd.Joint.RevZ:
-    setTypeAxis('revolute', 'x')
+    setTypeAxis('revolute', 'z')
   elif joint.type() == rbd.Joint.PrismX:
     setTypeAxis('prismatic', 'x')
   elif joint.type() == rbd.Joint.PrismY:
@@ -73,7 +73,7 @@ def to_jointType(jointDom, joint):
     jointDom.setAttribute('type', 'fixed')
 
 
-def to_amelif(mb, bound, mesh):
+def to_amelif(mb, bound, mesh, scale_xyz=(1., 1., 1.)):
   doc = Document()
 
   mbDom = doc.createElement('MultiBody')
@@ -96,6 +96,7 @@ def to_amelif(mb, bound, mesh):
   for b in mb.bodies():
     bodyDom = doc.createElement('Body')
     bodyDom.setAttribute('id', str(b.id()))
+    bodyDom.setAttribute('scale', " ".join(["%s"]*3) % scale_xyz)
     bodiesDom.appendChild(bodyDom)
 
     mass = b.inertia().mass()
@@ -128,20 +129,22 @@ def to_amelif(mb, bound, mesh):
     jointsDom.appendChild(jointDom)
 
     addTextElement('Label', j.name(), jointDom)
-    addTextElement('TorqueLimit', str(100.), jointDom)
-    addTextElement('SpeedLimit', str(10.), jointDom)
 
-    addTextElement('PositionMin', str(bound[j.id()][0]), jointDom)
-    addTextElement('PositionMax', str(bound[j.id()][1]), jointDom)
+    if bound.has_key(j.id()):
+      addTextElement('TorqueLimit', str(abs(bound[j.id()][2])), jointDom)
+      addTextElement('SpeedLimit', str(10.), jointDom)
+
+      addTextElement('PositionMin', str(np.rad2deg(bound[j.id()][0])), jointDom)
+      addTextElement('PositionMax', str(np.rad2deg(bound[j.id()][1])), jointDom)
 
     t = mb.transform(i)
     trans = t.translation()
-    rot = toNumpy(t.rotation())
+    rot = toNumpy(t.rotation()).T
 
     r,p,y = np.rad2deg(rotToRPY(rot))
     stp = (trans[0], trans[1], trans[2], r, p, y)
 
-    addTextElement('StaticParameter', ' '.join(['%s']*6) % stp, jointDom)
+    addTextElement('StaticParameters', ' '.join(['%s']*6) % stp, jointDom)
 
   return doc
 
