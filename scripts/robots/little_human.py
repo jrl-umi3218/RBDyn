@@ -226,13 +226,11 @@ def bound(mb):
   low  = np.array([-91., -31., -82., -1., -61., -25., -91., -96., -91., -115.,
                    -31., -21., -82., -1., -61., -25., -91., -1., -91., -115.,
                    1.])
-
   low += 1.
 
   upp = np.array([31., 21., 71., 130., 58.6076555,  25., 151., 1., 91., 1.,
                   91., 31., 71., 130., 61., 25., 151., 96., 91., 1.,
                   90.])
-
   upp -= 1.
 
   low = np.deg2rad(low)
@@ -241,13 +239,25 @@ def bound(mb):
   ql = [[]]*mb.nrJoints()
   qu = [[]]*mb.nrJoints()
 
+  torque = np.array([1.5, 2., 1.5, 2., 2., 1.5, 1.5, 1.5, 1.5, 1.5,
+                     1.5, 2., 1.5, 2., 2., 1.5, 1.5, 1.5, 1.5, 1.5,
+                     2.])
+
+  tl = [[]]*mb.nrJoints()
+  tu = [[]]*mb.nrJoints()
+  coef = 10.
+
   for i,(l, u) in enumerate(zip(low, upp)):
     id = i + 1
     ql[mb.jointIndexById(id)] = [l]
     qu[mb.jointIndexById(id)] = [u]
 
+    tl[mb.jointIndexById(id)] = [-torque[i]*coef]
+    tu[mb.jointIndexById(id)] = [torque[i]*coef]
 
-  return (ql, qu)
+
+
+  return (ql, qu, tl, tu)
 
 
 
