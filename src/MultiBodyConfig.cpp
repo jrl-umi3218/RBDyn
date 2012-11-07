@@ -517,7 +517,7 @@ void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	for(std::size_t i = 0; i < mbc.motionSubspace.size(); ++i)
 	{
-		if(mbc.motionSubspace[i].cols() != static_cast<std::size_t>(mb.joint(i).dof()))
+		if(mbc.motionSubspace[i].cols() != static_cast<unsigned>(mb.joint(i).dof()))
 		{
 			std::ostringstream str;
 			str << "Bad motionSubspace matrix size for Joint "
