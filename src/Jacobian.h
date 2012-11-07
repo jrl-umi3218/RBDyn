@@ -95,7 +95,7 @@ public:
 	}
 
 	/// @return Static translation in the body exprimed in body coordinate.
-	Eigen::Vector3d point() const
+	const Eigen::Vector3d& point() const
 	{
 		return point_.translation();
 	}
