@@ -462,8 +462,6 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 	fd.forwardDynamics(mb, mbc);
 	MatrixXd ID_H = makeHFromID(mb, mbc, id, fd.C());
 
-	std::cout << fd.H() - ID_H << std::endl;
-	std::cout << std::endl;
 	BOOST_CHECK_SMALL((fd.H() - ID_H).norm(), 1e-10);
 
 
