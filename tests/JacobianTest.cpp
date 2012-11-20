@@ -340,6 +340,108 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 }
 
 
+
+BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace cst = boost::math::constants;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Zero();
+
+	RBInertia rbi(mass, h, I);
+
+	Body b0(rbi, 0, "b0");
+	Body b1(rbi, 1, "b1");
+	Body b2(rbi, 2, "b2");
+	Body b3(rbi, 3, "b3");
+	Body b4(rbi, 4, "b4");
+
+	mbg.addBody(b0);
+	mbg.addBody(b1);
+	mbg.addBody(b2);
+	mbg.addBody(b3);
+	mbg.addBody(b4);
+
+	Joint j0(Joint::RevX, true, 0, "j0");
+	Joint j1(Joint::RevY, true, 1, "j1");
+	Joint j2(Joint::RevZ, true, 2, "j2");
+	Joint j3(Joint::Spherical, true, 3, "j3");
+
+	mbg.addJoint(j0);
+	mbg.addJoint(j1);
+	mbg.addJoint(j2);
+	mbg.addJoint(j3);
+
+	//                b4
+	//             j3 | Spherical
+	//  Root     j0   |   j1     j2
+	//  ---- b0 ---- b1 ---- b2 ----b3
+	//  Free     RevX   RevY    RevZ
+
+
+	PTransform to(Vector3d(0., 0.5, 0.));
+	PTransform from(Vector3d(0., -0.5, 0.));
+
+
+	mbg.linkBodies(0, to, 1, from, 0);
+	mbg.linkBodies(1, to, 2, from, 1);
+	mbg.linkBodies(2, to, 3, from, 2);
+	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
+								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+
+	MultiBody mb = mbg.makeMultiBody(0, false);
+
+	MultiBodyConfig mbc(mb);
+
+	Jacobian jac1(mb, 3);
+	Jacobian jac2(mb, 4);
+
+	Quaterniond quat(AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*
+		AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ()));
+	Vector3d tran = Vector3d::Random()*10.;
+
+	mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()},
+					 {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobianMatrix(mb, mbc, jac2);
+
+	quat = (AngleAxisd(cst::pi<double>()/8., Vector3d::UnitX())*
+		AngleAxisd(cst::pi<double>()/2., Vector3d::UnitZ()));
+	tran = Vector3d::Random()*10.;
+	mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()},
+					 {cst::pi<double>()/2.}, {0.}, {0.}, {1., 0., 0., 0.}};
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobianMatrix(mb, mbc, jac2);
+
+
+	// test jacobian safe version
+	MultiBodyConfig mbcBadNrBodyPos(mbc);
+	mbcBadNrBodyPos.bodyPosW.resize(1);
+	BOOST_CHECK_THROW(jac1.sJacobian(mb, mbcBadNrBodyPos), std::domain_error);
+
+	MultiBodyConfig mbcBadNrJointConf(mbc);
+	mbcBadNrJointConf.motionSubspace.resize(1);
+	BOOST_CHECK_THROW(jac1.sJacobian(mb, mbcBadNrJointConf), std::domain_error);
+
+	MultiBody mbErr = jac2.subMultiBody(mb);
+	MultiBodyConfig mbcErr(mbErr);
+	BOOST_CHECK_THROW(jac1.sJacobian(mbErr, mbcErr), std::domain_error);
+}
+
+
+
 BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 {
 	using namespace Eigen;
