@@ -28,6 +28,8 @@
 // RBDyn
 #include "Joint.h"
 
+const double TOL = 1e-10;
+
 void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forward)
 {
 	using namespace Eigen;
@@ -280,7 +282,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test pose
-	BOOST_CHECK_EQUAL(j.pose(q), rot);
+	BOOST_CHECK_SMALL((j.pose(q).matrix() - rot.matrix()).norm(), TOL);
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), S*alphaE);
@@ -288,7 +290,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	// test inverse polarity
 	j.forward(false);
 	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
-	BOOST_CHECK_EQUAL(j.pose(q), rot.inv());
+	BOOST_CHECK_SMALL((j.pose(q).matrix() - rot.inv().matrix()).norm(), TOL);
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
 }
 
