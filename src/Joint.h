@@ -17,6 +17,7 @@
 
 // includes
 // std
+#include <cmath>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -27,10 +28,20 @@
 namespace rbd
 {
 
+
+/**
+	* Utility function to compute a rotation matrix from the parameter vector.
+	* @param q parameter vector with a least 4 values.
+	* @return Rotation matrix in successor frame.
+	*/
+Eigen::Matrix3d QuatToE(const std::vector<double>& q);
+
+
 /**
 	* Joint representation.
 	* Hold joint id and name and compute transformation, speed and motion
 	* subspace.
+	* WARNING : Spherical joint translation parameters are in FP coordinate.
 	*/
 class Joint
 {
@@ -278,17 +289,16 @@ inline sva::PTransform Joint::pose(const std::vector<double>& q) const
 		case Spherical:
 			return PTransform(Quaterniond(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
 		case Free:
-			// must be in successor frame coordinate
-			rot = Quaterniond(q[0], q[1], q[2], q[3]).matrix();
+			rot = QuatToE(q);
 			if(dir_ == 1.)
 			{
-				return PTransform(rot.transpose(),
-					rot*Vector3d(q[4], q[5], q[6]));
+				return PTransform(rot,
+					Vector3d(q[4], q[5], q[6]));
 			}
 			else
 			{
-				return PTransform(rot.transpose(),
-					rot*Vector3d(q[4], q[5], q[6])).inv();
+				return PTransform(rot,
+					Vector3d(q[4], q[5], q[6])).inv();
 			}
 		case Fixed:
 		default:
@@ -388,6 +398,35 @@ inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
 		throw std::domain_error(str.str());
 	}
 	return tanAccel(alphaD);
+}
+
+
+
+inline Eigen::Matrix3d QuatToE(const std::vector<double>& q)
+{
+	using namespace Eigen;
+	double p0 = q[0];
+	double p1 = q[1];
+	double p2 = q[2];
+	double p3 = q[3];
+
+	double p0p1 = p0*p1;
+	double p0p2 = p0*p2;
+	double p0p3 = p0*p3;
+
+	double p1p2 = p1*p2;
+	double p1p3 = p1*p3;
+
+	double p2p3 = p2*p3;
+
+	double p0s = std::pow(p0, 2);
+	double p1s = std::pow(p1, 2);
+	double p2s = std::pow(p2, 2);
+	double p3s = std::pow(p3, 2);
+
+	return 2.*(Matrix3d() << p0s + p1s - 0.5, p1p2 + p0p3, p1p3 - p0p2,
+														p1p2 - p0p3, p0s + p2s - 0.5, p2p3 + p0p1,
+														p1p3 + p0p2, p2p3 - p0p1, p0s + p3s - 0.5).finished();
 }
 
 } // namespace rbd

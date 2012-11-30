@@ -43,8 +43,8 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 		else
 			mbc.bodyVelB[succ[i]] = mbc.jointVelocity[i];
 
-		sva::PTransform X_0_i(mbc.bodyPosW[succ[i]].rotation());
-		mbc.bodyVelW[i] = X_0_i.inv()*mbc.bodyVelB[i];
+		sva::PTransform E_0_i(mbc.bodyPosW[succ[i]].rotation());
+		mbc.bodyVelW[succ[i]] = E_0_i.invMul(mbc.bodyVelB[succ[i]]);
 	}
 }
 

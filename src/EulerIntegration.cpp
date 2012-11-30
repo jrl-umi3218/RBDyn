@@ -54,9 +54,14 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 
 		case Joint::Free:
 		{
-			q[4] += alpha[3]*step;
-			q[5] += alpha[4]*step;
-			q[6] += alpha[5]*step;
+			Eigen::Vector3d v;
+			v << alpha[3], alpha[4], alpha[5];
+			// v is in FS coordinate. We have to put it back in FP coordinate.
+			v = QuatToE(q).transpose()*v;
+
+			q[4] += v[0]*step;
+			q[5] += v[1]*step;
+			q[6] += v[2]*step;
 
 			// don't break, we go in spherical
 		}
