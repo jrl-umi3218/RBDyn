@@ -49,7 +49,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 		if(pred[i] != -1)
 			mbc.bodyAccB[i] = X_p_i*mbc.bodyAccB[pred[i]] + ai_tan + vb_i.cross(vj_i);
 		else
-			mbc.bodyAccB[i] = a_0 + ai_tan + vb_i.cross(vj_i);
+			mbc.bodyAccB[i] = X_p_i*a_0 + ai_tan + vb_i.cross(vj_i);
 
 		f_[i] = bodies[i].inertia()*mbc.bodyAccB[i] +
 			vb_i.crossDual(bodies[i].inertia()*vb_i) -

@@ -117,7 +117,7 @@ void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 		if(pred[i] != -1)
 			acc_[i] = X_p_i*acc_[pred[i]] + vb_i.cross(vj_i);
 		else
-			acc_[i] = a_0 + vb_i.cross(vj_i);
+			acc_[i] = X_p_i*a_0 + vb_i.cross(vj_i);
 
 		f_[i] = bodies[i].inertia()*acc_[i] +
 			vb_i.crossDual(bodies[i].inertia()*vb_i) -
