@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	std::vector<double> q = {quat.w(), quat.x(), quat.y(), quat.z(),
 		trans.x(), trans.y(), trans.z()};
 
-	PTransform rot(quat.matrix().transpose(), quat.matrix()*trans);
+	PTransform rot(quat.matrix().transpose(), trans);
 
 	// motion data
 	std::vector<double> alpha;
