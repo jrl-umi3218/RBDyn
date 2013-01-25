@@ -41,12 +41,8 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 {
 	switch(type)
 	{
-		case Joint::RevX:
-		case Joint::RevY:
-		case Joint::RevZ:
-		case Joint::PrismX:
-		case Joint::PrismY:
-		case Joint::PrismZ:
+		case Joint::Rev:
+		case Joint::Prism:
 		{
 			q[0] += alpha[0]*step;
 			break;

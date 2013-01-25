@@ -30,7 +30,7 @@
 
 const double TOL = 1e-10;
 
-void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forward)
+void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool forward)
 {
 	using namespace Eigen;
 	using namespace sva;
@@ -51,7 +51,7 @@ void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forwa
 	PTransform rot90(AngleAxisd(-constants::pi<double>()/2., dir*axis).matrix());
 
 	// test accessor
-	BOOST_CHECK_EQUAL(j.type(), type);
+	BOOST_CHECK_EQUAL(j.type(), Joint::Rev);
 	BOOST_CHECK_EQUAL(j.params(), 1);
 	BOOST_CHECK_EQUAL(j.dof(), 1);
 	BOOST_CHECK_EQUAL(j.id(), 0);
@@ -63,7 +63,7 @@ void testRevolute(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forwa
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
 }
 
-void testPrismatique(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool forward)
+void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool forward)
 {
 	using namespace Eigen;
 	using namespace sva;
@@ -84,7 +84,7 @@ void testPrismatique(rbd::Joint::Type type, const Eigen::Vector3d& axis, bool fo
 	PTransform trans2(Vector3d(dir*axis*2.));
 
 	// test accessor
-	BOOST_CHECK_EQUAL(j.type(), type);
+	BOOST_CHECK_EQUAL(j.type(), Joint::Prism);
 	BOOST_CHECK_EQUAL(j.params(), 1);
 	BOOST_CHECK_EQUAL(j.dof(), 1);
 	BOOST_CHECK_EQUAL(j.id(), 0);

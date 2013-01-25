@@ -535,12 +535,12 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 	// static
 	vector<double> q = {0.};
 
-	eulerJointIntegration(Joint::RevX, {0.}, 1., q);
+	eulerJointIntegration(Joint::Rev, {0.}, 1., q);
 
 	BOOST_CHECK_EQUAL(q[0], 0.);
 
 	// moving
-	eulerJointIntegration(Joint::RevX, {1.}, 1., q);
+	eulerJointIntegration(Joint::Rev, {1.}, 1., q);
 
 	BOOST_CHECK_EQUAL(q[0], 1.);
 

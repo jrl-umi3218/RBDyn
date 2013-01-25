@@ -49,15 +49,22 @@ public:
 	/// Joint type.
 	enum Type
 	{
+		Rev, ///< Revolute joint about an user specified axis.
+		Prism, ///< Prismatique joint about an user specified axis.
+		Spherical, ///< Spherical joint, represented by a quaternion.
+		Free, ///< Free joint, represented by a quaternion.
+		Fixed ///< Fixed joint.
+	};
+
+	/// Old joint type for Api compatibility
+	enum OldType
+	{
 		RevX, ///< Revolute joint about X axis.
 		RevY, ///< Revolute joint about Y axis.
 		RevZ, ///< Revolute joint about Z axis.
 		PrismX, ///< Prismatique joint about X axis.
 		PrismY, ///< Prismatique joint about Y axis.
-		PrismZ, ///< Prismatique joint about Z axis.
-		Spherical, ///< Spherical joint, represented by a quaternion.
-		Free, ///< Free joint, represented by a quaternion.
-		Fixed ///< Fixed joint.
+		PrismZ ///< Prismatique joint about Z axis.
 	};
 
 public:
@@ -65,12 +72,32 @@ public:
 	{}
 
 	/**
+		* Compatibility constructor
 		* @param type Joint type.
 		* @param forward Joint is in forward direction if true.
 		* @param id Joint id, must be unique in a multibody.
 		* @param name Joint name.
 		*/
-	Joint(Type type, bool forward, int id, std::string name);
+	Joint(OldType type, bool forward, int id, std::string name);
+
+	/**
+		* @param type Joint type.
+		* @param axis User specified.
+		* @param forward Joint is in forward direction if true.
+		* @param id Joint id, must be unique in a multibody.
+		* @param name Joint name.
+		*/
+	Joint(Type type, const Eigen::Vector3d& axis, bool forward, int id,
+		std::string name);
+
+	/**
+		* @param type Joint type.
+		* @param forward Joint is in forward direction if true.
+		* @param id Joint id, must be unique in a multibody.
+		* @param name Joint name.
+		*/
+	Joint(Type type, bool forward, int id,
+		std::string name);
 
 	/// @return Joint type.
 	Type type() const
@@ -188,6 +215,8 @@ public:
 		return id_ != b.id_ || name_ != b.name_;
 	}
 
+private:
+	void constructJoint(Type t, const Eigen::Vector3d& a);
 
 private:
 	Type type_;
@@ -201,48 +230,201 @@ private:
 	std::string name_;
 };
 
+
 inline std::ostream& operator<<(std::ostream& out, const Joint& b)
 {
 	out << "Joint: " << b.id() << ", " << b.name();
 	return out;
 }
 
-inline Joint::Joint(Type type, bool forward, int id, std::string name):
-	type_(type),
+
+inline Joint::Joint(OldType type, bool forward, int id, std::string name):
 	dir_(forward ? 1. : -1),
 	id_(id),
 	name_(name)
 {
 	using namespace Eigen;
-	switch(type_)
+
+	switch(type)
 	{
 		case RevX:
-			S_ = dir_*Vector6d::UnitX();
-			params_ = 1;
-			dof_ = 1;
+			constructJoint(Rev, Vector3d::UnitX());
 			break;
 		case RevY:
-			S_ = dir_*Vector6d::UnitY();
-			params_ = 1;
-			dof_ = 1;
+			constructJoint(Rev, Vector3d::UnitY());
 			break;
 		case RevZ:
-			S_ = dir_*Vector6d::UnitZ();
-			params_ = 1;
-			dof_ = 1;
+			constructJoint(Rev, Vector3d::UnitZ());
 			break;
 		case PrismX:
-			S_ = (Vector6d() << 0., 0., 0., dir_, 0., 0.).finished();
-			params_ = 1;
-			dof_ = 1;
+			constructJoint(Prism, Vector3d::UnitX());
 			break;
 		case PrismY:
-			S_ = (Vector6d() << 0., 0., 0., 0., dir_, 0.).finished();
+			constructJoint(Prism, Vector3d::UnitY());
+			break;
+		case PrismZ:
+			constructJoint(Prism, Vector3d::UnitZ());
+			break;
+		default:
+			constructJoint(Fixed, Vector3d::Zero());
+			break;
+	}
+}
+
+
+inline Joint::Joint(Type type, const Eigen::Vector3d& axis,
+	bool forward, int id, std::string name):
+	dir_(forward ? 1. : -1),
+	id_(id),
+	name_(name)
+{
+	constructJoint(type, axis);
+}
+
+
+inline Joint::Joint(Type type,	bool forward, int id, std::string name):
+	dir_(forward ? 1. : -1),
+	id_(id),
+	name_(name)
+{
+	constructJoint(type, Eigen::Vector3d::UnitZ());
+}
+
+
+inline sva::PTransform Joint::pose(const std::vector<double>& q) const
+{
+	using namespace Eigen;
+	using namespace sva;
+	Matrix3d rot;
+	switch(type_)
+	{
+		case Rev:
+			// minus S because rotation is anti trigonometric
+			return PTransform(AngleAxisd(q[0], -S_.block<3, 1>(0, 0)).matrix());
+		case Prism:
+			return PTransform(Vector3d(S_.block<3, 1>(3, 0)*q[0]));
+		case Spherical:
+			return PTransform(Quaterniond(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
+		case Free:
+			rot = QuatToE(q);
+			if(dir_ == 1.)
+			{
+				return PTransform(rot,
+					Vector3d(q[4], q[5], q[6]));
+			}
+			else
+			{
+				return PTransform(rot,
+					Vector3d(q[4], q[5], q[6])).inv();
+			}
+		case Fixed:
+		default:
+			return PTransform::Identity();
+	}
+}
+
+
+inline sva::MotionVec Joint::motion(const std::vector<double>& alpha) const
+{
+	using namespace Eigen;
+	using namespace sva;
+	switch(type_)
+	{
+		case Rev:
+			return MotionVec((Vector6d() << S_.block<3, 1>(0, 0)*alpha[0],
+																			 Vector3d::Zero()).finished());
+		case Prism:
+			return MotionVec((Vector6d() << Vector3d::Zero(),
+																			 S_.block<3, 1>(3, 0)*alpha[0]).finished());
+		case Spherical:
+			return MotionVec(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
+		case Free:
+			return MotionVec(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
+								alpha[3], alpha[4], alpha[5]).finished());
+		case Fixed:
+		default:
+			return MotionVec(Vector6d::Zero());
+	}
+}
+
+
+inline sva::MotionVec Joint::tanAccel(const std::vector<double>& alphaD) const
+{
+	using namespace Eigen;
+	using namespace sva;
+	switch(type_)
+	{
+		case Rev:
+			return MotionVec((Vector6d() << S_.block<3, 1>(0, 0)*alphaD[0],
+																			 Vector3d::Zero()).finished());
+		case Prism:
+			return MotionVec((Vector6d() << Vector3d::Zero(),
+																			 S_.block<3, 1>(3, 0)*alphaD[0]).finished());
+		case Spherical:
+			return MotionVec(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+		case Free:
+			return MotionVec(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
+								alphaD[3], alphaD[4], alphaD[5]).finished());
+		case Fixed:
+		default:
+			return MotionVec(Vector6d::Zero());
+	}
+}
+
+
+inline sva::PTransform Joint::sPose(const std::vector<double>& q) const
+{
+	if(q.size() != static_cast<unsigned int>(params_))
+	{
+		std::ostringstream str;
+		str << "Wrong number of generalized position variable: expected " <<
+					 params_ << " gived " << q.size();
+		throw std::domain_error(str.str());
+	}
+	return pose(q);
+}
+
+
+inline sva::MotionVec Joint::sMotion(const std::vector<double>& alpha) const
+{
+	if(alpha.size() != static_cast<unsigned int>(dof_))
+	{
+		std::ostringstream str;
+		str << "Wrong number of generalized speed variable: expected " <<
+					 params_ << " gived " << alpha.size();
+		throw std::domain_error(str.str());
+	}
+	return motion(alpha);
+}
+
+
+inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
+{
+	if(alphaD.size() != static_cast<unsigned int>(dof_))
+	{
+		std::ostringstream str;
+		str << "Wrong number of generalized acceleration variable: expected " <<
+					 params_ << " gived " << alphaD.size();
+		throw std::domain_error(str.str());
+	}
+	return tanAccel(alphaD);
+}
+
+
+inline void Joint::constructJoint(Type t, const Eigen::Vector3d& a)
+{
+	using namespace Eigen;
+	type_ = t;
+
+	switch(t)
+	{
+		case Rev:
+			S_ = dir_*(Vector6d() << a, Vector3d::Zero()).finished();
 			params_ = 1;
 			dof_ = 1;
 			break;
-		case PrismZ:
-			S_ = (Vector6d() << 0., 0., 0., 0., 0., dir_).finished();
+		case Prism:
+			S_ = dir_*(Vector6d() << Vector3d::Zero(), a).finished();
 			params_ = 1;
 			dof_ = 1;
 			break;
@@ -266,140 +448,6 @@ inline Joint::Joint(Type type, bool forward, int id, std::string name):
 			break;
 	}
 }
-
-inline sva::PTransform Joint::pose(const std::vector<double>& q) const
-{
-	using namespace Eigen;
-	using namespace sva;
-	Matrix3d rot;
-	switch(type_)
-	{
-		case RevX:
-			return PTransform(RotX(dir_*q[0]));
-		case RevY:
-			return PTransform(RotY(dir_*q[0]));
-		case RevZ:
-			return PTransform(RotZ(dir_*q[0]));
-		case PrismX:
-			return PTransform((Vector3d() << dir_*q[0], 0., 0.).finished());
-		case PrismY:
-			return PTransform((Vector3d() << 0., dir_*q[0], 0.).finished());
-		case PrismZ:
-			return PTransform((Vector3d() << 0., 0., dir_*q[0]).finished());
-		case Spherical:
-			return PTransform(Quaterniond(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
-		case Free:
-			rot = QuatToE(q);
-			if(dir_ == 1.)
-			{
-				return PTransform(rot,
-					Vector3d(q[4], q[5], q[6]));
-			}
-			else
-			{
-				return PTransform(rot,
-					Vector3d(q[4], q[5], q[6])).inv();
-			}
-		case Fixed:
-		default:
-			return PTransform::Identity();
-	}
-}
-
-inline sva::MotionVec Joint::motion(const std::vector<double>& alpha) const
-{
-	using namespace Eigen;
-	using namespace sva;
-	switch(type_)
-	{
-		case RevX:
-			return MotionVec((Vector6d() << dir_*alpha[0], 0., 0., 0., 0., 0.).finished());
-		case RevY:
-			return MotionVec((Vector6d() << 0., dir_*alpha[0], 0., 0., 0., 0.).finished());
-		case RevZ:
-			return MotionVec((Vector6d() << 0., 0., dir_*alpha[0], 0., 0., 0.).finished());
-		case PrismX:
-			return MotionVec((Vector6d() << 0., 0., 0., dir_*alpha[0], 0., 0.).finished());
-		case PrismY:
-			return MotionVec((Vector6d() << 0., 0., 0., 0., dir_*alpha[0], 0.).finished());
-		case PrismZ:
-			return MotionVec((Vector6d() << 0., 0., 0., 0., 0., dir_*alpha[0]).finished());
-		case Spherical:
-			return MotionVec(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
-		case Free:
-			return MotionVec(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
-								alpha[3], alpha[4], alpha[5]).finished());
-		case Fixed:
-		default:
-			return MotionVec(Vector6d::Zero());
-	}
-}
-
-inline sva::MotionVec Joint::tanAccel(const std::vector<double>& alphaD) const
-{
-	using namespace Eigen;
-	using namespace sva;
-	switch(type_)
-	{
-		case RevX:
-			return MotionVec((Vector6d() << dir_*alphaD[0], 0., 0., 0., 0., 0.).finished());
-		case RevY:
-			return MotionVec((Vector6d() << 0., dir_*alphaD[0], 0., 0., 0., 0.).finished());
-		case RevZ:
-			return MotionVec((Vector6d() << 0., 0., dir_*alphaD[0], 0., 0., 0.).finished());
-		case PrismX:
-			return MotionVec((Vector6d() << 0., 0., 0., dir_*alphaD[0], 0., 0.).finished());
-		case PrismY:
-			return MotionVec((Vector6d() << 0., 0., 0., 0., dir_*alphaD[0], 0.).finished());
-		case PrismZ:
-			return MotionVec((Vector6d() << 0., 0., 0., 0., 0., dir_*alphaD[0]).finished());
-		case Spherical:
-			return MotionVec(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
-		case Free:
-			return MotionVec(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
-								alphaD[3], alphaD[4], alphaD[5]).finished());
-		case Fixed:
-		default:
-			return MotionVec(Vector6d::Zero());
-	}
-}
-
-inline sva::PTransform Joint::sPose(const std::vector<double>& q) const
-{
-	if(q.size() != static_cast<unsigned int>(params_))
-	{
-		std::ostringstream str;
-		str << "Wrong number of generalized position variable: expected " <<
-					 params_ << " gived " << q.size();
-		throw std::domain_error(str.str());
-	}
-	return pose(q);
-}
-
-inline sva::MotionVec Joint::sMotion(const std::vector<double>& alpha) const
-{
-	if(alpha.size() != static_cast<unsigned int>(dof_))
-	{
-		std::ostringstream str;
-		str << "Wrong number of generalized speed variable: expected " <<
-					 params_ << " gived " << alpha.size();
-		throw std::domain_error(str.str());
-	}
-	return motion(alpha);
-}
-
-inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
-{
-	if(alphaD.size() != static_cast<unsigned int>(dof_))
-	{
-		std::ostringstream str;
-		str << "Wrong number of generalized acceleration variable: expected " <<
-					 params_ << " gived " << alphaD.size();
-		throw std::domain_error(str.str());
-	}
-	return tanAccel(alphaD);
-}
-
 
 
 inline Eigen::Matrix3d QuatToE(const std::vector<double>& q)
