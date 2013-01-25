@@ -64,11 +64,16 @@ def build_body(bd):
 
 
 def build_joint(jt):
-  jt.add_enum('Type', ['RevX', 'RevY', 'RevZ',
-                       'PrismX', 'PrismY', 'PrismZ',
-                       'Spherical', 'Free', 'Fixed'])
+  jt.add_enum('OldType', ['RevX', 'RevY', 'RevZ',
+                          'PrismX', 'PrismY', 'PrismZ'])
+  jt.add_enum('Type',    ['Rev', 'Prism',
+                          'Spherical', 'Free', 'Fixed'])
 
   jt.add_copy_constructor()
+  jt.add_constructor([param('rbd::Joint::OldType', 'type'), param('bool', 'forward'),
+                      param('int', 'id'), param('std::string', 'name')])
+  jt.add_constructor([param('rbd::Joint::Type', 'type'), param('Eigen::Vector3d', 'axis'),
+                      param('bool', 'forward'), param('int', 'id'), param('std::string', 'name')])
   jt.add_constructor([param('rbd::Joint::Type', 'type'), param('bool', 'forward'),
                       param('int', 'id'), param('std::string', 'name')])
 
