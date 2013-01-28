@@ -94,6 +94,14 @@ def build_joint(jt):
                 [param('const std::vector<double>&', 'alpha')],
                 throw=[dom_ex], custom_name='motion')
 
+  jt.add_method('zeroParam', retval('std::vector<double>'), [], is_const=True)
+  jt.add_method('zeroDof', retval('std::vector<double>'), [], is_const=True)
+
+  jt.add_method('ZeroParam', retval('std::vector<double>'),
+                [param('rbd::Joint::Type', 'type')], is_static=True)
+  jt.add_method('ZeroDof', retval('std::vector<double>'),
+                [param('rbd::Joint::Type', 'type')], is_static=True)
+
 
   jt.add_binary_comparison_operator('==')
   jt.add_binary_comparison_operator('!=')
@@ -186,6 +194,8 @@ def build_mbc(mbc):
   mbc.add_constructor([param('const rbd::MultiBody&', 'mb')])
 
   mbc.add_copy_constructor()
+
+  mbc.add_method('zero', None, [param('const MultiBody&', 'mb')])
 
   mbc.add_instance_attribute('q', 'std::vector<std::vector<double> >')
   mbc.add_instance_attribute('alpha', 'std::vector<std::vector<double> >')
