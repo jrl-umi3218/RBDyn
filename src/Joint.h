@@ -182,6 +182,16 @@ public:
 	sva::MotionVec tanAccel(const std::vector<double>& alphaD) const;
 
 	/**
+		* @return Joint configuation at zero.
+		*/
+	std::vector<double> zeroParam() const;
+
+	/**
+		* @return Joint velocity at zero.
+		*/
+	std::vector<double> zeroDof() const;
+
+	/**
 		* Safe version of pose method.
 		* @see pose
 		* @throw std::domain_error If the number of generalized position variable is
@@ -214,6 +224,17 @@ public:
 	{
 		return id_ != b.id_ || name_ != b.name_;
 	}
+
+public:
+	/**
+		* @return Joint configuation at zero.
+		*/
+	static std::vector<double> zeroParam(Type type);
+
+	/**
+		* @return Joint velocity at zero.
+		*/
+	static std::vector<double> zeroDof(Type type);
 
 private:
 	void constructJoint(Type t, const Eigen::Vector3d& a);
@@ -372,6 +393,18 @@ inline sva::MotionVec Joint::tanAccel(const std::vector<double>& alphaD) const
 }
 
 
+inline std::vector<double> Joint::zeroParam() const
+{
+	return zeroParam(type_);
+}
+
+
+inline std::vector<double> Joint::zeroDof() const
+{
+	return zeroDof(type_);
+}
+
+
 inline sva::PTransform Joint::sPose(const std::vector<double>& q) const
 {
 	if(q.size() != static_cast<unsigned int>(params_))
@@ -408,6 +441,42 @@ inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
 		throw std::domain_error(str.str());
 	}
 	return tanAccel(alphaD);
+}
+
+
+inline std::vector<double> Joint::zeroParam(Type type)
+{
+	switch(type)
+	{
+		case Rev:
+		case Prism:
+			return {0.};
+		case Spherical:
+			return {1., 0., 0., 0.};
+		case Free:
+			return {1., 0., 0., 0., 0., 0., 0.};
+		case Fixed:
+		default:
+			return {};
+	}
+}
+
+
+inline std::vector<double> Joint::zeroDof(Type type)
+{
+	switch(type)
+	{
+		case Rev:
+		case Prism:
+			return {0.};
+		case Spherical:
+			return {0., 0., 0.};
+		case Free:
+			return {0., 0., 0., 0., 0., 0.};
+		case Fixed:
+		default:
+			return {};
+	}
 }
 
 

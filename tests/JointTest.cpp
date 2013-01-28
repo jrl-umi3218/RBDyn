@@ -58,6 +58,14 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	BOOST_CHECK_EQUAL(j.name(), "rev");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
+	// test zero
+	std::vector<double> zeroP = {0.};
+	std::vector<double> zeroD = {0.};
+	std::vector<double> zp = j.zeroParam();
+	std::vector<double> zd = j.zeroDof();
+	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
+
 	BOOST_CHECK_EQUAL(j.pose({constants::pi<double>()/2.}), rot90);
 
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
@@ -90,6 +98,14 @@ void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool
 	BOOST_CHECK_EQUAL(j.id(), 0);
 	BOOST_CHECK_EQUAL(j.name(), "prism");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
+
+	// test zero
+	std::vector<double> zeroP = {0.};
+	std::vector<double> zeroD = {0.};
+	std::vector<double> zp = j.zeroParam();
+	std::vector<double> zd = j.zeroDof();
+	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.pose({2.}), trans2);
@@ -226,6 +242,14 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	BOOST_CHECK_EQUAL(j.name(), "sphere");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
+	// test zero
+	std::vector<double> zeroP = {1., 0., 0., 0.};
+	std::vector<double> zeroD = {0., 0., 0.};
+	std::vector<double> zp = j.zeroParam();
+	std::vector<double> zd = j.zeroDof();
+	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
+
 	// test pose
 	BOOST_CHECK_EQUAL(j.pose(q), rot);
 
@@ -280,6 +304,14 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	BOOST_CHECK_EQUAL(j.id(), 2);
 	BOOST_CHECK_EQUAL(j.name(), "free");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
+
+	// test zero
+	std::vector<double> zeroP = {1., 0., 0., 0., 0., 0., 0.};
+	std::vector<double> zeroD = {0., 0., 0., 0., 0., 0.};
+	std::vector<double> zp = j.zeroParam();
+	std::vector<double> zd = j.zeroDof();
+	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
 	// test pose
 	BOOST_CHECK_SMALL((j.pose(q).matrix() - rot.matrix()).norm(), TOL);
