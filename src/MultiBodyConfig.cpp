@@ -53,6 +53,24 @@ MultiBodyConfig::MultiBodyConfig(const MultiBody& mb):
 }
 
 
+void MultiBodyConfig::zero(const MultiBody& mb)
+{
+	for(std::size_t i = 0; i < q.size(); ++i)
+	{
+		q[i] = mb.joint(i).zeroParam();
+		alpha[i] = mb.joint(i).zeroDof();
+		alphaD[i] = mb.joint(i).zeroDof();
+
+		jointTorque[i] = mb.joint(i).zeroDof();
+	}
+
+	for(std::size_t i = 0; i < force.size(); ++i)
+	{
+		force[i] = sva::ForceVec(Eigen::Vector6d::Zero());
+	}
+}
+
+
 std::vector<Eigen::MatrixXd> MultiBodyConfig::python_motionSubspace()
 {
 	std::vector<Eigen::MatrixXd> ret(motionSubspace.size());

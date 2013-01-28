@@ -502,8 +502,6 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 
 	MultiBodyConfig mbc(mb);
 
-
-
 	// test paramToVector
 	vector<vector<double>> confP = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {2.}};
 	vector<vector<double>> confD = {{}, {1., 2., 3.}, {3., 4., 5.}, {7.}};
@@ -552,6 +550,31 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 	{
 		BOOST_CHECK_EQUAL_COLLECTIONS(conf[i].begin(), conf[i].end(),
 			confD[i].begin(), confD[i].end());
+	}
+
+	// test zero configuration
+	mb = mbg.makeMultiBody(0, false);
+
+	mbc = MultiBodyConfig(mb);
+	mbc.zero(mb);
+	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	{
+		std::vector<double> zp = mb.joint(i).zeroParam();
+		std::vector<double> zd = mb.joint(i).zeroDof();
+
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.q[i].begin(), mbc.q[i].end(),
+																	zp.begin(), zp.end());
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.alpha[i].begin(), mbc.alpha[i].end(),
+																	zd.begin(), zd.end());
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.alphaD[i].begin(), mbc.alphaD[i].end(),
+																	zd.begin(), zd.end());
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.jointTorque[i].begin(), mbc.jointTorque[i].end(),
+																	zd.begin(), zd.end());
+	}
+
+	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	{
+		BOOST_CHECK_EQUAL(mbc.force[i].vector(), Vector6d::Zero());
 	}
 }
 

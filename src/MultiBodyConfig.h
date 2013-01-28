@@ -33,6 +33,9 @@ struct MultiBodyConfig
 	{}
 	MultiBodyConfig(const MultiBody& mb);
 
+	/// Set the multibody at zero configuration
+	void zero(const MultiBody& mb);
+
 	/// Generalized position variable.
 	std::vector<std::vector<double>> q;
 
