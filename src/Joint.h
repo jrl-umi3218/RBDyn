@@ -229,12 +229,12 @@ public:
 	/**
 		* @return Joint configuation at zero.
 		*/
-	static std::vector<double> zeroParam(Type type);
+	static std::vector<double> ZeroParam(Type type);
 
 	/**
 		* @return Joint velocity at zero.
 		*/
-	static std::vector<double> zeroDof(Type type);
+	static std::vector<double> ZeroDof(Type type);
 
 private:
 	void constructJoint(Type t, const Eigen::Vector3d& a);
@@ -395,13 +395,13 @@ inline sva::MotionVec Joint::tanAccel(const std::vector<double>& alphaD) const
 
 inline std::vector<double> Joint::zeroParam() const
 {
-	return zeroParam(type_);
+	return ZeroParam(type_);
 }
 
 
 inline std::vector<double> Joint::zeroDof() const
 {
-	return zeroDof(type_);
+	return ZeroDof(type_);
 }
 
 
@@ -444,7 +444,7 @@ inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
 }
 
 
-inline std::vector<double> Joint::zeroParam(Type type)
+inline std::vector<double> Joint::ZeroParam(Type type)
 {
 	switch(type)
 	{
@@ -462,7 +462,7 @@ inline std::vector<double> Joint::zeroParam(Type type)
 }
 
 
-inline std::vector<double> Joint::zeroDof(Type type)
+inline std::vector<double> Joint::ZeroDof(Type type)
 {
 	switch(type)
 	{
