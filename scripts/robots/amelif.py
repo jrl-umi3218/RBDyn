@@ -52,21 +52,16 @@ def from_jointType(type, axis):
 
 def to_jointType(jointDom, joint):
   def setTypeAxis(type, axis):
+    axis = tuple(np.array(axis).flatten())
     jointDom.setAttribute('type', type)
-    jointDom.setAttribute('axis', axis)
+    jointDom.setAttribute('axis3d', '%s %s %s' % axis)
 
-  if joint.type() == rbd.Joint.RevX:
-    setTypeAxis('revolute', 'x')
-  elif joint.type() == rbd.Joint.RevY:
-    setTypeAxis('revolute', 'y')
-  elif joint.type() == rbd.Joint.RevZ:
-    setTypeAxis('revolute', 'z')
-  elif joint.type() == rbd.Joint.PrismX:
-    setTypeAxis('prismatic', 'x')
-  elif joint.type() == rbd.Joint.PrismY:
-    setTypeAxis('prismatic', 'y')
-  elif joint.type() == rbd.Joint.PrismZ:
-    setTypeAxis('prismatic', 'z')
+  if joint.type() == rbd.Joint.Rev:
+    axis = toNumpy(joint.motionSubspace())[:3]
+    setTypeAxis('revolute', axis)
+  elif joint.type() == rbd.Joint.Prism:
+    axis = toNumpy(joint.motionSubspace())[3:]
+    setTypeAxis('prismatic', axis)
   elif joint.type() == rbd.Joint.Spherical:
     jointDom.setAttribute('type', 'spherical')
   elif joint.type() == rbd.Joint.Fixed:
@@ -132,7 +127,7 @@ def to_amelif(mb, bound, mesh, scale_xyz=(1., 1., 1.)):
 
     if bound.has_key(j.id()):
       addTextElement('TorqueLimit', str(abs(bound[j.id()][2])), jointDom)
-      addTextElement('SpeedLimit', str(10.), jointDom)
+      addTextElement('SpeedLimit', str(np.rad2deg(bound[j.id()][3])), jointDom)
 
       addTextElement('PositionMin', str(np.rad2deg(bound[j.id()][0])), jointDom)
       addTextElement('PositionMax', str(np.rad2deg(bound[j.id()][1])), jointDom)
@@ -217,24 +212,7 @@ def from_amelif(file, isFixed):
   mb = mbg.makeMultiBody(0, isFixed)
 
   mbc = rbd.MultiBodyConfig(mb)
-
-  zeroParam = []
-  zeroDoF = []
-
-  for i in range(mb.nrJoints()):
-    zeroParam.append([0.]*mb.joint(i).params())
-    zeroDoF.append([0.]*mb.joint(i).dof())
-
-  # identity quaternion
-  if not isFixed:
-    zeroParam[0][0] = 1.
-
-  mbc.q = zeroParam
-  mbc.alpha = zeroDoF
-  mbc.alphaD = zeroDoF
-  mbc.jointTorque = zeroDoF
-
-  mbc.force = [sva.ForceVec(Vector6d.Zero())]*mb.nrBodies()
+  mbc.zero(mb)
 
   return mb, mbc, mbg, objFiles
 
