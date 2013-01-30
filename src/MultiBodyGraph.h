@@ -22,7 +22,7 @@
 #include <vector>
 
 // SpaceVecAlg
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
 #include "Body.h"

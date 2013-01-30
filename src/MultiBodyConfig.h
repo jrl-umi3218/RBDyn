@@ -21,7 +21,7 @@
 #include <stdexcept>
 
 // sva
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 namespace rbd
 {

@@ -23,7 +23,7 @@
 #include <Eigen/Core>
 
 // SpaceVecAlg
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 namespace rbd
 {

@@ -22,7 +22,7 @@
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
 #include "Body.h"
