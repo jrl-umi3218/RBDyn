@@ -99,7 +99,8 @@ def to_amelif(mb, bound, mesh, scale_xyz=(1., 1., 1.)):
     addTextElement('Label', b.name(), bodyDom)
     addTextElement('Mass', str(mass), bodyDom)
 
-    com = b.inertia().momentum()/mass
+    # com is 0 for fake body
+    com = b.inertia().momentum()/mass if mass > 0 else Vector3d.Zero()
     addTextElement('CoM', '%s %s %s' % tuple(com), bodyDom)
 
     # Transform rotational inertia to com origin
