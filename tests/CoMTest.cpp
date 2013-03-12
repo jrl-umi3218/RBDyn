@@ -23,7 +23,7 @@
 #include <boost/math/constants/constants.hpp>
 
 // SpaceVecAlg
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
 #include "EulerIntegration.h"

@@ -23,7 +23,7 @@
 #include <string>
 
 // SpaceVecAlg
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 namespace rbd
 {

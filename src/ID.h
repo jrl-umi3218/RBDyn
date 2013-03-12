@@ -20,7 +20,7 @@
 #include <vector>
 
 // SpaceVecAlg
-#include <SpaceVecAlg>
+#include <SpaceVecAlg/SpaceVecAlg>
 
 namespace rbd
 {
