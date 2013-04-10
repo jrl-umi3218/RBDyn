@@ -195,7 +195,7 @@ def build_mbc(mbc):
 
   mbc.add_copy_constructor()
 
-  mbc.add_method('zero', None, [param('const rbd::MultiBody&', 'mb')])
+  mbc.add_method('zero', None, [param('const MultiBody&', 'mb')])
 
   mbc.add_instance_attribute('q', 'std::vector<std::vector<double> >')
   mbc.add_instance_attribute('alpha', 'std::vector<std::vector<double> >')
@@ -223,38 +223,38 @@ def build_mbc(mbc):
 
 
 def build_utility(mod):
-  mod.add_function('rbd::sParamToVector', None,
+  mod.add_function('sParamToVector', None,
                    [param('const std::vector<std::vector<double> >&', 'v'),
                     param('Eigen::VectorXd&', 'e')],
                    custom_name='paramToVector',
                    throw=[out_ex])
 
-  mod.add_function('rbd::sVectorToParam', None,
+  mod.add_function('sVectorToParam', None,
                    [param('const Eigen::VectorXd&', 'e'),
                     param('std::vector<std::vector<double> >&', 'v')],
                    custom_name='vectorToParam',
                    throw=[out_ex])
 
-  mod.add_function('rbd::sParamToVector', retval('Eigen::VectorXd'),
-                   [param('const rbd::MultiBody&', 'mb'),
+  mod.add_function('sParamToVector', retval('Eigen::VectorXd'),
+                   [param('const MultiBody&', 'mb'),
                     param('const std::vector<std::vector<double> >&', 'v')],
                    custom_name='paramToVector',
                    throw=[out_ex])
 
-  mod.add_function('rbd::sVectorToParam', retval('std::vector<std::vector<double> >'),
-                   [param('const rbd::MultiBody&', 'mb'),
+  mod.add_function('sVectorToParam', retval('std::vector<std::vector<double> >'),
+                   [param('const MultiBody&', 'mb'),
                     param('const Eigen::VectorXd&', 'e')],
                    custom_name='vectorToParam',
                    throw=[out_ex])
 
-  mod.add_function('rbd::sDofToVector', retval('Eigen::VectorXd'),
-                   [param('const rbd::MultiBody&', 'mb'),
+  mod.add_function('sDofToVector', retval('Eigen::VectorXd'),
+                   [param('const MultiBody&', 'mb'),
                     param('const std::vector<std::vector<double> >&', 'v')],
                    custom_name='dofToVector',
                    throw=[out_ex])
 
-  mod.add_function('rbd::sVectorToDof', retval('std::vector<std::vector<double> >'),
-                   [param('const rbd::MultiBody&', 'mb'),
+  mod.add_function('sVectorToDof', retval('std::vector<std::vector<double> >'),
+                   [param('const MultiBody&', 'mb'),
                     param('const Eigen::VectorXd&', 'e')],
                    custom_name='vectorToDof',
                    throw=[out_ex])
@@ -262,21 +262,21 @@ def build_utility(mod):
 
 
 def build_algo(mod):
-  mod.add_function('rbd::sForwardKinematics', None,
-                   [param('const rbd::MultiBody&', 'mb'),
-                    param('rbd::MultiBodyConfig&', 'mbc')],
+  mod.add_function('sForwardKinematics', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
                    custom_name='forwardKinematics',
                    throw=[dom_ex])
 
-  mod.add_function('rbd::sForwardVelocity', None,
-                   [param('const rbd::MultiBody&', 'mb'),
-                    param('rbd::MultiBodyConfig&', 'mbc')],
+  mod.add_function('sForwardVelocity', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
                    custom_name='forwardVelocity',
                    throw=[dom_ex])
 
-  mod.add_function('rbd::sEulerIntegration', None,
-                   [param('const rbd::MultiBody&', 'mb'),
-                    param('rbd::MultiBodyConfig&', 'mbc'),
+  mod.add_function('sEulerIntegration', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc'),
                     param('double', 'step')],
                    custom_name='eulerIntegration',
                    throw=[dom_ex])
@@ -367,8 +367,8 @@ def build_fd(id):
 
 def build_com(mod, comD):
   mod.add_function('sComputeCoM', retval('Eigen::Vector3d'),
-                   [param('const rbd::MultiBody&', 'mb'),
-                    param('rbd::MultiBodyConfig&', 'mbc')],
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
                    custom_name='computeCoM',
                    throw=[dom_ex])
 
@@ -411,7 +411,7 @@ if __name__ == '__main__':
   if len(sys.argv) < 2:
     sys.exit(1)
 
-  rbd = Module('_rbdyn')
+  rbd = Module('_rbdyn', cpp_namespace='::rbd')
   rbd.add_include('<Body.h>')
   rbd.add_include('<Joint.h>')
   rbd.add_include('<MultiBody.h>')
@@ -434,27 +434,27 @@ if __name__ == '__main__':
   import_eigen3_types(rbd)
   import_sva_types(rbd)
 
-  body = rbd.add_class('Body', foreign_cpp_namespace='rbd')
-  joint = rbd.add_class('Joint', foreign_cpp_namespace='rbd')
-  mb = rbd.add_class('MultiBody', foreign_cpp_namespace='rbd')
-  mbc = rbd.add_struct('MultiBodyConfig', foreign_cpp_namespace='rbd')
-  mbg = rbd.add_class('MultiBodyGraph', foreign_cpp_namespace='rbd')
-  jac = rbd.add_class('Jacobian', foreign_cpp_namespace='rbd')
-  id = rbd.add_class('InverseDynamics', foreign_cpp_namespace='rbd')
-  fd = rbd.add_class('ForwardDynamics', foreign_cpp_namespace='rbd')
-  comDummy = rbd.add_class('CoMJacobianDummy', foreign_cpp_namespace='rbd')
-  confconv = rbd.add_class('ConfigConverter', foreign_cpp_namespace='rbd')
+  body = rbd.add_class('Body')
+  joint = rbd.add_class('Joint')
+  mb = rbd.add_class('MultiBody')
+  mbc = rbd.add_struct('MultiBodyConfig')
+  mbg = rbd.add_class('MultiBodyGraph')
+  jac = rbd.add_class('Jacobian')
+  id = rbd.add_class('InverseDynamics')
+  fd = rbd.add_class('ForwardDynamics')
+  comDummy = rbd.add_class('CoMJacobianDummy')
+  confconv = rbd.add_class('ConfigConverter')
 
   # build list type
-  rbd.add_container('std::vector<double>', 'double', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<int>', 'int', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<std::vector<double> >', 'std::vector<double>', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<rbd::Body>', 'rbd::Body', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<sva::PTransform>', 'sva::PTransform', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<sva::MotionVec>', 'sva::MotionVec', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<sva::ForceVec>', 'sva::ForceVec', 'vector', add_extra_methods=True)
-  rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector', add_extra_methods=True)
+  rbd.add_container('std::vector<double>', 'double', 'vector')
+  rbd.add_container('std::vector<int>', 'int', 'vector')
+  rbd.add_container('std::vector<std::vector<double> >', 'std::vector<double>', 'vector')
+  rbd.add_container('std::vector<rbd::Body>', 'rbd::Body', 'vector')
+  rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector')
+  rbd.add_container('std::vector<sva::PTransform>', 'sva::PTransform', 'vector')
+  rbd.add_container('std::vector<sva::MotionVec>', 'sva::MotionVec', 'vector')
+  rbd.add_container('std::vector<sva::ForceVec>', 'sva::ForceVec', 'vector')
+  rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   build_body(body)
   build_joint(joint)
