@@ -35,7 +35,7 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
   dofPos_(mb.nrJoints())
 {
 	int dofP = 0;
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		F_[i].resize(6, mb.joint(i).dof());
 		dofPos_[i] = dofP;

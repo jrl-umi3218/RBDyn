@@ -133,12 +133,12 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 		parent.push_back(par);
 		Xt.push_back(Xti);
 
-		int curInd = bodies.size() - 1;
+		int curInd = static_cast<int>(bodies.size()) - 1;
 		for(Arc& a : curNode->arcs)
 		{
 			if(a.next != fromNode)
 			{
-				int nextInd = bodies.size();
+				int nextInd = static_cast<int>(bodies.size());
 
 				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd,
 					a.X*XFrom.inv());

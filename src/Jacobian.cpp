@@ -61,7 +61,7 @@ MultiBody Jacobian::subMultiBody(const MultiBody& mb) const
 	std::vector<int> parent;
 	std::vector<sva::PTransform> Xt;
 
-	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	for(int index = 0; index < static_cast<int>(jointsPath_.size()); ++index)
 	{
 		int i = jointsPath_[index];
 		// body info
@@ -228,10 +228,9 @@ void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
 
 
 void Jacobian::translateBodyJacobian(const Eigen::MatrixXd& jac,
-	const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+	const MultiBodyConfig& /* mbc */, const Eigen::Vector3d& point,
 	Eigen::MatrixXd& res)
 {
-	int N = jointsPath_.back();
 	sva::PTransform t(point);
 
 	for(int i = 0; i < jac.cols(); ++i)

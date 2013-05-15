@@ -33,7 +33,7 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 	Vector3d com = Vector3d::Zero();
 	double totalMass = 0.;
 
-	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		double mass = bodies[i].inertia().mass();
 		Vector3d comT = bodies[i].inertia().momentum()/mass;
@@ -67,7 +67,7 @@ CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
 {
   using namespace Eigen;
 
-	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		Vector3d comT = mb.body(i).inertia().momentum()/
 			mb.body(i).inertia().mass();
@@ -90,7 +90,7 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	jac_.setZero();
 
-	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobian(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac, jacFull_);
@@ -112,7 +112,7 @@ CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	jacDot_.setZero();
 
-	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac, jacFull_);

@@ -44,7 +44,7 @@ MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	nrParams_(0),
 	nrDof_(0)
 {
-	for(std::size_t i = 0; i < bodies_.size(); ++i)
+	for(int i = 0; i < static_cast<int>(bodies_.size()); ++i)
 	{
 		bodyId2Ind_[bodies_[i].id()] = i;
 		jointId2Ind_[joints_[i].id()] = i;

@@ -152,7 +152,7 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	BOOST_CHECK_EQUAL(mb.nrJoints(), bodies.size());
 
 	int params = 0, dof = 0;
-	for(std::size_t i = 0; i < joints.size(); ++i)
+	for(int i = 0; i < static_cast<int>(joints.size()); ++i)
 	{
 		BOOST_CHECK_EQUAL(mb.jointPosInParam(i), params);
 		BOOST_CHECK_EQUAL(mb.jointsPosInParam()[i], params);
@@ -429,7 +429,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 																Vector3d(0., 0., 1.),
 																Vector3d(0., 0., 0.)};
 
-	for(std::size_t i = 0; i < mb4.nrBodies(); ++i)
+	for(int i = 0; i < mb4.nrBodies(); ++i)
 	{
 		BOOST_CHECK_EQUAL(mb4.body(i).inertia().momentum(), bCom[i]);
 	}
@@ -557,7 +557,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 
 	mbc = MultiBodyConfig(mb);
 	mbc.zero(mb);
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		std::vector<double> zp = mb.joint(i).zeroParam();
 		std::vector<double> zd = mb.joint(i).zeroDof();
@@ -572,7 +572,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 																	zd.begin(), zd.end());
 	}
 
-	for(std::size_t i = 0; i < mb.nrBodies(); ++i)
+	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		BOOST_CHECK_EQUAL(mbc.force[i].vector(), Vector6d::Zero());
 	}

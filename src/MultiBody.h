@@ -54,15 +54,15 @@ public:
 		std::vector<sva::PTransform> Xt);
 
 	/// @return Number of bodies.
-	std::size_t nrBodies() const
+	int nrBodies() const
 	{
-		return bodies_.size();
+		return static_cast<int>(bodies_.size());
 	}
 
 	/// @return Number of joints.
-	std::size_t nrJoints() const
+	int nrJoints() const
 	{
-		return joints_.size();
+		return static_cast<int>(joints_.size());
 	}
 
 	/// @return Bodies of the multibody system.

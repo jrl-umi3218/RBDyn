@@ -119,7 +119,7 @@ public:
 	/// @return The number of degree of freedom in the joint path
 	int dof() const
 	{
-		return jac_.cols();
+		return static_cast<int>(jac_.cols());
 	}
 
 	/// @return Static translation in the body exprimed in body coordinate.

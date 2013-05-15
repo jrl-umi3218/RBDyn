@@ -231,7 +231,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
 	forwardKinematics(mb, mbc);
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 		}
 	}
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
 	forwardKinematics(mb, mbc);
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -302,7 +302,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 		}
 	}
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -338,7 +338,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
 	forwardKinematics(mb, mbc);
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -356,7 +356,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 		}
 	}
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -386,7 +386,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	forwardKinematics(mb, mbc);
 
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
@@ -404,7 +404,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 		}
 	}
 
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{

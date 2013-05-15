@@ -166,7 +166,7 @@ Eigen::MatrixXd makeHFromID(const rbd::MultiBody& mb,
 	}
 
 	int col = 0;
-	for(std::size_t i = 0; i < mb.nrJoints(); ++i)
+	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
