@@ -104,6 +104,31 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	return jac_;
 }
 
+
+const Eigen::MatrixXd&
+Jacobian::bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	int curJ = 0;
+	int N = jointsPath_.back();
+
+	sva::PTransform X_Np = point_*mbc.bodyPosW[N];
+	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	{
+		int i = jointsPath_[index];
+
+		sva::PTransform X_i_N = X_Np*mbc.bodyPosW[i].inv();
+
+		jac_.block(0, curJ, 6, joints[i].dof()) = X_i_N.matrix()*mbc.motionSubspace[i];
+
+		curJ += joints[i].dof();
+	}
+
+	return jac_;
+}
+
+
 const Eigen::MatrixXd&
 Jacobian::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
@@ -147,6 +172,43 @@ Jacobian::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
+const Eigen::MatrixXd&
+Jacobian::bodyJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	int curJ = 0;
+	int N = jointsPath_.back();
+
+	sva::PTransform X_0_Np = point_*mbc.bodyPosW[N];
+	// speed of point in body N
+	sva::MotionVec X_VNp = point_*mbc.bodyVelB[N];
+
+	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	{
+		int i = jointsPath_[index];
+
+		sva::PTransform X_i_Np = X_0_Np*mbc.bodyPosW[i].inv();
+		// speed of X_i_N in Np coordinate
+		sva::MotionVec X_VNp_i_Np = X_i_Np*mbc.bodyVelB[i] - X_VNp;
+
+		for(int j = 0; j < joints[i].dof(); ++j)
+		{
+			sva::MotionVec S_ij(mbc.motionSubspace[i].col(j));
+
+			// JD_i = X_i_N_d*S_i
+			// X_i_N_d = (Vi - VN)_N x X_i_N
+
+			jacDot_.block<6, 1>(0, curJ) =
+				(X_VNp_i_Np.cross(X_i_Np*S_ij)).vector();
+			++curJ;
+		}
+	}
+
+	return jacDot_;
+}
+
+
 void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
 	Eigen::MatrixXd& res)
@@ -165,9 +227,23 @@ void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
 }
 
 
+void Jacobian::translateBodyJacobian(const Eigen::MatrixXd& jac,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+	Eigen::MatrixXd& res)
+{
+	int N = jointsPath_.back();
+	sva::PTransform t(point);
+
+	for(int i = 0; i < jac.cols(); ++i)
+	{
+		sva::MotionVec mv(jac.col(i));
+		res.col(i) = (t*mv).vector();
+	}
+}
+
 
 void Jacobian::fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
-	Eigen::MatrixXd& res)
+	Eigen::MatrixXd& res) const
 {
 	res.setZero();
 	int jacPos = 0;
@@ -259,7 +335,7 @@ void Jacobian::sTranslateJacobian(const Eigen::MatrixXd& jac,
 
 
 void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
-	Eigen::MatrixXd& res)
+	Eigen::MatrixXd& res) const
 {
 	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
 	if(m >= static_cast<int>(mb.nrJoints()))

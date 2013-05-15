@@ -42,12 +42,20 @@ public:
 		const Eigen::Vector3d& point=Eigen::Vector3d::Zero());
 
 	/**
-		* Compute the jacobian.
+		* Compute the jacobian in world frame.
 		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW and motionSubspace.
 		* @return Jacobian of mb with mbc configuration.
 		*/
 	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the jacobian in body coordinate frame.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW and motionSubspace.
+		* @return Jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/**
 		* Compute the time derivative of the jacobian.
@@ -56,6 +64,15 @@ public:
 		* @return Time derivativo of the jacobian of mb with mbc configuration.
 		*/
 	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the time derivative of the jacobian in body frame.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
+		* @return Time derivativo of the jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& bodyJacobianDot(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
 
 	/**
@@ -70,13 +87,24 @@ public:
 		Eigen::MatrixXd& res);
 
 	/**
+		* Translate a jacobian at a given position in body frame.
+		* @param jac Jacobian to translate.
+		* @param mbc Use bodyPosW.
+		* @param point Point to translate jacobian.
+		* @param res Translated jacobian (must be allocated).
+		*/
+	void translateBodyJacobian(const Eigen::MatrixXd& jac,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
+		Eigen::MatrixXd& res);
+
+	/**
 		* Project the jacobian in the full robot parameters vector.
 		* @param mb MuliBody used has model.
 		* @param jac Jacobian to project.
 		* @param res Projected Jacobian (must be allocated).
 		*/
 	void fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
-		Eigen::MatrixXd& res);
+		Eigen::MatrixXd& res) const;
 
 	/// @return MultiBody that correspond to the path between the root and
 	/// the specified body.
@@ -138,7 +166,7 @@ public:
 		* size missmatch.
 		*/
 	void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
-		Eigen::MatrixXd& res);
+		Eigen::MatrixXd& res) const;
 
 private:
 	std::vector<int> jointsPath_;

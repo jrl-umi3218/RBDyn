@@ -192,38 +192,11 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 }
 
 
-
-void checkJacobianMatrix(const rbd::MultiBody& mb,
-	const rbd::MultiBodyConfig& mbc,
-	rbd::Jacobian& jac)
+void checkJacobianMatrixFromVelocity(const rbd::MultiBody& subMb,
+	rbd::MultiBodyConfig& subMbc,
+	const std::vector<sva::MotionVec>& velVec,
+	const Eigen::MatrixXd& jacMat)
 {
-	using namespace Eigen;
-	using namespace sva;
-	using namespace rbd;
-
-	const MatrixXd& jac_mat = jac.jacobian(mb, mbc);
-	MatrixXd full_jac_mat(6, mb.nrDof());
-	MultiBody subMb = jac.subMultiBody(mb);
-
-	// test jacobian size
-	BOOST_CHECK_EQUAL(jac_mat.rows(), 6);
-	BOOST_CHECK_EQUAL(jac_mat.cols(), subMb.nrDof());
-
-	// test fullJacobian
-	MatrixXd fake_full1(5, mb.nrDof());
-	MatrixXd fake_full2(6, mb.nrDof() + 1);
-	BOOST_CHECK_THROW(jac.sFullJacobian(mb, jac_mat, fake_full1), std::domain_error);
-	BOOST_CHECK_THROW(jac.sFullJacobian(mb, jac_mat, fake_full2), std::domain_error);
-	BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jac_mat, full_jac_mat));
-
-	MultiBodyConfig subMbc(subMb);
-	for(std::size_t i = 0; i < subMb.nrJoints(); ++i)
-	{
-		subMbc.bodyPosW[i] = mbc.bodyPosW[jac.jointsPath()[i]];
-		subMbc.jointConfig[i] = mbc.jointConfig[jac.jointsPath()[i]];
-		subMbc.parentToSon[i] = mbc.parentToSon[jac.jointsPath()[i]];
-	}
-
 	int col = 0;
 	for(std::size_t i = 0; i < subMb.nrJoints(); ++i)
 	{
@@ -233,18 +206,80 @@ void checkJacobianMatrix(const rbd::MultiBody& mb,
 
 			forwardVelocity(subMb, subMbc);
 
-			Vector6d mv = subMbc.bodyVelW.back().vector();
-			BOOST_CHECK_SMALL((mv -jac_mat.col(col)).norm(), TOL);
+			Eigen::Vector6d mv = velVec.back().vector();
+			BOOST_CHECK_SMALL((mv - jacMat.col(col)).norm(), TOL);
 
 			subMbc.alpha[i][j] = 0.;
 			++col;
 		}
+	}
+}
 
+
+void checkJacobianMatrixSize(const rbd::MultiBody& subMb,
+	const Eigen::MatrixXd& jacMat)
+{
+	// test jacobian size
+	BOOST_CHECK_EQUAL(jacMat.rows(), 6);
+	BOOST_CHECK_EQUAL(jacMat.cols(), subMb.nrDof());
+}
+
+
+void checkFullJacobianMatrix(const rbd::MultiBody& mb,
+	const rbd::MultiBody& subMb, const rbd::Jacobian& jac,
+	const Eigen::MatrixXd& jacMat)
+{
+	using namespace Eigen;
+
+	MatrixXd fakeFull1(5, mb.nrDof());
+	MatrixXd fakeFull2(6, mb.nrDof() + 1);
+	MatrixXd fullJacMat(6, mb.nrDof());
+	BOOST_CHECK_THROW(jac.sFullJacobian(mb, jacMat, fakeFull1), std::domain_error);
+	BOOST_CHECK_THROW(jac.sFullJacobian(mb, jacMat, fakeFull2), std::domain_error);
+	BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jacMat, fullJacMat));
+
+	for(std::size_t i = 0; i < subMb.nrJoints(); ++i)
+	{
 		int joint = jac.jointsPath()[i];
 		int dof = mb.joint(i).dof();
-		BOOST_CHECK_EQUAL(jac_mat.block(0, subMb.jointPosInDof(i), 6, dof),
-			full_jac_mat.block(0, mb.jointPosInDof(joint), 6, dof));
+		BOOST_CHECK_EQUAL(jacMat.block(0, subMb.jointPosInDof(i), 6, dof),
+			fullJacMat.block(0, mb.jointPosInDof(joint), 6, dof));
 	}
+}
+
+
+void checkJacobian(const rbd::MultiBody& mb,
+	const rbd::MultiBodyConfig& mbc,
+	rbd::Jacobian& jac)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+
+	const MatrixXd& jac_mat = jac.jacobian(mb, mbc);
+	MultiBody subMb = jac.subMultiBody(mb);
+
+	// fill subMbc
+	MultiBodyConfig subMbc(subMb);
+	for(std::size_t i = 0; i < subMb.nrJoints(); ++i)
+	{
+		subMbc.bodyPosW[i] = mbc.bodyPosW[jac.jointsPath()[i]];
+		subMbc.jointConfig[i] = mbc.jointConfig[jac.jointsPath()[i]];
+		subMbc.parentToSon[i] = mbc.parentToSon[jac.jointsPath()[i]];
+	}
+
+	// test fullJacobian
+	checkFullJacobianMatrix(mb, subMb, jac, jac_mat);
+
+	// test jacobian
+	const MatrixXd& jac_mat_w = jac.jacobian(mb, mbc);
+	checkJacobianMatrixSize(subMb, jac_mat_w);
+	checkJacobianMatrixFromVelocity(subMb, subMbc, subMbc.bodyVelW, jac_mat_w);
+
+	// test bodyJacobian
+	const MatrixXd& jac_mat_b = jac.bodyJacobian(mb, mbc);
+	checkJacobianMatrixSize(subMb, jac_mat_b);
+	checkJacobianMatrixFromVelocity(subMb, subMbc, subMbc.bodyVelB, jac_mat_w);
 }
 
 
@@ -314,15 +349,15 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
-	checkJacobianMatrix(mb, mbc, jac2);
+	checkJacobian(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac2);
 
 	mbc.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}, {1., 0., 0., 0.}};
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
-	checkJacobianMatrix(mb, mbc, jac2);
+	checkJacobian(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac2);
 
 
 	// test jacobian safe version
@@ -411,8 +446,8 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
-	checkJacobianMatrix(mb, mbc, jac2);
+	checkJacobian(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac2);
 
 	quat = (AngleAxisd(cst::pi<double>()/8., Vector3d::UnitX())*
 		AngleAxisd(cst::pi<double>()/2., Vector3d::UnitZ()));
@@ -422,8 +457,8 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
-	checkJacobianMatrix(mb, mbc, jac2);
+	checkJacobian(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac2);
 
 
 	// test jacobian safe version
@@ -498,7 +533,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac1);
 
 
 
@@ -512,7 +547,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac1);
 
 
 
@@ -524,7 +559,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac1);
 
 
 
@@ -536,7 +571,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac1);
 
 
 
@@ -548,13 +583,18 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	checkJacobianMatrix(mb, mbc, jac1);
+	checkJacobian(mb, mbc, jac1);
 }
+
+
+typedef std::function<const Eigen::MatrixXd&(const rbd::MultiBody&,
+																							const rbd::MultiBodyConfig&)>
+				jacobianComputeFunc;
 
 
 Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody& mb,
 													const rbd::MultiBodyConfig& mbc,
-													rbd::Jacobian& jac)
+													jacobianComputeFunc jacComp)
 {
 	using namespace Eigen;
 	using namespace sva;
@@ -564,14 +604,35 @@ Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody& mb,
 
 	MultiBodyConfig mbcTmp(mbc);
 
-	MatrixXd oJ = jac.jacobian(mb, mbcTmp);
+	MatrixXd oJ = jacComp(mb, mbcTmp);
 	eulerIntegration(mb, mbcTmp, step);
 	forwardKinematics(mb, mbcTmp);
 	forwardVelocity(mb, mbcTmp);
-	MatrixXd nJ = jac.jacobian(mb, mbcTmp);
+	MatrixXd nJ = jacComp(mb, mbcTmp);
 
 	return (nJ - oJ)/step;
 }
+
+
+void testJacobianDot(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc,
+	rbd::Jacobian& jac)
+{
+	using namespace std::placeholders; // bind
+	using namespace Eigen;
+
+	MatrixXd JD_diff = makeJDotFromStep(mb, mbc,
+		std::bind(&rbd::Jacobian::jacobian, jac, _1, _2));
+	MatrixXd JD = jac.jacobianDot(mb, mbc);
+
+	BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+
+	MatrixXd JD_diff_b = makeJDotFromStep(mb, mbc,
+		std::bind(&rbd::Jacobian::bodyJacobian, jac, _1, _2));
+	MatrixXd JD_b = jac.bodyJacobianDot(mb, mbc);
+
+	BOOST_CHECK_SMALL((JD_diff_b - JD_b).norm(), 1e-5);
+}
+
 
 BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 {
@@ -636,10 +697,8 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
-			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+			testJacobianDot(mb, mbc, jac1);
 
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), TOL);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
@@ -663,10 +722,8 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
-			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+			testJacobianDot(mb, mbc, jac1);
 
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
@@ -686,10 +743,8 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
-			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+			testJacobianDot(mb, mbc, jac1);
 
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
@@ -709,10 +764,8 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
-			MatrixXd JD = jac1.jacobianDot(mb, mbc);
+			testJacobianDot(mb, mbc, jac1);
 
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
@@ -728,10 +781,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jac1);
-			MatrixXd JD = jac1.jacobianDot(mb, mbc);
-
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			testJacobianDot(mb, mbc, jac1);
 		}
 	}
 	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
@@ -747,10 +797,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
-			MatrixXd JD_diff = makeJDotFromStep(mb, mbc, jacP);
-			MatrixXd JD = jacP.jacobianDot(mb, mbc);
-
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			testJacobianDot(mb, mbc, jacP);
 		}
 	}
 	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
@@ -777,10 +824,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbcF.alpha[i][j] = 1.;
 			forwardVelocity(mbF, mbcF);
 
-			MatrixXd JD_diff = makeJDotFromStep(mbF, mbcF, jacF);
-			MatrixXd JD = jacF.jacobianDot(mbF, mbcF);
-
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			testJacobianDot(mbF, mbcF, jacF);
 		}
 	}
 	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
@@ -800,13 +844,34 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbcF.alpha[i][j] = 1.;
 			forwardVelocity(mbF, mbcF);
 
-			MatrixXd JD_diff = makeJDotFromStep(mbF, mbcF, jacF);
-			MatrixXd JD = jacF.jacobianDot(mbF, mbcF);
-
-			BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+			testJacobianDot(mbF, mbcF, jacF);
 		}
 	}
 	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
+}
+
+
+void testTranslateJacobian(const rbd::MultiBody& mb,
+	const rbd::MultiBodyConfig& mbc, const Eigen::Vector3d& P,
+	rbd::Jacobian& jacO, rbd::Jacobian& jacP)
+{
+	using namespace Eigen;
+
+	MatrixXd JO_w = jacO.jacobian(mb, mbc);
+	MatrixXd JP_w = jacP.jacobian(mb, mbc);
+
+	MatrixXd JO_P_w = JO_w;
+	jacO.translateJacobian(JO_w, mbc, P, JO_P_w);
+
+	BOOST_CHECK_SMALL((JO_P_w - JP_w).norm(), TOL);
+
+	MatrixXd JO_b = jacO.jacobian(mb, mbc);
+	MatrixXd JP_b = jacP.jacobian(mb, mbc);
+
+	MatrixXd JO_P_b = JO_b;
+	jacO.translateJacobian(JO_b, mbc, P, JO_P_b);
+
+	BOOST_CHECK_SMALL((JO_P_b - JP_b).norm(), TOL);
 }
 
 
@@ -862,9 +927,8 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 
 	Vector3d point = Vector3d::Random()*10.;
 
-	Jacobian jac0(mb, 3);
+	Jacobian jacO(mb, 3);
 	Jacobian jacP(mb, 3, point);
-
 
 
 	mbc.q = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
@@ -873,14 +937,7 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	MatrixXd J0 = jac0.jacobian(mb, mbc);
-	MatrixXd JP = jacP.jacobian(mb, mbc);
-
-	MatrixXd J0_P = J0;
-	jac0.translateJacobian(J0, mbc, point, J0_P);
-
-	BOOST_CHECK_SMALL((J0_P - JP).norm(), TOL);
-
+	testTranslateJacobian(mb, mbc, point, jacO, jacP);
 
 
 	Quaterniond q1 = AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*AngleAxisd(cst::pi<double>()/4., Vector3d::UnitY());
@@ -894,10 +951,5 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	J0 = jac0.jacobian(mb, mbc);
-	JP = jacP.jacobian(mb, mbc);
-
-	jac0.translateJacobian(J0, mbc, point, J0_P);
-
-	BOOST_CHECK_SMALL((J0_P - JP).norm(), TOL);
+	testTranslateJacobian(mb, mbc, point, jacO, jacP);
 }
