@@ -46,10 +46,44 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
+Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	using namespace Eigen;
+
+	const std::vector<Body>& bodies = mb.bodies();
+
+	Vector3d comV = Vector3d::Zero();
+	double totalMass = 0.;
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		double mass = bodies[i].inertia().mass();
+		Vector3d comT = bodies[i].inertia().momentum()/mass;
+
+		totalMass += mass;
+
+		// Velocity at CoM : c^T_b·V_b
+		// Velocity at CoM world frame : 0_R_b·c^T_b·V_b
+		sva::PTransform X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
+		comV += (X_0_i*mbc.bodyVelB[i]).linear()*mass;
+	}
+
+	return comV/totalMass;
+}
+
+
 Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	checkMatchBodyPos(mb, mbc);
 	return computeCoM(mb, mbc);
+}
+
+
+Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	return computeCoMVelocity(mb, mbc);
 }
 
 

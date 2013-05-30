@@ -28,12 +28,21 @@ class MultiBodyConfig;
 class Jacobian;
 
 /**
-	* Compute the Center of Mass (CoM) of a multibody.
+	* Compute the Center of Mass (CoM) position of a multibody.
 	* @param mb MultiBody used has model.
 	* @param mbc Use bodyPosW.
 	* @return CoM position in world frame.
 	*/
 Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+
+/**
+	* Compute the Center of Mass (CoM) velocity of a multibody.
+	* @param mb MultiBody used has model.
+	* @param mbc Use bodyPosW and bodyVelB.
+	* @return CoM velocity in world frame.
+	*/
+Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 /**
@@ -97,6 +106,14 @@ private:
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
 Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+
+/**
+	* Safe version.
+	* @see computeCoMVelocity.
+	* @throw std::domain_error If there is a mismatch between mb and mbc.
+	*/
+Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 } // namespace rbd

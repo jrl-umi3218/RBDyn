@@ -48,6 +48,7 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	double mass = 1.;
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
+	Vector6d v = Vector6d::Zero();
 
 	RBInertia rbi(mass, h, I);
 
@@ -90,11 +91,13 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	forwardKinematics(mb, mbc);
 
 	Vector3d CoM = computeCoM(mb, mbc);
+	Vector3d CoMV = computeCoMVelocity(mb, mbc);
 
 	double handCoMX = 0.;
 	double handCoMY = (0.5*1. + 1.*2. + 1.5*1.)/5.;
 	double handCoMZ = 0.;
 	BOOST_CHECK_EQUAL(CoM, Vector3d(handCoMX, handCoMY, handCoMZ));
+	BOOST_CHECK_EQUAL(CoMV, Vector3d::Zero());
 
 
 
@@ -102,17 +105,25 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	forwardKinematics(mb, mbc);
 
 	CoM = sComputeCoM(mb, mbc);
+	CoMV = sComputeCoMVelocity(mb, mbc);
 
 	handCoMX = 0.;
 	handCoMY = (0.5*1. + 0.5*2 + 0.5*1.)/5.;
 	handCoMZ = (0.5*2. + 1.*1.)/5.;
 
 	BOOST_CHECK_EQUAL(CoM, Vector3d(handCoMX, handCoMY, handCoMZ));
+	BOOST_CHECK_EQUAL(CoMV, Vector3d::Zero());
 
 
 	// test safe version
 	mbc.bodyPosW = {I, I, I};
 	BOOST_CHECK_THROW(sComputeCoM(mb, mbc), std::domain_error);
+	BOOST_CHECK_THROW(sComputeCoMVelocity(mb, mbc), std::domain_error);
+
+	mbc.bodyPosW = {I, I, I, I};
+	mbc.bodyVelB = {v, v, v};
+	BOOST_CHECK_NO_THROW(sComputeCoM(mb, mbc));
+	BOOST_CHECK_THROW(sComputeCoMVelocity(mb, mbc), std::domain_error);
 }
 
 
@@ -222,6 +233,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
 	/**
 		*						Test jacobian with the com speed get by differentiation.
+		*						Also test computeCoMVelocity.
 		*/
 
 
@@ -238,6 +250,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
+			Vector3d CoMVel = computeCoMVelocity(mb, mbc);
 			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.jacobian(mb, mbc);
 
@@ -249,6 +262,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			Vector3d CDot = CJac.block(3, 0, 3, mb.nrDof())*alpha;
 
 			BOOST_CHECK_SMALL((CDot_diff - CDot).norm(), TOL);
+			BOOST_CHECK_SMALL((CDot_diff - CoMVel).norm(), TOL);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
@@ -260,6 +274,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
+			Vector3d CoMVel = computeCoMVelocity(mb, mbc);
 			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.jacobian(mb, mbc);
 
@@ -268,6 +283,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			Vector3d CDot = CJac.block(3, 0, 3, mb.nrDof())*alpha;
 
 			BOOST_CHECK_SMALL((CDot_diff - CDot).norm(), TOL);
+			BOOST_CHECK_SMALL((CDot_diff - CoMVel).norm(), TOL);
 		}
 	}
 	mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
@@ -290,6 +306,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
 
+			Vector3d CoMVel = computeCoMVelocity(mb, mbc);
 			Vector3d CDot_diff = makeCoMDotFromStep(mb, mbc);
 			MatrixXd CJac = comJac.sJacobian(mb, mbc);
 
@@ -298,6 +315,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			Vector3d CDot = CJac.block(3, 0, 3, mb.nrDof())*alpha;
 
 			BOOST_CHECK_SMALL((CDot_diff - CDot).norm(), TOL);
+			BOOST_CHECK_SMALL((CDot_diff - CoMVel).norm(), TOL);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
