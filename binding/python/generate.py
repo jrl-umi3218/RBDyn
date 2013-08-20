@@ -19,11 +19,11 @@ import sys
 
 
 def import_sva_types(mod):
-  mod.add_class('MotionVec', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
-  mod.add_class('ForceVec', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
-  mod.add_class('RBInertia', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
-  mod.add_class('ABInertia', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
-  mod.add_class('PTransform', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
+  mod.add_class('MotionVecd', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
+  mod.add_class('ForceVecd', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
+  mod.add_class('RBInertiad', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
+  mod.add_class('ABInertiad', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
+  mod.add_class('PTransformd', foreign_cpp_namespace='sva', import_from_module='spacevecalg')
 
 
 
@@ -43,7 +43,7 @@ def import_eigen3_types(mod):
 
 def build_body(bd):
   bd.add_copy_constructor()
-  bd.add_constructor([param('sva::RBInertia', 'rbInertia'),
+  bd.add_constructor([param('sva::RBInertiad', 'rbInertia'),
                       param('int', 'id'),
                       param('std::string', 'name')])
   bd.add_constructor([param('double', 'mass'),
@@ -54,7 +54,7 @@ def build_body(bd):
 
   bd.add_method('id', retval('int'), [], is_const=True)
   bd.add_method('name', retval('std::string'), [], is_const=True)
-  bd.add_method('inertia', retval('sva::RBInertia'), [], is_const=True)
+  bd.add_method('inertia', retval('sva::RBInertiad'), [], is_const=True)
 
   bd.add_binary_comparison_operator('==')
   bd.add_binary_comparison_operator('!=')
@@ -86,11 +86,11 @@ def build_joint(jt):
 
   jt.add_method('motionSubspace', retval('Eigen::MatrixXd'), [], is_const=True)
 
-  jt.add_method('sPose', retval('sva::PTransform'),
+  jt.add_method('sPose', retval('sva::PTransformd'),
                 [param('const std::vector<double>&', 'q')],
                 throw=[dom_ex], custom_name='pose')
 
-  jt.add_method('sMotion', retval('sva::MotionVec'),
+  jt.add_method('sMotion', retval('sva::MotionVecd'),
                 [param('const std::vector<double>&', 'alpha')],
                 throw=[dom_ex], custom_name='motion')
 
@@ -117,8 +117,8 @@ def build_mbg(mbg):
   mbg.add_method('addJoint', None, [param('rbd::Joint', 'joint')], throw=[dom_ex])
 
   mbg.add_method('linkBodies', None,
-                 [param('int', 'b1Id'), param('sva::PTransform', 'tB1'),
-                  param('int', 'b2Id'), param('sva::PTransform', 'tB2'),
+                 [param('int', 'b1Id'), param('sva::PTransformd', 'tB1'),
+                  param('int', 'b2Id'), param('sva::PTransformd', 'tB2'),
                   param('int', 'jointId'), param('bool', 'isB1toB2', default_value='true')],
                  throw=[out_ex])
 
@@ -127,7 +127,7 @@ def build_mbg(mbg):
 
   mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
                  [param('int', 'rootById'), param('bool', 'isFixed'),
-                  param('sva::PTransform', 'initTrans', default_value='sva::PTransform::Identity()')])
+                  param('sva::PTransformd', 'initTrans', default_value='sva::PTransformd::Identity()')])
 
 
 
@@ -139,7 +139,7 @@ def build_mb(mb):
                       param('std::vector<int>', 'pred'),
                       param('std::vector<int>', 'succ'),
                       param('std::vector<int>', 'parent'),
-                      param('std::vector<sva::PTransform>', 'Xt')])
+                      param('std::vector<sva::PTransformd>', 'Xt')])
 
   mb.add_copy_constructor()
 
@@ -169,8 +169,8 @@ def build_mb(mb):
   mb.add_method('sParent', retval('int'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='parent')
 
-  mb.add_method('transforms', retval('std::vector<sva::PTransform>'), [], is_const=True)
-  mb.add_method('sTransform', retval('sva::PTransform'), [param('int', 'num')],
+  mb.add_method('transforms', retval('std::vector<sva::PTransformd>'), [], is_const=True)
+  mb.add_method('sTransform', retval('sva::PTransformd'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='transform')
 
   mb.add_method('jointsPosInParam', retval('std::vector<int>'), [], is_const=True)
@@ -201,22 +201,22 @@ def build_mbc(mbc):
   mbc.add_instance_attribute('alpha', 'std::vector<std::vector<double> >')
   mbc.add_instance_attribute('alphaD', 'std::vector<std::vector<double> >')
 
-  mbc.add_instance_attribute('force', 'std::vector<sva::ForceVec>')
+  mbc.add_instance_attribute('force', 'std::vector<sva::ForceVecd>')
 
-  mbc.add_instance_attribute('jointConfig', 'std::vector<sva::PTransform>')
-  mbc.add_instance_attribute('jointVelocity', 'std::vector<sva::MotionVec>')
+  mbc.add_instance_attribute('jointConfig', 'std::vector<sva::PTransformd>')
+  mbc.add_instance_attribute('jointVelocity', 'std::vector<sva::MotionVecd>')
   mbc.add_instance_attribute('jointTorque', 'std::vector<std::vector<double> >')
 
   mbc.add_instance_attribute('motionSubspace', 'std::vector<Eigen::MatrixXd>',
                              getter='python_motionSubspace',
                              setter='python_motionSubspace')
 
-  mbc.add_instance_attribute('bodyPosW', 'std::vector<sva::PTransform>')
-  mbc.add_instance_attribute('parentToSon', 'std::vector<sva::PTransform>')
+  mbc.add_instance_attribute('bodyPosW', 'std::vector<sva::PTransformd>')
+  mbc.add_instance_attribute('parentToSon', 'std::vector<sva::PTransformd>')
 
-  mbc.add_instance_attribute('bodyVelW', 'std::vector<sva::MotionVec>')
-  mbc.add_instance_attribute('bodyVelB', 'std::vector<sva::MotionVec>')
-  mbc.add_instance_attribute('bodyAccB', 'std::vector<sva::MotionVec>')
+  mbc.add_instance_attribute('bodyVelW', 'std::vector<sva::MotionVecd>')
+  mbc.add_instance_attribute('bodyVelB', 'std::vector<sva::MotionVecd>')
+  mbc.add_instance_attribute('bodyAccB', 'std::vector<sva::MotionVecd>')
 
   mbc.add_instance_attribute('gravity', 'Eigen::Vector3d')
 
@@ -456,9 +456,9 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<std::vector<double> >', 'std::vector<double>', 'vector')
   rbd.add_container('std::vector<rbd::Body>', 'rbd::Body', 'vector')
   rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector')
-  rbd.add_container('std::vector<sva::PTransform>', 'sva::PTransform', 'vector')
-  rbd.add_container('std::vector<sva::MotionVec>', 'sva::MotionVec', 'vector')
-  rbd.add_container('std::vector<sva::ForceVec>', 'sva::ForceVec', 'vector')
+  rbd.add_container('std::vector<sva::PTransformd>', 'sva::PTransformd', 'vector')
+  rbd.add_container('std::vector<sva::MotionVecd>', 'sva::MotionVecd', 'vector')
+  rbd.add_container('std::vector<sva::ForceVecd>', 'sva::ForceVecd', 'vector')
   rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   build_body(body)

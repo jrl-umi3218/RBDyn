@@ -50,11 +50,11 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	Vector3d h = Vector3d::Zero();
 	Vector6d v = Vector6d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
-	Body b2(RBInertia(2., h, I), 2, "b2");
+	Body b2(RBInertiad(2., h, I), 2, "b2");
 	Body b3(rbi, 3, "b3");
 
 	mbg.addBody(b0);
@@ -75,8 +75,8 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	//  ---- b0 ---- b1 ---- b2 ----b3
 	//  Fixed    RevX   RevY    RevZ
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., 0., 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., 0., 0.));
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
@@ -184,13 +184,13 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
-	Body b0(RBInertia(EScalar::Random()(0)*10., h, I), 0, "b0");
-	Body b1(RBInertia(EScalar::Random()(0)*10., h, I), 1, "b1");
-	Body b2(RBInertia(EScalar::Random()(0)*10., h, I), 2, "b2");
-	Body b3(RBInertia(EScalar::Random()(0)*10., h, I), 3, "b3");
-	Body b4(RBInertia(EScalar::Random()(0)*10., h, I), 4, "b4");
+	Body b0(RBInertiad(EScalar::Random()(0)*10., h, I), 0, "b0");
+	Body b1(RBInertiad(EScalar::Random()(0)*10., h, I), 1, "b1");
+	Body b2(RBInertiad(EScalar::Random()(0)*10., h, I), 2, "b2");
+	Body b3(RBInertiad(EScalar::Random()(0)*10., h, I), 3, "b3");
+	Body b4(RBInertiad(EScalar::Random()(0)*10., h, I), 4, "b4");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
@@ -215,15 +215,15 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	//  Fixed    RevX   RevY    RevZ
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 	CoMJacobianDummy comJac(mb);
@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
 	mbc = MultiBodyConfig(mb);
 
-	MotionVec mv;
+	MotionVecd mv;
 	mbc.bodyVelB = {mv, mv, mv};
 	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
 	mbc = MultiBodyConfig(mb);

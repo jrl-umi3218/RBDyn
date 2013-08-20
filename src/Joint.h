@@ -165,21 +165,21 @@ public:
 		* @param q vector of generalized position variable.
 		* @return Spatial transformation from predecessor to successor frame.
 		*/
-	sva::PTransform pose(const std::vector<double>& q) const;
+	sva::PTransformd pose(const std::vector<double>& q) const;
 
 	/**
 		* Compute the joint velocity.
 		* @param alpha vector of generalized speed variable.
 		* @return Spatial motion vector of the joint.
 		*/
-	sva::MotionVec motion(const std::vector<double>& alpha) const;
+	sva::MotionVecd motion(const std::vector<double>& alpha) const;
 
 	/**
 		* Compute the tangential part of the acceleration S*alphaD.
 		* @param alphaD vector of generalized acceleration variable.
 		* @return Tangential part of acceleration
 		*/
-	sva::MotionVec tanAccel(const std::vector<double>& alphaD) const;
+	sva::MotionVecd tanAccel(const std::vector<double>& alphaD) const;
 
 	/**
 		* @return Joint configuation at zero.
@@ -197,7 +197,7 @@ public:
 		* @throw std::domain_error If the number of generalized position variable is
 		* wrong.
 		*/
-	sva::PTransform sPose(const std::vector<double>& q) const;
+	sva::PTransformd sPose(const std::vector<double>& q) const;
 
 	/**
 		* Safe version of motion method.
@@ -205,7 +205,7 @@ public:
 		* @throw std::domain_error If the number of generalized speed variable is
 		* wrong.
 		*/
-	sva::MotionVec sMotion(const std::vector<double>& alpha) const;
+	sva::MotionVecd sMotion(const std::vector<double>& alpha) const;
 
 	/**
 		* Safe version of tanAccel method.
@@ -213,7 +213,7 @@ public:
 		* @throw std::domain_error If the number of generalized acceleration variable is
 		* wrong.
 		*/
-	sva::MotionVec sTanAccel(const std::vector<double>& alphaD) const;
+	sva::MotionVecd sTanAccel(const std::vector<double>& alphaD) const;
 
 	bool operator==(const Joint& b) const
 	{
@@ -312,7 +312,7 @@ inline Joint::Joint(Type type,	bool forward, int id, std::string name):
 }
 
 
-inline sva::PTransform Joint::pose(const std::vector<double>& q) const
+inline sva::PTransformd Joint::pose(const std::vector<double>& q) const
 {
 	using namespace Eigen;
 	using namespace sva;
@@ -321,74 +321,74 @@ inline sva::PTransform Joint::pose(const std::vector<double>& q) const
 	{
 		case Rev:
 			// minus S because rotation is anti trigonometric
-			return PTransform(AngleAxisd(-q[0], S_.block<3, 1>(0, 0)).matrix());
+			return PTransformd(AngleAxisd(-q[0], S_.block<3, 1>(0, 0)).matrix());
 		case Prism:
-			return PTransform(Vector3d(S_.block<3, 1>(3, 0)*q[0]));
+			return PTransformd(Vector3d(S_.block<3, 1>(3, 0)*q[0]));
 		case Spherical:
-			return PTransform(Quaterniond(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
+			return PTransformd(Quaterniond(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
 		case Free:
 			rot = QuatToE(q);
 			if(dir_ == 1.)
 			{
-				return PTransform(rot,
+				return PTransformd(rot,
 					Vector3d(q[4], q[5], q[6]));
 			}
 			else
 			{
-				return PTransform(rot,
+				return PTransformd(rot,
 					Vector3d(q[4], q[5], q[6])).inv();
 			}
 		case Fixed:
 		default:
-			return PTransform::Identity();
+			return PTransformd::Identity();
 	}
 }
 
 
-inline sva::MotionVec Joint::motion(const std::vector<double>& alpha) const
+inline sva::MotionVecd Joint::motion(const std::vector<double>& alpha) const
 {
 	using namespace Eigen;
 	using namespace sva;
 	switch(type_)
 	{
 		case Rev:
-			return MotionVec((Vector6d() << S_.block<3, 1>(0, 0)*alpha[0],
+			return MotionVecd((Vector6d() << S_.block<3, 1>(0, 0)*alpha[0],
 																			 Vector3d::Zero()).finished());
 		case Prism:
-			return MotionVec((Vector6d() << Vector3d::Zero(),
+			return MotionVecd((Vector6d() << Vector3d::Zero(),
 																			 S_.block<3, 1>(3, 0)*alpha[0]).finished());
 		case Spherical:
-			return MotionVec(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
+			return MotionVecd(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
 		case Free:
-			return MotionVec(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
+			return MotionVecd(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
 								alpha[3], alpha[4], alpha[5]).finished());
 		case Fixed:
 		default:
-			return MotionVec(Vector6d::Zero());
+			return MotionVecd(Vector6d::Zero());
 	}
 }
 
 
-inline sva::MotionVec Joint::tanAccel(const std::vector<double>& alphaD) const
+inline sva::MotionVecd Joint::tanAccel(const std::vector<double>& alphaD) const
 {
 	using namespace Eigen;
 	using namespace sva;
 	switch(type_)
 	{
 		case Rev:
-			return MotionVec((Vector6d() << S_.block<3, 1>(0, 0)*alphaD[0],
+			return MotionVecd((Vector6d() << S_.block<3, 1>(0, 0)*alphaD[0],
 																			 Vector3d::Zero()).finished());
 		case Prism:
-			return MotionVec((Vector6d() << Vector3d::Zero(),
+			return MotionVecd((Vector6d() << Vector3d::Zero(),
 																			 S_.block<3, 1>(3, 0)*alphaD[0]).finished());
 		case Spherical:
-			return MotionVec(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+			return MotionVecd(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
 		case Free:
-			return MotionVec(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
+			return MotionVecd(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
 								alphaD[3], alphaD[4], alphaD[5]).finished());
 		case Fixed:
 		default:
-			return MotionVec(Vector6d::Zero());
+			return MotionVecd(Vector6d::Zero());
 	}
 }
 
@@ -405,7 +405,7 @@ inline std::vector<double> Joint::zeroDof() const
 }
 
 
-inline sva::PTransform Joint::sPose(const std::vector<double>& q) const
+inline sva::PTransformd Joint::sPose(const std::vector<double>& q) const
 {
 	if(q.size() != static_cast<unsigned int>(params_))
 	{
@@ -418,7 +418,7 @@ inline sva::PTransform Joint::sPose(const std::vector<double>& q) const
 }
 
 
-inline sva::MotionVec Joint::sMotion(const std::vector<double>& alpha) const
+inline sva::MotionVecd Joint::sMotion(const std::vector<double>& alpha) const
 {
 	if(alpha.size() != static_cast<unsigned int>(dof_))
 	{
@@ -431,7 +431,7 @@ inline sva::MotionVec Joint::sMotion(const std::vector<double>& alpha) const
 }
 
 
-inline sva::MotionVec Joint::sTanAccel(const std::vector<double>& alphaD) const
+inline sva::MotionVecd Joint::sTanAccel(const std::vector<double>& alphaD) const
 {
 	if(alphaD.size() != static_cast<unsigned int>(dof_))
 	{

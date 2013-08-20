@@ -39,7 +39,7 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 		Vector3d comT = bodies[i].inertia().momentum()/mass;
 
 		totalMass += mass;
-		com += (sva::PTransform(comT)*mbc.bodyPosW[i]).translation()*mass;
+		com += (sva::PTransformd(comT)*mbc.bodyPosW[i]).translation()*mass;
 	}
 
 	return com/totalMass;
@@ -64,7 +64,7 @@ Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& m
 
 		// Velocity at CoM : c^T_b·V_b
 		// Velocity at CoM world frame : 0_R_b·c^T_b·V_b
-		sva::PTransform X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
+		sva::PTransformd X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
 		comV += (X_0_i*mbc.bodyVelB[i]).linear()*mass;
 	}
 

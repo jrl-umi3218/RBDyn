@@ -131,7 +131,7 @@ public:
 	/// @param point Static translation in the body exprimed in body coordinate.
 	void point(const Eigen::Vector3d& point)
 	{
-		point_ = sva::PTransform(point);
+		point_ = sva::PTransformd(point);
 	}
 
 
@@ -170,7 +170,7 @@ public:
 
 private:
 	std::vector<int> jointsPath_;
-	sva::PTransform point_;
+	sva::PTransformd point_;
 
 	Eigen::MatrixXd jac_;
 	Eigen::MatrixXd jacDot_;

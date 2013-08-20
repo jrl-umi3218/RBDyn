@@ -48,15 +48,15 @@ struct MultiBodyConfig
 
 
 	/// External force acting on each body in world coordinate.
-	std::vector<sva::ForceVec> force;
+	std::vector<sva::ForceVecd> force;
 
 
 
 	/// Joints configuration (Xj).
-	std::vector<sva::PTransform> jointConfig;
+	std::vector<sva::PTransformd> jointConfig;
 
 	/// Joints velocity (Xj*j.motion()).
-	std::vector<sva::MotionVec> jointVelocity;
+	std::vector<sva::MotionVecd> jointVelocity;
 
 	/// Joints torque.
 	std::vector<std::vector<double>> jointTorque;
@@ -69,21 +69,21 @@ struct MultiBodyConfig
 
 
 	/// Bodies transformation in world coordinate.
-	std::vector<sva::PTransform> bodyPosW;
+	std::vector<sva::PTransformd> bodyPosW;
 
 	/// Transformation from parent(i) to i in body coordinate (Xj*Xt).
-	std::vector<sva::PTransform> parentToSon;
+	std::vector<sva::PTransformd> parentToSon;
 
 
 
 	/// Bodies speed in world coordinate.
-	std::vector<sva::MotionVec> bodyVelW;
+	std::vector<sva::MotionVecd> bodyVelW;
 
 	/// Bodies speed in Body coordinate.
-	std::vector<sva::MotionVec> bodyVelB;
+	std::vector<sva::MotionVecd> bodyVelB;
 
 	/// Bodies acceleration in Body coordinate.
-	std::vector<sva::MotionVec> bodyAccB;
+	std::vector<sva::MotionVecd> bodyAccB;
 
 	/// gravity acting on the multibody.
 	Eigen::Vector3d gravity;
