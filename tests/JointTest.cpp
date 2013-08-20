@@ -66,7 +66,7 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
 	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
-	BOOST_CHECK_EQUAL(j.pose({constants::pi<double>()/2.}), rot90);
+	BOOST_CHECK_EQUAL(j.pose<double>({constants::pi<double>()/2.}), rot90);
 
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
 }
@@ -108,7 +108,7 @@ void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool
 	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
 	// test motion
-	BOOST_CHECK_EQUAL(j.pose({2.}), trans2);
+	BOOST_CHECK_EQUAL(j.pose<double>({2.}), trans2);
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(JointTest)
 	BOOST_CHECK_THROW(j1.sPose({0., 0.}), std::domain_error);
 	BOOST_CHECK_THROW(j1.sPose({}), std::domain_error);
 	BOOST_CHECK_NO_THROW(j1.sPose({0.}));
-	BOOST_CHECK_EQUAL(j1.sPose({0.}), j1.pose({0.}));
+	BOOST_CHECK_EQUAL(j1.sPose({0.}), j1.pose<double>({0.}));
 
 	// sMotion
 	BOOST_CHECK_THROW(j1.sMotion({0., 0.}), std::domain_error);
@@ -346,7 +346,7 @@ BOOST_AUTO_TEST_CASE(FixedTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test pose
-	BOOST_CHECK_EQUAL(j.pose({}), PTransformd::Identity());
+	BOOST_CHECK_EQUAL(j.pose<double>({}), PTransformd::Identity());
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion({}).vector(), Vector6d::Zero());
