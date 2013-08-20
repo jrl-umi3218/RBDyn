@@ -324,9 +324,9 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 	{
 		case Rev:
 			// minus S because rotation is anti trigonometric
-			return PTransform<T>(AngleAxis<T>(-q[0], S_.block<3, 1>(0, 0)).matrix());
+			return PTransform<T>(AngleAxis<T>(-q[0], S_.block<3, 1>(0, 0).cast<T>()).matrix());
 		case Prism:
-			return PTransform<T>(Vector3<T>(S_.block<3, 1>(3, 0)*q[0]));
+			return PTransform<T>(Vector3<T>(S_.block<3, 1>(3, 0).cast<T>()*q[0]));
 		case Spherical:
 			return PTransform<T>(Quaternion<T>(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
 		case Free:
