@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -70,8 +70,8 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
@@ -90,9 +90,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb, mbc);
 
-	std::vector<PTransform> res = {
-		PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 0.5, 0)),
-		PTransform(Vector3d(0., 1.5, 0.)), PTransform(Vector3d(0., 2.5, 0))};
+	std::vector<PTransformd> res = {
+		PTransformd(Vector3d(0., 0., 0.)), PTransformd(Vector3d(0., 0.5, 0)),
+		PTransformd(Vector3d(0., 1.5, 0.)), PTransformd(Vector3d(0., 2.5, 0))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
@@ -103,10 +103,10 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb, mbc);
 
-	res = {PTransform(Vector3d(0., 0., 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 1.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 2.))};
+	res = {PTransformd(Vector3d(0., 0., 0.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 0.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 1.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 2.))};
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
@@ -121,10 +121,10 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb, mbc);
 
-	res = {PTransform(Vector3d(0., 0., 0.)),
-		PTransform(Vector3d(0., .5, 0.)),
-		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0., 1.5, 0.)),
-		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0., 2.5, 0.))};
+	res = {PTransformd(Vector3d(0., 0., 0.)),
+		PTransformd(Vector3d(0., .5, 0.)),
+		PTransformd(RotY(cst::pi<double>()/2.), Vector3d(0., 1.5, 0.)),
+		PTransformd(RotY(cst::pi<double>()/2.), Vector3d(0., 2.5, 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
@@ -135,10 +135,10 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb, mbc);
 
-	res = {PTransform(Vector3d(0., 0., 0.)),
-		PTransform(Vector3d(0., 0.5, 0.)),
-		PTransform(Vector3d(0., 1.5, 0.)),
-		PTransform(RotZ(cst::pi<double>()/2.), Vector3d(0., 2.5, 0.))};
+	res = {PTransformd(Vector3d(0., 0., 0.)),
+		PTransformd(Vector3d(0., 0.5, 0.)),
+		PTransformd(Vector3d(0., 1.5, 0.)),
+		PTransformd(RotZ(cst::pi<double>()/2.), Vector3d(0., 2.5, 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
@@ -156,8 +156,8 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	mbg.addBody(b4);
 	mbg.addJoint(j3);
 
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
 
 	MultiBody mb2 = mbg.makeMultiBody(0, true);
 
@@ -169,9 +169,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb2, mbc2);
 
-	res = {PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 0.5, 0)),
-		PTransform(Vector3d(0., 1.5, 0.)), PTransform(Vector3d(0., 2.5, 0)),
-		PTransform(Vector3d(0.5, 1., 0.))};
+	res = {PTransformd(Vector3d(0., 0., 0.)), PTransformd(Vector3d(0., 0.5, 0)),
+		PTransformd(Vector3d(0., 1.5, 0.)), PTransformd(Vector3d(0., 2.5, 0)),
+		PTransformd(Vector3d(0.5, 1., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyPosW.begin(), mbc2.bodyPosW.end());
@@ -181,9 +181,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb2, mbc2);
 
-	res = {PTransform(Vector3d(0., 0., 0.)), PTransform(Vector3d(0., 0.5, 0)),
-		PTransform(Vector3d(0., 1.5, 0.)), PTransform(Vector3d(0., 2.5, 0)),
-		PTransform(RotY(cst::pi<double>()/2.), Vector3d(0.5, 1., 0.))};
+	res = {PTransformd(Vector3d(0., 0., 0.)), PTransformd(Vector3d(0., 0.5, 0)),
+		PTransformd(Vector3d(0., 1.5, 0.)), PTransformd(Vector3d(0., 2.5, 0)),
+		PTransformd(RotY(cst::pi<double>()/2.), Vector3d(0.5, 1., 0.))};
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
@@ -199,11 +199,11 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	forwardKinematics(mb2, mbc2);
 
-	res = {PTransform(Vector3d(0., 0., 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 0.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 1.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 2.)),
-		PTransform(RotX(cst::pi<double>()/2.), Vector3d(0.5, 0.5, 0.5))};
+	res = {PTransformd(Vector3d(0., 0., 0.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 0.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 1.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0., 0.5, 2.)),
+		PTransformd(RotX(cst::pi<double>()/2.), Vector3d(0.5, 0.5, 0.5))};
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -270,8 +270,8 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
@@ -292,9 +292,9 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	std::vector<MotionVec> res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()), MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero())};
+	std::vector<MotionVecd> res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()), MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero())};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
@@ -305,10 +305,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	mbc.alpha = {{}, {1.}, {0.}, {0.}};
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., 0., 0.)),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., 0., 1.)),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., 0., 2.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., 0., 0.)),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., 0., 1.)),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., 0., 2.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
@@ -319,10 +319,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	mbc.alpha = {{}, {0.}, {1.}, {0.}};
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.)),
-		MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.)),
+		MotionVecd(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
@@ -333,10 +333,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	mbc.alpha = {{}, {0.}, {0.}, {1.}};
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
@@ -350,10 +350,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., 0., 0.)),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., -1., 0.)),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., -2., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., 0., 0.)),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., -1., 0.)),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., -2., 0.))};
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
@@ -366,10 +366,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.)),
-		MotionVec(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.)),
+		MotionVecd(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.))};
 
 	for(size_t i = 0; i < res.size(); ++i)
 	{
@@ -383,10 +383,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(0., -1., 0.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(0., -1., 0.), Vector3d(0., 0., 0.))};
 
 
 
@@ -404,8 +404,8 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	mbg.addBody(b4);
 	mbg.addJoint(j3);
 
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
 
 	MultiBody mb2 = mbg.makeMultiBody(0, true);
 
@@ -419,9 +419,9 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	forwardKinematics(mb2, mbc2);
 	forwardVelocity(mb2, mbc2);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()), MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()), MotionVec(Vector6d::Zero())};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()), MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()), MotionVecd(Vector6d::Zero())};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyVelW.begin(), mbc2.bodyVelW.end());
@@ -432,10 +432,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 
 	forwardVelocity(mb2, mbc2);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()), MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(1., 0., 0.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()), MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(1., 0., 0.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyVelW.begin(), mbc2.bodyVelW.end());
@@ -447,10 +447,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 
 	forwardVelocity(mb2, mbc2);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()), MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()), MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyVelW.begin(), mbc2.bodyVelW.end());
@@ -462,10 +462,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 
 	forwardVelocity(mb2, mbc2);
 
-	res = {MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()), MotionVec(Vector6d::Zero()),
-		MotionVec(Vector6d::Zero()),
-		MotionVec(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()), MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector6d::Zero()),
+		MotionVecd(Vector3d(0., 0., 1.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc2.bodyVelW.begin(), mbc2.bodyVelW.end());
@@ -486,7 +486,7 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 
@@ -503,7 +503,7 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	std::vector<MotionVec> res = {MotionVec(Vector6d::Zero())};
+	std::vector<MotionVecd> res = {MotionVecd(Vector6d::Zero())};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	res = {MotionVec(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
+	res = {MotionVecd(Vector3d(0., 1., 0.), Vector3d(0., 0., 0.))};
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyVelW.begin(), mbc.bodyVelW.end());
@@ -590,17 +590,17 @@ BOOST_AUTO_TEST_CASE(FVInteg)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	PTransform oldPt = mbc.bodyPosW[0];
+	PTransformd oldPt = mbc.bodyPosW[0];
 
 	for(int i = 0; i < 1000; ++i)
 	{
-		MotionVec mvFV = mbc.bodyVelW[0];
+		MotionVecd mvFV = mbc.bodyVelW[0];
 
 		eulerIntegration(mb, mbc, step);
 		forwardKinematics(mb, mbc);
 		forwardVelocity(mb, mbc);
 
-		PTransform pt = mbc.bodyPosW[0];
+		PTransformd pt = mbc.bodyPosW[0];
 
 		Vector3d mvDiff((pt.translation() - oldPt.translation())/step);
 

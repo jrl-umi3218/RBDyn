@@ -40,7 +40,7 @@ const double TOL = 0.0000001;
 
 void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	std::vector<rbd::Joint> joints, std::vector<int> pred, std::vector<int> succ,
-	std::vector<int> parent, std::vector<sva::PTransform> Xt)
+	std::vector<int> parent, std::vector<sva::PTransformd> Xt)
 {
 	// bodies
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.bodies().begin(), mb.bodies().end(),
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -125,15 +125,15 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	//  Fixed    RevX   RevY    RevZ
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
@@ -166,8 +166,8 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	std::vector<int> succ = {0, 1, 2, 3};
 	std::vector<int> parent = {-1, 0, 1, 2};
 
-	PTransform unitY(Vector3d(0., 1., 0.));
-	std::vector<PTransform> Xt = {I, to, unitY, unitY};
+	PTransformd unitY(Vector3d(0., 1., 0.));
+	std::vector<PTransformd> Xt = {I, to, unitY, unitY};
 
 
 	checkMultiBodyEq(chain1, bodies, joints, pred, succ, parent, Xt);
@@ -181,7 +181,7 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	succ = {0, 1, 2};
 	parent = {-1, 0, 1};
 
-	Xt = {I, to, PTransform(Vector3d(0.5, 0.5, 0.))};
+	Xt = {I, to, PTransformd(Vector3d(0.5, 0.5, 0.))};
 
 
 	checkMultiBodyEq(chain2, bodies, joints, pred, succ, parent, Xt);
@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 
 void checkJacobianMatrixFromVelocity(const rbd::MultiBody& subMb,
 	rbd::MultiBodyConfig& subMbc,
-	const std::vector<sva::MotionVec>& velVec,
+	const std::vector<sva::MotionVecd>& velVec,
 	const Eigen::MatrixXd& jacMat)
 {
 	int col = 0;
@@ -297,7 +297,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -328,15 +328,15 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	//  Fixed    RevX   RevY    RevZ
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
@@ -389,7 +389,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -420,15 +420,15 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 	//  Free     RevX   RevY    RevZ
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
 	mbg.linkBodies(0, to, 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 4, PTransform(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
 
 	MultiBody mb = mbg.makeMultiBody(0, false);
 
@@ -490,7 +490,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -515,11 +515,11 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	//  Fixed    S       S       S
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
-	mbg.linkBodies(0, PTransform::Identity(), 1, from, 0);
+	mbg.linkBodies(0, PTransformd::Identity(), 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
 
@@ -647,7 +647,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -672,11 +672,11 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	//  Fixed    S       S       S
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
-	mbg.linkBodies(0, PTransform::Identity(), 1, from, 0);
+	mbg.linkBodies(0, PTransformd::Identity(), 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
 
@@ -888,7 +888,7 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -913,11 +913,11 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 	//  Fixed    S       S       S
 
 
-	PTransform to(Vector3d(0., 0.5, 0.));
-	PTransform from(Vector3d(0., -0.5, 0.));
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
-	mbg.linkBodies(0, PTransform::Identity(), 1, from, 0);
+	mbg.linkBodies(0, PTransformd::Identity(), 1, from, 0);
 	mbg.linkBodies(1, to, 2, from, 1);
 	mbg.linkBodies(2, to, 3, from, 2);
 

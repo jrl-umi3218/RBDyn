@@ -45,10 +45,10 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	S << dir*axis, 0., 0., 0.;
 
 	// test motion
-	MotionVec motion(S);
+	MotionVecd motion(S);
 
 	// test motion
-	PTransform rot90(AngleAxisd(-constants::pi<double>()/2., dir*axis).matrix());
+	PTransformd rot90(AngleAxisd(-constants::pi<double>()/2., dir*axis).matrix());
 
 	// test accessor
 	BOOST_CHECK_EQUAL(j.type(), Joint::Rev);
@@ -66,7 +66,7 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
 	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
-	BOOST_CHECK_EQUAL(j.pose({constants::pi<double>()/2.}), rot90);
+	BOOST_CHECK_EQUAL(j.pose<double>({constants::pi<double>()/2.}), rot90);
 
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
 }
@@ -86,10 +86,10 @@ void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool
 	S << 0., 0., 0., dir*axis;
 
 	// test motion
-	MotionVec motion(S);
+	MotionVecd motion(S);
 
 	// test motion
-	PTransform trans2(Vector3d(dir*axis*2.));
+	PTransformd trans2(Vector3d(dir*axis*2.));
 
 	// test accessor
 	BOOST_CHECK_EQUAL(j.type(), Joint::Prism);
@@ -108,7 +108,7 @@ void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool
 	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
 	// test motion
-	BOOST_CHECK_EQUAL(j.pose({2.}), trans2);
+	BOOST_CHECK_EQUAL(j.pose<double>({2.}), trans2);
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(JointTest)
 	BOOST_CHECK_THROW(j1.sPose({0., 0.}), std::domain_error);
 	BOOST_CHECK_THROW(j1.sPose({}), std::domain_error);
 	BOOST_CHECK_NO_THROW(j1.sPose({0.}));
-	BOOST_CHECK_EQUAL(j1.sPose({0.}), j1.pose({0.}));
+	BOOST_CHECK_EQUAL(j1.sPose({0.}), j1.pose<double>({0.}));
 
 	// sMotion
 	BOOST_CHECK_THROW(j1.sMotion({0., 0.}), std::domain_error);
@@ -226,7 +226,7 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 
 	std::vector<double> q = {quat.w(), quat.x(), quat.y(), quat.z()};
 
-	PTransform rot(quat);
+	PTransformd rot(quat);
 
 	// motion data
 	std::vector<double> alpha;
@@ -288,7 +288,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	std::vector<double> q = {quat.w(), quat.x(), quat.y(), quat.z(),
 		trans.x(), trans.y(), trans.z()};
 
-	PTransform rot(quat.matrix().transpose(), trans);
+	PTransformd rot(quat.matrix().transpose(), trans);
 
 	// motion data
 	std::vector<double> alpha;
@@ -346,7 +346,7 @@ BOOST_AUTO_TEST_CASE(FixedTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
 	// test pose
-	BOOST_CHECK_EQUAL(j.pose({}), PTransform::Identity());
+	BOOST_CHECK_EQUAL(j.pose<double>({}), PTransformd::Identity());
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion({}).vector(), Vector6d::Zero());

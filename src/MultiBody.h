@@ -51,7 +51,7 @@ public:
 	MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 		std::vector<int> pred, std::vector<int> succ,
 		std::vector<int> parent,
-		std::vector<sva::PTransform> Xt);
+		std::vector<sva::PTransformd> Xt);
 
 	/// @return Number of bodies.
 	int nrBodies() const
@@ -126,13 +126,13 @@ public:
 	}
 
 	/// @return Transformation from the body base to joint i
-	const std::vector<sva::PTransform>& transforms() const
+	const std::vector<sva::PTransformd>& transforms() const
 	{
 		return Xt_;
 	}
 
 	/// @return Transformation from the body base to joint num
-	const sva::PTransform& transform(int num) const
+	const sva::PTransformd& transform(int num) const
 	{
 		return Xt_[num];
 	}
@@ -244,7 +244,7 @@ public:
 	/** Safe version of @see transform.
 		* @throw std::out_of_range.
 		*/
-	const sva::PTransform& sTransform(int num) const
+	const sva::PTransformd& sTransform(int num) const
 	{
 		return Xt_.at(num);
 	}
@@ -289,7 +289,7 @@ private:
 	std::vector<int> succ_;
 	std::vector<int> parent_;
 	/// Transformation from the body base to joint i
-	std::vector<sva::PTransform> Xt_;
+	std::vector<sva::PTransformd> Xt_;
 
 	std::unordered_map<int, int> bodyId2Ind_;
 	std::unordered_map<int, int> jointId2Ind_;

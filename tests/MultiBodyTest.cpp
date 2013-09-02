@@ -42,17 +42,17 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	MultiBodyGraph mbg1;
 
 	// test addBody
-	Body b1(RBInertia(), 0, "b1");
-	Body b2(RBInertia(), 1, "b2");
-	Body b3(RBInertia(), 2, "b3");
-	Body b4(RBInertia(), 3, "b4");
+	Body b1(RBInertiad(), 0, "b1");
+	Body b2(RBInertiad(), 1, "b2");
+	Body b3(RBInertiad(), 2, "b3");
+	Body b4(RBInertiad(), 3, "b4");
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b1));
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b2));
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b3));
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b4));
 
 	// id already exist
-	BOOST_CHECK_THROW(mbg1.addBody(Body(RBInertia(), 0, "b3")), std::domain_error);
+	BOOST_CHECK_THROW(mbg1.addBody(Body(RBInertiad(), 0, "b3")), std::domain_error);
 
 	// must be 4 nodes
 	BOOST_CHECK_EQUAL(mbg1.nrNodes(), 4);
@@ -100,22 +100,22 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	//   j1(0)  /  j2(1)     j3(2)
 	//       b1(0) ---- b3(2) ---- b4(3)
 
-	BOOST_CHECK_NO_THROW(mbg1.linkBodies(0, PTransform::Identity(),
-		1, PTransform::Identity(), 0));
-	BOOST_CHECK_NO_THROW(mbg1.linkBodies(0, PTransform::Identity(),
-		2, PTransform::Identity(), 1));
-	BOOST_CHECK_NO_THROW(mbg1.linkBodies(2, PTransform::Identity(),
-		3, PTransform::Identity(), 2));
+	BOOST_CHECK_NO_THROW(mbg1.linkBodies(0, PTransformd::Identity(),
+		1, PTransformd::Identity(), 0));
+	BOOST_CHECK_NO_THROW(mbg1.linkBodies(0, PTransformd::Identity(),
+		2, PTransformd::Identity(), 1));
+	BOOST_CHECK_NO_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
+		3, PTransformd::Identity(), 2));
 
 	// check non-existant body 1
-	BOOST_CHECK_THROW(mbg1.linkBodies(10, PTransform::Identity(),
-		3, PTransform::Identity(), 2), std::out_of_range);
+	BOOST_CHECK_THROW(mbg1.linkBodies(10, PTransformd::Identity(),
+		3, PTransformd::Identity(), 2), std::out_of_range);
 	// check non-existant body 2
-	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransform::Identity(),
-		10, PTransform::Identity(), 2), std::out_of_range);
+	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
+		10, PTransformd::Identity(), 2), std::out_of_range);
 	// check non-existant joint
-	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransform::Identity(),
-		3, PTransform::Identity(), 10), std::out_of_range);
+	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
+		3, PTransformd::Identity(), 10), std::out_of_range);
 }
 
 
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 	std::vector<rbd::Joint> joints, std::vector<int> pred, std::vector<int> succ,
 	std::vector<int> parent,
-	std::vector<sva::PTransform> Xt)
+	std::vector<sva::PTransformd> Xt)
 {
 	// bodies
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.bodies().begin(), mb.bodies().end(),
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	//             j1(0)  /  j2(1)     j3(2)
 	// root --j0(-1)-- b1(0) ---- b3(2) ---- b4(3)
 
-	RBInertia r;
+	RBInertiad r;
 	std::vector<Body> bodies = {Body(r, 0, "b1"),
 															Body(r, 1, "b2"),
 															Body(r, 6, "b3"),
@@ -200,8 +200,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	std::vector<int> parent = {-1, 0, 0, 2};
 	Vector3d tmp = Vector3d::Random();
 
-	PTransform I = PTransform::Identity();
-	std::vector<PTransform> Xt = {I, I, PTransform(tmp), I};
+	PTransformd I = PTransformd::Identity();
+	std::vector<PTransformd> Xt = {I, I, PTransformd(tmp), I};
 
 	MultiBody mb(bodies, joints, pred, succ, parent, Xt);
 
@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
 	MultiBodyGraph mbg1;
 
-	RBInertia rbi(1., Vector3d::Zero(), Matrix3d::Identity());
+	RBInertiad rbi(1., Vector3d::Zero(), Matrix3d::Identity());
 	Body b1(rbi, 0, "b1");
 	Body b2(rbi, 1, "b2");
 	Body b3(rbi, 2, "b3");
@@ -286,9 +286,9 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	//        b2(1)
 	//   j1(0)  /  j2(1)     j3(2)
 	//       b1(0) ---- b3(2) ---- b4(3)
-	mbg1.linkBodies(0, PTransform::Identity(), 1, PTransform::Identity(), 0);
-	mbg1.linkBodies(0, PTransform::Identity(), 2, PTransform::Identity(), 1);
-	mbg1.linkBodies(2, PTransform::Identity(), 3, PTransform::Identity(), 2);
+	mbg1.linkBodies(0, PTransformd::Identity(), 1, PTransformd::Identity(), 0);
+	mbg1.linkBodies(0, PTransformd::Identity(), 2, PTransformd::Identity(), 1);
+	mbg1.linkBodies(2, PTransformd::Identity(), 3, PTransformd::Identity(), 2);
 
 
 	//                b2(1)
@@ -310,8 +310,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	std::vector<int> succ = {0, 1, 2, 3};
 	std::vector<int> parent = {-1, 0, 0, 2};
 
-	PTransform I = PTransform::Identity();
-	std::vector<PTransform> Xt = {I, I, I, I};
+	PTransformd I = PTransformd::Identity();
+	std::vector<PTransformd> Xt = {I, I, I, I};
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb1, bodies, joints, pred, succ, parent, Xt);
@@ -395,14 +395,14 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	mbg2.addJoint(j2);
 	mbg2.addJoint(j3);
 
-	mbg2.linkBodies(0, PTransform(Vector3d(Vector3d::UnitX())),
-									1, PTransform(Vector3d(-Vector3d::UnitY())), 0);
-	mbg2.linkBodies(1, PTransform(Vector3d(Vector3d::UnitX())),
-									2, PTransform(Vector3d(-Vector3d::UnitZ())), 1);
-	mbg2.linkBodies(1, PTransform(Matrix3d(sva::RotX(constants::pi<double>()/2.))),
-									3, PTransform::Identity(), 2);
+	mbg2.linkBodies(0, PTransformd(Vector3d(Vector3d::UnitX())),
+									1, PTransformd(Vector3d(-Vector3d::UnitY())), 0);
+	mbg2.linkBodies(1, PTransformd(Vector3d(Vector3d::UnitX())),
+									2, PTransformd(Vector3d(-Vector3d::UnitZ())), 1);
+	mbg2.linkBodies(1, PTransformd(Matrix3d(sva::RotX(constants::pi<double>()/2.))),
+									3, PTransformd::Identity(), 2);
 
-	sva::PTransform root(Vector3d(Vector3d::Random()));
+	sva::PTransformd root(Vector3d(Vector3d::Random()));
 	MultiBody mb4 = mbg2.makeMultiBody(0, true, root);
 
 
@@ -415,9 +415,9 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	parent = {-1, 0, 1, 1};
 
 	Xt = {root,
-				PTransform(Vector3d(1., 0., 0.)),
-				PTransform(Vector3d(1., 1., 0.)),
-				PTransform(RotX(constants::pi<double>()/2.), Vector3d(0., 1., 0.))};
+				PTransformd(Vector3d(1., 0., 0.)),
+				PTransformd(Vector3d(1., 1., 0.)),
+				PTransformd(RotX(constants::pi<double>()/2.), Vector3d(0., 1., 0.))};
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xt);
@@ -474,7 +474,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -494,9 +494,9 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransform::Identity(), 1, PTransform::Identity(), 0);
-	mbg.linkBodies(1, PTransform::Identity(), 2, PTransform::Identity(), 1);
-	mbg.linkBodies(2, PTransform::Identity(), 3, PTransform::Identity(), 2);
+	mbg.linkBodies(0, PTransformd::Identity(), 1, PTransformd::Identity(), 0);
+	mbg.linkBodies(1, PTransformd::Identity(), 2, PTransformd::Identity(), 1);
+	mbg.linkBodies(2, PTransformd::Identity(), 3, PTransformd::Identity(), 2);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
@@ -610,7 +610,7 @@ BOOST_AUTO_TEST_CASE(ConfigConverterTest)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d::Zero();
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -630,9 +630,9 @@ BOOST_AUTO_TEST_CASE(ConfigConverterTest)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransform::Identity(), 1, PTransform::Identity(), 0);
-	mbg.linkBodies(1, PTransform::Identity(), 2, PTransform::Identity(), 1);
-	mbg.linkBodies(2, PTransform::Identity(), 3, PTransform::Identity(), 2);
+	mbg.linkBodies(0, PTransformd::Identity(), 1, PTransformd::Identity(), 0);
+	mbg.linkBodies(1, PTransformd::Identity(), 2, PTransformd::Identity(), 1);
+	mbg.linkBodies(2, PTransformd::Identity(), 3, PTransformd::Identity(), 2);
 
 	MultiBody mb1 = mbg.makeMultiBody(0, true);
 	MultiBody mb2 = mbg.makeMultiBody(3, true);
@@ -653,8 +653,8 @@ BOOST_AUTO_TEST_CASE(ConfigConverterTest)
 	mbc1.q = {{}, {1., 0., 0., 0.}, {1.}, {2.}};
 	mbc1.alpha = {{}, {1., 0., 0., 0.}, {1.2}, {2.2}};
 	mbc1.alphaD = {{}, {0., 3., 2.}, {1.4}, {2.3}};
-	mbc1.force = {ForceVec(Vector6d::Random()), ForceVec(Vector6d::Random()),
-								ForceVec(Vector6d::Random()), ForceVec(Vector6d::Random())};
+	mbc1.force = {ForceVecd(Vector6d::Random()), ForceVecd(Vector6d::Random()),
+								ForceVecd(Vector6d::Random()), ForceVecd(Vector6d::Random())};
 
 	mb1tomb2->sConvert(mbc1, mbc2);
 	mb2tomb1->sConvert(mbc2, mbc1Tmp);

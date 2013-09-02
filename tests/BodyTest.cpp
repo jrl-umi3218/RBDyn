@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(BodyTest)
 			 3., 4., 1.;
 	Vector3d h = Vector3d::Random()*100.;
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	// Test first constructor
 	Body b1(rbi, 0, "b1");

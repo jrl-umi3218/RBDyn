@@ -70,7 +70,7 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 	{
 		if(pred[i] != -1)
 		{
-			const sva::PTransform& X_p_i = mbc.parentToSon[i];
+			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 			I_st_[pred[i]] = I_st_[pred[i]] + X_p_i.transMul(I_st_[i]);
 		}
 
@@ -82,7 +82,7 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 		int j = i;
 		while(pred[j] != -1)
 		{
-			const sva::PTransform& X_p_j = mbc.parentToSon[j];
+			const sva::PTransformd& X_p_j = mbc.parentToSon[j];
 			F_[i] = X_p_j.inv().dualMatrix()*F_[i];
 			j = pred[j];
 
@@ -104,15 +104,15 @@ void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
 
-	sva::MotionVec a_0(Eigen::Vector3d::Zero(), mbc.gravity);
+	sva::MotionVecd a_0(Eigen::Vector3d::Zero(), mbc.gravity);
 
 	for(std::size_t i = 0; i < bodies.size(); ++i)
 	{
-		const sva::PTransform& X_p_i = mbc.parentToSon[i];
+		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 
-		const sva::MotionVec& vj_i = mbc.jointVelocity[i];
+		const sva::MotionVecd& vj_i = mbc.jointVelocity[i];
 
-		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
+		const sva::MotionVecd& vb_i = mbc.bodyVelB[i];
 
 		if(pred[i] != -1)
 			acc_[i] = X_p_i*acc_[pred[i]] + vb_i.cross(vj_i);
@@ -131,7 +131,7 @@ void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 		if(pred[i] != -1)
 		{
-			const sva::PTransform& X_p_i = mbc.parentToSon[i];
+			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
 		}
 	}

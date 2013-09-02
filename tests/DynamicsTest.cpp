@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	Matrix3d I = Matrix3d::Identity();
 	Vector3d h = Vector3d(0., 0.5, 0.);
 
-	RBInertia rbi(mass, h, I);
+	RBInertiad rbi(mass, h, I);
 
 	Body b0(rbi, 0, "b0");
 	Body b1(rbi, 1, "b1");
@@ -65,8 +65,8 @@ BOOST_AUTO_TEST_CASE(OneBody)
 
 	mbg.addJoint(j0);
 
-	mbg.linkBodies(0, PTransform::Identity(),
-								 1, PTransform::Identity(), 0);
+	mbg.linkBodies(0, PTransformd::Identity(),
+								 1, PTransformd::Identity(), 0);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
@@ -101,9 +101,9 @@ BOOST_AUTO_TEST_CASE(OneBody)
 
 	MultiBodyConfig mbc2 = mbc;
 	mbc2.gravity = Vector3d::Zero();
-	MotionVec gravity(Vector3d::Zero(), Vector3d(0., 9.81, 0.));
-	ForceVec gravityB1 = mb.body(0).inertia()*(mbc2.bodyPosW[0]*gravity);
-	ForceVec gravityB2 = mb.body(1).inertia()*(mbc2.bodyPosW[1]*gravity);
+	MotionVecd gravity(Vector3d::Zero(), Vector3d(0., 9.81, 0.));
+	ForceVecd gravityB1 = mb.body(0).inertia()*(mbc2.bodyPosW[0]*gravity);
+	ForceVecd gravityB2 = mb.body(1).inertia()*(mbc2.bodyPosW[1]*gravity);
 	mbc2.force = {gravityB1,
 								gravityB2};
 	id.inverseDynamics(mb, mbc2);
@@ -205,13 +205,13 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 
 	typedef Matrix<double, 1, 1> EScalar;
 
-	RBInertia I0(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I0(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
-	RBInertia I1(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I1(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
-	RBInertia I2(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I2(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
-	RBInertia I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
 
 	Body b0(I0, 0, "b0");
@@ -235,12 +235,12 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransform(Vector3d(0., 0.5, 0.)),
-								 1, PTransform(Vector3d(0., -0.5, 0.)), 0);
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 2, PTransform(Vector3d(0., 0., 0.)), 1);
-	mbg.linkBodies(1, PTransform(Vector3d(-0.5, 0., 0.)),
-								 3, PTransform(Vector3d(0., 0., 0.)), 2);
+	mbg.linkBodies(0, PTransformd(Vector3d(0., 0.5, 0.)),
+								 1, PTransformd(Vector3d(0., -0.5, 0.)), 0);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 2, PTransformd(Vector3d(0., 0., 0.)), 1);
+	mbg.linkBodies(1, PTransformd(Vector3d(-0.5, 0., 0.)),
+								 3, PTransformd(Vector3d(0., 0., 0.)), 2);
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
@@ -249,10 +249,10 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 	mbc.q = {{}, {1., 0., 0., 0.}, {0.}, {0.}};
 	mbc.alpha = {{}, {0., 0., 0.}, {0.}, {0.}};
 	mbc.alphaD = {{}, {0., 0., 0.}, {0.}, {0.}};
-	mbc.force = {ForceVec(Vector6d::Zero()),
-							 ForceVec(Vector6d::Zero()),
-							 ForceVec(Vector6d::Zero()),
-							 ForceVec(Vector6d::Zero())};
+	mbc.force = {ForceVecd(Vector6d::Zero()),
+							 ForceVecd(Vector6d::Zero()),
+							 ForceVecd(Vector6d::Zero()),
+							 ForceVecd(Vector6d::Zero())};
 
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
@@ -364,13 +364,13 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 
 	typedef Matrix<double, 1, 1> EScalar;
 
-	RBInertia I0(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I0(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
-	RBInertia I1(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I1(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
-	RBInertia I2(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I2(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
-	RBInertia I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
+	RBInertiad I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
 
 	Body b0(I0, 0, "b0");
@@ -394,12 +394,12 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransform(Vector3d(0., 0.5, 0.)),
-								 1, PTransform(Vector3d(0., -0.5, 0.)), 0);
-	mbg.linkBodies(1, PTransform(Vector3d(0.5, 0., 0.)),
-								 2, PTransform(Vector3d(0., 0., 0.)), 1);
-	mbg.linkBodies(1, PTransform(Vector3d(-0.5, 0., 0.)),
-								 3, PTransform(Vector3d(0., 0., 0.)), 2);
+	mbg.linkBodies(0, PTransformd(Vector3d(0., 0.5, 0.)),
+								 1, PTransformd(Vector3d(0., -0.5, 0.)), 0);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 2, PTransformd(Vector3d(0., 0., 0.)), 1);
+	mbg.linkBodies(1, PTransformd(Vector3d(-0.5, 0., 0.)),
+								 3, PTransformd(Vector3d(0., 0., 0.)), 2);
 
 	MultiBody mb = mbg.makeMultiBody(0, false);
 
@@ -408,10 +408,10 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 	mbc.q = {{1., 0., 0., 0., 0., 0., 0.}, {1., 0., 0., 0.}, {0.}, {0.}};
 	mbc.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
 	mbc.alphaD = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
-	mbc.force = {ForceVec(Vector6d::Zero()),
-							 ForceVec(Vector6d::Zero()),
-							 ForceVec(Vector6d::Zero()),
-							 ForceVec(Vector6d::Zero())};
+	mbc.force = {ForceVecd(Vector6d::Zero()),
+							 ForceVecd(Vector6d::Zero()),
+							 ForceVecd(Vector6d::Zero()),
+							 ForceVecd(Vector6d::Zero())};
 
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);

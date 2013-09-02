@@ -35,16 +35,16 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
 
-	sva::MotionVec a_0(Eigen::Vector3d::Zero(), mbc.gravity);
+	sva::MotionVecd a_0(Eigen::Vector3d::Zero(), mbc.gravity);
 
 	for(std::size_t i = 0; i < bodies.size(); ++i)
 	{
-		const sva::PTransform& X_p_i = mbc.parentToSon[i];
+		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 
-		const sva::MotionVec& vj_i = mbc.jointVelocity[i];
-		sva::MotionVec ai_tan = joints[i].tanAccel(mbc.alphaD[i]);
+		const sva::MotionVecd& vj_i = mbc.jointVelocity[i];
+		sva::MotionVecd ai_tan = joints[i].tanAccel(mbc.alphaD[i]);
 
-		const sva::MotionVec& vb_i = mbc.bodyVelB[i];
+		const sva::MotionVecd& vb_i = mbc.bodyVelB[i];
 
 		if(pred[i] != -1)
 			mbc.bodyAccB[i] = X_p_i*mbc.bodyAccB[pred[i]] + ai_tan + vb_i.cross(vj_i);
@@ -66,7 +66,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 		if(pred[i] != -1)
 		{
-			const sva::PTransform& X_p_i = mbc.parentToSon[i];
+			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
 		}
 	}

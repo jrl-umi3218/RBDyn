@@ -100,12 +100,12 @@ private:
 	Eigen::VectorXd C_;
 
 	// H computation
-	std::vector<sva::RBInertia> I_st_;
+	std::vector<sva::RBInertiad> I_st_;
 	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> F_;
 
 	// C computation
-	std::vector<sva::MotionVec> acc_;
-	std::vector<sva::ForceVec> f_;
+	std::vector<sva::MotionVecd> acc_;
+	std::vector<sva::ForceVecd> f_;
 
 	// torque computation
 	Eigen::VectorXd tmpFd_;

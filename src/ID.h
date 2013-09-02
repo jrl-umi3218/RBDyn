@@ -55,7 +55,7 @@ public:
 	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
 
 private:
-	std::vector<sva::ForceVec> f_;
+	std::vector<sva::ForceVecd> f_;
 };
 
 } // namespace rbd

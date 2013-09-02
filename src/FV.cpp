@@ -33,7 +33,7 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	for(std::size_t i = 0; i < joints.size(); ++i)
 	{
-		const sva::PTransform& X_p_i = mbc.parentToSon[i];
+		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 
 		mbc.jointVelocity[i] = joints[i].motion(mbc.alpha[i]);
 		mbc.motionSubspace[i] = joints[i].motionSubspace();
@@ -43,7 +43,7 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 		else
 			mbc.bodyVelB[succ[i]] = mbc.jointVelocity[i];
 
-		sva::PTransform E_0_i(mbc.bodyPosW[succ[i]].rotation());
+		sva::PTransformd E_0_i(mbc.bodyPosW[succ[i]].rotation());
 		mbc.bodyVelW[succ[i]] = E_0_i.invMul(mbc.bodyVelB[succ[i]]);
 	}
 }

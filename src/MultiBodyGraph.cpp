@@ -53,8 +53,8 @@ void MultiBodyGraph::addJoint(const Joint& J)
 	jointId2Joint_[J.id()] = joints_.back();
 }
 
-void MultiBodyGraph::linkBodies(int b1Id, const sva::PTransform& tB1,
-	int b2Id, const sva::PTransform& tB2, int jointId, bool isB1toB2)
+void MultiBodyGraph::linkBodies(int b1Id, const sva::PTransformd& tB1,
+	int b2Id, const sva::PTransformd& tB2, int jointId, bool isB1toB2)
 {
 	std::shared_ptr<Node> b1 = bodyId2Node_.at(b1Id);
 	std::shared_ptr<Node> b2 = bodyId2Node_.at(b2Id);
@@ -88,7 +88,7 @@ std::size_t MultiBodyGraph::nrJoints() const
 }
 
 MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
-	const sva::PTransform& initTrans)
+	const sva::PTransformd& initTrans)
 {
 	using namespace Eigen;
 
@@ -98,7 +98,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 	std::vector<int> pred;
 	std::vector<int> succ;
 	std::vector<int> parent;
-	std::vector<sva::PTransform> Xt;
+	std::vector<sva::PTransformd> Xt;
 
 	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
 	Joint rootJoint = isFixed ? Joint(Joint::Fixed, true, -1, "Root") :
@@ -107,15 +107,15 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 	std::function<void(const std::shared_ptr<Node> curNode,
 										 const std::shared_ptr<Node> fromNode, const Joint& joint,
 										 int p, int s, int par,
-										 const sva::PTransform& Xt)> makeTree;
+										 const sva::PTransformd& Xt)> makeTree;
 
 	makeTree = [&](const std::shared_ptr<Node> curNode,
 		const std::shared_ptr<Node> fromNode, const Joint& joint,
 		int p, int s, int par,
-		const sva::PTransform& Xti)
+		const sva::PTransformd& Xti)
 	{
 		// looking for transformation that come from fromNode
-		sva::PTransform XFrom = sva::PTransform::Identity();
+		sva::PTransformd XFrom = sva::PTransformd::Identity();
 		for(Arc& a : curNode->arcs)
 		{
 			if(a.next == fromNode)

@@ -67,7 +67,7 @@ void MultiBodyConfig::zero(const MultiBody& mb)
 
 	for(std::size_t i = 0; i < force.size(); ++i)
 	{
-		force[i] = sva::ForceVec(Eigen::Vector6d::Zero());
+		force[i] = sva::ForceVecd(Eigen::Vector6d::Zero());
 	}
 }
 

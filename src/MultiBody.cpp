@@ -32,7 +32,7 @@ MultiBody::MultiBody():
 MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 	std::vector<int> pred, std::vector<int> succ,
 	std::vector<int> parent,
-	std::vector<sva::PTransform> Xto):
+	std::vector<sva::PTransformd> Xto):
 	bodies_(std::move(bodies)),
 	joints_(std::move(joints)),
 	pred_(std::move(pred)),

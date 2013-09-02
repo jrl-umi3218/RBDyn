@@ -49,7 +49,7 @@ public:
 		*/
 	struct Arc
 	{
-		Arc(sva::PTransform X0, const Joint& j, bool forward, std::shared_ptr<Node> n):
+		Arc(sva::PTransformd X0, const Joint& j, bool forward, std::shared_ptr<Node> n):
 			X(X0),
 			joint(j),
 			next(n)
@@ -57,7 +57,7 @@ public:
 			joint.forward(forward);
 		}
 
-		sva::PTransform X; ///< Position of the joint in body coordinate.
+		sva::PTransformd X; ///< Position of the joint in body coordinate.
 		Joint joint; ///< Joint with right direction.
 		std::shared_ptr<Node> next; ///< successor node.
 	};
@@ -104,8 +104,8 @@ public:
 		* joint. If false the behavior is inversed.
 		* @throw std::out_of_range If b1Id or b2Id or jointId don't exist.
 		*/
-	void linkBodies(int b1Id, const sva::PTransform& tB1,
-		int b2Id, const sva::PTransform& tB2, int jointId, bool isB1toB2=true);
+	void linkBodies(int b1Id, const sva::PTransformd& tB1,
+		int b2Id, const sva::PTransformd& tB2, int jointId, bool isB1toB2=true);
 
 	/**
 		* @param id Id of the node.
@@ -135,7 +135,7 @@ public:
 		* @throw std::out_of_rang If rootBodyId don't exist.
 		*/
 	MultiBody makeMultiBody(int rootBodyId, bool isFixed,
-		const sva::PTransform& initTrans=sva::PTransform::Identity());
+		const sva::PTransformd& initTrans=sva::PTransformd::Identity());
 
 private:
 	std::vector<std::shared_ptr<Node>> nodes_;

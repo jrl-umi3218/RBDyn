@@ -39,7 +39,7 @@ public:
 		* @param id Body id, must be unique in a multibody.
 		* @param name Body name.
 		*/
-	Body(const sva::RBInertia& rbInertia, int id, std::string name):
+	Body(const sva::RBInertiad& rbInertia, int id, std::string name):
 		inertia_(rbInertia),
 		id_(id),
 		name_(name)
@@ -72,7 +72,7 @@ public:
 	}
 
 	/// @return Body spatial rigid body inertia.
-	const sva::RBInertia& inertia() const
+	const sva::RBInertiad& inertia() const
 	{
 		return inertia_;
 	}
@@ -88,7 +88,7 @@ public:
 	}
 
 private:
-	sva::RBInertia inertia_;
+	sva::RBInertiad inertia_;
 
 	int id_;
 	std::string name_;
