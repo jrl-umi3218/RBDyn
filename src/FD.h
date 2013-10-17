@@ -78,6 +78,12 @@ public:
 		return C_;
 	}
 
+	/// @return Inertia of tho subtree rooted at body i.
+	const std::vector<sva::RBInertiad>& inertiaSubTree() const
+	{
+		return I_st_;
+	}
+
 	// safe version for python binding
 
 	/** safe version of @see forwardDynamics.

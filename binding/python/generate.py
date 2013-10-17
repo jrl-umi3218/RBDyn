@@ -362,6 +362,7 @@ def build_fd(id):
 
   fd.add_method('H', retval('const Eigen::MatrixXd&'), [], is_const=True)
   fd.add_method('C', retval('const Eigen::VectorXd&'), [], is_const=True)
+  fd.add_method('inertiaSubTree', retval('std::vector<sva::RBInertiad>'), [], is_const=True)
 
 
 
@@ -459,6 +460,7 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<sva::PTransformd>', 'sva::PTransformd', 'vector')
   rbd.add_container('std::vector<sva::MotionVecd>', 'sva::MotionVecd', 'vector')
   rbd.add_container('std::vector<sva::ForceVecd>', 'sva::ForceVecd', 'vector')
+  rbd.add_container('std::vector<sva::RBInertiad>', 'sva::RBInertiad', 'vector')
   rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   build_body(body)
