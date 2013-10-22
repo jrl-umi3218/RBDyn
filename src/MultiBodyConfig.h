@@ -199,7 +199,7 @@ Eigen::VectorXd sDofToVector(const MultiBody& mb,
 	* @param e Eigen vector.
 	* @param e Output Parameter vector (must be of the good size).
 	*/
-void vectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v);
+void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e, std::vector<std::vector<double>>& v);
 
 /**
 	* Safe version of @see vectorToParam.

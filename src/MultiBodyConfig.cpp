@@ -323,7 +323,7 @@ Eigen::VectorXd sDofToVector(const MultiBody& mb,
 
 
 
-void vectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double> >& v)
+void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e, std::vector<std::vector<double> >& v)
 {
 	int pos = 0;
 	for(auto& inV: v)
