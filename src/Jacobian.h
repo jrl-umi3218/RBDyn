@@ -103,7 +103,8 @@ public:
 		* @param jac Jacobian to project.
 		* @param res Projected Jacobian (must be allocated).
 		*/
-	void fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+	void fullJacobian(const MultiBody& mb,
+		const Eigen::Ref<const Eigen::MatrixXd>& jac,
 		Eigen::MatrixXd& res) const;
 
 	/// @return MultiBody that correspond to the path between the root and

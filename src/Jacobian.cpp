@@ -241,7 +241,8 @@ void Jacobian::translateBodyJacobian(const Eigen::MatrixXd& jac,
 }
 
 
-void Jacobian::fullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+void Jacobian::fullJacobian(const MultiBody& mb,
+	const Eigen::Ref<const Eigen::MatrixXd>& jac,
 	Eigen::MatrixXd& res) const
 {
 	res.setZero();
