@@ -272,7 +272,7 @@ class Controller(object):
     mbcP = self.robotPlan.mbc
 
     # compute next desired position
-    self.solver.update(mbP, mbcP)
+    self.solver.solve(mbP, mbcP)
     rbd.eulerIntegration(mbP, mbcP, 0.005)
 
 

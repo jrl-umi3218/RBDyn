@@ -294,7 +294,7 @@ class Controller(object):
     mbcP = self.robotPlan.mbc
 
     # compute next desired position
-    if not self.solver.update(mbP, mbcP):
+    if not self.solver.solver(mbP, mbcP):
       raise RuntimeError('Solver fail')
     rbd.eulerIntegration(mbP, mbcP, 0.005)
 
