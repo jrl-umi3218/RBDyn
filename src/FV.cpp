@@ -17,11 +17,11 @@
 #include "FV.h"
 
 // includes
-#include <iostream>
 // RBdyn
 #include "Joint.h"
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"
+
 namespace rbd
 {
 
