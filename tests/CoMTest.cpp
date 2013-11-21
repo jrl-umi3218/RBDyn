@@ -86,10 +86,12 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 
 	MultiBody mb = mbg.makeMultiBody(0, true);
 	MultiBodyConfig mbc(mb);
+	mbc.zero(mb);
 
 	mbc.q = {{}, {0.}, {0.}, {0.}};
 
 	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
 
 	Vector3d CoM = computeCoM(mb, mbc);
 	Vector3d CoMV = computeCoMVelocity(mb, mbc);
@@ -104,6 +106,7 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 
 	mbc.q = {{}, {cst::pi<double>()/2.}, {0.}, {0.}};
 	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
 
 	CoM = sComputeCoM(mb, mbc);
 	CoMV = sComputeCoMVelocity(mb, mbc);
