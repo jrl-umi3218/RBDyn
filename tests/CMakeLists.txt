@@ -1,7 +1,8 @@
 ENABLE_TESTING()
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+set(BOOST_COMPONENTS unit_test_framework)
+SEARCH_FOR_BOOST()
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories(${Boost_INCLUDE_DIRS})
