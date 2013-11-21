@@ -274,6 +274,12 @@ def build_algo(mod):
                    custom_name='forwardVelocity',
                    throw=[dom_ex])
 
+  mod.add_function('sForwardAcceleration', None,
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
+                   custom_name='forwardAcceleration',
+                   throw=[dom_ex])
+
   mod.add_function('sEulerIntegration', None,
                    [param('const MultiBody&', 'mb'),
                     param('MultiBodyConfig&', 'mbc'),
@@ -425,6 +431,7 @@ if __name__ == '__main__':
   rbd.add_include('<MultiBodyGraph.h>')
   rbd.add_include('<FK.h>')
   rbd.add_include('<FV.h>')
+  rbd.add_include('<FA.h>')
   rbd.add_include('<Jacobian.h>')
   rbd.add_include('<ID.h>')
   rbd.add_include('<FD.h>')
