@@ -46,6 +46,15 @@ Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& m
 
 
 /**
+	* Compute the Center of Mass (CoM) acceleration of a multibody.
+	* @param mb MultiBody used has model.
+	* @param mbc Use bodyPosW, bodyVelW, bodyVelB, and bodyAccB.
+	* @return CoM velocity in world frame.
+	*/
+Eigen::Vector3d computeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+
+/**
 	* Compute the CoM with a simple but slow algorithm.
 	*/
 class CoMJacobianDummy
@@ -114,6 +123,14 @@ Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
 Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+
+/**
+	* Safe version.
+	* @see computeCoMAcceleration.
+	* @throw std::domain_error If there is a mismatch between mb and mbc.
+	*/
+Eigen::Vector3d sComputeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 } // namespace rbd

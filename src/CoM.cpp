@@ -62,13 +62,43 @@ Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& m
 
 		totalMass += mass;
 
-		// Velocity at CoM : c^T_b·V_b
-		// Velocity at CoM world frame : 0_R_b·c^T_b·V_b
+		// Velocity at CoM : com_T_b·V_b
+		// Velocity at CoM world frame : 0_R_b·com_T_b·V_b
 		sva::PTransformd X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
 		comV += (X_0_i*mbc.bodyVelB[i]).linear()*mass;
 	}
 
 	return comV/totalMass;
+}
+
+
+Eigen::Vector3d computeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	using namespace Eigen;
+
+	const std::vector<Body>& bodies = mb.bodies();
+
+	Vector3d comA = Vector3d::Zero();
+	double totalMass = 0.;
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		double mass = bodies[i].inertia().mass();
+		Vector3d comT = bodies[i].inertia().momentum()/mass;
+
+		totalMass += mass;
+
+		// Acceleration at CoM : com_T_b·A_b
+		// Acceleration at CoM world frame :
+		//    0_R_b·com_T_b·A_b + 0_R_b_d·com_T_b·V_b
+		// O_R_b_d : (Angvel_W)_b x 0_R_b
+		sva::PTransformd X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
+		sva::MotionVecd angvel_W(mbc.bodyVelW[i].angular(), Eigen::Vector3d::Zero());
+		comA += (X_0_i*mbc.bodyAccB[i]).linear()*mass;
+		comA += (angvel_W.cross(X_0_i*mbc.bodyVelB[i])).linear()*mass;
+	}
+
+	return comA/totalMass;
 }
 
 
@@ -84,6 +114,15 @@ Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& 
 	checkMatchBodyPos(mb, mbc);
 	checkMatchBodyVel(mb, mbc);
 	return computeCoMVelocity(mb, mbc);
+}
+
+
+Eigen::Vector3d sComputeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodyAcc(mb, mbc);
+	return computeCoMAcceleration(mb, mbc);
 }
 
 
