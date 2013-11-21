@@ -383,6 +383,11 @@ def build_com(mod, comD):
                     param('MultiBodyConfig&', 'mbc')],
                    custom_name='computeCoMVelocity',
                    throw=[dom_ex])
+  mod.add_function('sComputeCoMAcceleration', retval('Eigen::Vector3d'),
+                   [param('const MultiBody&', 'mb'),
+                    param('MultiBodyConfig&', 'mbc')],
+                   custom_name='computeCoMAcceleration',
+                   throw=[dom_ex])
 
 
   comD.add_constructor([])
