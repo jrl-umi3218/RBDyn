@@ -36,6 +36,11 @@
 #include "MultiBodyGraph.h"
 #include "EulerIntegration.h"
 
+// arm
+#include "XYZarm.h"
+#include "XYZSarm.h"
+
+
 const double TOL = 0.0000001;
 
 BOOST_AUTO_TEST_CASE(FKTest)
@@ -45,46 +50,10 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
-	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-
-	//  Root     j0      j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	rbd::MultiBody mb, mb2;
+	rbd::MultiBodyConfig mbc, mbc2;
+	std::tie(mb, mbc) = makeXYZarm();
+	std::tie(mb2, mbc2) = makeXYZSarm();
 
 	// check identity
 	mbc.q = {{}, {0.}, {0.}, {0.}};
@@ -144,25 +113,6 @@ BOOST_AUTO_TEST_CASE(FKTest)
 	BOOST_CHECK_EQUAL_COLLECTIONS(res.begin(), res.end(),
 		mbc.bodyPosW.begin(), mbc.bodyPosW.end());
 
-
-	//                b4
-	//             j3 | Spherical
-	//  Root     j0   |   j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-	Body b4(rbi, 4, "b4");
-	Joint j3(Joint::Spherical, true, 3, "j3");
-
-	mbg.addBody(b4);
-	mbg.addJoint(j3);
-
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
-
-	MultiBody mb2 = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc2(mb2);
 
 
 	// check identity
@@ -245,46 +195,10 @@ BOOST_AUTO_TEST_CASE(FVTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
-	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-
-	//  Root     j0      j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	rbd::MultiBody mb, mb2;
+	rbd::MultiBodyConfig mbc, mbc2;
+	std::tie(mb, mbc) = makeXYZarm();
+	std::tie(mb2, mbc2) = makeXYZSarm();
 
 	// check identity
 	mbc.q = {{}, {0.}, {0.}, {0.}};
@@ -389,28 +303,6 @@ BOOST_AUTO_TEST_CASE(FVTest)
 		MotionVecd(Vector6d::Zero()),
 		MotionVecd(Vector3d(0., -1., 0.), Vector3d(0., 0., 0.))};
 
-
-
-
-
-	//                b4
-	//             j3 | Spherical
-	//  Root     j0   |   j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-	Body b4(rbi, 4, "b4");
-	Joint j3(Joint::Spherical, true, 3, "j3");
-
-	mbg.addBody(b4);
-	mbg.addJoint(j3);
-
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
-
-	MultiBody mb2 = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc2(mb2);
 
 
 	// check identity
@@ -609,5 +501,11 @@ BOOST_AUTO_TEST_CASE(FVInteg)
 
 		oldPt = pt;
 	}
+}
+
+
+BOOST_AUTO_TEST_CASE(FATest)
+{
+
 }
 
