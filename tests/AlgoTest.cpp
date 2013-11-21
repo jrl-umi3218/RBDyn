@@ -29,12 +29,14 @@
 // RBDyn
 #include "FK.h"
 #include "FV.h"
+#include "FA.h"
 #include "Body.h"
 #include "Joint.h"
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"
 #include "MultiBodyGraph.h"
 #include "EulerIntegration.h"
+#include "Jacobian.h"
 
 // arm
 #include "XYZarm.h"
@@ -506,6 +508,55 @@ BOOST_AUTO_TEST_CASE(FVInteg)
 
 BOOST_AUTO_TEST_CASE(FATest)
 {
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	std::tie(mb, mbc) = makeXYZSarm();
 
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+	forwardAcceleration(mb, mbc);
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		BOOST_CHECK_SMALL(mbc.bodyAccB[i].vector().norm(), TOL);
+	}
+
+	std::vector<rbd::Jacobian> jacs(mb.nrBodies());
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		jacs[i] = rbd::Jacobian(mb, i);
+	}
+
+	Eigen::MatrixXd fullJac(6, mb.nrDof());
+	Eigen::MatrixXd fullJacDot(6, mb.nrDof());
+
+	for(int i = 0; i < 10; ++i)
+	{
+		Eigen::VectorXd q(mb.nrParams()), alpha(mb.nrDof()), alphaD(mb.nrDof());
+		q.setRandom();
+		q.tail<4>().normalize();
+		alpha.setRandom();
+		alphaD.setRandom();
+
+		rbd::vectorToParam(q, mbc.q);
+		rbd::vectorToParam(alpha, mbc.alpha);
+		rbd::vectorToParam(alphaD, mbc.alphaD);
+
+		forwardKinematics(mb, mbc);
+		forwardVelocity(mb, mbc);
+		forwardAcceleration(mb, mbc);
+
+		for(int j = 0; j < mb.nrBodies(); ++j)
+		{
+			const Eigen::MatrixXd& jac = jacs[j].bodyJacobian(mb, mbc);
+			const Eigen::MatrixXd& jacDot = jacs[j].bodyJacobianDot(mb, mbc);
+
+			jacs[j].fullJacobian(mb, jac, fullJac);
+			jacs[j].fullJacobian(mb, jacDot, fullJacDot);
+
+			Eigen::Vector6d acc = fullJac*alphaD + fullJacDot*alpha;
+			BOOST_CHECK_SMALL((mbc.bodyAccB[j].vector() - acc).norm(), TOL);
+		}
+	}
 }
 
