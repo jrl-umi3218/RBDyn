@@ -132,23 +132,35 @@ CoMJacobianDummy::CoMJacobianDummy()
 
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
+	jac_(6, mb.nrDof()),
+	jacDot_(6, mb.nrDof()),
+	jacFull_(6, mb.nrDof()),
+	jacVec_(mb.nrBodies()),
+	totalMass_(0.),
+	bodiesWeight_(mb.nrBodies(), 1.)
+{
+	init(mb);
+}
+
+
+CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb, std::vector<double> weight):
   jac_(6, mb.nrDof()),
   jacDot_(6, mb.nrDof()),
   jacFull_(6, mb.nrDof()),
   jacVec_(mb.nrBodies()),
-  totalMass_(0.)
+  totalMass_(0.),
+  bodiesWeight_(std::move(weight))
 {
-  using namespace Eigen;
+  init(mb);
 
-	for(int i = 0; i < mb.nrBodies(); ++i)
-	{
-		Vector3d comT = mb.body(i).inertia().momentum()/
-			mb.body(i).inertia().mass();
-		jacVec_[i] = Jacobian(mb, mb.body(i).id(), comT);
-		totalMass_ += mb.body(i).inertia().mass();
-	}
+  if(int(bodiesWeight_.size()) != mb.nrBodies())
+  {
+    std::stringstream ss;
+    ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
+          bodiesWeight_.size() << std::endl;
+    throw std::runtime_error(ss.str());
+  }
 }
-
 
 CoMJacobianDummy::~CoMJacobianDummy()
 {}
@@ -167,7 +179,7 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobian(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac, jacFull_);
-		jac_ += jacFull_*bodies[i].inertia().mass();
+		jac_ += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
 	jac_ /= totalMass_;
@@ -189,7 +201,7 @@ CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac, jacFull_);
-		jacDot_ += jacFull_*bodies[i].inertia().mass();
+		jacDot_ += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
 	jacDot_ /= totalMass_;
@@ -216,6 +228,19 @@ CoMJacobianDummy::sJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 	checkMatchMotionSubspace(mb, mbc);
 
 	return jacobianDot(mb, mbc);
+}
+
+
+void CoMJacobianDummy::init(const rbd::MultiBody& mb)
+{
+	using namespace Eigen;
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		Vector3d comT = mb.body(i).inertia().momentum()/
+			mb.body(i).inertia().mass();
+		jacVec_[i] = Jacobian(mb, mb.body(i).id(), comT);
+		totalMass_ += mb.body(i).inertia().mass();
+	}
 }
 
 } // namespace rbd

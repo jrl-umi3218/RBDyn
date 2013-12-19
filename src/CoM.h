@@ -64,6 +64,11 @@ public:
 
 	/// @param mb MultiBody used has model
 	CoMJacobianDummy(const MultiBody& mb);
+	/**
+	 * @param mb MultiBody used has model
+	 * @param weight Per body weight
+	 */
+	CoMJacobianDummy(const MultiBody& mb, std::vector<double> weight);
 
 	~CoMJacobianDummy();
 
@@ -98,12 +103,16 @@ public:
 		const MultiBodyConfig& mbc);
 
 private:
+	void init(const rbd::MultiBody& mb);
+
+private:
 	Eigen::MatrixXd jac_;
 	Eigen::MatrixXd jacDot_;
 	Eigen::MatrixXd jacFull_;
 
 	std::vector<Jacobian> jacVec_;
 	double totalMass_;
+	std::vector<double> bodiesWeight_;
 };
 
 
