@@ -393,7 +393,8 @@ def build_com(mod, comD):
   comD.add_constructor([])
   comD.add_constructor([param('const rbd::MultiBody&', 'mb')])
   comD.add_constructor([param('const rbd::MultiBody&', 'mb'),
-                        param('std::vector<double>', 'weight')])
+                        param('std::vector<double>', 'weight')],
+                        throw=[dom_ex])
 
 
   comD.add_method('sJacobian', retval('Eigen::MatrixXd'),

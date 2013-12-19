@@ -157,7 +157,7 @@ CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb, std::vector<double> weig
     std::stringstream ss;
     ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
           bodiesWeight_.size() << std::endl;
-    throw std::runtime_error(ss.str());
+    throw std::domain_error(ss.str());
   }
 }
 
