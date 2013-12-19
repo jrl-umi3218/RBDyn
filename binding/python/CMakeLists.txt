@@ -1,4 +1,7 @@
 INCLUDE(../../cmake/python.cmake)
+
+# Look for Python 2.7
+SET(Python_ADDITIONAL_VERSIONS 2.7)
 FINDPYTHON()
 
 ## Define PYTHON_DISTLIB
