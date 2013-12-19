@@ -21,11 +21,13 @@
 // Eigen
 #include <Eigen/Core>
 
+// RBDyn
+#include "Jacobian.h"
+
 namespace rbd
 {
 class MultiBody;
 class MultiBodyConfig;
-class Jacobian;
 
 /**
 	* Compute the Center of Mass (CoM) position of a multibody.

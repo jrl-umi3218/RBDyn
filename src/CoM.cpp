@@ -17,7 +17,6 @@
 #include "CoM.h"
 
 // RBDyn
-#include "Jacobian.h"
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"
 
