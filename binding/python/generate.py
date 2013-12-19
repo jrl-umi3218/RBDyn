@@ -290,6 +290,7 @@ def build_algo(mod):
 
 def build_jacobian(jac):
   jac.add_constructor([])
+  jac.add_copy_constructor()
   jac.add_constructor([param('const rbd::MultiBody&', 'mb'),
                        param('int', 'bodyId'),
                        param('const Eigen::Vector3d&', 'point',
@@ -335,6 +336,7 @@ def build_jacobian(jac):
 
 def build_id(id):
   id.add_constructor([])
+  id.add_copy_constructor()
   id.add_constructor([param('const rbd::MultiBody&', 'mb')])
 
 
@@ -347,6 +349,7 @@ def build_id(id):
 
 def build_fd(id):
   fd.add_constructor([])
+  fd.add_copy_constructor()
   fd.add_constructor([param('const rbd::MultiBody&', 'mb')])
 
 
@@ -391,6 +394,7 @@ def build_com(mod, comD):
 
 
   comD.add_constructor([])
+  comD.add_copy_constructor()
   comD.add_constructor([param('const rbd::MultiBody&', 'mb')])
   comD.add_constructor([param('const rbd::MultiBody&', 'mb'),
                         param('std::vector<double>', 'weight')],
@@ -413,6 +417,7 @@ def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',
                                    [param('const rbd::MultiBody&', 'mb1'),
                                     param('const rbd::MultiBody&', 'mb2')])
+  conf.add_copy_constructor()
   const.throw = [dom_ex]
 
   conf.add_method('sConvert', None,
