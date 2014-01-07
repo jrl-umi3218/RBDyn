@@ -7,7 +7,7 @@ INCLUDE(cmake/eigen.cmake)
 
 SET(PROJECT_NAME RBDyn)
 SET(PROJECT_DESCRIPTION "...")
-SET(PROJECT_URL "https://github.com/jorisv//Tasks")
+SET(PROJECT_URL "https://github.com/jorisv/RBDyn")
 
 # Disable -Werror on Unix for now.
 SET(CXX_DISABLE_WERROR True)
