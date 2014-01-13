@@ -33,6 +33,9 @@
 #include "MultiBodyGraph.h"
 #include "MultiBodyConfig.h"
 
+// arm
+#include "XYZSarm.h"
+
 
 BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 {
@@ -133,6 +136,85 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	// check non-existant joint
 	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
 		3, PTransformd::Identity(), 10), std::out_of_range);
+}
+
+
+
+void checkMultiBodyNames(const rbd::MultiBody& mb,
+											 const std::vector<std::string>& bodies,
+											 const std::vector<std::string>& joints)
+{
+	for(const rbd::Body& b: mb.bodies())
+	{
+		BOOST_CHECK(std::find(bodies.begin(), bodies.end(), b.name()) != bodies.end());
+	}
+	for(const rbd::Joint& j: mb.joints())
+	{
+		BOOST_CHECK(std::find(joints.begin(), joints.end(), j.name()) != joints.end());
+	}
+}
+
+
+BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
+{
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg, mbgBack;
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 4);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 5);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 5);
+
+	mbg.removeJoint(0, "j3");
+
+	mb = mbg.makeMultiBody(0, true);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 3);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 4);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 4);
+	checkMultiBodyNames(mb, {"b0", "b1", "b2", "b3"}, {"Root", "j0", "j1", "j2"});
+
+
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	mbg.removeJoint(0, "j0");
+	mb = mbg.makeMultiBody(0, true);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 0);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 1);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 1);
+
+	BOOST_CHECK_EQUAL(mb.body(0).name(), "b0");
+	BOOST_CHECK_EQUAL(mb.joint(0).name(), "Root");
+
+
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	mbg.removeJoints(0, std::vector<std::string>({"j3", "j2"}));
+	mb = mbg.makeMultiBody(0, true);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 2);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 3);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 3);
+	checkMultiBodyNames(mb, {"b0", "b1", "b2"}, {"Root", "j0", "j1"});
+
+
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	mbg.removeJoint(0, 1);
+	mb = mbg.makeMultiBody(0, true);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 2);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 3);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 3);
+	checkMultiBodyNames(mb, {"b0", "b1", "b4"}, {"Root", "j0", "j3"});
+
+
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	mbg.removeJoints(0, std::vector<int>({1, 2}));
+	mb = mbg.makeMultiBody(0, true);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 2);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 3);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 3);
+	checkMultiBodyNames(mb, {"b0", "b1", "b4"}, {"Root", "j0", "j3"});
 }
 
 

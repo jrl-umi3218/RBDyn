@@ -174,4 +174,111 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 		std::move(pred), std::move(succ), std::move(parent), std::move(Xt));
 }
 
+void MultiBodyGraph::removeJoint(int rootBodyId, int jointId)
+{
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+
+	// only destroy the joint if it exist
+	if(bodyId2Node_.find(jointId) != bodyId2Node_.end())
+	{
+		rmArc(*rootNode, -1, jointId);
+	}
+}
+
+void MultiBodyGraph::removeJoint(int rootBodyId, const std::string& jointName)
+{
+	// only destroy the joint if it exist
+	const auto it = jointName2Id_.find(jointName);
+	if(it != jointName2Id_.end())
+	{
+		removeJoint(rootBodyId, it->second);
+	}
+}
+
+void MultiBodyGraph::removeJoints(int rootBodyId,
+	const std::vector<int>& joints)
+{
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+
+	for(int id: joints)
+	{
+		// only destroy the joint if it exist
+		if(bodyId2Node_.find(id) != bodyId2Node_.end())
+		{
+			rmArc(*rootNode, -1, id);
+		}
+	}
+}
+
+void MultiBodyGraph::removeJoints(int rootBodyId,
+	const std::vector<std::string>& joints)
+{
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+
+	for(const std::string& name: joints)
+	{
+		// only destroy the joint if it exist
+		const auto it = jointName2Id_.find(name);
+		if(it != jointName2Id_.end())
+		{
+			rmArc(*rootNode, -1, it->second);
+		}
+	}
+}
+
+bool MultiBodyGraph::rmArc(Node& node, int parentJointId, int jointId)
+{
+	// depth first exploration of the graph
+	// end when the joint is found
+	for(auto it = node.arcs.begin(); it != node.arcs.end(); ++it)
+	{
+		if(it->joint.id() != parentJointId)
+		{
+			if(it->joint.id() == jointId)
+			{
+				rmArcFromMbg(*it);
+				node.arcs.erase(it);
+				return true;
+			}
+			else
+			{
+				if(rmArc(*it->next, it->joint.id(), jointId))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+void MultiBodyGraph::rmArcFromMbg(const Arc& arc)
+{
+	const std::shared_ptr<Joint>& joint = jointId2Joint_.at(arc.joint.id());
+	// erase the joint from joints list
+	joints_.erase(std::find(joints_.begin(), joints_.end(), joint));
+	// erase from map
+	jointId2Joint_.erase(arc.joint.id());
+	jointName2Id_.erase(arc.joint.name());
+	// rm the sub node from joint list
+	rmNodeFromMbg(arc.joint.id(), arc.next);
+}
+
+void MultiBodyGraph::rmNodeFromMbg(int jointIdFrom,
+																const std::shared_ptr<Node>& node)
+{
+	for(const Arc& arc: node->arcs)
+	{
+		// if we call rmArcFromMbg on the parent joint a mass destruction will
+		// occur
+		if(arc.joint.id() != jointIdFrom)
+		{
+			rmArcFromMbg(arc);
+		}
+	}
+	node->arcs.clear();
+
+	nodes_.erase(std::find(nodes_.begin(), nodes_.end(), node));
+}
+
 } // namespace rbd

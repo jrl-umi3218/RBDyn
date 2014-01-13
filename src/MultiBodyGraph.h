@@ -146,10 +146,61 @@ public:
 		* @param rootBodyId Id of the root body.
 		* @param isFixed True if the root is fixed, false if the root is free.
 		* @param initTrans Initial transformation of the robot root.
-		* @throw std::out_of_rang If rootBodyId don't exist.
+		* @throw std::out_of_range If rootBodyId don't exist.
 		*/
 	MultiBody makeMultiBody(int rootBodyId, bool isFixed,
 		const sva::PTransformd& initTrans=sva::PTransformd::Identity());
+
+	/**
+		* Remove a joint (and successor joints and bodies) from the graph.
+		* @param rootBodyId Graph root.
+		* @param jointId joint to remove.
+		* @throw std::out_of_range If rootBodyId don't exist.
+		*/
+	void removeJoint(int rootBodyId, int jointId);
+
+	/**
+		* Remove a joint (and successor joints and bodies) from the graph.
+		* @param rootBodyId Graph root.
+		* @param jointName joint to remove.
+		* @throw std::out_of_range If rootBodyId don't exist.
+		*/
+	void removeJoint(int rootBodyId, const std::string& jointName);
+
+	/**
+		* Remove joints (and successor joints and bodies) from the graph.
+		* @param rootBodyId Graph root.
+		* @param joints List of joints id to remove.
+		* @throw std::out_of_range If rootBodyId don't exist.
+		*/
+
+	void removeJoints(int rootBodyId, const std::vector<int>& joints);
+	/**
+		* Remove joints (and successor joints and bodies) from the graph.
+		* @param rootBodyId Graph root.
+		* @param joints List of joints name to remove.
+		* @throw std::out_of_range If rootBodyId don't exist.
+		*/
+	void removeJoints(int rootBodyId, const std::vector<std::string>& joints);
+
+private:
+	/**
+		* Find the arc jointId and remove it from the graph with his sub node.
+		* This function is recursive.
+		*/
+	bool rmArc(Node& node, int parentJointId, int jointId);
+
+	/**
+		* Remove all joint with same id than Arc::joint from MultiBodyGraph and call
+		* rmNodeFromMbg on Arc::next.
+		*/
+	void rmArcFromMbg(const Arc& arc);
+
+	/**
+		* Call rmArcFromMbg on all outgoing arc that don't have an id equal to
+		* jointIdFrom and remove node from MultiBodyGraph
+		*/
+	void rmNodeFromMbg(int jointIdFrom, const std::shared_ptr<Node>& node);
 
 private:
 	std::vector<std::shared_ptr<Node>> nodes_;
