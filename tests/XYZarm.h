@@ -28,7 +28,8 @@
 
 
 /// @return An simple XYZ arm with Y as up axis.
-std::tuple<rbd::MultiBody, rbd::MultiBodyConfig> makeXYZarm(bool isFixed=true)
+std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph>
+makeXYZarm(bool isFixed=true)
 {
 	using namespace Eigen;
 	using namespace sva;
@@ -78,5 +79,5 @@ std::tuple<rbd::MultiBody, rbd::MultiBodyConfig> makeXYZarm(bool isFixed=true)
 	MultiBodyConfig mbc(mb);
 	mbc.zero(mb);
 
-	return std::make_tuple(mb, mbc);
+	return std::make_tuple(mb, mbc, mbg);
 }

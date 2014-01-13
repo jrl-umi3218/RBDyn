@@ -54,8 +54,9 @@ BOOST_AUTO_TEST_CASE(FKTest)
 
 	rbd::MultiBody mb, mb2;
 	rbd::MultiBodyConfig mbc, mbc2;
-	std::tie(mb, mbc) = makeXYZarm();
-	std::tie(mb2, mbc2) = makeXYZSarm();
+	rbd::MultiBodyGraph mbg, mbg2;
+	std::tie(mb, mbc, mbg) = makeXYZarm();
+	std::tie(mb2, mbc2, mbg2) = makeXYZSarm();
 
 	// check identity
 	mbc.q = {{}, {0.}, {0.}, {0.}};
@@ -199,8 +200,9 @@ BOOST_AUTO_TEST_CASE(FVTest)
 
 	rbd::MultiBody mb, mb2;
 	rbd::MultiBodyConfig mbc, mbc2;
-	std::tie(mb, mbc) = makeXYZarm();
-	std::tie(mb2, mbc2) = makeXYZSarm();
+	rbd::MultiBodyGraph mbg, mbg2;
+	std::tie(mb, mbc, mbg) = makeXYZarm();
+	std::tie(mb2, mbc2, mbg2) = makeXYZSarm();
 
 	// check identity
 	mbc.q = {{}, {0.}, {0.}, {0.}};
@@ -510,7 +512,8 @@ BOOST_AUTO_TEST_CASE(FATest)
 {
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
-	std::tie(mb, mbc) = makeXYZSarm();
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
 
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
