@@ -43,14 +43,25 @@ void MultiBodyGraph::addBody(const Body& B)
 
 void MultiBodyGraph::addJoint(const Joint& J)
 {
+	// check that the joint id don't exist
 	if(jointId2Joint_.find(J.id()) != jointId2Joint_.end())
 	{
 		std::ostringstream msg;
 		msg << "Joint id: "  << J.id() << " already exist.";
 		throw std::domain_error(msg.str());
 	}
+
+	// check that the joint name don't exist
+	if(jointName2Id_.find(J.name()) != jointName2Id_.end())
+	{
+		std::ostringstream msg;
+		msg << "Joint name: "  << J.name() << " already exist.";
+		throw std::domain_error(msg.str());
+	}
+
 	joints_.push_back(std::make_shared<Joint>(J));
 	jointId2Joint_[J.id()] = joints_.back();
+	jointName2Id_[J.name()] = J.id();
 }
 
 void MultiBodyGraph::linkBodies(int b1Id, const sva::PTransformd& tB1,
@@ -75,6 +86,17 @@ const std::shared_ptr<MultiBodyGraph::Node> MultiBodyGraph::nodeById(int id) con
 const std::shared_ptr<Joint> MultiBodyGraph::jointById(int id) const
 {
 	return jointId2Joint_.at(id);
+}
+
+const std::shared_ptr<Joint>
+MultiBodyGraph::jointByName(const std::string& name) const
+{
+	return jointById(jointIdByName(name));
+}
+
+int MultiBodyGraph::jointIdByName(const std::string& name) const
+{
+	return jointName2Id_.at(name);
 }
 
 std::size_t MultiBodyGraph::nrNodes() const

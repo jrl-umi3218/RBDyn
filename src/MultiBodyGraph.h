@@ -121,6 +121,20 @@ public:
 		*/
 	const std::shared_ptr<Joint> jointById(int id) const;
 
+	/**
+		* @param id Name of the joint.
+		* @return Joint with the Name name.
+		* @throw std::out_of_range If name don't exist.
+		*/
+	const std::shared_ptr<Joint> jointByName(const std::string& name) const;
+
+	/**
+		* @param name Name of the joint.
+		* @return Id of the joint name.
+		* @throw std::out_of_range If name don't exist.
+		*/
+	int jointIdByName(const std::string& name) const;
+
 	/// @return Numbers of nodes.
 	std::size_t nrNodes() const;
 
@@ -143,6 +157,7 @@ private:
 
 	std::map<int, std::shared_ptr<Node>> bodyId2Node_;
 	std::map<int, std::shared_ptr<Joint>> jointId2Joint_;
+	std::map<std::string, int> jointName2Id_;
 };
 
 }

@@ -80,6 +80,9 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	// id already exist
 	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, true, 0, "j4")), std::domain_error);
 
+	// name already exist
+	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, true, 3, "j1")), std::domain_error);
+
 	// must be 3 joints
 	BOOST_CHECK_EQUAL(mbg1.nrJoints(), 3);
 
@@ -93,8 +96,21 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	BOOST_CHECK_EQUAL(*joint2, j2);
 	BOOST_CHECK_EQUAL(*joint3, j3);
 
+	// test jointByName
+	// test also jointIdByName since jointByName use jointIdByName
+	BOOST_CHECK_NO_THROW(joint1 = mbg1.jointByName("j1"));
+	BOOST_CHECK_NO_THROW(joint2 = mbg1.jointByName("j2"));
+	BOOST_CHECK_NO_THROW(joint3 = mbg1.jointByName("j3"));
+
+	BOOST_CHECK_EQUAL(*joint1, j1);
+	BOOST_CHECK_EQUAL(*joint2, j2);
+	BOOST_CHECK_EQUAL(*joint3, j3);
+
 	// check non-existant id
 	BOOST_CHECK_THROW(mbg1.jointById(10), std::out_of_range);
+
+	// check non-existant name
+	BOOST_CHECK_THROW(mbg1.jointByName("j10"), std::out_of_range);
 
 	// test linkBody
 	//        b2(1)
