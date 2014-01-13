@@ -278,6 +278,7 @@ void MultiBodyGraph::rmNodeFromMbg(int jointIdFrom,
 	}
 	node->arcs.clear();
 
+	bodyId2Node_.erase(node->body.id());
 	nodes_.erase(std::find(nodes_.begin(), nodes_.end(), node));
 }
 
