@@ -38,6 +38,9 @@
 #include "MultiBodyConfig.h"
 #include "MultiBodyGraph.h"
 
+// arm
+#include "XYZSarm.h"
+
 const double TOL = 0.0000001;
 
 
@@ -510,4 +513,47 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 	paramToVector(mbc.alphaD, vA2);
 
 	BOOST_CHECK_SMALL((vA1 - vA2).norm(), 1e-10);
+}
+
+
+
+
+BOOST_AUTO_TEST_CASE(MultiBodyGraphMerge)
+{
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), 5);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 4);
+	BOOST_CHECK_EQUAL(mb.nrBodies(), 5);
+	BOOST_CHECK_EQUAL(mb.nrJoints(), 5);
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	std::map<int, std::vector<double>> configById;
+	configById[0] = {0.};
+	configById[1] = {0.};
+	configById[2] = {0.};
+	configById[3] = {1., 0., 0., 0.};
+
+	// merge b2, b3 and b4 in b1
+	mbg.mergeSubBodies(0, "j1", configById);
+	mbg.mergeSubBodies(0, "j3", configById);
+
+	rbd::MultiBody mbMerged = mbg.makeMultiBody(0, true);
+
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), 2);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), 1);
+	BOOST_CHECK_EQUAL(mbMerged.nrBodies(), 2);
+	BOOST_CHECK_EQUAL(mbMerged.nrJoints(), 2);
+
+	rbd::ForwardDynamics fd(mb);
+	fd.forwardDynamics(mb, mbc);
+	double error = (fd.inertiaSubTree()[1].matrix() -
+			mbMerged.body(1).inertia().matrix()).norm();
+
+	BOOST_CHECK_SMALL(error, TOL);
 }

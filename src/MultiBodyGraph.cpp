@@ -136,7 +136,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 		int p, int s, int par,
 		const sva::PTransformd& Xti)
 	{
-		// looking for transformation that come from fromNode
+		// looking for transformation that go to fromNode
 		sva::PTransformd XFrom = sva::PTransformd::Identity();
 		for(Arc& a : curNode->arcs)
 		{
@@ -226,6 +226,19 @@ void MultiBodyGraph::removeJoints(int rootBodyId,
 	}
 }
 
+void MultiBodyGraph::mergeSubBodies(int rootBodyId, int jointId,
+	const std::map<int, std::vector<double>>& jointPosById)
+{
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+	findMergeSubNodes(*rootNode, -1, jointId, jointPosById);
+}
+
+void MultiBodyGraph::mergeSubBodies(int rootBodyId, const std::string& jointName,
+	const std::map<int, std::vector<double>>& jointPosById)
+{
+	mergeSubBodies(rootBodyId, jointName2Id_[jointName], jointPosById);
+}
+
 bool MultiBodyGraph::rmArc(Node& node, int parentJointId, int jointId)
 {
 	// depth first exploration of the graph
@@ -280,6 +293,99 @@ void MultiBodyGraph::rmNodeFromMbg(int jointIdFrom,
 
 	bodyId2Node_.erase(node->body.id());
 	nodes_.erase(std::find(nodes_.begin(), nodes_.end(), node));
+}
+
+bool MultiBodyGraph::findMergeSubNodes(Node& node, int parentJointId,
+	int jointId, const std::map<int, std::vector<double>>& jointPosById)
+{
+	for(auto it = node.arcs.begin(); it != node.arcs.end(); ++it)
+	{
+		if(it->joint.id() != parentJointId)
+		{
+			if(it->joint.id() == jointId)
+			{
+				// compute the body inertia merged with childs of jointId
+				sva::RBInertiad newInertia = mergeInertia(node.body.inertia(),
+					mergeSubNodes(*it->next, jointId, jointPosById),
+					it->joint, it->X, jointPosById);
+
+				// create the new body with merged sub nodes
+				node.body = Body(newInertia, node.body.id(), node.body.name());
+
+				// remove sub nodes
+				rmArcFromMbg(*it);
+				node.arcs.erase(it);
+				return true;
+			}
+			else
+			{
+				if(findMergeSubNodes(*it->next, it->joint.id(), jointId, jointPosById))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+sva::RBInertiad MultiBodyGraph::mergeSubNodes(Node& node, int parentJointId,
+	const std::map<int, std::vector<double>>& jointPosById)
+{
+	sva::RBInertiad newInertia(node.body.inertia());
+
+	for(const Arc& arc: node.arcs)
+	{
+		if(arc.joint.id() != parentJointId)
+		{
+			newInertia = mergeInertia(newInertia,
+				mergeSubNodes(*arc.next, arc.joint.id(), jointPosById),
+				arc.joint, arc.X, jointPosById);
+		}
+	}
+
+	// looking for transformation that go to parent joint
+	sva::PTransformd X_cb_jp = sva::PTransformd::Identity();
+	for(const Arc& arc : node.arcs)
+	{
+		if(arc.joint.id() == parentJointId)
+		{
+			X_cb_jp = arc.X;
+			break;
+		}
+	}
+
+	return X_cb_jp.dualMul(newInertia);
+}
+
+
+sva::RBInertiad MultiBodyGraph::mergeInertia(const sva::RBInertiad& parentInertia,
+	const sva::RBInertiad& childInertia, const Joint& joint,
+	const sva::PTransformd& X_p_j,
+	const std::map<int, std::vector<double>>& jointPosById)
+{
+	if(jointPosById.find(joint.id()) == jointPosById.end())
+	{
+		std::ostringstream msg;
+		msg << "jointPosById  must contain joint id " <<
+					 joint.id() << " configuration";
+		throw std::out_of_range(msg.str());
+	}
+
+	if(int(jointPosById.at(joint.id()).size()) != joint.params())
+	{
+		std::ostringstream msg;
+		msg << "joint id " << joint.id() << " need " << joint.params() <<
+					 " parameters";
+		throw std::domain_error(msg.str());
+	}
+
+	sva::PTransformd jointConfig = joint.pose(jointPosById.at(joint.id()));
+	// transformation from current body to joint in next body
+	sva::PTransformd X_cb_jnb = jointConfig*X_p_j;
+
+	// set merged sub inertia in current body base and add it to the current inertia
+	return parentInertia + X_cb_jnb.transMul(childInertia);
 }
 
 } // namespace rbd

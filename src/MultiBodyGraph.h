@@ -175,6 +175,7 @@ public:
 		*/
 
 	void removeJoints(int rootBodyId, const std::vector<int>& joints);
+
 	/**
 		* Remove joints (and successor joints and bodies) from the graph.
 		* @param rootBodyId Graph root.
@@ -182,6 +183,26 @@ public:
 		* @throw std::out_of_range If rootBodyId don't exist.
 		*/
 	void removeJoints(int rootBodyId, const std::vector<std::string>& joints);
+
+	/**
+		* Merge jointId child bodies in jointId parent body (merge inertia matrix)
+		* @param rootBodyId Graph root.
+		* @param jointId Merge all node after jointId in jointId parent node.
+		* @param jointPosById Joint configuarition by joint id.
+		* @throw std::out_of_range, std::domain_error.
+		*/
+	void mergeSubBodies(int rootBodyId, int jointId,
+										 const std::map<int, std::vector<double>>& jointPosById);
+
+	/**
+		* Merge jointName child bodies in jointName parent body (merge inertia matrix)
+		* @param rootBodyId Graph root.
+		* @param jointName Merge all node after jointName in jointName parent node.
+		* @param jointPosById Joint configuarition by joint id.
+		* @throw std::out_of_range, std::domain_error.
+		*/
+	void mergeSubBodies(int rootBodyId, const std::string& jointName,
+										 const std::map<int, std::vector<double>>& jointPosById);
 
 private:
 	/**
@@ -201,6 +222,27 @@ private:
 		* jointIdFrom and remove node from MultiBodyGraph
 		*/
 	void rmNodeFromMbg(int jointIdFrom, const std::shared_ptr<Node>& node);
+
+	/**
+		* Find the arc jointId, merge all jointId sub nodes in jointId parent
+		* sub node and remove jointId and his sub nodes from mbg.
+		* This function is recursive.
+		*/
+	bool findMergeSubNodes(Node& node, int parentJointId, int jointId,
+		const std::map<int, std::vector<double>>& jointPosById);
+
+	/**
+		* Return node inertia merged with all his sub node in parentJointId
+		* frame (after joint transform).
+		*/
+	sva::RBInertiad mergeSubNodes(Node& node, int parentJointId,
+		const std::map<int, std::vector<double>>& jointPosById);
+
+	sva::RBInertiad mergeInertia(const sva::RBInertiad& parentInertia,
+		const sva::RBInertiad& childInertia, const Joint& joint,
+		const sva::PTransformd& X_p_j,
+		const std::map<int, std::vector<double>>& jointPosById);
+
 
 private:
 	std::vector<std::shared_ptr<Node>> nodes_;
