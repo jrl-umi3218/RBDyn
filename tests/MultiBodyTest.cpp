@@ -165,8 +165,14 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 {
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
-	rbd::MultiBodyGraph mbg, mbgBack;
-	std::tie(mb, mbc, mbg) = makeXYZSarm();
+	rbd::MultiBodyGraph mbgBack;
+	std::tie(mb, mbc, mbgBack) = makeXYZSarm();
+
+	// test copy constructor
+	rbd::MultiBodyGraph mbg(mbgBack);
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
+
 
 
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 4);
@@ -184,7 +190,10 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	checkMultiBodyNames(mb, {"b0", "b1", "b2", "b3"}, {"Root", "j0", "j1", "j2"});
 
 
-	std::tie(mb, mbc, mbg) = makeXYZSarm();
+	// test operator=
+	mbg = mbgBack;
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
 	mbg.removeJoint(0, "j0");
 	mb = mbg.makeMultiBody(0, true);
@@ -197,7 +206,9 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	BOOST_CHECK_EQUAL(mb.joint(0).name(), "Root");
 
 
-	std::tie(mb, mbc, mbg) = makeXYZSarm();
+	mbg = mbgBack;
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
 	mbg.removeJoints(0, std::vector<std::string>({"j3", "j2"}));
 	mb = mbg.makeMultiBody(0, true);
@@ -208,7 +219,9 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	checkMultiBodyNames(mb, {"b0", "b1", "b2"}, {"Root", "j0", "j1"});
 
 
-	std::tie(mb, mbc, mbg) = makeXYZSarm();
+	mbg = mbgBack;
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
 	mbg.removeJoint(0, 1);
 	mb = mbg.makeMultiBody(0, true);
@@ -219,7 +232,9 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	checkMultiBodyNames(mb, {"b0", "b1", "b4"}, {"Root", "j0", "j3"});
 
 
-	std::tie(mb, mbc, mbg) = makeXYZSarm();
+	mbg = mbgBack;
+	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
+	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
 	mbg.removeJoints(0, std::vector<int>({1, 2}));
 	mb = mbg.makeMultiBody(0, true);

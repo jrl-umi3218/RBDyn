@@ -112,6 +112,7 @@ def build_joint(jt):
 
 def build_mbg(mbg):
   mbg.add_constructor([])
+  mbg.add_copy_constructor()
 
   mbg.add_method('addBody', None, [param('rbd::Body', 'body')], throw=[dom_ex])
   mbg.add_method('addJoint', None, [param('rbd::Joint', 'joint')], throw=[dom_ex])

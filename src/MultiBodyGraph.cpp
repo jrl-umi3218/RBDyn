@@ -29,6 +29,42 @@
 namespace rbd
 {
 
+MultiBodyGraph::MultiBodyGraph():
+	nodes_(),
+	joints_(),
+	bodyId2Node_(),
+	jointId2Joint_(),
+	jointName2Id_(),
+	bodyName2Id_()
+{
+}
+
+MultiBodyGraph::MultiBodyGraph(const MultiBodyGraph& mbg)
+{
+	copy(mbg);
+}
+
+MultiBodyGraph& MultiBodyGraph::operator=(const MultiBodyGraph& mbg)
+{
+	if(&mbg != this)
+	{
+		clear();
+		copy(mbg);
+	}
+
+	return *this;
+}
+
+void MultiBodyGraph::clear()
+{
+	nodes_.clear();
+	joints_.clear();
+	bodyId2Node_.clear();
+	jointId2Joint_.clear();
+	jointName2Id_.clear();
+	bodyName2Id_.clear();
+}
+
 void MultiBodyGraph::addBody(const Body& B)
 {
 	if(B.id() < 0)
@@ -388,7 +424,6 @@ sva::RBInertiad MultiBodyGraph::mergeSubNodes(Node& node, int parentJointId,
 	return X_cb_jp.dualMul(newInertia);
 }
 
-
 sva::RBInertiad MultiBodyGraph::mergeInertia(const sva::RBInertiad& parentInertia,
 	const sva::RBInertiad& childInertia, const Joint& joint,
 	const sva::PTransformd& X_p_j,
@@ -416,6 +451,42 @@ sva::RBInertiad MultiBodyGraph::mergeInertia(const sva::RBInertiad& parentInerti
 
 	// set merged sub inertia in current body base and add it to the current inertia
 	return parentInertia + X_cb_jnb.transMul(childInertia);
+}
+
+void MultiBodyGraph::copy(const rbd::MultiBodyGraph& mbg)
+{
+	// copy nodes (whitout Arc) en fill bodyId2Node
+	for(const std::shared_ptr<Node>& node: mbg.nodes_)
+	{
+		Node newNode(node->body);
+		nodes_.push_back(std::make_shared<Node>(newNode));
+		bodyId2Node_[node->body.id()] = nodes_.back();
+	}
+
+	// copy joints en fill jointId2Node
+	for(const std::shared_ptr<Joint>& joint: mbg.joints_)
+	{
+		joints_.push_back(std::make_shared<Joint>(*joint));
+		jointId2Joint_[joint->id()] = joints_.back();
+	}
+
+	// create arc for each node
+	for(std::size_t i = 0; i < nodes_.size(); ++i)
+	{
+		const Node& nodeToCopy = *mbg.nodes_[i];
+		Node& nodeToFill = *nodes_[i];
+		for(const Arc& arc: nodeToCopy.arcs)
+		{
+			Arc newArc;
+			newArc.X = arc.X;
+			newArc.joint = arc.joint;
+			newArc.next = bodyId2Node_[arc.next->body.id()];
+			nodeToFill.arcs.push_back(newArc);
+		}
+	}
+
+	jointName2Id_ = mbg.jointName2Id_;
+	bodyName2Id_ = mbg.bodyName2Id_;
 }
 
 } // namespace rbd

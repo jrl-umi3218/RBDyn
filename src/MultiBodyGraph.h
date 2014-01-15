@@ -49,6 +49,8 @@ public:
 		*/
 	struct Arc
 	{
+		Arc() {}
+
 		Arc(sva::PTransformd X0, const Joint& j, bool forward, std::shared_ptr<Node> n):
 			X(X0),
 			joint(j),
@@ -77,6 +79,12 @@ public:
 	};
 
 public:
+	MultiBodyGraph();
+	MultiBodyGraph(const MultiBodyGraph& mbg);
+
+	MultiBodyGraph& operator=(const MultiBodyGraph& mbg);
+
+	void clear();
 
 	/**
 		* Add a node to the graph.
@@ -257,6 +265,9 @@ private:
 		const sva::RBInertiad& childInertia, const Joint& joint,
 		const sva::PTransformd& X_p_j,
 		const std::map<int, std::vector<double>>& jointPosById);
+
+	// copy mbg in this. this must be empty before calling this function.
+	void copy(const rbd::MultiBodyGraph& mbg);
 
 
 private:
