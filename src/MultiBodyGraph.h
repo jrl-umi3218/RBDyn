@@ -81,14 +81,16 @@ public:
 	/**
 		* Add a node to the graph.
 		* @param B Body to add, his body id must be unique.
-		* @throw std::domain_error If the body id already exist.
+		* @throw std::domain_error If the body id already exist or if body id
+		* is less than zero.
 		*/
 	void addBody(const Body& B);
 
 	/**
 		* Add a joint.
 		* @param J Joint to add, his joint id must be unique.
-		* @throw std::domain_error If the joint id already exist.
+		* @throw std::domain_error If the joint id on name already exist or if joint
+		* id is less than zero.
 		*/
 	void addJoint(const Joint& J);
 
@@ -238,6 +240,10 @@ private:
 	sva::RBInertiad mergeSubNodes(Node& node, int parentJointId,
 		const std::map<int, std::vector<double>>& jointPosById);
 
+	/**
+		* Merge parent and child inertia with parent in inertia in parent body base
+		* and child inertia in joint base (after transform).
+		*/
 	sva::RBInertiad mergeInertia(const sva::RBInertiad& parentInertia,
 		const sva::RBInertiad& childInertia, const Joint& joint,
 		const sva::PTransformd& X_p_j,

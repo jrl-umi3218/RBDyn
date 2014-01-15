@@ -31,6 +31,13 @@ namespace rbd
 
 void MultiBodyGraph::addBody(const Body& B)
 {
+	if(B.id() < 0)
+	{
+		std::ostringstream msg;
+		msg << "Body id must be greater than zero";
+		throw std::domain_error(msg.str());
+	}
+
 	if(bodyId2Node_.find(B.id()) != bodyId2Node_.end())
 	{
 		std::ostringstream msg;
@@ -43,6 +50,13 @@ void MultiBodyGraph::addBody(const Body& B)
 
 void MultiBodyGraph::addJoint(const Joint& J)
 {
+	if(J.id() < 0)
+	{
+		std::ostringstream msg;
+		msg << "Joint id must be greater than zero";
+		throw std::domain_error(msg.str());
+	}
+
 	// check that the joint id don't exist
 	if(jointId2Joint_.find(J.id()) != jointId2Joint_.end())
 	{
