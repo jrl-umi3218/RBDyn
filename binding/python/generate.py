@@ -125,6 +125,30 @@ def build_mbg(mbg):
   mbg.add_method('nrNodes', retval('int'), [], is_const=True)
   mbg.add_method('nrJoints', retval('int'), [], is_const=True)
 
+  mbg.add_method('jointIdByName', retval('int'), [param('const std::string&', 'name')], is_const=True)
+
+  mbg.add_method('removeJoint', None, [param('int', 'rootBodyId'),
+                                       param('int', 'id')],
+                 throw=(out_ex,))
+  mbg.add_method('removeJoint', None, [param('int', 'rootBodyId'),
+                                       param('const std::string&', 'name')],
+                 throw=(out_ex,))
+  mbg.add_method('removeJoints', None, [param('int', 'rootBodyId'),
+                                        param('const std::vector<int>&', 'ids')],
+                 throw=(out_ex,))
+  mbg.add_method('removeJoints', None, [param('int', 'rootBodyId'),
+                                        param('const std::vector<std::string>&', 'names')],
+                 throw=(out_ex,))
+
+  mbg.add_method('mergeSubBodies', None, [param('int', 'rootBodyId'),
+                                          param('int', 'id'),
+                                          param('const std::map<int, std::vector<double> >&', 'jointPosById')],
+                 throw=(out_ex, dom_ex))
+  mbg.add_method('mergeSubBodies', None, [param('int', 'rootBodyId'),
+                                          param('const std::string&', 'name'),
+                                          param('const std::map<int, std::vector<double> >&', 'jointPosById')],
+                 throw=(out_ex, dom_ex))
+
   mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
                  [param('int', 'rootById'), param('bool', 'isFixed'),
                   param('sva::PTransformd', 'initTrans', default_value='sva::PTransformd::Identity()')])
@@ -474,6 +498,7 @@ if __name__ == '__main__':
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
   rbd.add_container('std::vector<int>', 'int', 'vector')
+  rbd.add_container('std::vector<std::string>', 'std::string', 'vector')
   rbd.add_container('std::vector<std::vector<double> >', 'std::vector<double>', 'vector')
   rbd.add_container('std::vector<rbd::Body>', 'rbd::Body', 'vector')
   rbd.add_container('std::vector<rbd::Joint>', 'rbd::Joint', 'vector')
@@ -482,6 +507,10 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<sva::ForceVecd>', 'sva::ForceVecd', 'vector')
   rbd.add_container('std::vector<sva::RBInertiad>', 'sva::RBInertiad', 'vector')
   rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
+
+  # build map type
+  rbd.add_container('std::map<int, std::vector<double> >',
+                    ('int', 'std::vector<double>'), 'map')
 
   build_body(body)
   build_joint(joint)

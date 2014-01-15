@@ -163,6 +163,7 @@ public:
 
 	/**
 		* Remove a joint (and successor joints and bodies) from the graph.
+		* Do nothing if jointName doesn't existe.
 		* @param rootBodyId Graph root.
 		* @param jointName joint to remove.
 		* @throw std::out_of_range If rootBodyId don't exist.
@@ -180,6 +181,7 @@ public:
 
 	/**
 		* Remove joints (and successor joints and bodies) from the graph.
+		* Do nothing for each joint name that doesn't exist.
 		* @param rootBodyId Graph root.
 		* @param joints List of joints name to remove.
 		* @throw std::out_of_range If rootBodyId don't exist.
