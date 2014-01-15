@@ -125,7 +125,10 @@ def build_mbg(mbg):
   mbg.add_method('nrNodes', retval('int'), [], is_const=True)
   mbg.add_method('nrJoints', retval('int'), [], is_const=True)
 
-  mbg.add_method('jointIdByName', retval('int'), [param('const std::string&', 'name')], is_const=True)
+  mbg.add_method('jointIdByName', retval('int'), [param('const std::string&', 'name')],
+                 is_const=True, throw=[out_ex])
+  mbg.add_method('bodyIdByName', retval('int'), [param('const std::string&', 'name')],
+                 is_const=True, throw=[out_ex])
 
   mbg.add_method('removeJoint', None, [param('int', 'rootBodyId'),
                                        param('int', 'id')],

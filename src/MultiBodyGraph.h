@@ -132,10 +132,17 @@ public:
 
 	/**
 		* @param name Name of the joint.
-		* @return Id of the joint name.
-		* @throw std::out_of_range If name don't exist.
+		* @return Id of the joint named name.
+		* @throw std::out_of_range If joint named name don't exist.
 		*/
 	int jointIdByName(const std::string& name) const;
+
+	/**
+		* @param name Name of the body.
+		* @return Id of the body named name.
+		* @throw std::out_of_range If body named name don't exist.
+		*/
+	int bodyIdByName(const std::string& name) const;
 
 	/// @return Numbers of nodes.
 	std::size_t nrNodes() const;
@@ -258,7 +265,9 @@ private:
 
 	std::map<int, std::shared_ptr<Node>> bodyId2Node_;
 	std::map<int, std::shared_ptr<Joint>> jointId2Joint_;
+
 	std::map<std::string, int> jointName2Id_;
+	std::map<std::string, int> bodyName2Id_;
 };
 
 }

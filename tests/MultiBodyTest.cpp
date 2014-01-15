@@ -89,6 +89,12 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	// must be 3 joints
 	BOOST_CHECK_EQUAL(mbg1.nrJoints(), 3);
 
+	// test bodyIdByName
+	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b1"), 0);
+	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b2"), 1);
+	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b3"), 2);
+	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b4"), 3);
+
 	// test jointById
 	std::shared_ptr<Joint> joint1, joint2, joint3;
 	BOOST_CHECK_NO_THROW(joint1 = mbg1.jointById(0));
