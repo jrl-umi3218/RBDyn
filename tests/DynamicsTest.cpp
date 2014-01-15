@@ -75,9 +75,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	MultiBody mb = mbg.makeMultiBody(0, true);
 
 	MultiBodyConfig mbc(mb);
-	mbc.q = {{}, {0.}};
-	mbc.alpha = {{}, {0.}};
-	mbc.alphaD = {{}, {0.}};
+	mbc.zero(mb);
 
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
