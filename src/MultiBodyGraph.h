@@ -81,6 +81,7 @@ public:
 public:
 	MultiBodyGraph();
 	MultiBodyGraph(const MultiBodyGraph& mbg);
+	~MultiBodyGraph();
 
 	MultiBodyGraph& operator=(const MultiBodyGraph& mbg);
 

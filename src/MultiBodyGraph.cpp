@@ -44,6 +44,11 @@ MultiBodyGraph::MultiBodyGraph(const MultiBodyGraph& mbg)
 	copy(mbg);
 }
 
+MultiBodyGraph::~MultiBodyGraph()
+{
+	clear();
+}
+
 MultiBodyGraph& MultiBodyGraph::operator=(const MultiBodyGraph& mbg)
 {
 	if(&mbg != this)
@@ -57,6 +62,12 @@ MultiBodyGraph& MultiBodyGraph::operator=(const MultiBodyGraph& mbg)
 
 void MultiBodyGraph::clear()
 {
+	// destroy all arc to avoid cyclic reference on nodes
+	for(const std::shared_ptr<Node>& node: nodes_)
+	{
+		node->arcs.clear();
+	}
+
 	nodes_.clear();
 	joints_.clear();
 	bodyId2Node_.clear();
