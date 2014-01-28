@@ -459,6 +459,38 @@ def build_momentum(mod, mom):
                    custom_name='computeCentroidalMomentumDot',
                    throw=[dom_ex])
 
+  mom.add_constructor([])
+  mom.add_copy_constructor()
+  mom.add_constructor([param('const rbd::MultiBody&', 'mb')])
+  mom.add_constructor([param('const rbd::MultiBody&', 'mb')])
+  mom.add_constructor([param('const rbd::MultiBody&', 'mb'),
+                       param('std::vector<double>', 'weight')],
+                      throw=[dom_ex])
+
+  mom.add_method('sComputeMatrix', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'com')],
+                 custom_name='computeMatrix',
+                 throw=[dom_ex])
+  mom.add_method('sComputeMatrixDot', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'com'),
+                  param('const Eigen::Vector3d&', 'comDot')],
+                 custom_name='computeMatrixDot',
+                 throw=[dom_ex])
+  mom.add_method('sComputeMatrixAndMatrixDot', None,
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'com'),
+                  param('const Eigen::Vector3d&', 'comDot')],
+                 custom_name='computeMatrixAndMatrixDot',
+                 throw=[dom_ex])
+
+  mom.add_method('matrix', retval('Eigen::MatrixXd'), [], is_const=True)
+  mom.add_method('matrixDot', retval('Eigen::MatrixXd'), [], is_const=True)
+
 
 def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',

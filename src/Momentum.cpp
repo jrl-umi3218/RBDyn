@@ -275,6 +275,35 @@ const Eigen::MatrixXd& CentroidalMomentumMatrix::matrixDot() const
 }
 
 
+void CentroidalMomentumMatrix::sComputeMatrix(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const Eigen::Vector3d& com)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+	computeMatrix(mb, mbc, com);
+}
+
+
+void CentroidalMomentumMatrix::sComputeMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const Eigen::Vector3d& com, const Eigen::Vector3d& comDot)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+	computeMatrixDot(mb, mbc, com, comDot);
+}
+
+
+void CentroidalMomentumMatrix::sComputeMatrixAndMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const Eigen::Vector3d& com, const Eigen::Vector3d& comDot)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+	computeMatrixAndMatrixDot(mb, mbc, com, comDot);
+}
+
+
 void CentroidalMomentumMatrix::init(const rbd::MultiBody& mb)
 {
 	using namespace Eigen;

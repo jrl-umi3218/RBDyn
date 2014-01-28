@@ -69,22 +69,58 @@ public:
 	CentroidalMomentumMatrix(const MultiBody &mb, std::vector<double> weight);
 
 public:
+	/**
+		* Compute the centroidal momentum matrix.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, motionSubspace.
+		* @param com CoM position.
+		*/
 	void computeMatrix(const MultiBody& mb, const MultiBodyConfig& mbc,
 		const Eigen::Vector3d& com);
+
+	/**
+		* Compute the time derivative of centroidal momentum matrix.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, motionSubspace.
+		* @param com CoM position.
+		* @param comDot CoM velocity.
+		*/
 	void computeMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
 		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
+
+	/**
+	 * Compute the centroidal momentum matrix and his time derivative.
+	 * @see computeMatrix
+	 * @see computeMatrixDot
+	 */
 	void computeMatrixAndMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
 		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
 
+	/// @return Centroidal momentum matrix
 	const Eigen::MatrixXd& matrix() const;
+
+	/// @return Centroidal momentum matrix time derivative
 	const Eigen::MatrixXd& matrixDot() const;
 
 	// safe version for python binding
 
-	/** safe version of @see jacobian.
+	/** safe version of @see computeMatrix.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
-	const Eigen::MatrixXd& sMatrix(const MultiBody& mb, const MultiBodyConfig& mbc);
+	void sComputeMatrix(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const Eigen::Vector3d& com);
+
+	/** safe version of @see computeMatrixDot.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sComputeMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
+
+	/** safe version of @see computeMatrixAndMatrixDot.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sComputeMatrixAndMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
 
 private:
 	void init(const rbd::MultiBody& mb);
