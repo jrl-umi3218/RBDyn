@@ -61,8 +61,9 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 
 		Vector3d com = rbd::computeCoM(mb, mbc);
 		ForceVecd momentum = rbd::computeCentroidalMomentum(mb, mbc, com);
+		cmm.computeMatrix(mb, mbc, com);
 
-		ForceVecd momentumM(cmm.matrix(mb, mbc, com)*alpha);
+		ForceVecd momentumM(cmm.matrix()*alpha);
 
 		BOOST_CHECK_EQUAL(momentum.vector().norm(), 0.);
 		BOOST_CHECK_EQUAL(momentumM.vector().norm(), 0.);
@@ -81,8 +82,9 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 
 		Vector3d com = rbd::computeCoM(mb, mbc);
 		ForceVecd momentum = rbd::computeCentroidalMomentum(mb, mbc, com);
+		cmm.computeMatrix(mb, mbc, com);
 
-		ForceVecd momentumM(cmm.matrix(mb, mbc, com)*alpha);
+		ForceVecd momentumM(cmm.matrix()*alpha);
 
 		BOOST_CHECK_SMALL((momentum - momentumM).vector().norm(), TOL);
 	}
@@ -101,6 +103,8 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	CentroidalMomentumMatrix cmm(mb);
 
 	VectorXd q(mb.nrParams());
 	VectorXd alpha(mb.nrDof());
@@ -126,8 +130,23 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 			Vector3d oldCom = rbd::computeCoM(mb, mbc);
 			ForceVecd oldMomentum = rbd::computeCentroidalMomentum(mb, mbc, oldCom);
 			Vector3d oldComVel = rbd::computeCoMVelocity(mb, mbc);
+
 			ForceVecd momentumDot = rbd::computeCentroidalMomentumDot(mb, mbc,
 				oldCom, oldComVel);
+			cmm.computeMatrixAndMatrixDot(mb, mbc, oldCom, oldComVel);
+			MatrixXd cmmMatrix = cmm.matrix();
+			MatrixXd cmmMatrixDot = cmm.matrixDot();
+			Vector6d momentumDotCMM = cmmMatrix*alphaD + cmmMatrixDot*alpha;
+
+			// check that the momentum are the same
+			BOOST_CHECK_SMALL((momentumDot.vector() - momentumDotCMM).norm(), TOL);
+
+			// check that each compute compute the same thing
+			cmm.computeMatrix(mb, mbc, oldCom);
+			cmm.computeMatrixDot(mb, mbc, oldCom, oldComVel);
+
+			BOOST_CHECK_SMALL((cmmMatrix - cmm.matrix()).norm(), TOL);
+			BOOST_CHECK_SMALL((cmmMatrixDot - cmm.matrixDot()).norm(), TOL);
 
 			rbd::eulerIntegration(mb, mbc, 1e-8);
 
@@ -135,10 +154,12 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 			rbd::forwardVelocity(mb, mbc);
 			rbd::forwardAcceleration(mb, mbc);
 
+			rbd::paramToVector(mbc.alpha, alpha);
+			rbd::paramToVector(mbc.alphaD, alphaD);
+
 			Vector3d newCom = rbd::computeCoM(mb, mbc);
 			ForceVecd newMomentum = rbd::computeCentroidalMomentum(mb, mbc, newCom);
 			ForceVecd momentumDotDiff = (newMomentum - oldMomentum)*(1./1e-8);
-
 
 			BOOST_CHECK_SMALL((momentumDot - momentumDotDiff).vector().norm(), TOL);
 		}

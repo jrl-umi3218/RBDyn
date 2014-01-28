@@ -113,8 +113,27 @@ sva::ForceVecd sComputeCentroidalMomentumDot(const MultiBody& mb,
 
 
 
+Eigen::Matrix6d jacProjector(const sva::PTransformd& X_i_com,
+	const sva::RBInertiad& I_i)
+{
+	return Eigen::Matrix6d(X_i_com.dualMatrix()*I_i.matrix());
+}
+
+
+Eigen::Matrix6d jacProjectorDot(const sva::PTransformd& X_i_com,
+	const sva::RBInertiad& I_i, const sva::MotionVecd& V_i,
+	const sva::MotionVecd& V_com)
+{
+	Eigen::Matrix6d X_i_com_d =
+			X_i_com.dualMatrix()*sva::vector6ToCrossDualMatrix(V_i.vector()) -
+			sva::vector6ToCrossDualMatrix(V_com.vector())*X_i_com.dualMatrix();
+	return Eigen::Matrix6d(X_i_com_d*I_i.matrix());
+}
+
+
 CentroidalMomentumMatrix::CentroidalMomentumMatrix():
 	cmMat_(),
+	cmMatDot_(),
 	jacFull_(),
 	jacVec_(),
 	jacWork_(),
@@ -124,6 +143,7 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix():
 
 CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb):
 	cmMat_(6, mb.nrDof()),
+	cmMatDot_(6, mb.nrDof()),
 	jacFull_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
@@ -135,7 +155,8 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb):
 
 CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb,
 	std::vector<double> weight):
-	cmMat_(6*mb.nrBodies(), mb.nrDof()),
+	cmMat_(6, mb.nrDof()),
+	cmMatDot_(6, mb.nrDof()),
 	jacFull_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
@@ -143,57 +164,114 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb,
 {
 	init(mb);
 
-  if(int(bodiesWeight_.size()) != mb.nrBodies())
-  {
-    std::stringstream ss;
-    ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
-          bodiesWeight_.size() << std::endl;
-    throw std::domain_error(ss.str());
-  }
+	if(int(bodiesWeight_.size()) != mb.nrBodies())
+	{
+		std::stringstream ss;
+		ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
+					bodiesWeight_.size() << std::endl;
+		throw std::domain_error(ss.str());
+	}
 }
 
 
-const Eigen::MatrixXd& CentroidalMomentumMatrix::matrix(const MultiBody& mb,
+void CentroidalMomentumMatrix::computeMatrix(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com)
 {
 	using namespace Eigen;
 	const std::vector<Body>& bodies = mb.bodies();
 	cmMat_.setZero();
 
-	sva::PTransformd X_com_0(Vector3d(-com));
+	sva::PTransformd X_0_com(com);
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
-		jacWork_[i] = bodies[i].inertia().matrix()*jacVec_[i].bodyJacobian(mb, mbc);
-		jacWork_[i] = (mbc.bodyPosW[i]*X_com_0).inv().dualMatrix()*jacWork_[i];
+		const MatrixXd& jac = jacVec_[i].bodyJacobian(mb, mbc);
+		sva::PTransformd X_i_com(X_0_com*(mbc.bodyPosW[i].inv()));
+		Matrix6d proj = jacProjector(X_i_com, bodies[i].inertia());
 
+		jacWork_[i] = proj*jac;
 		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-
 		cmMat_.block(0, 0, 6, mb.nrDof()) += jacFull_;
 	}
-
-	return cmMat_;
 }
 
 
-const Eigen::MatrixXd& CentroidalMomentumMatrix::matrixDot(const MultiBody& mb,
-	const MultiBodyConfig& mbc, const Eigen::Vector3d& com)
+void CentroidalMomentumMatrix::computeMatrixDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comDot)
+{
+	using namespace Eigen;
+	const std::vector<Body>& bodies = mb.bodies();
+	cmMatDot_.setZero();
+
+	sva::PTransformd X_0_com(com);
+	sva::MotionVecd com_Vel(Vector3d::Zero(), comDot);
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		const MatrixXd& jac = jacVec_[i].bodyJacobian(mb, mbc);
+		const MatrixXd& jacDot = jacVec_[i].bodyJacobianDot(mb, mbc);
+
+		sva::PTransformd X_i_com(X_0_com*(mbc.bodyPosW[i].inv()));
+		Matrix6d proj = jacProjector(X_i_com, bodies[i].inertia());
+		Matrix6d projDot = jacProjectorDot(X_i_com, bodies[i].inertia(),
+			mbc.bodyVelB[i], com_Vel);
+
+		jacWork_[i] = proj*jacDot;
+		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
+		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+
+		jacWork_[i] = projDot*jac;
+		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
+		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+	}
+}
+
+
+void CentroidalMomentumMatrix::computeMatrixAndMatrixDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comDot)
 {
 	using namespace Eigen;
 	const std::vector<Body>& bodies = mb.bodies();
 	cmMat_.setZero();
+	cmMatDot_.setZero();
 
-	sva::PTransformd X_com_0(Vector3d(-com));
+	sva::PTransformd X_0_com(com);
+	sva::MotionVecd com_Vel(Vector3d::Zero(), comDot);
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
-		jacWork_[i] = bodies[i].inertia().matrix()*jacVec_[i].bodyJacobian(mb, mbc);
-		jacWork_[i] = (mbc.bodyPosW[i]*X_com_0).inv().dualMatrix()*jacWork_[i];
+		const MatrixXd& jac = jacVec_[i].bodyJacobian(mb, mbc);
+		const MatrixXd& jacDot = jacVec_[i].bodyJacobianDot(mb, mbc);
 
+		sva::PTransformd X_i_com(X_0_com*(mbc.bodyPosW[i].inv()));
+		Matrix6d proj = jacProjector(X_i_com, bodies[i].inertia());
+		Matrix6d projDot = jacProjectorDot(X_i_com, bodies[i].inertia(),
+			mbc.bodyVelB[i], com_Vel);
+
+		jacWork_[i] = proj*jac;
 		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-
 		cmMat_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+
+		jacWork_[i] = proj*jacDot;
+		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
+		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+
+		jacWork_[i] = projDot*jac;
+		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
+		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
 	}
 
+}
+
+
+const Eigen::MatrixXd& CentroidalMomentumMatrix::matrix() const
+{
 	return cmMat_;
+}
+
+
+const Eigen::MatrixXd& CentroidalMomentumMatrix::matrixDot() const
+{
+	return cmMatDot_;
 }
 
 

@@ -69,11 +69,15 @@ public:
 	CentroidalMomentumMatrix(const MultiBody &mb, std::vector<double> weight);
 
 public:
-	const Eigen::MatrixXd& matrix(const MultiBody& mb, const MultiBodyConfig& mbc,
+	void computeMatrix(const MultiBody& mb, const MultiBodyConfig& mbc,
 		const Eigen::Vector3d& com);
+	void computeMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
+	void computeMatrixAndMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
 
-	const Eigen::MatrixXd& matrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
-		const Eigen::Vector3d& com);
+	const Eigen::MatrixXd& matrix() const;
+	const Eigen::MatrixXd& matrixDot() const;
 
 	// safe version for python binding
 
@@ -114,7 +118,7 @@ sva::ForceVecd sComputeCentroidalMomentum(const MultiBody& mb,
 	*/
 sva::ForceVecd sComputeCentroidalMomentumDot(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
-	const Eigen::Vector3d& comVel);
+	const Eigen::Vector3d& comDot);
 
 
 } // rbd
