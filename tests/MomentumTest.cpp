@@ -34,7 +34,6 @@
 #include "MultiBodyConfig.h"
 
 // arm
-#include "XYZarm.h"
 #include "XYZSarm.h"
 
 const double TOL = 1e-6;
@@ -91,7 +90,6 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 
 
 
-/*
 BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 {
 	using namespace Eigen;
@@ -102,16 +100,16 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
-	std::tie(mb, mbc, mbg) = makeXYZarm();
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
 
 	VectorXd q(mb.nrParams());
 	VectorXd alpha(mb.nrDof());
 	VectorXd alphaD(mb.nrDof());
 
-	for(int i = 0; i < 1; ++i)
+	for(int i = 0; i < 10; ++i)
 	{
 		q.setRandom();
-//		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
 		alpha.setRandom();
 		alphaD.setRandom();
 		rbd::vectorToParam(q, mbc.q);
@@ -138,7 +136,6 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 			rbd::forwardAcceleration(mb, mbc);
 
 			Vector3d newCom = rbd::computeCoM(mb, mbc);
-			Vector3d newComVel = rbd::computeCoMVelocity(mb, mbc);
 			ForceVecd newMomentum = rbd::computeCentroidalMomentum(mb, mbc, newCom);
 			ForceVecd momentumDotDiff = (newMomentum - oldMomentum)*(1./1e-8);
 
@@ -147,5 +144,4 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 		}
 	}
 }
-	*/
 

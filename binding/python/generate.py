@@ -450,6 +450,15 @@ def build_momentum(mod, mom):
                    custom_name='computeCentroidalMomentum',
                    throw=[dom_ex])
 
+  mod.add_function('sComputeCentroidalMomentumDot',
+                   retval('sva::ForceVecd'),
+                   [param('const MultiBody&', 'mb'),
+                    param('const MultiBodyConfig&', 'mbc'),
+                    param('const Eigen::Vector3d&', 'com'),
+                    param('const Eigen::Vector3d&', 'comVel')],
+                   custom_name='computeCentroidalMomentumDot',
+                   throw=[dom_ex])
+
 
 def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',

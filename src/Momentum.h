@@ -38,11 +38,17 @@ sva::ForceVecd computeCentroidalMomentum(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com);
 
 
-/*
+/**
+	* @brief Compute the time derivative of centroidal momentum at the CoM frame.
+	* @param mb MultiBody used has model.
+	* @param mbc Use bodyPosW, bodyVelB, bodyAccB.
+	* @param com CoM position.
+	* @param comDot CoM velocity.
+	* @return Derivative of the centroidal momentum at the CoM frame.
+	*/
 sva::ForceVecd computeCentroidalMomentumDot(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
 	const Eigen::Vector3d& comDot);
-	*/
 
 
 /**
@@ -95,11 +101,20 @@ private:
 
 /**
 	* Safe version.
-	* @see computeCentroidalMomentum).
+	* @see computeCentroidalMomentum.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
 sva::ForceVecd sComputeCentroidalMomentum(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com);
+
+/**
+	* Safe version.
+	* @see computeCentroidalMomentumDot.
+	* @throw std::domain_error If there is a mismatch between mb and mbc.
+	*/
+sva::ForceVecd sComputeCentroidalMomentumDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comVel);
 
 
 } // rbd
