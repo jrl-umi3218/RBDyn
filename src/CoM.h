@@ -64,11 +64,11 @@ class CoMJacobianDummy
 public:
 	CoMJacobianDummy();
 
-	/// @param mb MultiBody used has model
+	/// @param mb MultiBody used has model.
 	CoMJacobianDummy(const MultiBody& mb);
 	/**
-	 * @param mb MultiBody used has model
-	 * @param weight Per body weight
+	 * @param mb MultiBody used has model.
+	 * @param weight Per body weight.
 	 */
 	CoMJacobianDummy(const MultiBody& mb, std::vector<double> weight);
 

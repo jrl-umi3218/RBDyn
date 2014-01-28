@@ -23,4 +23,5 @@ addUnitTest ("AlgoTest")
 addUnitTest ("JacobianTest")
 addUnitTest ("DynamicsTest")
 addUnitTest ("CoMTest")
+addUnitTest ("MomentumTest")
 
