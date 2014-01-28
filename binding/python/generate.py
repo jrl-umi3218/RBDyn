@@ -441,6 +441,16 @@ def build_com(mod, comD):
                  throw=[dom_ex], custom_name='jacobianDot')
 
 
+def build_momentum(mod, mom):
+  mod.add_function('sComputeCentroidalMomentum',
+                   retval('sva::ForceVecd'),
+                   [param('const MultiBody&', 'mb'),
+                    param('const MultiBodyConfig&', 'mbc'),
+                    param('const Eigen::Vector3d&', 'com')],
+                   custom_name='computeCentroidalMomentum',
+                   throw=[dom_ex])
+
+
 def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',
                                    [param('const rbd::MultiBody&', 'mb1'),
@@ -478,6 +488,7 @@ if __name__ == '__main__':
   rbd.add_include('<FD.h>')
   rbd.add_include('<EulerIntegration.h>')
   rbd.add_include('<CoM.h>')
+  rbd.add_include('<Momentum.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -497,6 +508,7 @@ if __name__ == '__main__':
   id = rbd.add_class('InverseDynamics')
   fd = rbd.add_class('ForwardDynamics')
   comDummy = rbd.add_class('CoMJacobianDummy')
+  momentumMat = rbd.add_class('CentroidalMomentumMatrix')
   confconv = rbd.add_class('ConfigConverter')
 
   # build list type
@@ -528,6 +540,7 @@ if __name__ == '__main__':
   build_id(id)
   build_fd(fd)
   build_com(rbd, comDummy)
+  build_momentum(rbd, momentumMat)
   build_confconv(confconv)
 
   with open(sys.argv[1], 'w') as f:
