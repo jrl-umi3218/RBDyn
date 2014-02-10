@@ -129,6 +129,40 @@ Jacobian::bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
+const Eigen::MatrixXd& Jacobian::vectorBodyJacobian(const MultiBody& mb,
+																								 const MultiBodyConfig& mbc,
+																								 const Eigen::Vector3d& vector)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	int curJ = 0;
+	int N = jointsPath_.back();
+
+	sva::PTransformd X_Np = point_*mbc.bodyPosW[N];
+	sva::PTransformd vec = sva::PTransformd(vector);
+	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	{
+		int i = jointsPath_[index];
+
+		sva::PTransformd X_i_N = X_Np*mbc.bodyPosW[i].inv();
+		sva::PTransformd X_i_Nv = vec*X_i_N;
+		Eigen::Vector3d diff(X_i_N.translation() - X_i_Nv.translation());
+
+		// Compute translation component of : Jac_{Nv} - Jac_{N}
+		// Iteration : {}^{Nv}X_i S_i - {}^NX_i S_i
+		//             ({}^{Nv}T_i - {}^NT_i) S_i
+		//             {}^NE_i(T) (({}^{N}T_i - {}^{Nv}T_i) \times W_i)
+		jac_.block(3, curJ, 3, joints[i].dof()) =
+			X_i_N.rotation()*(sva::vector3ToCrossMatrix(diff)*\
+				mbc.motionSubspace[i].block(0, 0, 3, joints[i].dof()));
+
+		curJ += joints[i].dof();
+	}
+
+	return jac_;
+}
+
+
 const Eigen::MatrixXd&
 Jacobian::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 {

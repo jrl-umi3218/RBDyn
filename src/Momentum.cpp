@@ -17,7 +17,6 @@
 #include "Momentum.h"
 
 // includes
-#include <iostream>
 // RBDyn
 #include "MultiBody.h"
 #include "MultiBodyConfig.h"

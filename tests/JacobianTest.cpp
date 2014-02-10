@@ -37,6 +37,9 @@
 #include "MultiBodyGraph.h"
 #include "EulerIntegration.h"
 
+// Arm
+#include "XYZSarm.h"
+
 const double TOL = 0.0000001;
 
 void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
@@ -953,4 +956,58 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 	forwardVelocity(mb, mbc);
 
 	testTranslateJacobian(mb, mbc, point, jacO, jacP);
+}
+
+
+Eigen::MatrixXd jacobianVecFromJac(const rbd::MultiBody& mb,
+	const rbd::MultiBodyConfig& mbc, rbd::Jacobian& jac, const Eigen::Vector3d& vec)
+{
+	Eigen::MatrixXd jacO = jac.bodyJacobian(mb, mbc);
+	Eigen::MatrixXd jacV(jacO.rows(), jacO.cols());
+	jac.translateBodyJacobian(jacO, mbc, vec, jacV);
+
+	return jacV - jacO;
+}
+
+
+BOOST_AUTO_TEST_CASE(JacobianVectorTest)
+{
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeXYZSarm(false);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	rbd::Jacobian jac1(mb, 3);
+	rbd::Jacobian jac2(mb, 4, Eigen::Vector3d(0.1, -0.1, 0.2));
+
+	for(int i = 0; i < 50; ++i)
+	{
+		Eigen::VectorXd q(mb.nrParams()), alpha(mb.nrDof()), alphaD(mb.nrDof());
+		q.setRandom();
+		// normalize free flyier and spherical joint
+		q.head<4>().normalize();
+		q.segment(mb.jointPosInParam(mb.jointIndexById(3)), 4).normalize();
+		rbd::vectorToParam(q, mbc.q);
+		forwardKinematics(mb, mbc);
+
+		Eigen::Vector3d vec;
+		vec.setRandom();
+
+		Eigen::MatrixXd jac1MatDiff = jacobianVecFromJac(mb, mbc, jac1, vec);
+		Eigen::MatrixXd jac1Mat = jac1.vectorBodyJacobian(mb, mbc, vec);
+
+
+		BOOST_CHECK_SMALL((jac1MatDiff.block(3, 0, 3, jac1.dof()) -\
+											 jac1Mat.block(3, 0, 3, jac1.dof())).norm(), TOL);
+
+		Eigen::MatrixXd jac2MatDiff = jacobianVecFromJac(mb, mbc, jac2, vec);
+		Eigen::MatrixXd jac2Mat = jac2.vectorBodyJacobian(mb, mbc, vec);
+
+
+		BOOST_CHECK_SMALL((jac2MatDiff.block(3, 0, 3, jac2.dof()) -\
+											 jac2Mat.block(3, 0, 3, jac2.dof())).norm(), TOL);
+	}
 }

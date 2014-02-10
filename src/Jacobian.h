@@ -58,6 +58,18 @@ public:
 	const Eigen::MatrixXd& bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/**
+		* Compute a vector jacobian in body coordinate frame.
+		* This function only fill the translation component of the jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW and motionSubspace.
+		* @param vector Vector from then jacobian point (body coordinate).
+		* @return Jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& vectorBodyJacobian(const MultiBody& mb,
+																					const MultiBodyConfig& mbc,
+																					const Eigen::Vector3d& vector);
+
+	/**
 		* Compute the time derivative of the jacobian.
 		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
