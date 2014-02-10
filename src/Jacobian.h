@@ -155,6 +155,17 @@ public:
 		*/
 	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	/** safe version of @see bodyJacobian.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sBodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+	/** safe version of @see vectorBodyJacobian.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sVectorBodyJacobian(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& vec);
+
 	/** safe version of @see subMultiBody.
 		* @throw std::domain_error If mb don't match jointPath.
 		*/
@@ -164,6 +175,12 @@ public:
 		* @throw std::domain_error If mb don't match mbc or jointPath.
 		*/
 	const Eigen::MatrixXd& sJacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+	/** safe version of @see bodyJacobianDot.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sBodyJacobianDot(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
 
 	/** safe version of @see translateJacobian.

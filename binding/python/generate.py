@@ -335,6 +335,22 @@ def build_jacobian(jac):
                   param('const rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='jacobianDot')
 
+  jac.add_method('sBodyJacobian', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='bodyJacobian')
+
+  jac.add_method('sBodyJacobianDot', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='bodyJacobianDot')
+
+  jac.add_method('sVectorBodyJacobian', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'vec')],
+                 throw=[dom_ex], custom_name='vectorBodyJacobian')
+
   jac.add_method('sTranslateJacobian', None,
                  [param('const Eigen::MatrixXd&', 'jac'),
                   param('const rbd::MultiBodyConfig&', 'mbc'),

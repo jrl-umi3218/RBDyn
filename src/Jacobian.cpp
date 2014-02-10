@@ -308,6 +308,40 @@ Jacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	return jacobian(mb, mbc);
 }
 
+
+const Eigen::MatrixXd&
+Jacobian::sBodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	return bodyJacobian(mb, mbc);
+}
+
+
+const Eigen::MatrixXd&
+Jacobian::sVectorBodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const Eigen::Vector3d& vec)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	return vectorBodyJacobian(mb, mbc, vec);
+}
+
+
 MultiBody Jacobian::sSubMultiBody(const MultiBody& mb) const
 {
 	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
@@ -334,6 +368,23 @@ const Eigen::MatrixXd& Jacobian::sJacobianDot(const MultiBody& mb,
 	}
 
 	return jacobianDot(mb, mbc);
+}
+
+
+const Eigen::MatrixXd& Jacobian::sBodyJacobianDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	return bodyJacobianDot(mb, mbc);
 }
 
 
