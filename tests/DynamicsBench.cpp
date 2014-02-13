@@ -59,3 +59,27 @@ BOOST_AUTO_TEST_CASE(FD_computeH)
 	}
 	std::cout << std::endl;
 }
+
+BOOST_AUTO_TEST_CASE(FD_computeC)
+{
+	const std::size_t nrIteration = 100000;
+
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::ForwardDynamics fd(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+	std::cout << "ForwardDynamic::computeHC" << std::endl;
+	{
+		boost::timer::auto_cpu_timer t;
+		for(std::size_t i = 0; i < nrIteration; ++i)
+		{
+			fd.computeC(mb, mbc);
+		}
+	}
+	std::cout << std::endl;
+}
