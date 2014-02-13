@@ -178,7 +178,7 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobian(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac, jacFull_);
-		jac_ += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
+		jac_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
 	jac_ /= totalMass_;
@@ -200,7 +200,7 @@ CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac, jacFull_);
-		jacDot_ += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
+		jacDot_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
 	jacDot_ /= totalMass_;
