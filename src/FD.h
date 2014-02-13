@@ -117,6 +117,8 @@ private:
 	Eigen::VectorXd tmpFd_;
 
 	std::vector<int> dofPos_;
+
+	Eigen::LDLT<Eigen::MatrixXd> ldlt_;
 };
 
 } // namespace rbd

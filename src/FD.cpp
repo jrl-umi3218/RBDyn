@@ -25,14 +25,15 @@ namespace rbd
 {
 
 ForwardDynamics::ForwardDynamics(const MultiBody& mb):
-  H_(mb.nrDof(), mb.nrDof()),
-  C_(mb.nrDof()),
-  I_st_(mb.nrBodies()),
-  F_(mb.nrJoints()),
-  acc_(mb.nrBodies()),
-  f_(mb.nrBodies()),
-  tmpFd_(mb.nrDof()),
-  dofPos_(mb.nrJoints())
+	H_(mb.nrDof(), mb.nrDof()),
+	C_(mb.nrDof()),
+	I_st_(mb.nrBodies()),
+	F_(mb.nrJoints()),
+	acc_(mb.nrBodies()),
+	f_(mb.nrBodies()),
+	tmpFd_(mb.nrDof()),
+	dofPos_(mb.nrJoints()),
+	ldlt_(mb.nrDof())
 {
 	int dofP = 0;
 	for(int i = 0; i < mb.nrJoints(); ++i)
@@ -49,7 +50,8 @@ void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	computeC(mb, mbc);
 
 	paramToVector(mbc.jointTorque, tmpFd_);
-	tmpFd_ = H_.ldlt().solve(tmpFd_ - C_);
+	ldlt_.compute(H_);
+	tmpFd_ = ldlt_.solve(tmpFd_ - C_);
 
 	vectorToParam(tmpFd_, mbc.alphaD);
 }

@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
+// check memory allocation in some method
+#define EIGEN_RUNTIME_NO_MALLOC
 
 // includes
 // std
@@ -487,8 +489,10 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 
 	paramToVector(mbc.jointTorque, vT1);
 
+	internal::set_is_malloc_allowed(false);
 	fd.forwardDynamics(mb, mbc);
 	id.inverseDynamics(mb, mbc);
+	internal::set_is_malloc_allowed(true);
 
 	paramToVector(mbc.jointTorque, vT2);
 
