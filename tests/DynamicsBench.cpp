@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(FD_computeC)
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
-	std::cout << "ForwardDynamic::computeHC" << std::endl;
+	std::cout << "ForwardDynamic::computeC" << std::endl;
 	{
 		boost::timer::auto_cpu_timer t;
 		for(std::size_t i = 0; i < nrIteration; ++i)
