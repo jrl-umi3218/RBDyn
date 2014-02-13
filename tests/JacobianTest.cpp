@@ -628,13 +628,13 @@ void testJacobianDot(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc,
 		std::bind(&rbd::Jacobian::jacobian, jac, _1, _2));
 	MatrixXd JD = jac.jacobianDot(mb, mbc);
 
-	BOOST_CHECK_SMALL((JD_diff - JD).norm(), 1e-5);
+	BOOST_CHECK_SMALL((JD_diff - JD).norm(), 2e-5);
 
 	MatrixXd JD_diff_b = makeJDotFromStep(mb, mbc,
 		std::bind(&rbd::Jacobian::bodyJacobian, jac, _1, _2));
 	MatrixXd JD_b = jac.bodyJacobianDot(mb, mbc);
 
-	BOOST_CHECK_SMALL((JD_diff_b - JD_b).norm(), 1e-5);
+	BOOST_CHECK_SMALL((JD_diff_b - JD_b).norm(), 2e-5);
 }
 
 
