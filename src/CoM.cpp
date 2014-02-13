@@ -131,9 +131,9 @@ CoMJacobianDummy::CoMJacobianDummy()
 
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
-	jac_(6, mb.nrDof()),
-	jacDot_(6, mb.nrDof()),
-	jacFull_(6, mb.nrDof()),
+	jac_(3, mb.nrDof()),
+	jacDot_(3, mb.nrDof()),
+	jacFull_(3, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	totalMass_(0.),
 	bodiesWeight_(mb.nrBodies(), 1.)
@@ -143,9 +143,9 @@ CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
 
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb, std::vector<double> weight):
-  jac_(6, mb.nrDof()),
-  jacDot_(6, mb.nrDof()),
-  jacFull_(6, mb.nrDof()),
+  jac_(3, mb.nrDof()),
+  jacDot_(3, mb.nrDof()),
+  jacFull_(3, mb.nrDof()),
   jacVec_(mb.nrBodies()),
   totalMass_(0.),
   bodiesWeight_(std::move(weight))
@@ -177,7 +177,7 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobian(mb, mbc);
-		jacVec_[i].fullJacobian(mb, jac, jacFull_);
+		jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
 		jac_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
@@ -199,7 +199,7 @@ CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
-		jacVec_[i].fullJacobian(mb, jac, jacFull_);
+		jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
 		jacDot_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 

@@ -269,15 +269,14 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 		MatrixXd CJac = comJac.jacobian(mb, mbc);
 		MatrixXd CJacDot = comJac.jacobianDot(mb, mbc);
 
-		BOOST_CHECK_EQUAL(CJac.rows(), 6);
+		BOOST_CHECK_EQUAL(CJac.rows(), 3);
 		BOOST_CHECK_EQUAL(CJac.cols(), mb.nrDof());
 
 		VectorXd alpha = dofToVector(mb, mbc.alpha);
 		VectorXd alphaD = dofToVector(mb, mbc.alphaD);
 
-		Vector3d CDot = CJac.block(3, 0, 3, mb.nrDof())*alpha;
-		Vector3d CDotDot = CJac.block(3, 0, 3, mb.nrDof())*alphaD +
-				CJacDot.block(3, 0, 3, mb.nrDof())*alpha;
+		Vector3d CDot = CJac*alpha;
+		Vector3d CDotDot = CJac*alphaD + CJacDot*alpha;
 
 		BOOST_CHECK_SMALL((CDot_diff - CDot).norm(), TOL);
 		BOOST_CHECK_SMALL((CDot_diff - CoMVel).norm(), TOL);
@@ -376,7 +375,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -395,7 +394,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -426,7 +425,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -445,7 +444,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
