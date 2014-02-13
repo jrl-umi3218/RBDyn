@@ -25,6 +25,7 @@
 #include <boost/timer/timer.hpp>
 
 // RBDyn
+#include "CoM.h"
 #include "FK.h"
 #include "FV.h"
 #include "Jacobian.h"
@@ -155,6 +156,56 @@ BOOST_AUTO_TEST_CASE(BodyJacobianDot)
 		for(std::size_t i = 0; i < nrIteration; ++i)
 		{
 			jac.bodyJacobianDot(mb, mbc);
+		}
+	}
+	std::cout << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobian)
+{
+	const std::size_t nrIteration = 10000;
+
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::CoMJacobianDummy jac(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	std::cout << "CoMJacobianDummy::jacobian" << std::endl;
+	{
+		boost::timer::auto_cpu_timer t;
+		for(std::size_t i = 0; i < nrIteration; ++i)
+		{
+			jac.jacobian(mb, mbc);
+		}
+	}
+	std::cout << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobianDot)
+{
+	const std::size_t nrIteration = 10000;
+
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::CoMJacobianDummy jac(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	std::cout << "CoMJacobianDummy::jacobian" << std::endl;
+	{
+		boost::timer::auto_cpu_timer t;
+		for(std::size_t i = 0; i < nrIteration; ++i)
+		{
+			jac.jacobianDot(mb, mbc);
 		}
 	}
 	std::cout << std::endl;
