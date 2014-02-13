@@ -123,7 +123,11 @@ Jacobian::bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 		sva::PTransformd X_i_N = X_Np*mbc.bodyPosW[i].inv();
 
-		jac_.block(0, curJ, 6, joints[i].dof()) = X_i_N.matrix()*mbc.motionSubspace[i];
+		for(int dof = 0; dof < joints[i].dof(); ++dof)
+		{
+			jac_.col(curJ + dof).noalias() =
+				(X_i_N*sva::MotionVecd(mbc.motionSubspace[i].col(dof))).vector();
+		}
 
 		curJ += joints[i].dof();
 	}
