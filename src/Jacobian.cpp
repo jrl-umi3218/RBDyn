@@ -204,7 +204,7 @@ Jacobian::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 			// E_N_0_d = (ANG_VN)_0 x E_N_0
 			// X_i_N_d = (Vi - VN)_N x X_i_N
 
-			jacDot_.block<6, 1>(0, curJ) =
+			jacDot_.col(curJ).noalias() =
 				(E_VN.cross(E_N_0*X_i_Np*S_ij) +
 				E_N_0*X_VNp_i_Np.cross(X_i_Np*S_ij)).vector();
 			++curJ;
@@ -242,7 +242,7 @@ Jacobian::bodyJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 			// JD_i = X_i_N_d*S_i
 			// X_i_N_d = (Vi - VN)_N x X_i_N
 
-			jacDot_.block<6, 1>(0, curJ) =
+			jacDot_.col(curJ).noalias() =
 				(X_VNp_i_Np.cross(X_i_Np*S_ij)).vector();
 			++curJ;
 		}
