@@ -133,13 +133,13 @@ void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
 	{
-		C_.segment(dofPos_[i], joints[i].dof()) = mbc.motionSubspace[i].transpose()*
+		C_.segment(dofPos_[i], joints[i].dof()).noalias() = mbc.motionSubspace[i].transpose()*
 				f_[i].vector();
 
 		if(pred[i] != -1)
 		{
 			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
-			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
+			f_[pred[i]] += X_p_i.transMul(f_[i]);
 		}
 	}
 }
