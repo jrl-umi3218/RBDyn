@@ -84,3 +84,28 @@ BOOST_AUTO_TEST_CASE(BodyJacobian)
 	}
 	std::cout << std::endl;
 }
+
+BOOST_AUTO_TEST_CASE(VectorBodyJacobian)
+{
+	const std::size_t nrIteration = 100000;
+
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::Jacobian jac(mb, mbg.bodyIdByName("LARM6"));
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	std::cout << "Jacobian::vectorBodyJacobian" << std::endl;
+	{
+		boost::timer::auto_cpu_timer t;
+		for(std::size_t i = 0; i < nrIteration; ++i)
+		{
+			jac.vectorBodyJacobian(mb, mbc, Eigen::Vector3d(1., 0., 0.));
+		}
+	}
+	std::cout << std::endl;
+}
