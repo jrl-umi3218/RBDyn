@@ -71,24 +71,31 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 		if(pred[i] != -1)
 		{
 			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
-			I_st_[pred[i]] = I_st_[pred[i]] + X_p_i.transMul(I_st_[i]);
+			I_st_[pred[i]] += X_p_i.transMul(I_st_[i]);
 		}
 
-		F_[i] = I_st_[i].matrix()*mbc.motionSubspace[i];
+		for(int dof = 0; dof < joints[i].dof(); ++dof)
+		{
+			F_[i].col(dof).noalias() = (I_st_[i]*
+					sva::MotionVecd(mbc.motionSubspace[i].col(dof))).vector();
+		}
 
-		H_.block(dofPos_[i], dofPos_[i], joints[i].dof(), joints[i].dof()) =
+		H_.block(dofPos_[i], dofPos_[i], joints[i].dof(), joints[i].dof()).noalias() =
 			mbc.motionSubspace[i].transpose()*F_[i];
 
 		int j = i;
 		while(pred[j] != -1)
 		{
 			const sva::PTransformd& X_p_j = mbc.parentToSon[j];
-			F_[i] = X_p_j.inv().dualMatrix()*F_[i];
+			for(int dof = 0; dof < joints[i].dof(); ++dof)
+			{
+				F_[i].col(dof) = X_p_j.transMul(sva::ForceVecd(F_[i].col(dof))).vector();
+			}
 			j = pred[j];
 
 			if(joints[j].dof() != 0)
 			{
-				H_.block(dofPos_[i], dofPos_[j], joints[i].dof(), joints[j].dof()) =
+				H_.block(dofPos_[i], dofPos_[j], joints[i].dof(), joints[j].dof()).noalias() =
 					F_[i].transpose()*mbc.motionSubspace[j];
 
 				H_.block(dofPos_[j], dofPos_[i], joints[j].dof(), joints[i].dof()).noalias() =
