@@ -159,9 +159,11 @@ const Eigen::MatrixXd& Jacobian::vectorBodyJacobian(const MultiBody& mb,
 		// Iteration : {}^{Nv}X_i S_i - {}^NX_i S_i
 		//             ({}^{Nv}T_i - {}^NT_i) S_i
 		//             {}^NE_i(T) (({}^{N}T_i - {}^{Nv}T_i) \times W_i)
-		jac_.block(3, curJ, 3, joints[i].dof()) =
-			X_i_N.rotation()*(sva::vector3ToCrossMatrix(diff)*\
-				mbc.motionSubspace[i].block(0, 0, 3, joints[i].dof()));
+		for(int dof = 0; dof < joints[i].dof(); ++dof)
+		{
+			jac_.col(curJ + dof).tail<3>().noalias() =
+				X_i_N.rotation()*(diff.cross(mbc.motionSubspace[i].col(dof).head<3>()));
+		}
 
 		curJ += joints[i].dof();
 	}
