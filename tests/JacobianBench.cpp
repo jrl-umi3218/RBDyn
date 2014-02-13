@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobianDot)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "CoMJacobianDummy::jacobian" << std::endl;
+	std::cout << "CoMJacobianDummy::jacobianDot" << std::endl;
 	{
 		boost::timer::auto_cpu_timer t;
 		for(std::size_t i = 0; i < nrIteration; ++i)
