@@ -491,6 +491,13 @@ def build_momentum(mod, mom):
   mom.add_method('matrix', retval('Eigen::MatrixXd'), [], is_const=True)
   mom.add_method('matrixDot', retval('Eigen::MatrixXd'), [], is_const=True)
 
+def build_zmp(mod):
+  mod.add_function('computeCentroidalZMP',
+                 retval('Eigen::Vector3d'),
+                 [param('rbd::MultiBodyConfig', 'mbc'),
+                  param('Eigen::Vector3d', 'com'),
+                  param('Eigen::Vector3d', 'comA'),
+                  param('double', 'altitude')])
 
 def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',
@@ -530,6 +537,7 @@ if __name__ == '__main__':
   rbd.add_include('<EulerIntegration.h>')
   rbd.add_include('<CoM.h>')
   rbd.add_include('<Momentum.h>')
+  rbd.add_include('<ZMP.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -582,6 +590,7 @@ if __name__ == '__main__':
   build_fd(fd)
   build_com(rbd, comDummy)
   build_momentum(rbd, momentumMat)
+  build_zmp(rbd)
   build_confconv(confconv)
 
   with open(sys.argv[1], 'w') as f:
