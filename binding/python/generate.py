@@ -419,7 +419,7 @@ def build_fd(id):
 
 
 
-def build_com(mod, comD):
+def build_com(mod, comD, comJ):
   mod.add_function('sComputeCoM', retval('Eigen::Vector3d'),
                    [param('const MultiBody&', 'mb'),
                     param('MultiBodyConfig&', 'mbc')],
@@ -444,14 +444,30 @@ def build_com(mod, comD):
                         param('std::vector<double>', 'weight')],
                         throw=[dom_ex])
 
-
   comD.add_method('sJacobian', retval('Eigen::MatrixXd'),
                  [param('const rbd::MultiBody&', 'mb'),
                   param('rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='jacobian')
 
-
   comD.add_method('sJacobianDot', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='jacobianDot')
+
+
+  comJ.add_constructor([])
+  comJ.add_copy_constructor()
+  comJ.add_constructor([param('const rbd::MultiBody&', 'mb')])
+  comJ.add_constructor([param('const rbd::MultiBody&', 'mb'),
+                        param('std::vector<double>', 'weight')],
+                        throw=[dom_ex])
+
+  comJ.add_method('sJacobian', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='jacobian')
+
+  comJ.add_method('sJacobianDot', retval('Eigen::MatrixXd'),
                  [param('const rbd::MultiBody&', 'mb'),
                   param('rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='jacobianDot')
@@ -573,6 +589,7 @@ if __name__ == '__main__':
   id = rbd.add_class('InverseDynamics')
   fd = rbd.add_class('ForwardDynamics')
   comDummy = rbd.add_class('CoMJacobianDummy')
+  comJac = rbd.add_class('CoMJacobian')
   momentumMat = rbd.add_class('CentroidalMomentumMatrix')
   confconv = rbd.add_class('ConfigConverter')
 
@@ -604,7 +621,7 @@ if __name__ == '__main__':
   build_algo(rbd)
   build_id(id)
   build_fd(fd)
-  build_com(rbd, comDummy)
+  build_com(rbd, comDummy, comJac)
   build_momentum(rbd, momentumMat)
   build_zmp(rbd)
   build_confconv(confconv)
