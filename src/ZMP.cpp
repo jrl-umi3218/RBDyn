@@ -32,3 +32,4 @@ Eigen::Vector3d computeCentroidalZMP(MultiBodyConfig& mbc, Eigen::Vector3d& com,
 	return zmp;
 }
 
+}
