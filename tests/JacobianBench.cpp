@@ -210,3 +210,28 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobianDot)
 	}
 	std::cout << std::endl;
 }
+
+BOOST_AUTO_TEST_CASE(CoMJacobian_jacobian)
+{
+	const std::size_t nrIteration = 10000;
+
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::CoMJacobian jac(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	std::cout << "CoMJacobian::jacobian" << std::endl;
+	{
+		boost::timer::auto_cpu_timer t;
+		for(std::size_t i = 0; i < nrIteration; ++i)
+		{
+			jac.jacobian(mb, mbc);
+		}
+	}
+	std::cout << std::endl;
+}

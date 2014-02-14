@@ -19,7 +19,7 @@
 
 // boost
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE BodyTest
+#define BOOST_TEST_MODULE CoMTest
 #include <boost/test/unit_test.hpp>
 #include <boost/math/constants/constants.hpp>
 
@@ -489,4 +489,67 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	mbc.bodyVelW = {mv, mv, mv};
 	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
 	mbc = MultiBodyConfig(mb);
+}
+
+
+BOOST_AUTO_TEST_CASE(CoMJacobianTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace cst = boost::math::constants;
+
+	sva::PTransformd I(sva::PTransformd::Identity());
+
+	MultiBodyGraph mbg;
+	MultiBody mb;
+	MultiBodyConfig mbc;
+
+	std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
+
+	CoMJacobianDummy comJacDummy(mb);
+	CoMJacobian comJac(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	MatrixXd jacMat = comJac.jacobian(mb, mbc);
+	MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
+
+	BOOST_CHECK_EQUAL(jacMat.rows(), 3);
+	BOOST_CHECK_EQUAL(jacMat.cols(), mb.nrDof());
+
+	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+			forwardAcceleration(mb, mbc);
+
+			MatrixXd jacMat = comJac.jacobian(mb, mbc);
+			MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
+
+			BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+			forwardAcceleration(mb, mbc);
+
+			MatrixXd jacMat = comJac.jacobian(mb, mbc);
+			MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
+
+			BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+		}
+	}
 }

@@ -242,5 +242,97 @@ void CoMJacobianDummy::init(const rbd::MultiBody& mb)
 	}
 }
 
+
+
+CoMJacobian::CoMJacobian()
+{}
+
+
+CoMJacobian::CoMJacobian(const MultiBody& mb):
+	jac_(3, mb.nrDof()),
+	jacDot_(3, mb.nrDof()),
+	bodiesCoeff_(mb.nrBodies()),
+	bodiesCoM_(mb.nrBodies()),
+	jointsSubBodies_(mb.nrJoints()),
+	bodiesCoMWorld_(mb.nrBodies())
+{
+	init(mb);
+}
+
+
+const Eigen::MatrixXd& CoMJacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	jac_.setZero();
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		sva::PTransformd E_b_0(Eigen::Matrix3d(mbc.bodyPosW[i].rotation().transpose()));
+		sva::PTransformd X_0_com_w = E_b_0*bodiesCoM_[i]*mbc.bodyPosW[i];
+		bodiesCoMWorld_[i] = X_0_com_w;
+	}
+
+	int curJ = 0;
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		std::vector<int>& subBodies = jointsSubBodies_[i];
+		sva::PTransformd X_i_0 = mbc.bodyPosW[i].inv();
+		for(int b: subBodies)
+		{
+			sva::PTransformd X_i_com = bodiesCoMWorld_[b]*X_i_0;
+			for(int dof = 0; dof < joints[i].dof(); ++dof)
+			{
+				jac_.col(curJ + dof).noalias() +=
+					(X_i_com.linearMul(sva::MotionVecd(mbc.motionSubspace[i].col(dof))))*
+						bodiesCoeff_[b];
+			}
+		}
+		curJ += joints[i].dof();
+	}
+
+	return jac_;
+}
+
+
+// inefficient but the best we can do without mbg
+void jointBodiesSuccessors(const MultiBody& mb, int joint, std::vector<int>& subBodies)
+{
+	int sonBody = mb.successor(joint);
+	subBodies.push_back(sonBody);
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		if(mb.predecessor(i) == sonBody)
+		{
+			jointBodiesSuccessors(mb, i, subBodies);
+		}
+	}
+}
+
+
+void CoMJacobian::init(const MultiBody& mb)
+{
+	double mass = 0.;
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		mass += mb.body(i).inertia().mass();
+	}
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		double bodyMass = mb.body(i).inertia().mass();
+		bodiesCoeff_[i] = bodyMass/mass;
+		bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum()/bodyMass).eval());
+	}
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		std::vector<int>& subBodies = jointsSubBodies_[i];
+		jointBodiesSuccessors(mb, i, subBodies);
+	}
+}
+
+
 } // namespace rbd
 
