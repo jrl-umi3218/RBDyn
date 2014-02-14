@@ -87,8 +87,8 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	int curJ = 0;
 	int N = jointsPath_.back();
 
-	sva::PTransformd E_N_0(Eigen::Matrix3d(mbc.bodyPosW[N].rotation().transpose()));
-	sva::PTransformd X_Np_w = E_N_0*point_*mbc.bodyPosW[N];
+	// the transformation must be read {}^0E_p {}^pT_N {}^NX_0
+	sva::PTransformd X_Np_w = sva::PTransformd((point_*mbc.bodyPosW[N]).translation());
 	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
 	{
 		int i = jointsPath_[index];
