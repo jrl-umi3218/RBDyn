@@ -507,12 +507,13 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
 	std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
 
-	CoMJacobianDummy comJacDummy(mb);
 	CoMJacobian comJac(mb);
+	CoMJacobianDummy comJacDummy(mb);
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
+	// test jacobian
 	MatrixXd jacMat = comJac.jacobian(mb, mbc);
 	MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
 
@@ -521,19 +522,34 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
 	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
 
+	// change configuration
+	Quaterniond q;
+	q = AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ());
+	mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
+	forwardKinematics(mb, mbc);
+
+	jacMat = comJac.jacobian(mb, mbc);
+	jacDummyMat = comJacDummy.jacobian(mb, mbc);
+
+	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+
+
+	// Test jacobianDot
+
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
 		{
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
-			forwardAcceleration(mb, mbc);
 
-			MatrixXd jacMat = comJac.jacobian(mb, mbc);
-			MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
+			MatrixXd jacDotMat = comJac.jacobianDot(mb, mbc);
+			MatrixXd jacDotDummyMat = comJacDummy.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+			BOOST_CHECK_EQUAL(jacDotMat.rows(), 3);
+			BOOST_CHECK_EQUAL(jacDotMat.cols(), mb.nrDof());
 
+			BOOST_CHECK_SMALL((jacDotMat - jacDotDummyMat).norm(), TOL);
 			mbc.alpha[i][j] = 0.;
 		}
 	}
@@ -544,12 +560,14 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 		{
 			mbc.alpha[i][j] = 1.;
 			forwardVelocity(mb, mbc);
-			forwardAcceleration(mb, mbc);
 
-			MatrixXd jacMat = comJac.jacobian(mb, mbc);
-			MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
+			MatrixXd jacDotMat = comJac.jacobianDot(mb, mbc);
+			MatrixXd jacDotDummyMat = comJacDummy.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+			BOOST_CHECK_EQUAL(jacDotMat.rows(), 3);
+			BOOST_CHECK_EQUAL(jacDotMat.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDotMat - jacDotDummyMat).norm(), TOL);
 		}
 	}
 }

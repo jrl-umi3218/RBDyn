@@ -170,7 +170,9 @@ private:
 	std::vector<sva::PTransformd> bodiesCoM_;
 	std::vector<std::vector<int>> jointsSubBodies_;
 
+	// jacobian, jacobianDot computation buffer
 	std::vector<sva::PTransformd> bodiesCoMWorld_;
+	std::vector<sva::MotionVecd> bodiesCoMVelB_;
 };
 
 
