@@ -128,6 +128,11 @@ public:
 
 	/// @param mb MultiBody used has model.
 	CoMJacobian(const MultiBody& mb);
+	/**
+	 * @param mb MultiBody used has model.
+	 * @param weight Per body weight.
+	 */
+	CoMJacobian(const MultiBody& mb, const std::vector<double>& weight);
 
 	/**
 		* Compute the CoM jacobian.
@@ -160,7 +165,7 @@ public:
 		const MultiBodyConfig& mbc);
 
 private:
-	void init(const rbd::MultiBody& mb);
+	void init(const rbd::MultiBody& mb, const std::vector<double>& weight);
 
 private:
 	Eigen::MatrixXd jac_;

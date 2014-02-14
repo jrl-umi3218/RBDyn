@@ -125,6 +125,10 @@ Eigen::Vector3d sComputeCoMAcceleration(const MultiBody& mb, const MultiBodyConf
 }
 
 
+/**
+	*														CoMJacobianDummy
+	*/
+
 
 CoMJacobianDummy::CoMJacobianDummy()
 {}
@@ -243,6 +247,10 @@ void CoMJacobianDummy::init(const rbd::MultiBody& mb)
 }
 
 
+/**
+	*														CoMJacobian
+	*/
+
 
 CoMJacobian::CoMJacobian()
 {}
@@ -257,7 +265,28 @@ CoMJacobian::CoMJacobian(const MultiBody& mb):
 	bodiesCoMWorld_(mb.nrBodies()),
 	bodiesCoMVelB_(mb.nrBodies())
 {
-	init(mb);
+	init(mb, std::vector<double>(mb.nrBodies(), 1.));
+}
+
+
+CoMJacobian::CoMJacobian(const MultiBody& mb, const std::vector<double>& weight):
+	jac_(3, mb.nrDof()),
+	jacDot_(3, mb.nrDof()),
+	bodiesCoeff_(mb.nrBodies()),
+	bodiesCoM_(mb.nrBodies()),
+	jointsSubBodies_(mb.nrJoints()),
+	bodiesCoMWorld_(mb.nrBodies()),
+	bodiesCoMVelB_(mb.nrBodies())
+{
+  if(int(weight.size()) != mb.nrBodies())
+  {
+    std::stringstream ss;
+    ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
+          weight.size() << std::endl;
+    throw std::domain_error(ss.str());
+  }
+
+  init(mb, weight);
 }
 
 
@@ -305,7 +334,7 @@ const Eigen::MatrixXd& CoMJacobian::jacobianDot(const MultiBody& mb,
 
 	jacDot_.setZero();
 
-	// we pre compute the CoM
+	// we pre compute the CoM position/velocity of each bodie
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		bodiesCoMWorld_[i] = bodiesCoM_[i]*mbc.bodyPosW[i];
@@ -346,6 +375,27 @@ const Eigen::MatrixXd& CoMJacobian::jacobianDot(const MultiBody& mb,
 }
 
 
+const Eigen::MatrixXd&
+CoMJacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	return jacobian(mb, mbc);
+}
+
+
+const Eigen::MatrixXd&
+CoMJacobian::sJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	return jacobianDot(mb, mbc);
+}
+
+
 // inefficient but the best we can do without mbg
 void jointBodiesSuccessors(const MultiBody& mb, int joint, std::vector<int>& subBodies)
 {
@@ -361,7 +411,7 @@ void jointBodiesSuccessors(const MultiBody& mb, int joint, std::vector<int>& sub
 }
 
 
-void CoMJacobian::init(const MultiBody& mb)
+void CoMJacobian::init(const MultiBody& mb, const std::vector<double>& weight)
 {
 	double mass = 0.;
 
@@ -373,7 +423,7 @@ void CoMJacobian::init(const MultiBody& mb)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		double bodyMass = mb.body(i).inertia().mass();
-		bodiesCoeff_[i] = bodyMass/mass;
+		bodiesCoeff_[i] = (bodyMass*weight[i])/mass;
 		bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum()/bodyMass).eval());
 	}
 
