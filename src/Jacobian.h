@@ -58,6 +58,18 @@ public:
 	const Eigen::MatrixXd& bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/**
+		* Compute a vector jacobian in body coordinate frame.
+		* This function only fill the translation component of the jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW and motionSubspace.
+		* @param vector Vector from then jacobian point (body coordinate).
+		* @return Jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& vectorBodyJacobian(const MultiBody& mb,
+																					const MultiBodyConfig& mbc,
+																					const Eigen::Vector3d& vector);
+
+	/**
 		* Compute the time derivative of the jacobian.
 		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
@@ -143,6 +155,17 @@ public:
 		*/
 	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	/** safe version of @see bodyJacobian.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sBodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+	/** safe version of @see vectorBodyJacobian.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sVectorBodyJacobian(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& vec);
+
 	/** safe version of @see subMultiBody.
 		* @throw std::domain_error If mb don't match jointPath.
 		*/
@@ -152,6 +175,12 @@ public:
 		* @throw std::domain_error If mb don't match mbc or jointPath.
 		*/
 	const Eigen::MatrixXd& sJacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+	/** safe version of @see bodyJacobianDot.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
+	const Eigen::MatrixXd& sBodyJacobianDot(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
 
 	/** safe version of @see translateJacobian.

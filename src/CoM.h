@@ -57,7 +57,7 @@ Eigen::Vector3d computeCoMAcceleration(const MultiBody& mb, const MultiBodyConfi
 
 
 /**
-	* Compute the CoM with a simple but slow algorithm.
+	* Compute the CoM jacobian with a simple but slow algorithm.
 	*/
 class CoMJacobianDummy
 {
@@ -115,6 +115,64 @@ private:
 	std::vector<Jacobian> jacVec_;
 	double totalMass_;
 	std::vector<double> bodiesWeight_;
+};
+
+
+/**
+	* Compute the CoM jacobian
+	*/
+class CoMJacobian
+{
+public:
+	CoMJacobian();
+
+	/// @param mb MultiBody used has model.
+	CoMJacobian(const MultiBody& mb);
+
+	/**
+		* Compute the CoM jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW and motionSubspace.
+		* @return CoM Jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the time derivative of the CoM jacobian.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
+		* @return Time derivativo of the jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+	// safe version for python binding
+
+	/** safe version of @see jacobian.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+	/** safe version of @see jacobianDot.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	const Eigen::MatrixXd& sJacobianDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+private:
+	void init(const rbd::MultiBody& mb);
+
+private:
+	Eigen::MatrixXd jac_;
+	Eigen::MatrixXd jacDot_;
+
+	std::vector<double> bodiesCoeff_;
+	std::vector<sva::PTransformd> bodiesCoM_;
+	std::vector<std::vector<int>> jointsSubBodies_;
+
+	// jacobian, jacobianDot computation buffer
+	std::vector<sva::PTransformd> bodiesCoMWorld_;
+	std::vector<sva::MotionVecd> bodiesCoMVelB_;
 };
 
 

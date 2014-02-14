@@ -19,7 +19,7 @@
 
 // boost
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE BodyTest
+#define BOOST_TEST_MODULE CoMTest
 #include <boost/test/unit_test.hpp>
 #include <boost/math/constants/constants.hpp>
 
@@ -37,6 +37,73 @@
 #include "CoM.h"
 
 const double TOL = 0.000001;
+
+
+std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph>
+makeXYZSarmRandomCoM(bool isFixed=true)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+
+	typedef Eigen::Matrix<double, 1, 1> EScalar;
+
+	MultiBodyGraph mbg;
+
+	double mass = 1.;
+	Matrix3d I = Matrix3d::Identity();
+	Vector3d h = Vector3d::Random();
+
+	RBInertiad rbi(mass, h, I);
+
+	Body b0(RBInertiad(EScalar::Random()(0)*10., h, I), 0, "b0");
+	Body b1(RBInertiad(EScalar::Random()(0)*10., h, I), 1, "b1");
+	Body b2(RBInertiad(EScalar::Random()(0)*10., h, I), 2, "b2");
+	Body b3(RBInertiad(EScalar::Random()(0)*10., h, I), 3, "b3");
+	Body b4(RBInertiad(EScalar::Random()(0)*10., h, I), 4, "b4");
+
+	mbg.addBody(b0);
+	mbg.addBody(b1);
+	mbg.addBody(b2);
+	mbg.addBody(b3);
+	mbg.addBody(b4);
+
+	Joint j0(Joint::RevX, true, 0, "j0");
+	Joint j1(Joint::RevY, true, 1, "j1");
+	Joint j2(Joint::RevZ, true, 2, "j2");
+	Joint j3(Joint::Spherical, true, 3, "j3");
+
+	mbg.addJoint(j0);
+	mbg.addJoint(j1);
+	mbg.addJoint(j2);
+	mbg.addJoint(j3);
+
+	//                b4
+	//             j3 | Spherical
+	//  Root     j0   |   j1     j2
+	//  ---- b0 ---- b1 ---- b2 ----b3
+	//  Fixed    RevX   RevY    RevZ
+
+
+	PTransformd to(Vector3d(0., 0.5, 0.));
+	PTransformd from(Vector3d(0., -0.5, 0.));
+
+
+	mbg.linkBodies(0, to, 1, from, 0);
+	mbg.linkBodies(1, to, 2, from, 1);
+	mbg.linkBodies(2, to, 3, from, 2);
+	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
+								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
+
+	MultiBody mb = mbg.makeMultiBody(0, isFixed);
+
+	MultiBodyConfig mbc(mb);
+	mbc.zero(mb);
+
+	return std::make_tuple(mb, mbc, mbg);
+}
+
+
 
 BOOST_AUTO_TEST_CASE(computeCoMTest)
 {
@@ -190,60 +257,15 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
-	typedef Eigen::Matrix<double, 1, 1> EScalar;
+	sva::PTransformd I(sva::PTransformd::Identity());
 
 	MultiBodyGraph mbg;
+	MultiBody mb;
+	MultiBodyConfig mbc;
 
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
+	std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
 
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(RBInertiad(EScalar::Random()(0)*10., h, I), 0, "b0");
-	Body b1(RBInertiad(EScalar::Random()(0)*10., h, I), 1, "b1");
-	Body b2(RBInertiad(EScalar::Random()(0)*10., h, I), 2, "b2");
-	Body b3(RBInertiad(EScalar::Random()(0)*10., h, I), 3, "b3");
-	Body b4(RBInertiad(EScalar::Random()(0)*10., h, I), 4, "b4");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-	mbg.addBody(b4);
-
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-	Joint j3(Joint::Spherical, true, 3, "j3");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-	mbg.addJoint(j3);
-
-	//                b4
-	//             j3 | Spherical
-	//  Root     j0   |   j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
 	CoMJacobianDummy comJac(mb);
-
-	MultiBodyConfig mbc(mb);
-
 
 	/**
 		*						Test jacobian with the com speed get by differentiation.
@@ -269,15 +291,14 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 		MatrixXd CJac = comJac.jacobian(mb, mbc);
 		MatrixXd CJacDot = comJac.jacobianDot(mb, mbc);
 
-		BOOST_CHECK_EQUAL(CJac.rows(), 6);
+		BOOST_CHECK_EQUAL(CJac.rows(), 3);
 		BOOST_CHECK_EQUAL(CJac.cols(), mb.nrDof());
 
 		VectorXd alpha = dofToVector(mb, mbc.alpha);
 		VectorXd alphaD = dofToVector(mb, mbc.alphaD);
 
-		Vector3d CDot = CJac.block(3, 0, 3, mb.nrDof())*alpha;
-		Vector3d CDotDot = CJac.block(3, 0, 3, mb.nrDof())*alphaD +
-				CJacDot.block(3, 0, 3, mb.nrDof())*alpha;
+		Vector3d CDot = CJac*alpha;
+		Vector3d CDotDot = CJac*alphaD + CJacDot*alpha;
 
 		BOOST_CHECK_SMALL((CDot_diff - CDot).norm(), TOL);
 		BOOST_CHECK_SMALL((CDot_diff - CoMVel).norm(), TOL);
@@ -376,7 +397,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -395,7 +416,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -426,7 +447,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -445,7 +466,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 			MatrixXd jacDot_diff = makeJDotFromStep(mb, mbc, comJac);
 			MatrixXd jacDot = comJac.jacobianDot(mb, mbc);
 
-			BOOST_CHECK_EQUAL(jacDot.rows(), 6);
+			BOOST_CHECK_EQUAL(jacDot.rows(), 3);
 			BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
 			BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
@@ -468,4 +489,85 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 	mbc.bodyVelW = {mv, mv, mv};
 	BOOST_CHECK_THROW(comJac.sJacobianDot(mb, mbc), std::domain_error);
 	mbc = MultiBodyConfig(mb);
+}
+
+
+BOOST_AUTO_TEST_CASE(CoMJacobianTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace cst = boost::math::constants;
+
+	sva::PTransformd I(sva::PTransformd::Identity());
+
+	MultiBodyGraph mbg;
+	MultiBody mb;
+	MultiBodyConfig mbc;
+
+	std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
+
+	CoMJacobian comJac(mb);
+	CoMJacobianDummy comJacDummy(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	// test jacobian
+	MatrixXd jacMat = comJac.jacobian(mb, mbc);
+	MatrixXd jacDummyMat = comJacDummy.jacobian(mb, mbc);
+
+	BOOST_CHECK_EQUAL(jacMat.rows(), 3);
+	BOOST_CHECK_EQUAL(jacMat.cols(), mb.nrDof());
+
+	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+
+	// change configuration
+	Quaterniond q;
+	q = AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ());
+	mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
+	forwardKinematics(mb, mbc);
+
+	jacMat = comJac.jacobian(mb, mbc);
+	jacDummyMat = comJacDummy.jacobian(mb, mbc);
+
+	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+
+
+	// Test jacobianDot
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd jacDotMat = comJac.jacobianDot(mb, mbc);
+			MatrixXd jacDotDummyMat = comJacDummy.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_EQUAL(jacDotMat.rows(), 3);
+			BOOST_CHECK_EQUAL(jacDotMat.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDotMat - jacDotDummyMat).norm(), TOL);
+			mbc.alpha[i][j] = 0.;
+		}
+	}
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		for(int j = 0; j < mb.joint(i).dof(); ++j)
+		{
+			mbc.alpha[i][j] = 1.;
+			forwardVelocity(mb, mbc);
+
+			MatrixXd jacDotMat = comJac.jacobianDot(mb, mbc);
+			MatrixXd jacDotDummyMat = comJacDummy.jacobianDot(mb, mbc);
+
+			BOOST_CHECK_EQUAL(jacDotMat.rows(), 3);
+			BOOST_CHECK_EQUAL(jacDotMat.cols(), mb.nrDof());
+
+			BOOST_CHECK_SMALL((jacDotMat - jacDotDummyMat).norm(), TOL);
+		}
+	}
 }

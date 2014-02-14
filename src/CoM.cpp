@@ -131,9 +131,9 @@ CoMJacobianDummy::CoMJacobianDummy()
 
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
-	jac_(6, mb.nrDof()),
-	jacDot_(6, mb.nrDof()),
-	jacFull_(6, mb.nrDof()),
+	jac_(3, mb.nrDof()),
+	jacDot_(3, mb.nrDof()),
+	jacFull_(3, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	totalMass_(0.),
 	bodiesWeight_(mb.nrBodies(), 1.)
@@ -143,9 +143,9 @@ CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb):
 
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody& mb, std::vector<double> weight):
-  jac_(6, mb.nrDof()),
-  jacDot_(6, mb.nrDof()),
-  jacFull_(6, mb.nrDof()),
+  jac_(3, mb.nrDof()),
+  jacDot_(3, mb.nrDof()),
+  jacFull_(3, mb.nrDof()),
   jacVec_(mb.nrBodies()),
   totalMass_(0.),
   bodiesWeight_(std::move(weight))
@@ -177,8 +177,8 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobian(mb, mbc);
-		jacVec_[i].fullJacobian(mb, jac, jacFull_);
-		jac_ += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
+		jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
+		jac_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
 	jac_ /= totalMass_;
@@ -199,8 +199,8 @@ CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
-		jacVec_[i].fullJacobian(mb, jac, jacFull_);
-		jacDot_ += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
+		jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
+		jacDot_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
 	}
 
 	jacDot_ /= totalMass_;
@@ -241,6 +241,149 @@ void CoMJacobianDummy::init(const rbd::MultiBody& mb)
 		totalMass_ += mb.body(i).inertia().mass();
 	}
 }
+
+
+
+CoMJacobian::CoMJacobian()
+{}
+
+
+CoMJacobian::CoMJacobian(const MultiBody& mb):
+	jac_(3, mb.nrDof()),
+	jacDot_(3, mb.nrDof()),
+	bodiesCoeff_(mb.nrBodies()),
+	bodiesCoM_(mb.nrBodies()),
+	jointsSubBodies_(mb.nrJoints()),
+	bodiesCoMWorld_(mb.nrBodies()),
+	bodiesCoMVelB_(mb.nrBodies())
+{
+	init(mb);
+}
+
+
+const Eigen::MatrixXd& CoMJacobian::jacobian(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	jac_.setZero();
+
+	// we pre compute the CoM position of each bodie in world frame
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		// the transformation must be read {}^0E_p {}^pT_N {}^NX_0
+		sva::PTransformd X_0_com_w = bodiesCoM_[i]*mbc.bodyPosW[i];
+		bodiesCoMWorld_[i] = sva::PTransformd(X_0_com_w.translation());
+	}
+
+	int curJ = 0;
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		std::vector<int>& subBodies = jointsSubBodies_[i];
+		sva::PTransformd X_i_0 = mbc.bodyPosW[i].inv();
+		for(int b: subBodies)
+		{
+			sva::PTransformd X_i_com = bodiesCoMWorld_[b]*X_i_0;
+			for(int dof = 0; dof < joints[i].dof(); ++dof)
+			{
+				jac_.col(curJ + dof).noalias() +=
+					(X_i_com.linearMul(sva::MotionVecd(mbc.motionSubspace[i].col(dof))))*
+						bodiesCoeff_[b];
+			}
+		}
+		curJ += joints[i].dof();
+	}
+
+	return jac_;
+}
+
+
+const Eigen::MatrixXd& CoMJacobian::jacobianDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	const std::vector<Joint>& joints = mb.joints();
+
+	jacDot_.setZero();
+
+	// we pre compute the CoM
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		bodiesCoMWorld_[i] = bodiesCoM_[i]*mbc.bodyPosW[i];
+		bodiesCoMVelB_[i] = bodiesCoM_[i]*mbc.bodyVelB[i];
+	}
+
+	int curJ = 0;
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		std::vector<int>& subBodies = jointsSubBodies_[i];
+		sva::PTransformd X_i_0 = mbc.bodyPosW[i].inv();
+
+		for(int b: subBodies)
+		{
+			sva::PTransformd X_i_com = bodiesCoMWorld_[b]*X_i_0;
+			sva::PTransformd E_b_0(Eigen::Matrix3d(mbc.bodyPosW[b].rotation().transpose()));
+
+			// angular velocity of rotation N to O
+			sva::MotionVecd E_Vb(mbc.bodyVelW[b].angular(), Eigen::Vector3d::Zero());
+			sva::MotionVecd X_Vcom_i_com = X_i_com*mbc.bodyVelB[i] - bodiesCoMVelB_[b];
+
+			for(int dof = 0; dof < joints[i].dof(); ++dof)
+			{
+				sva::MotionVecd S_ij(mbc.motionSubspace[i].col(dof));
+
+				// JD_i = (E_com_0_d*X_i_com*S_i + E_com_0*X_i_com_d*S_i)*(mass/totalMass)
+				// E_com_0_d = (ANG_Vcom)_0 x E_com_0
+				// X_i_com_d = (Vi - Vcom)_com x X_i_com
+				jacDot_.col(curJ + dof).noalias() +=
+					((E_Vb.cross(E_b_0*X_i_com*S_ij)).linear() +
+					(E_b_0*X_Vcom_i_com.cross(X_i_com*S_ij)).linear())*bodiesCoeff_[b];
+			}
+		}
+		curJ += joints[i].dof();
+	}
+
+	return jacDot_;
+}
+
+
+// inefficient but the best we can do without mbg
+void jointBodiesSuccessors(const MultiBody& mb, int joint, std::vector<int>& subBodies)
+{
+	int sonBody = mb.successor(joint);
+	subBodies.push_back(sonBody);
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		if(mb.predecessor(i) == sonBody)
+		{
+			jointBodiesSuccessors(mb, i, subBodies);
+		}
+	}
+}
+
+
+void CoMJacobian::init(const MultiBody& mb)
+{
+	double mass = 0.;
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		mass += mb.body(i).inertia().mass();
+	}
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		double bodyMass = mb.body(i).inertia().mass();
+		bodiesCoeff_[i] = bodyMass/mass;
+		bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum()/bodyMass).eval());
+	}
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		std::vector<int>& subBodies = jointsSubBodies_[i];
+		jointBodiesSuccessors(mb, i, subBodies);
+	}
+}
+
 
 } // namespace rbd
 
