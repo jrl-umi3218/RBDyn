@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
 	double mass = 1.;
 	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
+	Vector3d h = Vector3d::Random();
 
 	RBInertiad rbi(mass, h, I);
 
