@@ -16,7 +16,7 @@ SETUP_PROJECT()
 
 option(PYTHON_BINDING "Generate python binding." ON)
 option(UNIT_TESTS "Generate unit tests." ON)
-option(BENCHMARK "Generate benchmark." OFF)
+option(BENCHMARKS "Generate benchmarks." OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++0x -pedantic")
 
@@ -30,7 +30,7 @@ ADD_REQUIRED_DEPENDENCY("SpaceVecAlg")
 
 add_subdirectory(src)
 
-if(${UNIT_TESTS} OR ${BENCHMARK})
+if(${UNIT_TESTS} OR ${BENCHMARKS})
   add_subdirectory(tests)
 endif()
 

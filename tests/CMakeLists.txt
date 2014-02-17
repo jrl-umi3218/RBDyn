@@ -19,7 +19,7 @@ macro(addUnitTest name)
 endmacro(addUnitTest)
 
 macro(addBenchmark name)
-  if(${BENCHMARK})
+  if(${BENCHMARKS})
     add_executable(${name} ${name}.cpp ${HEADERS})
     target_link_libraries(${name} ${Boost_LIBRARIES} RBDyn)
     PKG_CONFIG_USE_DEPENDENCY(${name} SpaceVecAlg)
