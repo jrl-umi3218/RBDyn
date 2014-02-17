@@ -22,18 +22,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++0x -pedantic")
 
 #########################
 # External dependencies
-# set(BOOST_COMPONENTS unit_test_framework) 
-# SEARCH_FOR_BOOST()
 SEARCH_FOR_EIGEN()
 
 ADD_REQUIRED_DEPENDENCY("SpaceVecAlg")
 
 #########################
-# 
 
 add_subdirectory(src)
 
-add_subdirectory(tests)
+if(${UNIT_TESTS} OR ${BENCHMARK})
+  add_subdirectory(tests)
+endif()
 
 if(${PYTHON_BINDING})
   add_subdirectory(binding/python)
