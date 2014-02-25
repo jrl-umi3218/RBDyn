@@ -959,12 +959,23 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 }
 
 
-Eigen::MatrixXd jacobianVecFromJac(const rbd::MultiBody& mb,
+Eigen::MatrixXd jacobianVecBodyFromJac(const rbd::MultiBody& mb,
 	const rbd::MultiBodyConfig& mbc, rbd::Jacobian& jac, const Eigen::Vector3d& vec)
 {
 	Eigen::MatrixXd jacO = jac.bodyJacobian(mb, mbc);
 	Eigen::MatrixXd jacV(jacO.rows(), jacO.cols());
 	jac.translateBodyJacobian(jacO, mbc, vec, jacV);
+
+	return jacV - jacO;
+}
+
+
+Eigen::MatrixXd jacobianVecFromJac(const rbd::MultiBody& mb,
+	const rbd::MultiBodyConfig& mbc, rbd::Jacobian& jac, const Eigen::Vector3d& vec)
+{
+	Eigen::MatrixXd jacO = jac.jacobian(mb, mbc);
+	Eigen::MatrixXd jacV(jacO.rows(), jacO.cols());
+	jac.translateJacobian(jacO, mbc, vec, jacV);
 
 	return jacV - jacO;
 }
@@ -996,18 +1007,34 @@ BOOST_AUTO_TEST_CASE(JacobianVectorTest)
 		Eigen::Vector3d vec;
 		vec.setRandom();
 
-		Eigen::MatrixXd jac1MatDiff = jacobianVecFromJac(mb, mbc, jac1, vec);
+		// vectorBody
+		Eigen::MatrixXd jac1MatDiff = jacobianVecBodyFromJac(mb, mbc, jac1, vec);
 		Eigen::MatrixXd jac1Mat = jac1.vectorBodyJacobian(mb, mbc, vec);
 
 
 		BOOST_CHECK_SMALL((jac1MatDiff.block(3, 0, 3, jac1.dof()) -\
 											 jac1Mat.block(3, 0, 3, jac1.dof())).norm(), TOL);
 
-		Eigen::MatrixXd jac2MatDiff = jacobianVecFromJac(mb, mbc, jac2, vec);
+		Eigen::MatrixXd jac2MatDiff = jacobianVecBodyFromJac(mb, mbc, jac2, vec);
 		Eigen::MatrixXd jac2Mat = jac2.vectorBodyJacobian(mb, mbc, vec);
 
 
 		BOOST_CHECK_SMALL((jac2MatDiff.block(3, 0, 3, jac2.dof()) -\
 											 jac2Mat.block(3, 0, 3, jac2.dof())).norm(), TOL);
+
+		// vector
+		Eigen::MatrixXd jac3MatDiff = jacobianVecFromJac(mb, mbc, jac1, vec);
+		Eigen::MatrixXd jac3Mat = jac1.vectorJacobian(mb, mbc, vec);
+
+
+		BOOST_CHECK_SMALL((jac3MatDiff.block(3, 0, 3, jac1.dof()) -\
+											 jac3Mat.block(3, 0, 3, jac1.dof())).norm(), TOL);
+
+		Eigen::MatrixXd jac4MatDiff = jacobianVecFromJac(mb, mbc, jac2, vec);
+		Eigen::MatrixXd jac4Mat = jac2.vectorJacobian(mb, mbc, vec);
+
+
+		BOOST_CHECK_SMALL((jac4MatDiff.block(3, 0, 3, jac2.dof()) -\
+											 jac4Mat.block(3, 0, 3, jac2.dof())).norm(), TOL);
 	}
 }
