@@ -131,10 +131,22 @@ public:
 		return Xt_;
 	}
 
+	/// @return Set Transformation from the body base to joint i
+	void transforms(std::vector<sva::PTransformd> Xt)
+	{
+		Xt_ = std::move(Xt);
+	}
+
 	/// @return Transformation from the body base to joint num
 	const sva::PTransformd& transform(int num) const
 	{
 		return Xt_[num];
+	}
+
+	/// Set the transformation from the body base to joint num
+	void transform(int num, const sva::PTransformd& Xt)
+	{
+		Xt_[num] = Xt;
 	}
 
 	/// @return Index of the body with Id id.
@@ -241,12 +253,35 @@ public:
 		return parent_.at(num);
 	}
 
+	/** Safe version of @see transforms.
+		* @throw std::runtime_error.
+		*/
+	void sTransforms(std::vector<sva::PTransformd> Xt)
+	{
+		if(Xt.size() != Xt_.size())
+		{
+			std::ostringstream str;
+			str << "transform vector size mismatch: expected size "
+					<< Xt_.size() << " gived " << Xt.size();
+			throw std::runtime_error(str.str());
+		}
+		transforms(Xt);
+	}
+
 	/** Safe version of @see transform.
 		* @throw std::out_of_range.
 		*/
 	const sva::PTransformd& sTransform(int num) const
 	{
 		return Xt_.at(num);
+	}
+
+	/** Safe version of @see transform.
+		* @throw std::out_of_range.
+		*/
+	void sTransform(int num, const sva::PTransformd& Xt)
+	{
+		Xt_.at(num) = Xt;
 	}
 
 	/** Safe version of @see jointPosInParam.

@@ -380,6 +380,24 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	// jointIndexById
 	BOOST_CHECK_NO_THROW(mb.sJointIndexById(0));
 	BOOST_CHECK_THROW(mb.sJointIndexById(10), std::out_of_range);
+
+
+	// Setter test
+
+
+	// transform setter
+	sva::PTransformd newTrans(Vector3d(1., 1., 1));
+	BOOST_CHECK_NO_THROW(mb.sTransform(1, newTrans));
+	BOOST_CHECK_THROW(mb.sTransform(10, newTrans), std::out_of_range);
+	BOOST_CHECK_EQUAL(mb.transform(1), newTrans);
+	mb.transform(0, newTrans);
+	BOOST_CHECK_EQUAL(mb.transform(0), newTrans);
+
+	// transforms setter
+	std::vector<PTransformd> newXt = {newTrans, newTrans, I, tmp};
+	BOOST_CHECK_NO_THROW(mb.sTransforms(newXt));
+	BOOST_CHECK_THROW(mb.sTransforms({newTrans, newTrans, I}), std::runtime_error);
+	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, newXt);
 }
 
 
