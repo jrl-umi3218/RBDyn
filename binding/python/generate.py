@@ -201,6 +201,12 @@ def build_mb(mb):
   mb.add_method('sTransform', retval('sva::PTransformd'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='transform')
 
+  mb.add_method('sTransforms', None, [param('std::vector<sva::PTransformd>', 'Xt')],
+                throw=[run_ex], custom_name='transforms')
+  mb.add_method('sTransform', None, [param('int', 'num'),
+                                     param('const sva::PTransformd&', 'X')],
+                throw=[out_ex], custom_name='transform')
+
   mb.add_method('jointsPosInParam', retval('std::vector<int>'), [], is_const=True)
   mb.add_method('sJointPosInParam', retval('int'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='jointPosInParam')
@@ -578,6 +584,8 @@ if __name__ == '__main__':
   rbd.add_include('<ZMP.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
+                             message_rvalue='%(EXC)s.what()')
+  run_ex = rbd.add_exception('std::runtime_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
   out_ex = rbd.add_exception('std::out_of_range', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
