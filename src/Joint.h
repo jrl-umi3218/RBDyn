@@ -328,7 +328,7 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 		case Prism:
 			return PTransform<T>(Vector3<T>(S_.block<3, 1>(3, 0).cast<T>()*q[0]));
 		case Spherical:
-			return PTransform<T>(Quaternion<T>(q[0], dir_*q[1], dir_*q[2], dir_*q[3]));
+			return PTransform<T>(Quaternion<T>(q[0], dir_*q[1], dir_*q[2], dir_*q[3]).inverse());
 		case Free:
 			rot = QuatToE(q);
 			if(dir_ == 1.)

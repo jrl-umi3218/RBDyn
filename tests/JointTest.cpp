@@ -227,7 +227,7 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 
 	std::vector<double> q = {quat.w(), quat.x(), quat.y(), quat.z()};
 
-	PTransformd rot(quat);
+	PTransformd rot(quat.inverse());
 
 	// motion data
 	std::vector<double> alpha;
@@ -262,7 +262,6 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
 	BOOST_CHECK_EQUAL(j.pose(q), rot.inv());
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
-
 }
 
 BOOST_AUTO_TEST_CASE(FreeTest)
