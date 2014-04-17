@@ -170,6 +170,27 @@ public:
 		const sva::PTransformd& initTrans=sva::PTransformd::Identity());
 
 	/**
+		* Create a MultiBody from the graph.
+		* @param rootBodyId Id of the root body.
+		* @param rootJointType MultiBody root joint type.
+		* @param initTrans Initial transformation of the robot root.
+		* @throw std::out_of_range If rootBodyId don't exist.
+		*/
+	MultiBody makeMultiBody(int rootBodyId, Joint::Type rootJointType,
+		const sva::PTransformd& initTrans=sva::PTransformd::Identity());
+
+	/**
+		* Create a MultiBody from the graph.
+		* @param rootBodyId Id of the root body.
+		* @param rootJointType MultiBody root joint type.
+		* @param rootJointAxid MultiBody root joint axis.
+		* @param initTrans Initial transformation of the robot root.
+		* @throw std::out_of_range If rootBodyId don't exist.
+		*/
+	MultiBody makeMultiBody(int rootBodyId, Joint::Type rootJointType,
+		const Eigen::Vector3d& axis, const sva::PTransformd& initTrans=sva::PTransformd::Identity());
+
+	/**
 		* Remove a joint (and successor joints and bodies) from the graph.
 		* @param rootBodyId Graph root.
 		* @param jointId joint to remove.

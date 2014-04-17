@@ -188,6 +188,18 @@ std::size_t MultiBodyGraph::nrJoints() const
 MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 	const sva::PTransformd& initTrans)
 {
+	return makeMultiBody(rootBodyId, isFixed ? Joint::Fixed : Joint::Free, initTrans);
+}
+
+MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, Joint::Type rootJointType,
+	const sva::PTransformd& initTrans)
+{
+	return makeMultiBody(rootBodyId, rootJointType, Eigen::Vector3d::UnitZ(), initTrans);
+}
+
+MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, Joint::Type rootJointType,
+	const Eigen::Vector3d& axis, const sva::PTransformd& initTrans)
+{
 	using namespace Eigen;
 
 	std::vector<Body> bodies;
@@ -199,8 +211,7 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
 	std::vector<sva::PTransformd> Xt;
 
 	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
-	Joint rootJoint = isFixed ? Joint(Joint::Fixed, true, -1, "Root") :
-		Joint(Joint::Free, true, -1, "Root");
+	Joint rootJoint(rootJointType, axis, true, -1, "Root");
 
 	std::function<void(const std::shared_ptr<Node> curNode,
 										 const std::shared_ptr<Node> fromNode, const Joint& joint,

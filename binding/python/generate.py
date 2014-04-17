@@ -158,6 +158,14 @@ def build_mbg(mbg):
                  [param('int', 'rootById'), param('bool', 'isFixed'),
                   param('sva::PTransformd', 'initTrans', default_value='sva::PTransformd::Identity()')])
 
+  mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
+                 [param('int', 'rootById'), param('rbd::Joint::Type', 'rootJointType'),
+                  param('sva::PTransformd', 'initTrans', default_value='sva::PTransformd::Identity()')])
+
+  mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
+                 [param('int', 'rootById'), param('rbd::Joint::Type', 'rootJointType'),
+                  param('const Eigen::Vector3d&', 'axis'),
+                  param('sva::PTransformd', 'initTrans', default_value='sva::PTransformd::Identity()')])
 
 
 def build_mb(mb):
