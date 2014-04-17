@@ -264,6 +264,63 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
 }
 
+BOOST_AUTO_TEST_CASE(PlanarTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	namespace constants = boost::math::constants;
+
+	Joint j(Joint::Planar, true, 2, "planar");
+
+	// subspace data
+	MatrixXd S = MatrixXd::Zero(6,3);
+	S.block(2,0,3,3).setIdentity();
+
+	// pose data
+	double rotZ = constants::pi<double>()/2.;
+	double transX = 4.;
+	double transY = 0.3;
+
+	sva::PTransformd trans(RotZ(rotZ), Vector3d(transX, transY, 0.));
+
+	std::vector<double> q = {rotZ, transX, transY};
+
+	// motion data
+	std::vector<double> alpha;
+	Vector3d alphaE = Vector3d::Random();
+	for(int i = 0; i < 3; ++i)
+		alpha.push_back(alphaE(i));
+
+	// test accessor
+	BOOST_CHECK_EQUAL(j.type(), Joint::Planar);
+	BOOST_CHECK_EQUAL(j.params(), 3);
+	BOOST_CHECK_EQUAL(j.dof(), 3);
+	BOOST_CHECK_EQUAL(j.id(), 2);
+	BOOST_CHECK_EQUAL(j.name(), "planar");
+	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
+
+	// test zero
+	std::vector<double> zeroP = {0., 0., 0.};
+	std::vector<double> zeroD = {0., 0., 0.};
+	std::vector<double> zp = j.zeroParam();
+	std::vector<double> zd = j.zeroDof();
+	BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
+
+	// test pose
+	BOOST_CHECK_EQUAL(j.pose(q), trans);
+
+	// test motion
+	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), S*alphaE);
+
+	// test inverse polarity
+	j.forward(false);
+	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
+	BOOST_CHECK_EQUAL(j.pose(q), trans.inv());
+	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
+}
+
 BOOST_AUTO_TEST_CASE(FreeTest)
 {
 	using namespace Eigen;

@@ -65,7 +65,8 @@ def build_body(bd):
 
 def build_joint(jt):
   jt.add_enum('Type',    ['Rev', 'Prism',
-                          'Spherical', 'Free', 'Fixed'])
+                          'Spherical', 'Planar',
+                          'Free', 'Fixed'])
 
   jt.add_copy_constructor()
   jt.add_constructor([param('rbd::Joint::Type', 'type'), param('Eigen::Vector3d', 'axis'),

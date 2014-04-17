@@ -42,7 +42,7 @@ Eigen::Matrix3<T> QuatToE(const std::vector<T>& q);
 	* Joint representation.
 	* Hold joint id and name and compute transformation, speed and motion
 	* subspace.
-	* WARNING : Spherical joint translation parameters are in FP coordinate.
+	* WARNING : Free joint translation parameters are in FP coordinate (Example 4.5 p81).
 	*/
 class Joint
 {
@@ -53,6 +53,7 @@ public:
 		Rev, ///< Revolute joint about an user specified axis.
 		Prism, ///< Prismatique joint about an user specified axis.
 		Spherical, ///< Spherical joint, represented by a quaternion.
+		Planar, ///< Planar joint (2 prismatic(X, Y) and 1 revolute(Z)).
 		Free, ///< Free joint, represented by a quaternion.
 		Fixed ///< Fixed joint.
 	};
@@ -329,6 +330,15 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 			return PTransform<T>(Vector3<T>(S_.block<3, 1>(3, 0).cast<T>()*q[0]));
 		case Spherical:
 			return PTransform<T>(Quaternion<T>(q[0], dir_*q[1], dir_*q[2], dir_*q[3]).inverse());
+		case Planar:
+			if(dir_ == 1.)
+			{
+				return PTransform<T>(sva::RotZ(q[0]), Vector3d(q[1], q[2], 0.));
+			}
+			else
+			{
+				return PTransform<T>(sva::RotZ(q[0]), Vector3d(q[1], q[2], 0.)).inv();
+			}
 		case Free:
 			rot = QuatToE(q);
 			if(dir_ == 1.)
@@ -362,6 +372,8 @@ inline sva::MotionVecd Joint::motion(const std::vector<double>& alpha) const
 																			 S_.block<3, 1>(3, 0)*alpha[0]).finished());
 		case Spherical:
 			return MotionVecd(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
+		case Planar:
+			return MotionVecd(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
 		case Free:
 			return MotionVecd(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
 								alpha[3], alpha[4], alpha[5]).finished());
@@ -385,6 +397,8 @@ inline sva::MotionVecd Joint::tanAccel(const std::vector<double>& alphaD) const
 			return MotionVecd((Vector6d() << Vector3d::Zero(),
 																			 S_.block<3, 1>(3, 0)*alphaD[0]).finished());
 		case Spherical:
+			return MotionVecd(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+		case Planar:
 			return MotionVecd(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
 		case Free:
 			return MotionVecd(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
@@ -456,6 +470,8 @@ inline std::vector<double> Joint::ZeroParam(Type type)
 			return {0.};
 		case Spherical:
 			return {1., 0., 0., 0.};
+		case Planar:
+			return {0., 0., 0.};
 		case Free:
 			return {1., 0., 0., 0., 0., 0., 0.};
 		case Fixed:
@@ -473,6 +489,8 @@ inline std::vector<double> Joint::ZeroDof(Type type)
 		case Prism:
 			return {0.};
 		case Spherical:
+			return {0., 0., 0.};
+		case Planar:
 			return {0., 0., 0.};
 		case Free:
 			return {0., 0., 0., 0., 0., 0.};
@@ -505,6 +523,13 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d& a)
 			S_.block<3, 3>(0, 0).setIdentity();
 			S_ *= dir_;
 			params_ = 4;
+			dof_ = 3;
+			break;
+		case Planar:
+			S_ = Matrix<double, 6, 3>::Zero();
+			S_.block<3, 3>(2, 0).setIdentity();
+			S_ *= dir_;
+			params_ = 3;
 			dof_ = 3;
 			break;
 		case Free:
