@@ -463,7 +463,6 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
 
-	/// @todo Improve EulerTest, compare finite diff speed with model speed.
 	// planar
 	q = {0., 0., 0.};
 	goalQ = {1., 1., 1.};
@@ -471,6 +470,78 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 }
 
+/// @return norm of the finite diff motion vector minus model motion vector
+double testEulerInteg(rbd::Joint::Type jType, const Eigen::VectorXd& q,
+										const Eigen::VectorXd& alpha, double timeStep=0.001)
+{
+	using namespace std;
+	using namespace Eigen;
+	using namespace rbd;
+
+	Joint j(jType, true, 0, std::string(""));
+	std::vector<double> qVec(j.params()), alphaVec(j.dof());
+	for(int i = 0; i < j.params(); ++i)
+	{
+		qVec[i] = q[i];
+	}
+	for(int i = 0; i < j.dof(); ++i)
+	{
+		alphaVec[i] = alpha[i];
+	}
+
+	sva::PTransformd initPos(j.pose(qVec));
+	sva::MotionVecd motion(j.motion(alphaVec));
+
+	eulerJointIntegration(jType, alphaVec, timeStep, qVec);
+	sva::PTransformd endPos(j.pose(qVec));
+
+	// linear velocity is set in initPos frame
+	Vector3d linVel((initPos.rotation()*(endPos.translation() - initPos.translation()))/timeStep);
+	// rotation velocity is also in initPos frame
+	Matrix3d rotErr(endPos.rotation()*initPos.rotation().transpose());
+	Vector3d angVel = sva::rotationVelocity(rotErr, 1e-7)/timeStep;
+	sva::MotionVecd motionDiff(angVel, linVel);
+
+	return (motionDiff - motion).vector().norm();
+}
+
+BOOST_AUTO_TEST_CASE(EulerTestV2)
+{
+	using namespace Eigen;
+	using namespace rbd;
+
+	for(int i = 0; i < 100; ++i)
+	{
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Rev, VectorXd::Random(1),
+																							VectorXd::Random(1)), 1e-4);
+	}
+
+	for(int i = 0; i < 100; ++i)
+	{
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Prism, VectorXd::Random(1),
+																								VectorXd::Random(1)), 1e-4);
+	}
+
+	for(int i = 0; i < 100; ++i)
+	{
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Spherical, VectorXd::Random(4).normalized(),
+																										VectorXd::Random(3)), 1e-4);
+	}
+
+	for(int i = 0; i < 100; ++i)
+	{
+		VectorXd q(VectorXd::Random(7));
+		q.head<4>() /= q.head<4>().norm();
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Free, q,
+																							 VectorXd::Random(6)), 1e-4);
+	}
+
+	for(int i = 0; i < 100; ++i)
+	{
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Planar, VectorXd::Random(3),
+																								 VectorXd::Random(3), 1e-4), 1e-3);
+	}
+}
 
 
 BOOST_AUTO_TEST_CASE(FVInteg)
@@ -509,7 +580,7 @@ BOOST_AUTO_TEST_CASE(FVInteg)
 
 		Vector3d mvDiff((pt.translation() - oldPt.translation())/step);
 
-		std::cout << (mvDiff - mvFV.linear()).norm() << std::endl;
+		// std::cout << (mvDiff - mvFV.linear()).norm() << std::endl;
 
 		oldPt = pt;
 	}
