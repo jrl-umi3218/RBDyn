@@ -48,6 +48,16 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 			break;
 		}
 
+		case Joint::Planar:
+		{
+			double q1Step = q[2]*alpha[0] + alpha[1];
+			double q2Step = -q[1]*alpha[0] + alpha[2];
+			q[0] += alpha[0]*step;
+			q[1] += q1Step*step;
+			q[2] += q2Step*step;
+			break;
+		}
+
 		case Joint::Free:
 		{
 			Eigen::Vector3d v;

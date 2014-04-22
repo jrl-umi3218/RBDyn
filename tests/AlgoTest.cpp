@@ -461,6 +461,14 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 	goalQ = {1./std::sqrt(1.25), 0.5/std::sqrt(1.25), 0., 0., 0., 0., 0.},
 	eulerJointIntegration(Joint::Free, {1., 0., 0., 0., 0., 0.}, 1., q);
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
+
+
+	/// @todo Improve EulerTest, compare finite diff speed with model speed.
+	// planar
+	q = {0., 0., 0.};
+	goalQ = {1., 1., 1.};
+	eulerJointIntegration(Joint::Planar, {1., 1., 1.}, 1., q);
+	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 }
 
 
