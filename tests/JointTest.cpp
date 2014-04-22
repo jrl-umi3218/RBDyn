@@ -282,7 +282,7 @@ BOOST_AUTO_TEST_CASE(PlanarTest)
 	double transX = 4.;
 	double transY = 0.3;
 
-	sva::PTransformd trans(RotZ(rotZ), Vector3d(transX, transY, 0.));
+	sva::PTransformd trans(RotZ(rotZ), RotZ(rotZ).transpose()*Vector3d(transX, transY, 0.));
 
 	std::vector<double> q = {rotZ, transX, transY};
 

@@ -331,13 +331,14 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 		case Spherical:
 			return PTransform<T>(Quaternion<T>(q[0], dir_*q[1], dir_*q[2], dir_*q[3]).inverse());
 		case Planar:
+			rot = sva::RotZ(q[0]);
 			if(dir_ == 1.)
 			{
-				return PTransform<T>(sva::RotZ(q[0]), Vector3d(q[1], q[2], 0.));
+				return PTransform<T>(rot, rot.transpose()*Vector3d(q[1], q[2], 0.));
 			}
 			else
 			{
-				return PTransform<T>(sva::RotZ(q[0]), Vector3d(q[1], q[2], 0.)).inv();
+				return PTransform<T>(rot, rot.transpose()*Vector3d(q[1], q[2], 0.)).inv();
 			}
 		case Free:
 			rot = QuatToE(q);
