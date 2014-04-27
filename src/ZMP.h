@@ -18,12 +18,10 @@
 // include
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
-// RBDyn
-#include <RBDyn/MultiBodyConfig.h>
 
 namespace rbd
 {
-
+class MultiBodyConfig;
 /**
 	 * Compute the ZMP in the world frame
 	 * as in Kajita's book on humanoid robots chap. 3 p.38
@@ -32,7 +30,6 @@ namespace rbd
 	 * @oaram comA CoM acceleration in world frame
 	 * @param altitude Double representing the surface's altitude in world frame
 	 */
-
 Eigen::Vector3d computeCentroidalZMP(MultiBodyConfig& mbc, Eigen::Vector3d& com,
 		Eigen::Vector3d& comA, double altitude);
 

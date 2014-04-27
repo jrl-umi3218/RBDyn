@@ -17,6 +17,9 @@
 // Associated header
 #include "ZMP.h"
 
+// RBDyn
+#include "MultiBodyConfig.h"
+
 namespace rbd
 {
 
