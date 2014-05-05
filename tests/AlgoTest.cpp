@@ -471,14 +471,15 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 }
 
 /// @return norm of the finite diff motion vector minus model motion vector
-double testEulerInteg(rbd::Joint::Type jType, const Eigen::VectorXd& q,
-										const Eigen::VectorXd& alpha, double timeStep=0.001)
+double testEulerInteg(rbd::Joint::Type jType, const Eigen::Vector3d& axis,
+										const Eigen::VectorXd& q, const Eigen::VectorXd& alpha,
+										double timeStep=0.001)
 {
 	using namespace std;
 	using namespace Eigen;
 	using namespace rbd;
 
-	Joint j(jType, true, 0, std::string(""));
+	Joint j(jType, axis, true, 0, std::string(""));
 	std::vector<double> qVec(j.params()), alphaVec(j.dof());
 	for(int i = 0; i < j.params(); ++i)
 	{
@@ -512,40 +513,42 @@ BOOST_AUTO_TEST_CASE(EulerTestV2)
 
 	for(int i = 0; i < 100; ++i)
 	{
-		BOOST_CHECK_SMALL(testEulerInteg(Joint::Rev, VectorXd::Random(1),
-																							VectorXd::Random(1)), 1e-4);
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Rev, Vector3d::Random().normalized(),
+																	 VectorXd::Random(1), VectorXd::Random(1)), 1e-4);
 	}
 
 	for(int i = 0; i < 100; ++i)
 	{
-		BOOST_CHECK_SMALL(testEulerInteg(Joint::Prism, VectorXd::Random(1),
-																								VectorXd::Random(1)), 1e-4);
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Prism, Vector3d::Random().normalized(),
+																	 VectorXd::Random(1), VectorXd::Random(1)), 1e-4);
 	}
 
 	for(int i = 0; i < 100; ++i)
 	{
-		BOOST_CHECK_SMALL(testEulerInteg(Joint::Spherical, VectorXd::Random(4).normalized(),
-																										VectorXd::Random(3)), 1e-4);
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Spherical, Vector3d::UnitZ(),
+																	 VectorXd::Random(4).normalized(),
+																	 VectorXd::Random(3)), 1e-4);
 	}
 
 	for(int i = 0; i < 100; ++i)
 	{
 		VectorXd q(VectorXd::Random(7));
 		q.head<4>() /= q.head<4>().norm();
-		BOOST_CHECK_SMALL(testEulerInteg(Joint::Free, q,
-																							 VectorXd::Random(6)), 1e-4);
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Free, Vector3d::UnitZ(), q,
+																	 VectorXd::Random(6)), 1e-4);
 	}
 
 	for(int i = 0; i < 100; ++i)
 	{
-		BOOST_CHECK_SMALL(testEulerInteg(Joint::Planar, VectorXd::Random(3),
-																								 VectorXd::Random(3), 1e-4), 1e-3);
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Planar, Vector3d::UnitZ(),
+																	 VectorXd::Random(3), VectorXd::Random(3), 1e-4),
+										 1e-3);
 	}
 
 	for(int i = 0; i < 100; ++i)
 	{
-		BOOST_CHECK_SMALL(testEulerInteg(Joint::Cylindrical, VectorXd::Random(2),
-																											VectorXd::Random(2)), 1e-3);
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Cylindrical, Vector3d::UnitZ(),
+																	 VectorXd::Random(2), VectorXd::Random(2)), 1e-4);
 	}
 }
 

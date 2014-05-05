@@ -328,20 +328,21 @@ BOOST_AUTO_TEST_CASE(CylindricalTest)
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(Joint::Cylindrical, true, 2, "cylindrical");
+	Vector3d axis(Vector3d::Random().normalized());
+	Joint j(Joint::Cylindrical, axis, true, 2, "cylindrical");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,2);
-	S(2, 0) = 1.;
-	S(5, 1) = 1.;
+	S.col(0).head<3>() = axis;
+	S.col(1).tail<3>() = axis;
 
 	// pose data
-	double rotZ = constants::pi<double>()/2.;
-	double transZ = 5.;
+	double rot = constants::pi<double>()/2.;
+	double trans = 5.;
 
-	sva::PTransformd X(RotZ(rotZ), Vector3d(0., 0., transZ));
+	sva::PTransformd X(AngleAxisd(-rot, axis).matrix(), axis*trans);
 
-	std::vector<double> q = {rotZ, transZ};
+	std::vector<double> q = {rot, trans};
 
 	// motion data
 	std::vector<double> alpha;
@@ -374,7 +375,7 @@ BOOST_AUTO_TEST_CASE(CylindricalTest)
 	// test inverse polarity
 	j.forward(false);
 	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
-	BOOST_CHECK_EQUAL(j.pose(q), X.inv());
+	BOOST_CHECK_SMALL((j.pose(q).matrix() - X.inv().matrix()).norm(), TOL);
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
 }
 

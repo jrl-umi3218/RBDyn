@@ -342,15 +342,8 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 				return PTransform<T>(rot, rot.transpose()*Vector3d(q[1], q[2], 0.)).inv();
 			}
 		case Cylindrical:
-			rot = sva::RotZ(q[0]);
-			if(dir_ == 1.)
-			{
-				return PTransform<T>(rot, Vector3d(0., 0., q[1]));
-			}
-			else
-			{
-				return PTransform<T>(rot, Vector3d(0., 0., q[1])).inv();
-			}
+			return PTransform<T>(AngleAxis<T>(-q[0], S_.col(0).head<3>().cast<T>()).matrix(),
+													S_.col(1).tail<3>().cast<T>()*q[1]);
 		case Free:
 			rot = QuatToE(q);
 			if(dir_ == 1.)
@@ -554,8 +547,8 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d& a)
 			break;
 		case Cylindrical:
 			S_ = Matrix<double, 6, 2>::Zero();
-			S_(2, 0) = 1.;
-			S_(5, 1) = 1.;
+			S_.col(0).head<3>() = a;
+			S_.col(1).tail<3>() = a;
 			S_ *= dir_;
 			params_ = 2;
 			dof_ = 2;
