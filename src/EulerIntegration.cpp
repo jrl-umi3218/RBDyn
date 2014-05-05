@@ -58,6 +58,13 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 			break;
 		}
 
+		case Joint::Cylindrical:
+		{
+			q[0] += alpha[0]*step;
+			q[1] += alpha[1]*step;
+			break;
+		}
+
 		case Joint::Free:
 		{
 			Eigen::Vector3d v;

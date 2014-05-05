@@ -54,6 +54,7 @@ public:
 		Prism, ///< Prismatique joint about an user specified axis.
 		Spherical, ///< Spherical joint, represented by a quaternion.
 		Planar, ///< Planar joint (2 prismatic(X, Y) and 1 revolute(Z)).
+		Cylindrical, ///< Cylindrical joint (Z prismatic, Z revolute).
 		Free, ///< Free joint, represented by a quaternion.
 		Fixed ///< Fixed joint.
 	};
@@ -340,6 +341,16 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 			{
 				return PTransform<T>(rot, rot.transpose()*Vector3d(q[1], q[2], 0.)).inv();
 			}
+		case Cylindrical:
+			rot = sva::RotZ(q[0]);
+			if(dir_ == 1.)
+			{
+				return PTransform<T>(rot, Vector3d(0., 0., q[1]));
+			}
+			else
+			{
+				return PTransform<T>(rot, Vector3d(0., 0., q[1])).inv();
+			}
 		case Free:
 			rot = QuatToE(q);
 			if(dir_ == 1.)
@@ -375,6 +386,8 @@ inline sva::MotionVecd Joint::motion(const std::vector<double>& alpha) const
 			return MotionVecd(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
 		case Planar:
 			return MotionVecd(S_*Vector3d(alpha[0], alpha[1], alpha[2]));
+		case Cylindrical:
+			return MotionVecd(S_*Vector2d(alpha[0], alpha[1]));
 		case Free:
 			return MotionVecd(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
 								alpha[3], alpha[4], alpha[5]).finished());
@@ -401,6 +414,8 @@ inline sva::MotionVecd Joint::tanAccel(const std::vector<double>& alphaD) const
 			return MotionVecd(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
 		case Planar:
 			return MotionVecd(S_*Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+		case Cylindrical:
+			return MotionVecd(S_*Vector2d(alphaD[0], alphaD[1]));
 		case Free:
 			return MotionVecd(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
 								alphaD[3], alphaD[4], alphaD[5]).finished());
@@ -473,6 +488,8 @@ inline std::vector<double> Joint::ZeroParam(Type type)
 			return {1., 0., 0., 0.};
 		case Planar:
 			return {0., 0., 0.};
+		case Cylindrical:
+			return {0., 0.};
 		case Free:
 			return {1., 0., 0., 0., 0., 0., 0.};
 		case Fixed:
@@ -493,6 +510,8 @@ inline std::vector<double> Joint::ZeroDof(Type type)
 			return {0., 0., 0.};
 		case Planar:
 			return {0., 0., 0.};
+		case Cylindrical:
+			return {0., 0.};
 		case Free:
 			return {0., 0., 0., 0., 0., 0.};
 		case Fixed:
@@ -532,6 +551,14 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d& a)
 			S_ *= dir_;
 			params_ = 3;
 			dof_ = 3;
+			break;
+		case Cylindrical:
+			S_ = Matrix<double, 6, 2>::Zero();
+			S_(2, 0) = 1.;
+			S_(5, 1) = 1.;
+			S_ *= dir_;
+			params_ = 2;
+			dof_ = 2;
 			break;
 		case Free:
 			S_ = dir_*Matrix6d::Identity();

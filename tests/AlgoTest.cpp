@@ -541,6 +541,12 @@ BOOST_AUTO_TEST_CASE(EulerTestV2)
 		BOOST_CHECK_SMALL(testEulerInteg(Joint::Planar, VectorXd::Random(3),
 																								 VectorXd::Random(3), 1e-4), 1e-3);
 	}
+
+	for(int i = 0; i < 100; ++i)
+	{
+		BOOST_CHECK_SMALL(testEulerInteg(Joint::Cylindrical, VectorXd::Random(2),
+																											VectorXd::Random(2)), 1e-3);
+	}
 }
 
 
