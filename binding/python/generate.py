@@ -65,7 +65,7 @@ def build_body(bd):
 
 def build_joint(jt):
   jt.add_enum('Type',    ['Rev', 'Prism',
-                          'Spherical', 'Planar',
+                          'Spherical', 'Planar', 'Cylindrical',
                           'Free', 'Fixed'])
 
   jt.add_copy_constructor()
