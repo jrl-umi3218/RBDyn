@@ -48,6 +48,7 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 			break;
 		}
 
+		/// @todo manage reverse joint
 		case Joint::Planar:
 		{
 			double q1Step = q[2]*alpha[0] + alpha[1];
@@ -65,6 +66,7 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 			break;
 		}
 
+		/// @todo manage reverse joint
 		case Joint::Free:
 		{
 			Eigen::Vector3d v;
@@ -78,6 +80,7 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 
 			// don't break, we go in spherical
 		}
+		/// @todo manage reverse joint
 		case Joint::Spherical:
 		{
 			Eigen::Vector4d qi;
