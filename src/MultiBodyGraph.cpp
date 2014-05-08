@@ -186,19 +186,22 @@ std::size_t MultiBodyGraph::nrJoints() const
 }
 
 MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, bool isFixed,
-	const sva::PTransformd& initTrans)
+	const sva::PTransformd& X_0_j0, const sva::PTransformd& X_b0_j0)
 {
-	return makeMultiBody(rootBodyId, isFixed ? Joint::Fixed : Joint::Free, initTrans);
+	return makeMultiBody(rootBodyId, isFixed ? Joint::Fixed : Joint::Free,
+		X_0_j0, X_b0_j0);
 }
 
 MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, Joint::Type rootJointType,
-	const sva::PTransformd& initTrans)
+	const sva::PTransformd& X_0_j0, const sva::PTransformd& X_b0_j0)
 {
-	return makeMultiBody(rootBodyId, rootJointType, Eigen::Vector3d::UnitZ(), initTrans);
+	return makeMultiBody(rootBodyId, rootJointType, Eigen::Vector3d::UnitZ(),
+		X_0_j0, X_b0_j0);
 }
 
-MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, Joint::Type rootJointType,
-	const Eigen::Vector3d& axis, const sva::PTransformd& initTrans)
+MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId,
+	Joint::Type rootJointType, const Eigen::Vector3d& axis,
+	const sva::PTransformd& X_0_j0, const sva::PTransformd& X_b0_j0)
 {
 	using namespace Eigen;
 
@@ -216,15 +219,16 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, Joint::Type rootJointTyp
 	std::function<void(const std::shared_ptr<Node> curNode,
 										 const std::shared_ptr<Node> fromNode, const Joint& joint,
 										 int p, int s, int par,
-										 const sva::PTransformd& Xt)> makeTree;
+										 const sva::PTransformd& Xt,
+										 const sva::PTransformd& Xbase)> makeTree;
 
 	makeTree = [&](const std::shared_ptr<Node> curNode,
 		const std::shared_ptr<Node> fromNode, const Joint& joint,
 		int p, int s, int par,
-		const sva::PTransformd& Xti)
+		const sva::PTransformd& Xti, const sva::PTransformd& Xbase)
 	{
 		// looking for transformation that go to fromNode
-		sva::PTransformd XFrom = sva::PTransformd::Identity();
+		sva::PTransformd XFrom = Xbase;
 		for(Arc& a : curNode->arcs)
 		{
 			if(a.next == fromNode)
@@ -250,12 +254,12 @@ MultiBody MultiBodyGraph::makeMultiBody(int rootBodyId, Joint::Type rootJointTyp
 				int nextInd = static_cast<int>(bodies.size());
 
 				makeTree(a.next, curNode, a.joint, curInd, nextInd, curInd,
-					a.X*XFrom.inv());
+					a.X*XFrom.inv(), sva::PTransformd::Identity());
 			}
 		}
 	};
 
-	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1, initTrans);
+	makeTree(rootNode, nullptr, rootJoint, -1, 0, -1, X_0_j0, X_b0_j0);
 
 	return MultiBody(std::move(bodies), std::move(joints),
 		std::move(pred), std::move(succ), std::move(parent), std::move(Xt));

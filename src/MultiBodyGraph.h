@@ -163,32 +163,39 @@ public:
 		* Create a MultiBody from the graph.
 		* @param rootBodyId Id of the root body.
 		* @param isFixed True if the root is fixed, false if the root is free.
-		* @param initTrans Initial transformation of the robot root.
+		* @param X_0_j0 Transformation to the root joint.
+		* @param X_b0_j0 Transformation from the root body to the root joint.
 		* @throw std::out_of_range If rootBodyId don't exist.
 		*/
 	MultiBody makeMultiBody(int rootBodyId, bool isFixed,
-		const sva::PTransformd& initTrans=sva::PTransformd::Identity());
+		const sva::PTransformd& X_0_j0=sva::PTransformd::Identity(),
+		const sva::PTransformd& X_b0_j0=sva::PTransformd::Identity());
 
 	/**
 		* Create a MultiBody from the graph.
 		* @param rootBodyId Id of the root body.
 		* @param rootJointType MultiBody root joint type.
-		* @param initTrans Initial transformation of the robot root.
+		* @param X_0_j0 Transformation to the root joint.
+		* @param X_b0_j0 Transformation from the root body to the root joint.
 		* @throw std::out_of_range If rootBodyId don't exist.
 		*/
 	MultiBody makeMultiBody(int rootBodyId, Joint::Type rootJointType,
-		const sva::PTransformd& initTrans=sva::PTransformd::Identity());
+		const sva::PTransformd& X_0_j0=sva::PTransformd::Identity(),
+		const sva::PTransformd& X_b0_j0=sva::PTransformd::Identity());
 
 	/**
 		* Create a MultiBody from the graph.
 		* @param rootBodyId Id of the root body.
 		* @param rootJointType MultiBody root joint type.
 		* @param rootJointAxid MultiBody root joint axis.
-		* @param initTrans Initial transformation of the robot root.
+		* @param X_0_j0 Transformation to the root joint.
+		* @param X_b0_j0 Transformation from the root body to the root joint.
 		* @throw std::out_of_range If rootBodyId don't exist.
 		*/
 	MultiBody makeMultiBody(int rootBodyId, Joint::Type rootJointType,
-		const Eigen::Vector3d& axis, const sva::PTransformd& initTrans=sva::PTransformd::Identity());
+		const Eigen::Vector3d& axis,
+		const sva::PTransformd& X_0_j0=sva::PTransformd::Identity(),
+		const sva::PTransformd& X_b0_j0=sva::PTransformd::Identity());
 
 	/**
 		* Remove a joint (and successor joints and bodies) from the graph.
