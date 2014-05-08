@@ -28,6 +28,7 @@
 
 // RBDyn
 #include "Body.h"
+#include "FK.h"
 #include "Joint.h"
 #include "MultiBody.h"
 #include "MultiBodyGraph.h"
@@ -838,4 +839,62 @@ BOOST_AUTO_TEST_CASE(ConfigConverterTest)
 	delete mb1tomb3;
 	delete mb2tomb1;
 	delete mb3tomb1;
+}
+
+
+BOOST_AUTO_TEST_CASE(MultiBodyBaseTransformTest)
+{
+	using namespace Eigen;
+
+	// we construct 3 multibody from body id 0, 3 and 4
+	// we try to find the base of each body with all the multibody
+	rbd::MultiBody mb0, mb3, mb4;
+	rbd::MultiBodyConfig mbc0, mbc3, mbc4;
+	rbd::MultiBodyGraph mbg;
+	sva::PTransformd mb3Surface(Quaterniond(Vector4d::Random()).normalized(),
+															Vector3d::Random());
+	sva::PTransformd mb4Surface(Quaterniond(Vector4d::Random()).normalized(),
+															Vector3d::Random());
+	std::tie(mb0, mbc0, mbg) = makeXYZSarm();
+	// the multibody graph is construct with the old body linking api
+	// so even the multibody from body 0 must have transform to each bodies base
+	auto mb0ToBase = mbg.bodiesBaseTransform(0);
+
+	VectorXd q(VectorXd::Random(mb0.nrParams()));
+	// we must normalize the configuration of the spherical joint
+	q.segment(mb0.jointPosInParam(mb0.jointIndexById(3)), 4).normalize();
+	rbd::vectorToParam(q, mbc0.q);
+	rbd::forwardKinematics(mb0, mbc0);
+
+	// since the multibody is construct with the old body linking api
+	// we must add an offset to joint origin of mb3 that correspond mb0 transform
+	// to body base
+	mb3 = mbg.makeMultiBody(3, true, mb3Surface*mb0ToBase[3]*mbc0.bodyPosW[mb0.bodyIndexById(3)],
+			mb3Surface);
+	rbd::ConfigConverter mb0ToMb3(mb0, mb3);
+	mbc3 = rbd::MultiBodyConfig(mb3);
+	mb0ToMb3.convert(mbc0, mbc3);
+	rbd::forwardKinematics(mb3, mbc3);
+	auto mb3ToBase = mbg.bodiesBaseTransform(3, mb3Surface);
+
+	mb4 = mbg.makeMultiBody(4, true, mb4Surface*mb0ToBase[4]*mbc0.bodyPosW[mb0.bodyIndexById(4)],
+			mb4Surface);
+	mbc4 = rbd::MultiBodyConfig(mb4);
+	rbd::ConfigConverter mb0ToMb4(mb0, mb4);
+	mb0ToMb4.convert(mbc0, mbc4);
+	rbd::forwardKinematics(mb4, mbc4);
+	auto mb4ToBase = mbg.bodiesBaseTransform(4, mb4Surface);
+
+	for(int bi = 0; bi < mb0.nrBodies(); ++bi)
+	{
+		int id = mb0.body(bi).id();
+		int mb3Index = mb3.bodyIndexById(id);
+		int mb4Index = mb4.bodyIndexById(id);
+		BOOST_CHECK_SMALL(((mb0ToBase[id]*mbc0.bodyPosW[bi]).matrix() -
+											 (mb3ToBase[id]*mbc3.bodyPosW[mb3Index]).matrix()).norm(),
+											1e-8);
+		BOOST_CHECK_SMALL(((mb0ToBase[id]*mbc0.bodyPosW[bi]).matrix() -
+											 (mb4ToBase[id]*mbc4.bodyPosW[mb4Index]).matrix()).norm(),
+											1e-8);
+	}
 }

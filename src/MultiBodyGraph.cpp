@@ -330,6 +330,44 @@ void MultiBodyGraph::mergeSubBodies(int rootBodyId, const std::string& jointName
 	mergeSubBodies(rootBodyId, jointName2Id_[jointName], jointPosById);
 }
 
+std::map<int, sva::PTransformd> MultiBodyGraph::bodiesBaseTransform(int rootBodyId,
+	const sva::PTransformd& X_b0_j0)
+{
+	std::map<int, sva::PTransformd> X_nb_b;
+
+	std::function<void(const std::shared_ptr<Node> curNode,
+										 const std::shared_ptr<Node> fromNode,
+										 const sva::PTransformd& Xbase)> computeTransform;
+
+	computeTransform = [&](const std::shared_ptr<Node> curNode,
+		const std::shared_ptr<Node> fromNode, const sva::PTransformd& Xbase)
+	{
+		// looking for transformation that go to fromNode
+		sva::PTransformd XFrom = Xbase;
+		for(Arc& a : curNode->arcs)
+		{
+			if(a.next == fromNode)
+			{
+				XFrom = a.X;
+				break;
+			}
+		}
+		X_nb_b[curNode->body.id()] = XFrom.inv();
+
+		for(Arc& a : curNode->arcs)
+		{
+			if(a.next != fromNode)
+			{
+				computeTransform(a.next, curNode, sva::PTransformd::Identity());
+			}
+		}
+	};
+
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+	computeTransform(rootNode, nullptr, X_b0_j0);
+	return std::move(X_nb_b);
+}
+
 bool MultiBodyGraph::rmArc(Node& node, int parentJointId, int jointId)
 {
 	// depth first exploration of the graph

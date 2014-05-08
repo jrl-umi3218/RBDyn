@@ -252,6 +252,17 @@ public:
 	void mergeSubBodies(int rootBodyId, const std::string& jointName,
 										 const std::map<int, std::vector<double>>& jointPosById);
 
+
+	/**
+		* Compute the transformation to apply on each bodies to find their original
+		* base.
+		* @param rootBodyId Graph root.
+		* @param X_b0_j0 Transformation from the root body to the root joint.
+		* @return Computed transformations by body id.
+		*/
+	std::map<int, sva::PTransformd> bodiesBaseTransform(int rootBodyId,
+		const sva::PTransformd& X_b0_j0=sva::PTransformd::Identity());
+
 private:
 	/**
 		* Find the arc jointId and remove it from the graph with his sub node.
