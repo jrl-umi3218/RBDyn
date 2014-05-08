@@ -553,49 +553,6 @@ BOOST_AUTO_TEST_CASE(EulerTestV2)
 }
 
 
-BOOST_AUTO_TEST_CASE(FVInteg)
-{
-	using namespace std;
-	using namespace Eigen;
-	using namespace sva;
-	using namespace rbd;
-
-	double step = 1e-5;
-
-	Body b = Body(1., Vector3d(0.1, 0.1, 0.1), Matrix3d::Identity(), 1, "body");
-	MultiBodyGraph mbg;
-	mbg.addBody(b);
-	MultiBody mb = mbg.makeMultiBody(1, false);
-	MultiBodyConfig mbc(mb);
-
-	mbc.q = {{1., 0., 0., 0., 0., 0., 0.}};
-	mbc.alpha = {{1., 0., 0., 0., 0., 1.}};
-	mbc.alphaD = {{0., 0., 0., 0., 0., 0.}};
-
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-
-	PTransformd oldPt = mbc.bodyPosW[0];
-
-	for(int i = 0; i < 1000; ++i)
-	{
-		MotionVecd mvFV = mbc.bodyVelW[0];
-
-		eulerIntegration(mb, mbc, step);
-		forwardKinematics(mb, mbc);
-		forwardVelocity(mb, mbc);
-
-		PTransformd pt = mbc.bodyPosW[0];
-
-		Vector3d mvDiff((pt.translation() - oldPt.translation())/step);
-
-		// std::cout << (mvDiff - mvFV.linear()).norm() << std::endl;
-
-		oldPt = pt;
-	}
-}
-
-
 BOOST_AUTO_TEST_CASE(FATest)
 {
 	rbd::MultiBody mb;
