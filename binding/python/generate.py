@@ -167,6 +167,12 @@ def build_mbg(mbg):
                   param('const sva::PTransformd&', 'X_b0_j0', default_value='sva::PTransformd::Identity()')],
                  throw=(out_ex,))
 
+  mbg.add_method('bodiesBaseTransform',
+                 retval('std::map<int, sva::PTransformd>'),
+                 [param('int', 'rootBodyId'),
+                  param('const sva::PTransformd&', 'X_b0_j0', default_value='sva::PTransformd::Identity()')],
+                 throw=(out_ex,))
+
 
 def build_mb(mb):
   mb.add_constructor([])
@@ -632,6 +638,8 @@ if __name__ == '__main__':
   # build map type
   rbd.add_container('std::map<int, std::vector<double> >',
                     ('int', 'std::vector<double>'), 'map')
+  rbd.add_container('std::map<int, sva::PTransformd>',
+                    ('int', 'sva::PTransformd'), 'map')
 
   build_body(body)
   build_joint(joint)
