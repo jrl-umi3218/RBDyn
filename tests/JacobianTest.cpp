@@ -39,6 +39,7 @@
 
 // Arm
 #include "XYZSarm.h"
+#include "SSSarm.h"
 
 const double TOL = 0.0000001;
 
@@ -92,60 +93,13 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
+	MultiBody mb;
+	MultiBodyConfig mbc;
 	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-	Body b4(rbi, 4, "b4");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-	mbg.addBody(b4);
-
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-	Joint j3(Joint::Spherical, true, 3, "j3");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-	mbg.addJoint(j3);
-
-	//                b4
-	//             j3 | Spherical
-	//  Root     j0   |   j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
 
 	Jacobian jac1(mb, 3);
 	Jacobian jac2(mb, 4);
-
 
 	// test jointsPath
 	std::vector<int> jointPath1 = {0, 1, 2, 3};
@@ -161,15 +115,17 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	MultiBody chain2 = jac2.subMultiBody(mb);
 
 	// chain 1
-	std::vector<Body> bodies = {b0, b1, b2, b3};
+	std::vector<Body> bodies = {mb.body(0), mb.body(1), mb.body(2), mb.body(3)};
 
 	std::vector<Joint> joints = {Joint(Joint::Fixed, true, -1, "Root"),
-															 j0, j1, j2};
+															 mb.joint(1), mb.joint(2), mb.joint(3)};
 
 	std::vector<int> pred = {-1, 0, 1, 2};
 	std::vector<int> succ = {0, 1, 2, 3};
 	std::vector<int> parent = {-1, 0, 1, 2};
 
+	PTransformd I(PTransformd::Identity());
+	PTransformd to(Vector3d(0., 0.5, 0.));
 	PTransformd unitY(Vector3d(0., 1., 0.));
 	std::vector<PTransformd> Xt = {I, to, unitY, unitY};
 
@@ -177,9 +133,9 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	checkMultiBodyEq(chain1, bodies, joints, pred, succ, parent, Xt);
 
 	// chain 2
-	bodies = {b0, b1, b4};
+	bodies = {mb.body(0), mb.body(1), mb.body(4)};
 
-	joints = {Joint(Joint::Fixed, true, -1, "Root"), j0, j3};
+	joints = {Joint(Joint::Fixed, true, -1, "Root"), mb.joint(1), mb.joint(4)};
 
 	pred = {-1, 0, 1};
 	succ = {0, 1, 2};
@@ -295,56 +251,10 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
+	MultiBody mb;
+	MultiBodyConfig mbc;
 	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-	Body b4(rbi, 4, "b4");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-	mbg.addBody(b4);
-
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-	Joint j3(Joint::Spherical, true, 3, "j3");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-	mbg.addJoint(j3);
-
-	//                b4
-	//             j3 | Spherical
-	//  Root     j0   |   j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    RevX   RevY    RevZ
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
 
 	Jacobian jac1(mb, 3);
 	Jacobian jac2(mb, 4);
@@ -387,56 +297,10 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
+	MultiBody mb;
+	MultiBodyConfig mbc;
 	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-	Body b4(rbi, 4, "b4");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-	mbg.addBody(b4);
-
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-	Joint j3(Joint::Spherical, true, 3, "j3");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-	mbg.addJoint(j3);
-
-	//                b4
-	//             j3 | Spherical
-	//  Root     j0   |   j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Free     RevX   RevY    RevZ
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
-
-	MultiBody mb = mbg.makeMultiBody(0, false);
-
-	MultiBodyConfig mbc(mb);
+	std::tie(mb, mbc, mbg) = makeXYZSarm(false);
 
 	Jacobian jac1(mb, 3);
 	Jacobian jac2(mb, 4);
@@ -488,48 +352,10 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
+	MultiBody mb;
+	MultiBodyConfig mbc;
 	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-
-	Joint j0(Joint::Spherical, true, 0, "j0");
-	Joint j1(Joint::Spherical, true, 1, "j1");
-	Joint j2(Joint::Spherical, true, 2, "j2");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-
-	//  Root     j0       j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    S       S       S
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, PTransformd::Identity(), 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	std::tie(mb, mbc, mbg) = makeSSSarm(true);
 
 	Jacobian jac1(mb, 3);
 
@@ -538,7 +364,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardVelocity(mb, mbc);
 
 	checkJacobian(mb, mbc, jac1);
-
 
 
 	Quaterniond q1(AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX()));
@@ -554,7 +379,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	checkJacobian(mb, mbc, jac1);
 
 
-
 	q1 = AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*AngleAxisd(cst::pi<double>()/4., Vector3d::UnitY());
 	mbc.q = {{},
 					 {q1.w(), q1.x(), q1.y(), q1.z()},
@@ -566,7 +390,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	checkJacobian(mb, mbc, jac1);
 
 
-
 	q2 = AngleAxisd(cst::pi<double>()/4., Vector3d::UnitX());
 	mbc.q = {{},
 					 {q1.w(), q1.x(), q1.y(), q1.z()},
@@ -576,7 +399,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	forwardVelocity(mb, mbc);
 
 	checkJacobian(mb, mbc, jac1);
-
 
 
 	q3 = AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ());
@@ -645,48 +467,10 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
+	MultiBody mb;
+	MultiBodyConfig mbc;
 	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-
-	Joint j0(Joint::Spherical, true, 0, "j0");
-	Joint j1(Joint::Spherical, true, 1, "j1");
-	Joint j2(Joint::Spherical, true, 2, "j2");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-
-	//  Root     j0       j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    S       S       S
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, PTransformd::Identity(), 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	std::tie(mb, mbc, mbg) = makeSSSarm(true);
 
 	Jacobian jac1(mb, 3);
 
@@ -706,9 +490,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 0.;
 		}
 	}
-
-
-
 
 
 	Quaterniond q1 = AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*AngleAxisd(cst::pi<double>()/4., Vector3d::UnitY());
@@ -733,7 +514,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	}
 
 
-
 	q2 = AngleAxisd(cst::pi<double>()/4., Vector3d::UnitX());
 	mbc.q = {{},
 					 {q1.w(), q1.x(), q1.y(), q1.z()},
@@ -752,7 +532,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 			mbc.alpha[i][j] = 0.;
 		}
 	}
-
 
 
 	q3 = AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ());
@@ -775,8 +554,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	}
 
 
-
-
 	// test with all joint velocity
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
@@ -789,7 +566,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 		}
 	}
 	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
-
 
 
 	// test with a point
@@ -805,7 +581,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 		}
 	}
 	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
-
 
 
 	// test with free flyier
@@ -886,48 +661,10 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
+	MultiBody mb;
+	MultiBodyConfig mbc;
 	MultiBodyGraph mbg;
-
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d::Zero();
-
-	RBInertiad rbi(mass, h, I);
-
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
-
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
-
-	Joint j0(Joint::Spherical, true, 0, "j0");
-	Joint j1(Joint::Spherical, true, 1, "j1");
-	Joint j2(Joint::Spherical, true, 2, "j2");
-
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
-
-	//  Root     j0       j1     j2
-	//  ---- b0 ---- b1 ---- b2 ----b3
-	//  Fixed    S       S       S
-
-
-	PTransformd to(Vector3d(0., 0.5, 0.));
-	PTransformd from(Vector3d(0., -0.5, 0.));
-
-
-	mbg.linkBodies(0, PTransformd::Identity(), 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-
-	MultiBody mb = mbg.makeMultiBody(0, true);
-
-	MultiBodyConfig mbc(mb);
+	std::tie(mb, mbc, mbg) = makeSSSarm(true);
 
 	Vector3d point = Vector3d::Random()*10.;
 
