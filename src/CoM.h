@@ -153,6 +153,7 @@ public:
 
 	/**
 		* Compute the com velocity (with weight) (J·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelB.
 		* @return CoM velocity (with weight).
 		*/
@@ -160,6 +161,7 @@ public:
 
 	/**
 		* Compute the com normal acceleration (with weight) (JDot·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
 		* @return CoM normal acceleration (with weight).
 		*/

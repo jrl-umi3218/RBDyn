@@ -146,7 +146,8 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb):
 	jacFull_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
-	bodiesWeight_(mb.nrBodies(), 1.)
+	bodiesWeight_(mb.nrBodies(), 1.),
+	normalAcc_(mb.nrBodies())
 {
 	init(mb);
 }
@@ -159,7 +160,8 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb,
 	jacFull_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
-	bodiesWeight_(std::move(weight))
+	bodiesWeight_(std::move(weight)),
+	normalAcc_(mb.nrBodies())
 {
 	init(mb);
 
@@ -258,7 +260,6 @@ void CentroidalMomentumMatrix::computeMatrixAndMatrixDot(const MultiBody& mb,
 		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
 		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
 	}
-
 }
 
 
@@ -271,6 +272,88 @@ const Eigen::MatrixXd& CentroidalMomentumMatrix::matrix() const
 const Eigen::MatrixXd& CentroidalMomentumMatrix::matrixDot() const
 {
 	return cmMatDot_;
+}
+
+
+sva::ForceVecd CentroidalMomentumMatrix::momentum(
+	const MultiBody& mb, const MultiBodyConfig& mbc,
+	const Eigen::Vector3d& com) const
+{
+	using namespace Eigen;
+
+	const std::vector<Body>& bodies = mb.bodies();
+	Vector6d cm(Vector6d::Zero());
+
+	sva::PTransformd X_com_0(Vector3d(-com));
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		// body inertia in body coordinate
+		sva::ForceVecd hi = bodies[i].inertia()*mbc.bodyVelB[i];
+
+		// momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
+		cm += ((mbc.bodyPosW[i]*X_com_0).transMul(hi).vector())*bodiesWeight_[i];
+	}
+
+	return sva::ForceVecd(cm);
+}
+
+
+sva::ForceVecd CentroidalMomentumMatrix::normalMomentumDot(
+	const MultiBody& mb, const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comDot)
+{
+	using namespace Eigen;
+
+	const std::vector<Body>& bodies = mb.bodies();
+	Vector6d cm(Vector6d::Zero());
+
+	sva::PTransformd X_com_0(Vector3d(-com));
+	sva::MotionVecd com_Vel(Vector3d::Zero(), comDot);
+
+	const std::vector<int>& pred = mb.predecessors();
+	const std::vector<int>& succ = mb.successors();
+
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
+		const sva::MotionVecd& vj_i = mbc.jointVelocity[i];
+		const sva::MotionVecd& vb_i = mbc.bodyVelB[i];
+
+		if(pred[i] != -1)
+			normalAcc_[succ[i]] = X_p_i*normalAcc_[pred[i]] + vb_i.cross(vj_i);
+		else
+			normalAcc_[succ[i]] = vb_i.cross(vj_i);
+	}
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		sva::MotionVecd body_i_Vel(mbc.bodyVelB[i]);
+		sva::PTransformd X_com_i(mbc.bodyPosW[i]*X_com_0);
+		sva::PTransformd X_i_com(X_com_i.inv());
+
+		sva::ForceVecd body_i_Momentum(bodies[i].inertia()*body_i_Vel);
+
+		// momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
+		// derivative :
+		// \frac {d{}^iX_{com}^T}{dt} {}^iI_i {}^iV_i +
+		//   {}^iX_{com}^T {}^iI_i \frac {d{}^iV_i}{dt}
+		// {d{}^iX_{com}^T}{dt} =
+		//   {}^{com}X_i^* {}^iV_i\times^* - {}^{com}V_{com}\times^* {}^{com}X_i^*
+		// \frac {d{}^iV_i}{dt} =
+		//   {}^iA_i
+		// See Rigid Body Dynamics Algoritms - Roy Featherstone - P28 eq 2.45
+
+		sva::ForceVecd X_i_com_d_dual_hi =
+				X_i_com.dualMul(body_i_Vel.crossDual(body_i_Momentum)) -
+				com_Vel.crossDual(X_i_com.dualMul(body_i_Momentum));
+
+		// transform in com coordinate
+		cm += (X_i_com_d_dual_hi.vector() +
+					(X_com_i.transMul(bodies[i].inertia()*normalAcc_[i])).vector())*\
+				bodiesWeight_[i];
+	}
+
+	return sva::ForceVecd(cm);
 }
 
 

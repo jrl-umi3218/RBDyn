@@ -69,6 +69,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 		BOOST_CHECK_EQUAL(momentumM.vector().norm(), 0.);
 	}
 
+	// test J·q against computeCentroidalMomentum
 	for(int i = 0; i < 100; ++i)
 	{
 		q.setRandom();
@@ -85,6 +86,35 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 		cmm.computeMatrix(mb, mbc, com);
 
 		ForceVecd momentumM(cmm.matrix()*alpha);
+
+		BOOST_CHECK_SMALL((momentum - momentumM).vector().norm(), TOL);
+	}
+
+	// test J·q against CentroidalMomentumMatrix::momentum
+	for(int i = 0; i < 50; ++i)
+	{
+		std::vector<double> weight(mb.nrBodies());
+		for(std::size_t i = 0; i < weight.size(); ++i)
+		{
+			weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
+		}
+
+		CentroidalMomentumMatrix cmmW(mb, weight);
+
+		q.setRandom();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		alpha.setRandom();
+		rbd::vectorToParam(q, mbc.q);
+		rbd::vectorToParam(alpha, mbc.alpha);
+
+		rbd::forwardKinematics(mb, mbc);
+		rbd::forwardVelocity(mb, mbc);
+
+		Vector3d com = rbd::computeCoM(mb, mbc);
+		ForceVecd momentum = cmmW.momentum(mb, mbc, com);
+		cmmW.computeMatrix(mb, mbc, com);
+
+		ForceVecd momentumM(cmmW.matrix()*alpha);
 
 		BOOST_CHECK_SMALL((momentum - momentumM).vector().norm(), TOL);
 	}
@@ -163,6 +193,36 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 
 			BOOST_CHECK_SMALL((momentumDot - momentumDotDiff).vector().norm(), TOL);
 		}
+	}
+
+	// test JDot·q against CentroidalMomentumMatrix::normalMomentumDot
+	for(int i = 0; i < 50; ++i)
+	{
+		std::vector<double> weight(mb.nrBodies());
+		for(std::size_t i = 0; i < weight.size(); ++i)
+		{
+			weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
+		}
+
+		CentroidalMomentumMatrix cmmW(mb, weight);
+
+		q.setRandom();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		alpha.setRandom();
+		rbd::vectorToParam(q, mbc.q);
+		rbd::vectorToParam(alpha, mbc.alpha);
+
+		rbd::forwardKinematics(mb, mbc);
+		rbd::forwardVelocity(mb, mbc);
+
+		Vector3d com = rbd::computeCoM(mb, mbc);
+		Vector3d comDot = rbd::computeCoMVelocity(mb, mbc);
+		ForceVecd normalMomentumDot = cmmW.normalMomentumDot(mb, mbc, com, comDot);
+		cmmW.computeMatrixDot(mb, mbc, com, comDot);
+
+		ForceVecd normalMomentumDotM(cmmW.matrixDot()*alpha);
+
+		BOOST_CHECK_SMALL((normalMomentumDot - normalMomentumDotM).vector().norm(), TOL);
 	}
 }
 

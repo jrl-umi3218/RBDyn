@@ -102,6 +102,30 @@ public:
 	/// @return Centroidal momentum matrix time derivative
 	const Eigen::MatrixXd& matrixDot() const;
 
+	/**
+		* Compute the centroidal momentum (with weight) (J·alpha).
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB.
+		* @param com CoM position.
+		* @return Centroidal momentum at the CoM frame (with weight).
+		*/
+	sva::ForceVecd momentum(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& com) const;
+
+	/**
+		* Compute the normal componant of the time derivative of
+		* centroidal momentum (with weight) (JDot·alpha).
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB, jointVelocity, parentToSon.
+		* @param com CoM position.
+		* @param comDot CoM velocity.
+		* @return Normal componant of the time derivative Centroidal momentum
+		*					at the CoM frame (with weight).
+		*/
+	sva::ForceVecd normalMomentumDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+		const Eigen::Vector3d& comDot);
+
 	// safe version for python binding
 
 	/** safe version of @see computeMatrix.
@@ -134,6 +158,7 @@ private:
 	std::vector<Jacobian> jacVec_;
 	std::vector<Eigen::MatrixXd> jacWork_;
 	std::vector<double> bodiesWeight_;
+	std::vector<sva::MotionVecd> normalAcc_;
 };
 
 
