@@ -733,7 +733,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorTest)
 
 	for(int i = 0; i < 50; ++i)
 	{
-		Eigen::VectorXd q(mb.nrParams()), alpha(mb.nrDof()), alphaD(mb.nrDof());
+		Eigen::VectorXd q(mb.nrParams());
 		q.setRandom();
 		// normalize free flyier and spherical joint
 		q.head<4>().normalize();
@@ -773,5 +773,95 @@ BOOST_AUTO_TEST_CASE(JacobianVectorTest)
 
 		BOOST_CHECK_SMALL((jac4MatDiff.block(3, 0, 3, jac2.dof()) -\
 											 jac4Mat.block(3, 0, 3, jac2.dof())).norm(), TOL);
+	}
+}
+
+
+template <typename MatFunc, typename VectorFunc>
+Eigen::Vector6d testMatrixAgainstVector(
+	const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc,
+	const rbd::Jacobian& jac,
+	MatFunc&& matFunc, const Eigen::VectorXd& alpha,
+	VectorFunc&& vectorFunc)
+{
+	const Eigen::MatrixXd& mat = std::forward<MatFunc>(matFunc)(mb, mbc);
+	Eigen::MatrixXd matFull(6, mb.nrDof());
+	jac.fullJacobian(mb, mat, matFull);
+	Eigen::Vector6d res = matFull*alpha;
+	sva::MotionVecd mv = std::forward<VectorFunc>(vectorFunc)(mbc);
+
+	return mv.vector() - res;
+}
+
+
+BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
+{
+	using namespace Eigen;
+	using namespace sva;
+	using namespace rbd;
+	using namespace std::placeholders;
+	namespace cst = boost::math::constants;
+
+	MultiBody mb;
+	MultiBodyConfig mbc;
+	MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeXYZSarm(false);
+
+	forwardKinematics(mb, mbc);
+	forwardVelocity(mb, mbc);
+
+	Jacobian jac1(mb, 3);
+	Jacobian jac2(mb, 4);
+
+	for(int i = 0; i < 50; ++i)
+	{
+		Eigen::VectorXd q(mb.nrParams()), alpha(mb.nrDof());
+		q.setRandom();
+		alpha.setRandom();
+		// normalize free flyier and spherical joint
+		q.head<4>().normalize();
+		q.segment(mb.jointPosInParam(mb.jointIndexById(3)), 4).normalize();
+		rbd::vectorToParam(q, mbc.q);
+		rbd::vectorToParam(alpha, mbc.alpha);
+		forwardKinematics(mb, mbc);
+		forwardVelocity(mb, mbc);
+
+		Vector3d point(Vector3d::Random());
+		for(Jacobian& jac: {std::ref(jac1), std::ref(jac2)})
+		{
+			jac.point(point);
+
+			BOOST_CHECK_SMALL(
+				testMatrixAgainstVector(mb, mbc, jac,
+																std::bind(&Jacobian::jacobian, std::ref(jac),
+																					_1, _2), alpha,
+																std::bind(&Jacobian::velocity, std::ref(jac),
+																					_1)).norm(),
+				TOL);
+
+			BOOST_CHECK_SMALL(
+				testMatrixAgainstVector(mb, mbc, jac,
+																std::bind(&Jacobian::bodyJacobian, std::ref(jac),
+																					_1, _2), alpha,
+																std::bind(&Jacobian::bodyVelocity, std::ref(jac),
+																					_1)).norm(),
+				TOL);
+
+			BOOST_CHECK_SMALL(
+				testMatrixAgainstVector(mb, mbc, jac,
+																std::bind(&Jacobian::jacobianDot, std::ref(jac),
+																					_1, _2), alpha,
+																std::bind(&Jacobian::acceleration, std::ref(jac),
+																					_1)).norm(),
+				TOL);
+
+			BOOST_CHECK_SMALL(
+				testMatrixAgainstVector(mb, mbc, jac,
+																std::bind(&Jacobian::bodyJacobianDot, std::ref(jac),
+																					_1, _2), alpha,
+																std::bind(&Jacobian::bodyAcceleration, std::ref(jac),
+																					_1)).norm(),
+				TOL);
+		}
 	}
 }

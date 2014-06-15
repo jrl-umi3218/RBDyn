@@ -100,6 +100,34 @@ public:
 		const MultiBodyConfig& mbc);
 
 	/**
+		* Compute the end body point velocity in world coordinate (J·alpha)
+		* @param mbc Use bodyPosW, bodyVelB
+		* @return End body point velocity in world coordinate
+		*/
+	sva::MotionVecd velocity(const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the end body point velocity in body coordinate (JBody·alpha)
+		* @param mbc Use bodyVelB.
+		* @return End body point velocity in body coordinate.
+		*/
+	sva::MotionVecd bodyVelocity(const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the end body point acceleration in world coordinate (JDot·alpha)
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon
+		* @return End body point acceleration in world coordinate.
+		*/
+	sva::MotionVecd acceleration(const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the end body point acceleration in body coordinate (JDotBody·alpha)
+		* @param mbc Use bodyVelB, jointVelocity, parentToSon
+		* @return End body point acceleration in body coordinate.
+		*/
+	sva::MotionVecd bodyAcceleration(const MultiBodyConfig& mbc);
+
+	/**
 		* Translate a jacobian at a given position.
 		* @param jac Jacobian to translate.
 		* @param mbc Use bodyPosW.
