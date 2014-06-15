@@ -157,7 +157,7 @@ public:
 		* @param mbc Use bodyPosW, bodyVelB.
 		* @return CoM velocity (with weight).
 		*/
-	Eigen::Vector3d velocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+	Eigen::Vector3d velocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the com normal acceleration (with weight) (JDot·alpha).
@@ -167,6 +167,16 @@ public:
 		*/
 	Eigen::Vector3d normalAcceleration(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the com normal acceleration (with weight) (JDot·alpha).
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
+		* @param normalAccB Normal bodies acceleration in body frame.
+		* @return CoM normal acceleration (with weight).
+		*/
+	Eigen::Vector3d normalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const;
 
 	// safe version for python binding
 

@@ -378,7 +378,7 @@ const Eigen::MatrixXd& CoMJacobian::jacobianDot(const MultiBody& mb,
 
 
 Eigen::Vector3d CoMJacobian::velocity(const MultiBody& mb,
-	const MultiBodyConfig& mbc)
+	const MultiBodyConfig& mbc) const
 {
 	Eigen::Vector3d comV = Eigen::Vector3d::Zero();
 	for(int i = 0; i < mb.nrBodies(); ++i)
@@ -401,7 +401,6 @@ Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody& mb,
 	const std::vector<int>& pred = mb.predecessors();
 	const std::vector<int>& succ = mb.successors();
 
-	Eigen::Vector3d comA(Eigen::Vector3d::Zero());
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
@@ -414,6 +413,14 @@ Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody& mb,
 			normalAcc_[succ[i]] = vb_i.cross(vj_i);
 	}
 
+	return normalAcceleration(mb, mbc, normalAcc_);
+}
+
+
+Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const
+{
+	Eigen::Vector3d comA(Eigen::Vector3d::Zero());
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		const Eigen::Vector3d& comT = bodiesCoM_[i].translation();
@@ -424,7 +431,7 @@ Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody& mb,
 		// O_R_b_d : (Angvel_W)_b x 0_R_b
 		sva::PTransformd X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
 		sva::MotionVecd angvel_W(mbc.bodyVelW[i].angular(), Eigen::Vector3d::Zero());
-		comA += (X_0_i*normalAcc_[i]).linear()*bodiesCoeff_[i];
+		comA += (X_0_i*normalAccB[i]).linear()*bodiesCoeff_[i];
 		comA += (angvel_W.cross(X_0_i*mbc.bodyVelB[i])).linear()*bodiesCoeff_[i];
 	}
 

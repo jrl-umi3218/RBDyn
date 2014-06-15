@@ -591,6 +591,8 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 		rbd::vectorToParam(alpha, mbc.alpha);
 		forwardKinematics(mb, mbc);
 		forwardVelocity(mb, mbc);
+		// calcul the normal acceleration since alphaD is zero
+		forwardAcceleration(mb, mbc);
 
 		// test com velocity
 		const MatrixXd& comJacMat = comJac.jacobian(mb, mbc);
@@ -602,8 +604,11 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 		// test com normal acceleration
 		const MatrixXd& comJacDotMat = comJac.jacobianDot(mb, mbc);
 		Vector3d normalAccFromJac = comJacDotMat*alpha;
-		Vector3d normalAccFromMbc = comJac.normalAcceleration(mb, mbc);
+		Vector3d normalAccFromMbc1 = comJac.normalAcceleration(mb, mbc);
+		Vector3d normalAccFromMbc2 = comJac.normalAcceleration(mb, mbc,
+			mbc.bodyAccB);
 
-		BOOST_CHECK_SMALL((normalAccFromJac - normalAccFromMbc).norm(), TOL);
+		BOOST_CHECK_SMALL((normalAccFromJac - normalAccFromMbc1).norm(), TOL);
+		BOOST_CHECK_SMALL((normalAccFromJac - normalAccFromMbc2).norm(), TOL);
 	}
 }
