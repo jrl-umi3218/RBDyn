@@ -404,6 +404,45 @@ def build_jacobian(jac):
   jac.add_method('point', retval('Eigen::Vector3d'), [], is_const=True)
   jac.add_method('point', None, [param('const Eigen::Vector3d&', 'point')])
 
+  jac.add_method('sVelocity', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='velocity',
+                 is_const=True)
+
+  jac.add_method('sBodyVelocity', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='bodyVelocity',
+                 is_const=True)
+
+  jac.add_method('sNormalAcceleration', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='normalAcceleration',
+                 is_const=True)
+
+  jac.add_method('sBodyNormalAcceleration', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='bodyNormalAcceleration',
+                 is_const=True)
+
+  jac.add_method('sNormalAcceleration', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const std::vector<sva::MotionVecd>&', 'normalAccB')],
+                 throw=[dom_ex], custom_name='normalAcceleration',
+                 is_const=True)
+
+  jac.add_method('sBodyNormalAcceleration', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const std::vector<sva::MotionVecd>&', 'normalAccB')],
+                 throw=[dom_ex], custom_name='bodyNormalAcceleration',
+                 is_const=True)
+
+
 
 def build_id(id):
   id.add_constructor([])
@@ -499,6 +538,25 @@ def build_com(mod, comD, comJ):
                   param('rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='jacobianDot')
 
+  comJ.add_method('sVelocity', retval('Eigen::Vector3d'),
+                  [param('const rbd::MultiBody&', 'mb'),
+                   param('const rbd::MultiBodyConfig&', 'mbc')],
+                  throw=[dom_ex], custom_name='velocity',
+                  is_const=True)
+
+  comJ.add_method('sNormalAcceleration', retval('Eigen::Vector3d'),
+                  [param('const rbd::MultiBody&', 'mb'),
+                   param('const rbd::MultiBodyConfig&', 'mbc')],
+                  throw=[dom_ex], custom_name='normalAcceleration')
+
+  comJ.add_method('sNormalAcceleration', retval('Eigen::Vector3d'),
+                  [param('const rbd::MultiBody&', 'mb'),
+                   param('const rbd::MultiBodyConfig&', 'mbc'),
+                   param('const std::vector<sva::MotionVecd>&', 'normalAccB')],
+                  throw=[dom_ex], custom_name='normalAcceleration',
+                  is_const=True)
+
+
 
 def build_momentum(mod, mom):
   mod.add_function('sComputeCentroidalMomentum',
@@ -549,6 +607,31 @@ def build_momentum(mod, mom):
 
   mom.add_method('matrix', retval('Eigen::MatrixXd'), [], is_const=True)
   mom.add_method('matrixDot', retval('Eigen::MatrixXd'), [], is_const=True)
+
+  mom.add_method('sMomentum', retval('sva::ForceVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'com')],
+                 throw=[dom_ex], custom_name='momentum',
+                 is_const=True)
+
+  mom.add_method('sNormalMomentumDot', retval('sva::ForceVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'com'),
+                  param('const Eigen::Vector3d&', 'comDot')],
+                 throw=[dom_ex], custom_name='normalMomentumDot')
+
+  mom.add_method('sNormalMomentumDot', retval('sva::ForceVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const Eigen::Vector3d&', 'com'),
+                  param('const Eigen::Vector3d&', 'comDot'),
+                  param('const std::vector<sva::MotionVecd>&', 'normalAccB')],
+                 throw=[dom_ex], custom_name='normalMomentumDot',
+                 is_const=True)
+
+
 
 def build_zmp(mod):
   mod.add_function('computeCentroidalZMP',
