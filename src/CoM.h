@@ -151,7 +151,18 @@ public:
 	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
 
+	/**
+		* Compute the com velocity (with weight) (J·alpha).
+		* @param mbc Use bodyPosW, bodyVelB.
+		* @return CoM velocity (with weight).
+		*/
 	Eigen::Vector3d velocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+
+	/**
+		* Compute the com normal acceleration (with weight) (JDot·alpha).
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
+		* @return CoM normal acceleration (with weight).
+		*/
 	Eigen::Vector3d normalAcceleration(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
 
