@@ -290,7 +290,8 @@ Jacobian::bodyJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
-sva::MotionVecd Jacobian::velocity(const MultiBodyConfig& mbc) const
+sva::MotionVecd Jacobian::velocity(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc) const
 {
 	int N = jointsPath_.back();
 	// equivalent of E_N_0*X_N_Np
@@ -300,14 +301,16 @@ sva::MotionVecd Jacobian::velocity(const MultiBodyConfig& mbc) const
 }
 
 
-sva::MotionVecd Jacobian::bodyVelocity(const MultiBodyConfig& mbc) const
+sva::MotionVecd Jacobian::bodyVelocity(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc) const
 {
 	int N = jointsPath_.back();
 	return point_*mbc.bodyVelB[N];
 }
 
 
-sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc) const
+sva::MotionVecd Jacobian::normalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc) const
 {
 	int N = jointsPath_.back();
 	// equivalent of E_N_0*X_N_Np
@@ -329,7 +332,8 @@ sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc) const
 }
 
 
-sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBodyConfig& mbc) const
+sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc) const
 {
 	sva::MotionVecd accel(Eigen::Vector6d::Zero());
 	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
@@ -346,15 +350,15 @@ sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBodyConfig& mbc) con
 }
 
 
-sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc,
-	const std::vector<sva::MotionVecd>& normalAccB) const
+sva::MotionVecd Jacobian::normalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const
 {
 	return normalAcceleration(mbc, normalAccB[jointsPath_.back()]);
 }
 
 
-sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBodyConfig& mbc,
-	const std::vector<sva::MotionVecd>& normalAccB) const
+sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const
 {
 	return bodyNormalAcceleration(mbc, normalAccB[jointsPath_.back()]);
 }
@@ -584,6 +588,66 @@ void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 }
 
 
+sva::MotionVecd Jacobian::sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+
+	return velocity(mb, mbc);
+}
+
+
+sva::MotionVecd Jacobian::sBodyVelocity(const MultiBody& mb,
+	const MultiBodyConfig& mbc) const
+{
+	checkMatchBodyVel(mb, mbc);
+
+	return bodyVelocity(mb, mbc);
+}
+
+
+sva::MotionVecd Jacobian::sNormalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	return normalAcceleration(mb, mbc);
+}
+
+
+sva::MotionVecd Jacobian::sBodyNormalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc) const
+{
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	return bodyNormalAcceleration(mb, mbc);
+}
+
+
+sva::MotionVecd Jacobian::sNormalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodiesVector(mb, normalAccB, "normalAccB");
+
+	return normalAcceleration(mb, mbc, normalAccB);
+}
+
+
+sva::MotionVecd Jacobian::sBodyNormalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const
+{
+	checkMatchBodiesVector(mb, normalAccB, "normalAccB");
+
+	return bodyNormalAcceleration(mb, mbc, normalAccB);
+}
+
+
 sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc,
 	const sva::MotionVecd& bodyNNormalAcc) const
 {
@@ -597,11 +661,10 @@ sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc,
 }
 
 
-sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBodyConfig& mbc,
+sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBodyConfig& /* mbc */,
 	const sva::MotionVecd& bodyNNormalAcc) const
 {
 	return point_*bodyNNormalAcc;
 }
 
 } // namespace rbd
-

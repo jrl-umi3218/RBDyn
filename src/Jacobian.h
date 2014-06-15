@@ -101,49 +101,56 @@ public:
 
 	/**
 		* Compute the end body point velocity in world coordinate (J·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelB.
 		* @return End body point velocity in world coordinate.
 		*/
-	sva::MotionVecd velocity(const MultiBodyConfig& mbc) const;
+	sva::MotionVecd velocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point velocity in body coordinate (JBody·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyVelB.
 		* @return End body point velocity in body coordinate.
 		*/
-	sva::MotionVecd bodyVelocity(const MultiBodyConfig& mbc) const;
+	sva::MotionVecd bodyVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
 		* @return End body point normal acceleration in world coordinate.
 		*/
-	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc) const;
+	sva::MotionVecd normalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point normal acceleration in body coordinate (JDotBody·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyVelB, jointVelocity, parentToSon.
 		* @return End body point normal acceleration in body coordinate.
 		*/
-	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc) const;
+	sva::MotionVecd bodyNormalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
-		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB.
 		* @param normalAccB Normal bodies acceleration in body frame.
 		* @return End body point normal acceleration in world coordinate.
 		*/
-	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc,
-		const std::vector<sva::MotionVecd>& normalAccB) const;
+	sva::MotionVecd normalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const;
 
 	/**
 		* Compute the end body point normal acceleration in body coordinate (JDotBody·alpha).
-		* @param mbc Use bodyVelB, jointVelocity, parentToSon.
+		* @param mb MultiBody used has model.
+		* @param mbc Use nothing.
 		* @param normalAccB Normal bodies acceleration in body frame.
 		* @return End body point normal acceleration in body coordinate.
 		*/
-	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc,
-		const std::vector<sva::MotionVecd>& normalAccB) const;
+	sva::MotionVecd bodyNormalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const;
 
 	/**
 		* Translate a jacobian at a given position.
@@ -261,6 +268,38 @@ public:
 		*/
 	void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 		Eigen::MatrixXd& res) const;
+
+	/** safe version of @see velocity.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	sva::MotionVecd sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
+
+	/** safe version of @see normalAcceleration.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	sva::MotionVecd sNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc) const;
+
+	/** safe version of @see bodyVelocity.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	sva::MotionVecd sBodyVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
+
+	/** safe version of @see bodyNormalAcceleration.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	sva::MotionVecd sBodyNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc) const;
+
+	/** safe version of @see normalAcceleration.
+		* @throw std::domain_error If mb don't match mbc or normalAccB.
+		*/
+	sva::MotionVecd sNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const std::vector<sva::MotionVecd>& normalAccB) const;
+
+	/** safe version of @see bodyNormalAcceleration.
+		* @throw std::domain_error If mb don't match mbc or normalAccB.
+		*/
+	sva::MotionVecd sBodyNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const std::vector<sva::MotionVecd>& normalAccB) const;
 
 private:
 	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc,

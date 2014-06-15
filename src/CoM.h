@@ -171,7 +171,7 @@ public:
 	/**
 		* Compute the com normal acceleration (with weight) (JDot·alpha).
 		* @param mb MultiBody used has model.
-		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB.
 		* @param normalAccB Normal bodies acceleration in body frame.
 		* @return CoM normal acceleration (with weight).
 		*/
@@ -190,6 +190,23 @@ public:
 		*/
 	const Eigen::MatrixXd& sJacobianDot(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
+
+	/** safe version of @see velocity.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	Eigen::Vector3d sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
+
+	/** safe version of @see normalAcceleration.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	Eigen::Vector3d sNormalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
+	/** safe version of @see normalAcceleration.
+		* @throw std::domain_error If mb don't match mbc or normalAccB.
+		*/
+	Eigen::Vector3d sNormalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const;
 
 private:
 	void init(const rbd::MultiBody& mb, const std::vector<double>& weight);

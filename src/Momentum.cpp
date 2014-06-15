@@ -397,6 +397,42 @@ void CentroidalMomentumMatrix::sComputeMatrixAndMatrixDot(const MultiBody& mb, c
 }
 
 
+sva::ForceVecd CentroidalMomentumMatrix::sMomentum(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+
+	return momentum(mb, mbc, com);
+}
+
+
+sva::ForceVecd CentroidalMomentumMatrix::sNormalMomentumDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comDot)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	return normalMomentumDot(mb, mbc, com, comDot);
+}
+
+
+sva::ForceVecd CentroidalMomentumMatrix::sNormalMomentumDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comDot,
+	const std::vector<sva::MotionVecd>& normalAccB) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodiesVector(mb, normalAccB, "normalAccB");
+
+	return normalMomentumDot(mb, mbc, com, comDot, normalAccB);
+}
+
+
 void CentroidalMomentumMatrix::init(const rbd::MultiBody& mb)
 {
 	using namespace Eigen;

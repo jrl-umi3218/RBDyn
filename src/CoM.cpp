@@ -460,6 +460,38 @@ CoMJacobian::sJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
+Eigen::Vector3d CoMJacobian::sVelocity(const MultiBody& mb,
+	const MultiBodyConfig& mbc) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+
+	return velocity(mb, mbc);
+}
+
+
+Eigen::Vector3d CoMJacobian::sNormalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	return normalAcceleration(mb, mbc);
+}
+
+Eigen::Vector3d CoMJacobian::sNormalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodiesVector(mb, normalAccB, "normalAccB");
+
+	return normalAcceleration(mb, mbc, normalAccB);
+}
+
+
 // inefficient but the best we can do without mbg
 void jointBodiesSuccessors(const MultiBody& mb, int joint, std::vector<int>& subBodies)
 {

@@ -789,7 +789,7 @@ Eigen::Vector6d testMatrixAgainstVector(
 	Eigen::MatrixXd matFull(6, mb.nrDof());
 	jac.fullJacobian(mb, mat, matFull);
 	Eigen::Vector6d res = matFull*alpha;
-	sva::MotionVecd mv = std::forward<VectorFunc>(vectorFunc)(mbc);
+	sva::MotionVecd mv = std::forward<VectorFunc>(vectorFunc)(mb, mbc);
 
 	return mv.vector() - res;
 }
@@ -839,7 +839,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																std::bind(&Jacobian::jacobian, std::ref(jac),
 																					_1, _2), alpha,
 																std::bind(&Jacobian::velocity, std::ref(jac),
-																					_1)).norm(),
+																					_1, _2)).norm(),
 				TOL);
 
 			BOOST_CHECK_SMALL(
@@ -847,12 +847,13 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																std::bind(&Jacobian::bodyJacobian, std::ref(jac),
 																					_1, _2), alpha,
 																std::bind(&Jacobian::bodyVelocity, std::ref(jac),
-																					_1)).norm(),
+																					_1, _2)).norm(),
 				TOL);
 
-			typedef MotionVecd (Jacobian::*normalAccel_func1)(const MultiBodyConfig&) const;
+			typedef MotionVecd (Jacobian::*normalAccel_func1)
+				(const MultiBody&, const MultiBodyConfig&) const;
 			typedef MotionVecd (Jacobian::*normalAccel_func2)
-				(const MultiBodyConfig&, const std::vector<sva::MotionVecd>&) const;
+				(const MultiBody&, const MultiBodyConfig&, const std::vector<sva::MotionVecd>&) const;
 
 			BOOST_CHECK_SMALL(
 				testMatrixAgainstVector(mb, mbc, jac,
@@ -860,7 +861,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																					_1, _2), alpha,
 																std::bind(static_cast<normalAccel_func1>
 																					(&Jacobian::normalAcceleration),
-																					std::ref(jac), _1)).norm(),
+																					std::ref(jac), _1, _2)).norm(),
 				TOL);
 
 			BOOST_CHECK_SMALL(
@@ -869,7 +870,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																					_1, _2), alpha,
 																std::bind(static_cast<normalAccel_func1>
 																					(&Jacobian::bodyNormalAcceleration),
-																					std::ref(jac), _1)).norm(),
+																					std::ref(jac), _1, _2)).norm(),
 				TOL);
 
 			BOOST_CHECK_SMALL(
@@ -878,7 +879,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																					_1, _2), alpha,
 																std::bind(static_cast<normalAccel_func2>
 																					(&Jacobian::normalAcceleration),
-																					std::ref(jac), _1,
+																					std::ref(jac), _1, _2,
 																					std::ref(mbc.bodyAccB))).norm(),
 				TOL);
 
@@ -888,7 +889,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																					_1, _2), alpha,
 																std::bind(static_cast<normalAccel_func2>
 																					(&Jacobian::bodyNormalAcceleration),
-																					std::ref(jac), _1,
+																					std::ref(jac), _1, _2,
 																					std::ref(mbc.bodyAccB))).norm(),
 				TOL);
 		}

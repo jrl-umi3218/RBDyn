@@ -130,7 +130,7 @@ public:
 		* Compute the normal componant of the time derivative of
 		* centroidal momentum (with weight) (JDot·alpha).
 		* @param mb MultiBody used has model.
-		* @param mbc Use bodyPosW, bodyVelB, jointVelocity, parentToSon.
+		* @param mbc Use bodyPosW, bodyVelB.
 		* @param com CoM position.
 		* @param comDot CoM velocity.
 		* @param normalAccB Normal bodies acceleration in body frame.
@@ -161,6 +161,27 @@ public:
 		*/
 	void sComputeMatrixAndMatrixDot(const MultiBody& mb, const MultiBodyConfig& mbc,
 		const Eigen::Vector3d& com, const Eigen::Vector3d& comDot);
+
+	/** safe version of @see momentum.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	sva::ForceVecd sMomentum(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& com) const;
+
+	/** safe version of @see normalMomentumDot.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	sva::ForceVecd sNormalMomentumDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+		const Eigen::Vector3d& comDot);
+
+	/** safe version of @see normalMomentumDot.
+		* @throw std::domain_error If mb don't match mbc or normalAccB.
+		*/
+	sva::ForceVecd sNormalMomentumDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+		const Eigen::Vector3d& comDot,
+		const std::vector<sva::MotionVecd>& normalAccB) const;
 
 private:
 	void init(const rbd::MultiBody& mb);
