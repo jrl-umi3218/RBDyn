@@ -419,99 +419,44 @@ std::vector<std::vector<double> > sVectorToDof(const MultiBody& mb,
 
 void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.bodyPosW.size()) != mb.nrBodies())
-	{
-		std::ostringstream str;
-		str << "bodyPosW size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.bodyPosW.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchBodiesVector(mb, mbc.bodyPosW, "bodyPosW");
 }
-
 
 
 void checkMatchParentToSon(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.parentToSon.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "parentToSon size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.parentToSon.size();
-		throw std::domain_error(str.str());
-	}
-
+	checkMatchJointsVector(mb, mbc.parentToSon, "parentToSon");
 }
 
 
 void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.bodyVelW.size()) != mb.nrBodies())
-	{
-		std::ostringstream str;
-		str << "bodyVelW size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.bodyVelW.size();
-		throw std::domain_error(str.str());
-	}
-
-	if(static_cast<int>(mbc.bodyVelB.size()) != mb.nrBodies())
-	{
-		std::ostringstream str;
-		str << "bodyVelB size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.bodyVelB.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchBodiesVector(mb, mbc.bodyVelW, "bodyVelW");
+	checkMatchBodiesVector(mb, mbc.bodyVelB, "bodyVelB");
 }
-
 
 
 void checkMatchBodyAcc(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.bodyAccB.size()) != mb.nrBodies())
-	{
-		std::ostringstream str;
-		str << "bodyAccB size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.bodyAccB.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchBodiesVector(mb, mbc.bodyAccB, "bodyAccB");
 }
-
 
 
 void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.jointConfig.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "jointConfig size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.jointConfig.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.jointConfig, "jointConfig");
 }
-
 
 
 void checkMatchJointVelocity(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.jointVelocity.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "jointVelocity size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.jointVelocity.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.jointVelocity, "jointVelocity");
 }
-
 
 
 void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.jointTorque.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "jointTorque vector size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.jointTorque.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.jointTorque, "jointTorque");
 
 	for(int i = 0; i < static_cast<int>(mbc.jointTorque.size()); ++i)
 	{
@@ -527,16 +472,9 @@ void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
-
 void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.motionSubspace.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "motionSubspace vector size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.motionSubspace.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.motionSubspace, "motionSubspace");
 
 	for(int i = 0; i < static_cast<int>(mbc.motionSubspace.size()); ++i)
 	{
@@ -555,13 +493,7 @@ void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.q.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "Generalized position variable vector size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.q.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.q, "Generalized position variable vector");
 
 	for(int i = 0; i < static_cast<int>(mbc.q.size()); ++i)
 	{
@@ -580,13 +512,7 @@ void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.alpha.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "Generalized velocity variable vector size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.alpha.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.alpha, "Generalized velocity variable vector");
 
 	for(int i = 0; i < static_cast<int>(mbc.alpha.size()); ++i)
 	{
@@ -605,13 +531,7 @@ void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.alphaD.size()) != mb.nrJoints())
-	{
-		std::ostringstream str;
-		str << "Generalized acceleration variable vector size mismatch: expected size "
-				<< mb.nrJoints() << " gived " << mbc.alphaD.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchJointsVector(mb, mbc.alphaD, "Generalized acceleration variable vector");
 
 	for(int i = 0; i < static_cast<int>(mbc.alphaD.size()); ++i)
 	{
@@ -630,13 +550,7 @@ void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	if(static_cast<int>(mbc.force.size()) != mb.nrBodies())
-	{
-		std::ostringstream str;
-		str << "External force vector size mismatch: expected size "
-				<< mb.nrBodies() << " gived " << mbc.force.size();
-		throw std::domain_error(str.str());
-	}
+	checkMatchBodiesVector(mb, mbc.force, "External force vector");
 }
 
 } // namespace rbd

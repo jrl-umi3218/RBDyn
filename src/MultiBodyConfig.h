@@ -23,9 +23,11 @@
 // sva
 #include <SpaceVecAlg/SpaceVecAlg>
 
+// RBDyn
+#include "MultiBody.h"
+
 namespace rbd
 {
-class MultiBody;
 
 struct MultiBodyConfig
 {
@@ -245,6 +247,16 @@ std::vector<std::vector<double>> sVectorToDof(const MultiBody& mb,
 
 
 
+/// @throw std::domain_error If there is a mismatch between mb.nrBodies and vec.size()
+template <typename T>
+void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T>& vec,
+	const std::string& name);
+
+/// @throw std::domain_error If there is a mismatch between mb.nrJoints and vec.size()
+template <typename T>
+void checkMatchJointsVector(const MultiBody& mb, const std::vector<T>& vec,
+	const std::string& name);
+
 /// @throw std::domain_error If there is a mismatch between mb and mbc.bodyPosW.
 void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc);
 
@@ -282,6 +294,34 @@ void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc);
 /// @throw std::domain_error If there is a mismatch between mb and mbc.force.
 void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+
+
+template <typename T>
+void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T>& vec,
+	const std::string& name)
+{
+	if(int(vec.size()) != mb.nrBodies())
+	{
+		std::ostringstream str;
+		str << name << " size mismatch: expected size "
+				<< mb.nrBodies() << " gived " << vec.size();
+		throw std::domain_error(str.str());
+	}
+}
+
+
+template <typename T>
+void checkMatchJointsVector(const MultiBody& mb, const std::vector<T>& vec,
+	const std::string& name)
+{
+	if(int(vec.size()) != mb.nrJoints())
+	{
+		std::ostringstream str;
+		str << name << " size mismatch: expected size "
+				<< mb.nrJoints() << " gived " << vec.size();
+		throw std::domain_error(str.str());
+	}
+}
 
 
 
