@@ -209,20 +209,27 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 		q.setRandom();
 		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
 		alpha.setRandom();
+		alphaD.setZero();
 		rbd::vectorToParam(q, mbc.q);
 		rbd::vectorToParam(alpha, mbc.alpha);
+		// calcul the normal acceleration since alphaD is zero
+		rbd::vectorToParam(alphaD, mbc.alphaD);
 
 		rbd::forwardKinematics(mb, mbc);
 		rbd::forwardVelocity(mb, mbc);
+		rbd::forwardAcceleration(mb, mbc);
 
 		Vector3d com = rbd::computeCoM(mb, mbc);
 		Vector3d comDot = rbd::computeCoMVelocity(mb, mbc);
-		ForceVecd normalMomentumDot = cmmW.normalMomentumDot(mb, mbc, com, comDot);
+		ForceVecd normalMomentumDot1 = cmmW.normalMomentumDot(mb, mbc, com, comDot);
+		ForceVecd normalMomentumDot2 = cmmW.normalMomentumDot(mb, mbc, com, comDot,
+			mbc.bodyAccB);
 		cmmW.computeMatrixDot(mb, mbc, com, comDot);
 
 		ForceVecd normalMomentumDotM(cmmW.matrixDot()*alpha);
 
-		BOOST_CHECK_SMALL((normalMomentumDot - normalMomentumDotM).vector().norm(), TOL);
+		BOOST_CHECK_SMALL((normalMomentumDot1 - normalMomentumDotM).vector().norm(), TOL);
+		BOOST_CHECK_SMALL((normalMomentumDot2 - normalMomentumDotM).vector().norm(), TOL);
 	}
 }
 

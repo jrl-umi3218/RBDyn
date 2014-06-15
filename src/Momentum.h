@@ -126,6 +126,22 @@ public:
 		const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
 		const Eigen::Vector3d& comDot);
 
+	/**
+		* Compute the normal componant of the time derivative of
+		* centroidal momentum (with weight) (JDot·alpha).
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW, bodyVelB, jointVelocity, parentToSon.
+		* @param com CoM position.
+		* @param comDot CoM velocity.
+		* @param normalAccB Normal bodies acceleration in body frame.
+		* @return Normal componant of the time derivative Centroidal momentum
+		*					at the CoM frame (with weight).
+		*/
+	sva::ForceVecd normalMomentumDot(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+		const Eigen::Vector3d& comDot,
+		const std::vector<sva::MotionVecd>& normalAccB) const;
+
 	// safe version for python binding
 
 	/** safe version of @see computeMatrix.

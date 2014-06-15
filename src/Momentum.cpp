@@ -304,12 +304,6 @@ sva::ForceVecd CentroidalMomentumMatrix::normalMomentumDot(
 {
 	using namespace Eigen;
 
-	const std::vector<Body>& bodies = mb.bodies();
-	Vector6d cm(Vector6d::Zero());
-
-	sva::PTransformd X_com_0(Vector3d(-com));
-	sva::MotionVecd com_Vel(Vector3d::Zero(), comDot);
-
 	const std::vector<int>& pred = mb.predecessors();
 	const std::vector<int>& succ = mb.successors();
 
@@ -324,6 +318,23 @@ sva::ForceVecd CentroidalMomentumMatrix::normalMomentumDot(
 		else
 			normalAcc_[succ[i]] = vb_i.cross(vj_i);
 	}
+
+	return normalMomentumDot(mb, mbc, com, comDot, normalAcc_);
+}
+
+
+sva::ForceVecd CentroidalMomentumMatrix::normalMomentumDot(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
+	const Eigen::Vector3d& comDot,
+	const std::vector<sva::MotionVecd>& normalAccB) const
+{
+	using namespace Eigen;
+
+	const std::vector<Body>& bodies = mb.bodies();
+	Vector6d cm(Vector6d::Zero());
+
+	sva::PTransformd X_com_0(Vector3d(-com));
+	sva::MotionVecd com_Vel(Vector3d::Zero(), comDot);
 
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
@@ -349,7 +360,7 @@ sva::ForceVecd CentroidalMomentumMatrix::normalMomentumDot(
 
 		// transform in com coordinate
 		cm += (X_i_com_d_dual_hi.vector() +
-					(X_com_i.transMul(bodies[i].inertia()*normalAcc_[i])).vector())*\
+					(X_com_i.transMul(bodies[i].inertia()*normalAccB[i])).vector())*\
 				bodiesWeight_[i];
 	}
 
