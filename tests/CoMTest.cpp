@@ -507,8 +507,14 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
 	std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
 
-	CoMJacobian comJac(mb);
-	CoMJacobianDummy comJacDummy(mb);
+	std::vector<double> weight(mb.nrBodies());
+	for(std::size_t i = 0; i < weight.size(); ++i)
+	{
+		weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
+	}
+
+	CoMJacobian comJac(mb, weight);
+	CoMJacobianDummy comJacDummy(mb, weight);
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
@@ -569,5 +575,35 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
 			BOOST_CHECK_SMALL((jacDotMat - jacDotDummyMat).norm(), TOL);
 		}
+	}
+
+
+	// Test velocity and normal acceleration function
+	for(int i = 0; i < 50; ++i)
+	{
+		Eigen::VectorXd q(mb.nrParams()), alpha(mb.nrDof());
+		q.setRandom();
+		alpha.setRandom();
+		// normalize free flyier and spherical joint
+		q.head<4>().normalize();
+		q.segment(mb.jointPosInParam(mb.jointIndexById(3)), 4).normalize();
+		rbd::vectorToParam(q, mbc.q);
+		rbd::vectorToParam(alpha, mbc.alpha);
+		forwardKinematics(mb, mbc);
+		forwardVelocity(mb, mbc);
+
+		// test com velocity
+		const MatrixXd& comJacMat = comJac.jacobian(mb, mbc);
+		Vector3d velFromJac = comJacMat*alpha;
+		Vector3d velFromMbc = comJac.velocity(mb, mbc);
+
+		BOOST_CHECK_SMALL((velFromJac - velFromMbc).norm(), TOL);
+
+		// test com normal acceleration
+		const MatrixXd& comJacDotMat = comJac.jacobianDot(mb, mbc);
+		Vector3d normalAccFromJac = comJacDotMat*alpha;
+		Vector3d normalAccFromMbc = comJac.normalAcceleration(mb, mbc);
+
+		BOOST_CHECK_SMALL((normalAccFromJac - normalAccFromMbc).norm(), TOL);
 	}
 }

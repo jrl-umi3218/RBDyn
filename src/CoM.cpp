@@ -263,7 +263,8 @@ CoMJacobian::CoMJacobian(const MultiBody& mb):
 	bodiesCoM_(mb.nrBodies()),
 	jointsSubBodies_(mb.nrJoints()),
 	bodiesCoMWorld_(mb.nrBodies()),
-	bodiesCoMVelB_(mb.nrBodies())
+	bodiesCoMVelB_(mb.nrBodies()),
+	normalAcc_(mb.nrJoints())
 {
 	init(mb, std::vector<double>(mb.nrBodies(), 1.));
 }
@@ -276,7 +277,8 @@ CoMJacobian::CoMJacobian(const MultiBody& mb, const std::vector<double>& weight)
 	bodiesCoM_(mb.nrBodies()),
 	jointsSubBodies_(mb.nrJoints()),
 	bodiesCoMWorld_(mb.nrBodies()),
-	bodiesCoMVelB_(mb.nrBodies())
+	bodiesCoMVelB_(mb.nrBodies()),
+	normalAcc_(mb.nrJoints())
 {
   if(int(weight.size()) != mb.nrBodies())
   {
@@ -372,6 +374,61 @@ const Eigen::MatrixXd& CoMJacobian::jacobianDot(const MultiBody& mb,
 	}
 
 	return jacDot_;
+}
+
+
+Eigen::Vector3d CoMJacobian::velocity(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	Eigen::Vector3d comV = Eigen::Vector3d::Zero();
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		const Eigen::Vector3d& comT = bodiesCoM_[i].translation();
+
+		// Velocity at CoM : com_T_b·V_b
+		// Velocity at CoM world frame : 0_R_b·com_T_b·V_b
+		sva::PTransformd X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
+		comV += (X_0_i*mbc.bodyVelB[i]).linear()*bodiesCoeff_[i];
+	}
+
+	return comV;
+}
+
+
+Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody& mb,
+	const MultiBodyConfig& mbc)
+{
+	const std::vector<int>& pred = mb.predecessors();
+	const std::vector<int>& succ = mb.successors();
+
+	Eigen::Vector3d comA(Eigen::Vector3d::Zero());
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
+		const sva::MotionVecd& vj_i = mbc.jointVelocity[i];
+		const sva::MotionVecd& vb_i = mbc.bodyVelB[i];
+
+		if(pred[i] != -1)
+			normalAcc_[succ[i]] = X_p_i*normalAcc_[pred[i]] + vb_i.cross(vj_i);
+		else
+			normalAcc_[succ[i]] = vb_i.cross(vj_i);
+	}
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		const Eigen::Vector3d& comT = bodiesCoM_[i].translation();
+
+		// Normal Acceleration at CoM : com_T_b·A_b
+		// Normal Acceleration at CoM world frame :
+		//    0_R_b·com_T_b·A_b + 0_R_b_d·com_T_b·V_b
+		// O_R_b_d : (Angvel_W)_b x 0_R_b
+		sva::PTransformd X_0_i(mbc.bodyPosW[i].rotation().transpose(), comT);
+		sva::MotionVecd angvel_W(mbc.bodyVelW[i].angular(), Eigen::Vector3d::Zero());
+		comA += (X_0_i*normalAcc_[i]).linear()*bodiesCoeff_[i];
+		comA += (angvel_W.cross(X_0_i*mbc.bodyVelB[i])).linear()*bodiesCoeff_[i];
+	}
+
+	return comA;
 }
 
 

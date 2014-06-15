@@ -151,6 +151,10 @@ public:
 	const Eigen::MatrixXd& jacobianDot(const MultiBody& mb,
 		const MultiBodyConfig& mbc);
 
+	Eigen::Vector3d velocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+	Eigen::Vector3d normalAcceleration(const MultiBody& mb,
+		const MultiBodyConfig& mbc);
+
 	// safe version for python binding
 
 	/** safe version of @see jacobian.
@@ -178,6 +182,8 @@ private:
 	// jacobian, jacobianDot computation buffer
 	std::vector<sva::PTransformd> bodiesCoMWorld_;
 	std::vector<sva::MotionVecd> bodiesCoMVelB_;
+	// store normal acceleration of each bodies when calling normal acceleration
+	std::vector<sva::MotionVecd> normalAcc_;
 };
 
 
