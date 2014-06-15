@@ -29,6 +29,7 @@
 // RBDyn
 #include "FK.h"
 #include "FV.h"
+#include "FA.h"
 #include "Jacobian.h"
 #include "Body.h"
 #include "Joint.h"
@@ -825,6 +826,8 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 		rbd::vectorToParam(alpha, mbc.alpha);
 		forwardKinematics(mb, mbc);
 		forwardVelocity(mb, mbc);
+		// calcul the normal acceleration since alphaD is zero
+		forwardAcceleration(mb, mbc);
 
 		Vector3d point(Vector3d::Random());
 		for(Jacobian& jac: {std::ref(jac1), std::ref(jac2)})
@@ -847,20 +850,46 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 																					_1)).norm(),
 				TOL);
 
+			typedef MotionVecd (Jacobian::*normalAccel_func1)(const MultiBodyConfig&) const;
+			typedef MotionVecd (Jacobian::*normalAccel_func2)
+				(const MultiBodyConfig&, const std::vector<sva::MotionVecd>&) const;
+
 			BOOST_CHECK_SMALL(
 				testMatrixAgainstVector(mb, mbc, jac,
 																std::bind(&Jacobian::jacobianDot, std::ref(jac),
 																					_1, _2), alpha,
-																std::bind(&Jacobian::normalAcceleration, std::ref(jac),
-																					_1)).norm(),
+																std::bind(static_cast<normalAccel_func1>
+																					(&Jacobian::normalAcceleration),
+																					std::ref(jac), _1)).norm(),
 				TOL);
 
 			BOOST_CHECK_SMALL(
 				testMatrixAgainstVector(mb, mbc, jac,
 																std::bind(&Jacobian::bodyJacobianDot, std::ref(jac),
 																					_1, _2), alpha,
-																std::bind(&Jacobian::bodyNormalAcceleration, std::ref(jac),
-																					_1)).norm(),
+																std::bind(static_cast<normalAccel_func1>
+																					(&Jacobian::bodyNormalAcceleration),
+																					std::ref(jac), _1)).norm(),
+				TOL);
+
+			BOOST_CHECK_SMALL(
+				testMatrixAgainstVector(mb, mbc, jac,
+																std::bind(&Jacobian::jacobianDot, std::ref(jac),
+																					_1, _2), alpha,
+																std::bind(static_cast<normalAccel_func2>
+																					(&Jacobian::normalAcceleration),
+																					std::ref(jac), _1,
+																					std::ref(mbc.bodyAccB))).norm(),
+				TOL);
+
+			BOOST_CHECK_SMALL(
+				testMatrixAgainstVector(mb, mbc, jac,
+																std::bind(&Jacobian::bodyJacobianDot, std::ref(jac),
+																					_1, _2), alpha,
+																std::bind(static_cast<normalAccel_func2>
+																					(&Jacobian::bodyNormalAcceleration),
+																					std::ref(jac), _1,
+																					std::ref(mbc.bodyAccB))).norm(),
 				TOL);
 		}
 	}

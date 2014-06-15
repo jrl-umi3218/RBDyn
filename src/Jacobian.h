@@ -104,28 +104,46 @@ public:
 		* @param mbc Use bodyPosW, bodyVelB.
 		* @return End body point velocity in world coordinate.
 		*/
-	sva::MotionVecd velocity(const MultiBodyConfig& mbc);
+	sva::MotionVecd velocity(const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point velocity in body coordinate (JBody·alpha).
 		* @param mbc Use bodyVelB.
 		* @return End body point velocity in body coordinate.
 		*/
-	sva::MotionVecd bodyVelocity(const MultiBodyConfig& mbc);
+	sva::MotionVecd bodyVelocity(const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
 		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
 		* @return End body point normal acceleration in world coordinate.
 		*/
-	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc);
+	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc) const;
 
 	/**
 		* Compute the end body point normal acceleration in body coordinate (JDotBody·alpha).
 		* @param mbc Use bodyVelB, jointVelocity, parentToSon.
 		* @return End body point normal acceleration in body coordinate.
 		*/
-	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc);
+	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc) const;
+
+	/**
+		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
+		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
+		* @param normalAccB Normal bodies acceleration in body frame.
+		* @return End body point normal acceleration in world coordinate.
+		*/
+	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc,
+		const std::vector<sva::MotionVecd>& normalAccB) const;
+
+	/**
+		* Compute the end body point normal acceleration in body coordinate (JDotBody·alpha).
+		* @param mbc Use bodyVelB, jointVelocity, parentToSon.
+		* @param normalAccB Normal bodies acceleration in body frame.
+		* @return End body point normal acceleration in body coordinate.
+		*/
+	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc,
+		const std::vector<sva::MotionVecd>& normalAccB) const;
 
 	/**
 		* Translate a jacobian at a given position.
@@ -243,6 +261,12 @@ public:
 		*/
 	void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 		Eigen::MatrixXd& res) const;
+
+private:
+	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc,
+		const sva::MotionVecd& bodyNNormalAcc) const;
+	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc,
+		const sva::MotionVecd& bodyNNormalAcc) const;
 
 private:
 	std::vector<int> jointsPath_;
