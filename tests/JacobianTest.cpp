@@ -851,7 +851,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 				testMatrixAgainstVector(mb, mbc, jac,
 																std::bind(&Jacobian::jacobianDot, std::ref(jac),
 																					_1, _2), alpha,
-																std::bind(&Jacobian::acceleration, std::ref(jac),
+																std::bind(&Jacobian::normalAcceleration, std::ref(jac),
 																					_1)).norm(),
 				TOL);
 
@@ -859,7 +859,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 				testMatrixAgainstVector(mb, mbc, jac,
 																std::bind(&Jacobian::bodyJacobianDot, std::ref(jac),
 																					_1, _2), alpha,
-																std::bind(&Jacobian::bodyAcceleration, std::ref(jac),
+																std::bind(&Jacobian::bodyNormalAcceleration, std::ref(jac),
 																					_1)).norm(),
 				TOL);
 		}
