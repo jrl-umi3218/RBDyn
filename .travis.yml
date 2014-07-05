@@ -1,0 +1,28 @@
+language: cpp
+compiler: gcc
+env:
+  global:
+  - APT_DEPENDENCIES="doxygen doxygen-latex libboost1.48-all-dev"
+  - GIT_DEPENDENCIES="jorisv/SpaceVecAlg"
+  - DEBSIGN_KEYID=5AE5CD75
+notifications:
+  email:
+  - idh-devel@lirmm.fr
+branches:
+  only:
+  - master
+script: ./.travis/run build
+after_success: ./.travis/run after_success
+after_failure: ./.travis/run after_failure
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -y update
+  - sudo apt-get install -y gcc-4.8 g++-4.8 gccxml
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
+  - sudo update-alternatives --config gcc
+  - sudo update-alternatives --config g++
+  - curDir=`pwd`; cd "$build_dir"; wget https://pybindgen.googlecode.com/files/pybindgen-0.16.0.tar.bz2; tar -xvjf ./pybindgen-0.16.0.tar.bz2; cd pybindgen-0.16.0; ./waf configure; ./waf; sudo ./waf install; cd $curDir
+  - ./.travis/dependencies/eigen-3.2
+  - ./.travis/run  before_install
+
