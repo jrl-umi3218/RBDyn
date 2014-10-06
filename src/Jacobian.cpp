@@ -79,60 +79,58 @@ MultiBody Jacobian::subMultiBody(const MultiBody& mb) const
 					std::move(pred), std::move(succ), std::move(parent), std::move(Xt));
 }
 
-const Eigen::MatrixXd&
-Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+
+static inline const Eigen::MatrixXd& jacobian_(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const sva::PTransformd& X_0_p,
+	const std::vector<int>& jointsPath, Eigen::MatrixXd& jac)
 {
 	const std::vector<Joint>& joints = mb.joints();
-
 	int curJ = 0;
-	int N = jointsPath_.back();
 
-	// the transformation must be read {}^0E_p {}^pT_N {}^NX_0
-	sva::PTransformd X_Np_w((point_*mbc.bodyPosW[N]).translation());
-	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	for(std::size_t index = 0; index < jointsPath.size(); ++index)
 	{
-		int i = jointsPath_[index];
+		int i = jointsPath[index];
 
-		sva::PTransformd X_i_N = X_Np_w*mbc.bodyPosW[i].inv();
+		sva::PTransformd X_i_N = X_0_p*mbc.bodyPosW[i].inv();
 
 		for(int dof = 0; dof < joints[i].dof(); ++dof)
 		{
-			jac_.col(curJ + dof).noalias() =
+			jac.col(curJ + dof).noalias() =
 				(X_i_N*(sva::MotionVecd(mbc.motionSubspace[i].col(dof)))).vector();
 		}
 
 		curJ += joints[i].dof();
 	}
 
-	return jac_;
+	return jac;
+}
+
+
+const Eigen::MatrixXd& Jacobian::jacobian(const MultiBody& mb,
+	const MultiBodyConfig& mbc, const sva::PTransformd& X_0_p)
+{
+	return jacobian_(mb, mbc, X_0_p, jointsPath_, jac_);
+}
+
+
+const Eigen::MatrixXd&
+Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	int N = jointsPath_.back();
+
+	// the transformation must be read {}^0E_p {}^pT_N {}^NX_0
+	sva::PTransformd X_0_Np_w((point_*mbc.bodyPosW[N]).translation());
+	return jacobian_(mb, mbc, X_0_Np_w, jointsPath_, jac_);
 }
 
 
 const Eigen::MatrixXd&
 Jacobian::bodyJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	const std::vector<Joint>& joints = mb.joints();
-
-	int curJ = 0;
 	int N = jointsPath_.back();
 
-	sva::PTransformd X_Np = point_*mbc.bodyPosW[N];
-	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
-	{
-		int i = jointsPath_[index];
-
-		sva::PTransformd X_i_N = X_Np*mbc.bodyPosW[i].inv();
-
-		for(int dof = 0; dof < joints[i].dof(); ++dof)
-		{
-			jac_.col(curJ + dof).noalias() =
-				(X_i_N*sva::MotionVecd(mbc.motionSubspace[i].col(dof))).vector();
-		}
-
-		curJ += joints[i].dof();
-	}
-
-	return jac_;
+	sva::PTransformd X_0_Np = point_*mbc.bodyPosW[N];
+	return jacobian_(mb, mbc, X_0_Np, jointsPath_, jac_);
 }
 
 

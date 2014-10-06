@@ -42,6 +42,16 @@ public:
 		const Eigen::Vector3d& point=Eigen::Vector3d::Zero());
 
 	/**
+		* Compute the jacobian at the point/frame specified by X_0_p.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyPosW and motionSubspace.
+		* @param X_0_p Jacobian point/frame
+		* @return Jacobian of mb with mbc configuration.
+		*/
+	const Eigen::MatrixXd& jacobian(const MultiBody& mb, const MultiBodyConfig& mbc,
+			const sva::PTransformd& X_0_p);
+
+	/**
 		* Compute the jacobian in world frame.
 		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW and motionSubspace.
