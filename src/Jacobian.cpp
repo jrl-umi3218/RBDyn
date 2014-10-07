@@ -80,12 +80,19 @@ MultiBody Jacobian::subMultiBody(const MultiBody& mb) const
 }
 
 
-static inline const Eigen::MatrixXd& jacobian_(const MultiBody& mb,
-	const MultiBodyConfig& mbc, const sva::PTransformd& X_0_p,
-	const std::vector<int>& jointsPath, Eigen::MatrixXd& jac)
+/// private implementation of the Jacobian computation
+/// We use the Transform template allow Eigen3 to
+/// remove the Matrix3d from the computation.
+template<typename Transform>
+static inline const Eigen::MatrixXd&
+jacobian_(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const Transform& Trans_0_p, const std::vector<int>& jointsPath,
+	Eigen::MatrixXd& jac)
 {
 	const std::vector<Joint>& joints = mb.joints();
 	int curJ = 0;
+
+	sva::PTransformd X_0_p(Trans_0_p);
 
 	for(std::size_t index = 0; index < jointsPath.size(); ++index)
 	{
@@ -119,8 +126,8 @@ Jacobian::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 	int N = jointsPath_.back();
 
 	// the transformation must be read {}^0E_p {}^pT_N {}^NX_0
-	sva::PTransformd X_0_Np_w((point_*mbc.bodyPosW[N]).translation());
-	return jacobian_(mb, mbc, X_0_Np_w, jointsPath_, jac_);
+  Eigen::Vector3d T_0_Np((point_*mbc.bodyPosW[N]).translation());
+  return jacobian_(mb, mbc, T_0_Np, jointsPath_, jac_);
 }
 
 
