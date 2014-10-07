@@ -216,7 +216,8 @@ void ConfigConverter::sConvert(const MultiBodyConfig& from, MultiBodyConfig& to)
 	*/
 
 
-void paramToVector(const std::vector<std::vector<double> >& v, Eigen::VectorXd& e)
+void paramToVector(const std::vector<std::vector<double> >& v,
+	Eigen::Ref<Eigen::VectorXd> e)
 {
 	int pos = 0;
 	for(auto& inV: v)
@@ -229,7 +230,8 @@ void paramToVector(const std::vector<std::vector<double> >& v, Eigen::VectorXd& 
 	}
 }
 
-void sParamToVector(const std::vector<std::vector<double> >& v, Eigen::VectorXd& e)
+void sParamToVector(const std::vector<std::vector<double> >& v,
+	Eigen::Ref<Eigen::VectorXd> e)
 {
 	int nb = 0;
 	for(int i = 0; i < static_cast<int>(v.size()); ++i)
@@ -323,7 +325,8 @@ Eigen::VectorXd sDofToVector(const MultiBody& mb,
 
 
 
-void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e, std::vector<std::vector<double> >& v)
+void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
+	std::vector<std::vector<double> >& v)
 {
 	int pos = 0;
 	for(auto& inV: v)
@@ -336,7 +339,8 @@ void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e, std::vector<std::
 	}
 }
 
-void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double> >& v)
+void sVectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
+	std::vector<std::vector<double> >& v)
 {
 	int nb = 0;
 	for(std::size_t i = 0; i < v.size(); ++i)

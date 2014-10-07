@@ -369,7 +369,7 @@ sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBody& /* mb */,
 }
 
 
-void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
+void Jacobian::translateJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
 	Eigen::MatrixXd& res)
 {
@@ -387,7 +387,7 @@ void Jacobian::translateJacobian(const Eigen::MatrixXd& jac,
 }
 
 
-void Jacobian::translateBodyJacobian(const Eigen::MatrixXd& jac,
+void Jacobian::translateBodyJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
 	const MultiBodyConfig& /* mbc */, const Eigen::Vector3d& point,
 	Eigen::MatrixXd& res)
 {

@@ -150,13 +150,15 @@ private:
 	* @param v Parameter vector.
 	* @param e Output Eigen vector (must be of the good size).
 	*/
-void paramToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e);
+void paramToVector(const std::vector<std::vector<double>>& v,
+	Eigen::Ref<Eigen::VectorXd> e);
 
 /**
 	* Safe version of @see paramToVector.
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
-void sParamToVector(const std::vector<std::vector<double>>& v, Eigen::VectorXd& e);
+void sParamToVector(const std::vector<std::vector<double>>& v,
+	Eigen::Ref<Eigen::VectorXd> e);
 
 
 
@@ -201,13 +203,15 @@ Eigen::VectorXd sDofToVector(const MultiBody& mb,
 	* @param e Eigen vector.
 	* @param e Output Parameter vector (must be of the good size).
 	*/
-void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e, std::vector<std::vector<double>>& v);
+void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
+	std::vector<std::vector<double>>& v);
 
 /**
 	* Safe version of @see vectorToParam.
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
-void sVectorToParam(const Eigen::VectorXd& e, std::vector<std::vector<double>>& v);
+void sVectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
+	std::vector<std::vector<double>>& v);
 
 
 

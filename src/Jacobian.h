@@ -169,7 +169,7 @@ public:
 		* @param point Point to translate jacobian.
 		* @param res Translated jacobian (must be allocated).
 		*/
-	void translateJacobian(const Eigen::MatrixXd& jac,
+	void translateJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
 		const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
 		Eigen::MatrixXd& res);
 
@@ -180,7 +180,7 @@ public:
 		* @param point Point to translate jacobian.
 		* @param res Translated jacobian (must be allocated).
 		*/
-	void translateBodyJacobian(const Eigen::MatrixXd& jac,
+	void translateBodyJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
 		const MultiBodyConfig& mbc, const Eigen::Vector3d& point,
 		Eigen::MatrixXd& res);
 
