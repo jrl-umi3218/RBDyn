@@ -442,6 +442,8 @@ Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody& mb,
 
 typedef const Eigen::MatrixXd& (rbd::Jacobian::*worldJacobian_t)
 	(const rbd::MultiBody&, const rbd::MultiBodyConfig&);
+typedef sva::MotionVecd (rbd::Jacobian::*worldVelocity_t)
+	(const rbd::MultiBody&, const rbd::MultiBodyConfig&) const;
 
 void testJacobianDot(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc,
 	rbd::Jacobian& jac)
@@ -840,7 +842,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 				testMatrixAgainstVector(mb, mbc, jac,
 																std::bind(worldJacobian_t(&Jacobian::jacobian), std::ref(jac),
 																					_1, _2), alpha,
-																std::bind(&Jacobian::velocity, std::ref(jac),
+																std::bind(worldVelocity_t(&Jacobian::velocity), std::ref(jac),
 																					_1, _2)).norm(),
 				TOL);
 

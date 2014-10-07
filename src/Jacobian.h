@@ -110,6 +110,16 @@ public:
 		const MultiBodyConfig& mbc);
 
 	/**
+		* Compute the end body point velocity at the point/frame specified by X_b_p.
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyVelB.
+		* @param X_b_p velocity point/frame.
+		* @return End body point velocity in world coordinate.
+		*/
+	sva::MotionVecd velocity(const MultiBody& mb,
+		const MultiBodyConfig& mbc, const sva::PTransformd& X_b_p) const;
+
+	/**
 		* Compute the end body point velocity in world coordinate (J·alpha).
 		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelB.
@@ -128,6 +138,17 @@ public:
 	/**
 		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
 		* @param mb MultiBody used has model.
+		* @param mbc Use bodyVelB, jointVelocity, parentToSon.
+		* @param X_b_p normal acceleration point/frame.
+		* @param V_b_p X_b_p velocity.
+		* @return End body point normal acceleration in world coordinate.
+		*/
+	sva::MotionVecd normalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const;
+
+	/**
+		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
+		* @param mb MultiBody used has model.
 		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
 		* @return End body point normal acceleration in world coordinate.
 		*/
@@ -141,6 +162,19 @@ public:
 		*/
 	sva::MotionVecd bodyNormalAcceleration(const MultiBody& mb,
 		const MultiBodyConfig& mbc) const;
+
+	/**
+		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
+		* @param mb MultiBody used has model.
+		* @param mbc Use bodyVelB.
+		* @param normalAccB Normal bodies acceleration in body frame.
+		* @param X_b_p normal acceleration point/frame.
+		* @param V_b_p X_b_p velocity.
+		* @return End body point normal acceleration in world coordinate.
+		*/
+	sva::MotionVecd normalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const std::vector<sva::MotionVecd>& normalAccB,
+		const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const;
 
 	/**
 		* Compute the end body point normal acceleration in world coordinate (JDot·alpha).
@@ -312,6 +346,9 @@ public:
 		const std::vector<sva::MotionVecd>& normalAccB) const;
 
 private:
+	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc,
+		const sva::MotionVecd& bodyNNormalAcc, const sva::PTransformd& X_b_p,
+		const sva::MotionVecd& V_b_p) const;
 	sva::MotionVecd normalAcceleration(const MultiBodyConfig& mbc,
 		const sva::MotionVecd& bodyNNormalAcc) const;
 	sva::MotionVecd bodyNormalAcceleration(const MultiBodyConfig& mbc,

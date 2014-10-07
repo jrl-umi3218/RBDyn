@@ -296,12 +296,20 @@ Jacobian::bodyJacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 
 sva::MotionVecd Jacobian::velocity(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc, const sva::PTransformd& X_b_p) const
+{
+	int N = jointsPath_.back();
+	return X_b_p*mbc.bodyVelB[N];
+}
+
+
+sva::MotionVecd Jacobian::velocity(const MultiBody& /* mb */,
 	const MultiBodyConfig& mbc) const
 {
 	int N = jointsPath_.back();
 	// equivalent of E_N_0*X_N_Np
 	sva::PTransformd X_Np_w(mbc.bodyPosW[N].rotation().transpose(),
-													point_.translation());
+		point_.translation());
 	return X_Np_w*mbc.bodyVelB[N];
 }
 
@@ -314,44 +322,50 @@ sva::MotionVecd Jacobian::bodyVelocity(const MultiBody& /* mb */,
 }
 
 
-sva::MotionVecd Jacobian::normalAcceleration(const MultiBody& /* mb */,
-	const MultiBodyConfig& mbc) const
+static inline sva::MotionVecd normalAccB_(const rbd::MultiBodyConfig& mbc,
+	const std::vector<int>& jointsPath)
 {
-	int N = jointsPath_.back();
-	// equivalent of E_N_0*X_N_Np
-	sva::PTransformd X_Np_w(mbc.bodyPosW[N].rotation().transpose(),
-													point_.translation());
-	sva::MotionVecd E_VN(mbc.bodyVelW[N].angular(), Eigen::Vector3d::Zero());
 	sva::MotionVecd accel(Eigen::Vector6d::Zero());
-	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+	for(std::size_t index = 0; index < jointsPath.size(); ++index)
 	{
-		int i = jointsPath_[index];
+		int i = jointsPath[index];
 		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 		const sva::MotionVecd& vj_i = mbc.jointVelocity[i];
 		const sva::MotionVecd& vb_i = mbc.bodyVelB[i];
 
 		accel = X_p_i*accel + vb_i.cross(vj_i);
 	}
+	return accel;
+}
 
-	return normalAcceleration(mbc, accel);
+
+sva::MotionVecd Jacobian::normalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc, const sva::PTransformd& X_b_p,
+	const sva::MotionVecd& V_b_p) const
+{
+	return normalAcceleration(mbc, normalAccB_(mbc, jointsPath_), X_b_p, V_b_p);
+}
+
+
+sva::MotionVecd Jacobian::normalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc) const
+{
+	return normalAcceleration(mbc, normalAccB_(mbc, jointsPath_));
 }
 
 
 sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBody& /* mb */,
 	const MultiBodyConfig& mbc) const
 {
-	sva::MotionVecd accel(Eigen::Vector6d::Zero());
-	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
-	{
-		int i = jointsPath_[index];
-		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
-		const sva::MotionVecd& vj_i = mbc.jointVelocity[i];
-		const sva::MotionVecd& vb_i = mbc.bodyVelB[i];
+	return bodyNormalAcceleration(mbc, normalAccB_(mbc, jointsPath_));
+}
 
-		accel = X_p_i*accel + vb_i.cross(vj_i);
-	}
 
-	return bodyNormalAcceleration(mbc, accel);
+sva::MotionVecd Jacobian::normalAcceleration(const MultiBody& /* mb */,
+	const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB,
+	const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const
+{
+	return normalAcceleration(mbc, normalAccB[jointsPath_.back()], X_b_p, V_b_p);
 }
 
 
@@ -654,12 +668,22 @@ sva::MotionVecd Jacobian::sBodyNormalAcceleration(const MultiBody& mb,
 
 
 sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc,
+	const sva::MotionVecd& bodyNNormalAcc, const sva::PTransformd& X_b_p,
+	const sva::MotionVecd& V_b_p) const
+{
+	int N = jointsPath_.back();
+	return X_b_p*bodyNNormalAcc +
+		V_b_p.cross(X_b_p*mbc.bodyVelB[N]);
+}
+
+
+sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig& mbc,
 	const sva::MotionVecd& bodyNNormalAcc) const
 {
 	int N = jointsPath_.back();
 	// equivalent of E_N_0*X_N_Np
 	sva::PTransformd X_Np_w(mbc.bodyPosW[N].rotation().transpose(),
-													point_.translation());
+		point_.translation());
 	sva::MotionVecd E_VN(mbc.bodyVelW[N].angular(), Eigen::Vector3d::Zero());
 	return X_Np_w*bodyNNormalAcc +
 		E_VN.cross(X_Np_w*mbc.bodyVelB[N]);
