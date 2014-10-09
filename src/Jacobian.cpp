@@ -419,14 +419,14 @@ void Jacobian::fullJacobian(const MultiBody& mb,
 	const Eigen::Ref<const Eigen::MatrixXd>& jac,
 	Eigen::MatrixXd& res) const
 {
-	res.setZero();
+	res.block(0, 0, jac.rows(), mb.nrDof()).setZero();
 	int jacPos = 0;
 	for(std::size_t index = 0; index < jointsPath_.size(); ++index)
 	{
 		int i = jointsPath_[index];
 		int dof = mb.joint(i).dof();
-		res.block(0, mb.jointPosInDof(i), res.rows(), dof) =
-			jac.block(0, jacPos, res.rows(), dof);
+		res.block(0, mb.jointPosInDof(i), jac.rows(), dof) =
+			jac.block(0, jacPos, jac.rows(), dof);
 		jacPos += dof;
 	}
 }
