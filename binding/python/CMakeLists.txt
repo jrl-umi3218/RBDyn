@@ -4,40 +4,30 @@ INCLUDE(../../cmake/python.cmake)
 SET(Python_ADDITIONAL_VERSIONS 2.7)
 FINDPYTHON()
 
-## Define PYTHON_DISTLIB
-EXECUTE_PROCESS(
-  COMMAND "${PYTHON_EXECUTABLE}" "-c"
-  "import sys, os; print os.sep.join(['lib', 'python' + sys.version[:3], 'dist-packages'])"
-  OUTPUT_VARIABLE PYTHON_DISTLIB
-  ERROR_QUIET)
-# Remove final \n of the variable PYTHON_DISTLIB
-STRING(REPLACE "\n" "" PYTHON_DISTLIB "${PYTHON_DISTLIB}")
+# Create the package in build dir for testing purpose
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/rbdyn)
+CONFIGURE_FILE(__init__.py ${CMAKE_CURRENT_BINARY_DIR}/rbdyn/__init__.py COPYONLY)
+SET(OUTPUT_BINDING ${CMAKE_CURRENT_BINARY_DIR}/rbdyn.cpp)
 
-# create the package in build dir for testing purpose
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/rbdyn)
-configure_file(__init__.py ${CMAKE_CURRENT_BINARY_DIR}/rbdyn/__init__.py COPYONLY)
-
-set(OUTPUT_BINDING ${CMAKE_CURRENT_BINARY_DIR}/rbdyn.cpp)
-
-# generate python binding code
-add_custom_command (
+# Generate Python binding code
+ADD_CUSTOM_COMMAND (
   OUTPUT ${OUTPUT_BINDING}
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.py ${OUTPUT_BINDING}
   DEPENDS generate.py
 )
 
-# build the library
-set(SOURCES ${OUTPUT_BINDING})
-include_directories(.)
-include_directories(../../src)
-include_directories(${PYTHON_INCLUDE_DIRS})
+# Build the library
+SET(SOURCES ${OUTPUT_BINDING})
 
-add_library(_rbdyn SHARED ${SOURCES})
+INCLUDE_DIRECTORIES(SYSTEM ${PYTHON_INCLUDE_PATH})
+INCLUDE_DIRECTORIES(.)
+INCLUDE_DIRECTORIES(../../src)
+
+ADD_LIBRARY(_rbdyn SHARED ${SOURCES})
 PKG_CONFIG_USE_DEPENDENCY(_rbdyn SpaceVecAlg)
-target_link_libraries(_rbdyn RBDyn)
-set_target_properties(_rbdyn PROPERTIES PREFIX "")
+TARGET_LINK_LIBRARIES(_rbdyn RBDyn)
+SET_TARGET_PROPERTIES(_rbdyn PROPERTIES PREFIX "")
 
-# install rules
-set(INSTALL_PATH "${PYTHON_DISTLIB}/rbdyn/")
-install(TARGETS _rbdyn DESTINATION ${INSTALL_PATH})
-install(FILES __init__.py DESTINATION ${INSTALL_PATH})
+# Install rules
+INSTALL(TARGETS _rbdyn DESTINATION "${PYTHON_SITELIB}/rbdyn")
+PYTHON_INSTALL_BUILD(rbdyn __init__.py "${PYTHON_SITELIB}")
