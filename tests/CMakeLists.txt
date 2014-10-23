@@ -34,6 +34,7 @@ addUnitTest("JacobianTest")
 addUnitTest("DynamicsTest")
 addUnitTest("CoMTest")
 addUnitTest("MomentumTest")
+addUnitTest("IDIMTest")
 
 addBenchmark("JacobianBench")
 addBenchmark("DynamicsBench")

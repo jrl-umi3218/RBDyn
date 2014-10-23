@@ -1,9 +1,9 @@
 set(SOURCES MultiBodyGraph.cpp MultiBody.cpp MultiBodyConfig.cpp
   FK.cpp FV.cpp FA.cpp Jacobian.cpp ID.cpp FD.cpp EulerIntegration.cpp CoM.cpp
-  Momentum.cpp ZMP.cpp)
+  Momentum.cpp ZMP.cpp IDIM.cpp)
 set(HEADERS Body.h Joint.h MultiBodyGraph.h MultiBody.h MultiBodyConfig.h
   FK.h FV.h FA.h Jacobian.h ID.h FD.h EulerIntegration.h CoM.h
-  Momentum.h ZMP.h)
+  Momentum.h ZMP.h IDIM.h)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
 PKG_CONFIG_USE_DEPENDENCY(RBDyn SpaceVecAlg)
