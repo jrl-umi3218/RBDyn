@@ -43,6 +43,12 @@ Eigen::Matrix<double, 10, 1> inertiaToVector(const sva::RBInertiad& rbi);
 /// Convert a phi vector into a RBInertiad.
 sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1>& vec);
 
+/**
+	* Safe version of @see vectorToInertia.
+	* @throw std::out_of_range if the vector don't have 10 rows.
+	*/
+sva::RBInertiad sVectorToInertia(const Eigen::VectorXd& vec);
+
 /** Apply inertiaToVector to all MultiBody Body and concatenate it into one vector
 	* Phi = [phi_0, ..., phi_N]
 	*/

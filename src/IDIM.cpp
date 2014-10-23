@@ -65,6 +65,19 @@ sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1>& vec)
 }
 
 
+sva::RBInertiad vectorToInertia(const Eigen::VectorXd& vec)
+{
+	if(vec.rows() != 10)
+	{
+		std::ostringstream str;
+		str << "Vector size mismatch: expected size is 10 gived is "
+				<< vec.rows();
+		throw std::out_of_range(str.str());
+	}
+	return vectorToInertia(vec);
+}
+
+
 Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody& mb)
 {
 	Eigen::VectorXd vec(mb.nrBodies()*10, 1);

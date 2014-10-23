@@ -692,7 +692,17 @@ def build_confconv(conf):
 
 
 
-def build_idim(idim):
+def build_idim(mod, idim):
+  mod.add_function('IMPhi', retval('Eigen::MatrixXd'),
+                   [param('const sva::MotionVecd&', 'mv')])
+  mod.add_function('inertiaToVector', retval('Eigen::VectorXd'),
+                   [param('const sva::RBInertiad&', 'rbi')])
+  mod.add_function('sVectorToInertia', retval('sva::RBInertiad'),
+                   [param('const Eigen::VectorXd&', 'vec')],
+                   throw=[out_ex], custom_name='vectorToInertia')
+  mod.add_function('multiBodyToInertialVector', retval('Eigen::VectorXd'),
+                   [param('const rbd::MultiBody&', 'mb')])
+
   idim.add_constructor([])
   idim.add_copy_constructor()
   idim.add_constructor([param('const rbd::MultiBody&', 'mb')])
@@ -787,7 +797,7 @@ if __name__ == '__main__':
   build_momentum(rbd, momentumMat)
   build_zmp(rbd)
   build_confconv(confconv)
-  build_idim(idim)
+  build_idim(rbd, idim)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)
