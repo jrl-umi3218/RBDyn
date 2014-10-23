@@ -262,6 +262,12 @@ public:
 	/** safe version of @see jacobian.
 		* @throw std::domain_error If mb don't match mbc or jointPath.
 		*/
+	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const sva::PTransformd& X_0_p);
+
+	/** safe version of @see jacobian.
+		* @throw std::domain_error If mb don't match mbc or jointPath.
+		*/
 	const Eigen::MatrixXd& sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 	/** safe version of @see bodyJacobian.
@@ -316,7 +322,26 @@ public:
 	/** safe version of @see velocity.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
+	sva::MotionVecd sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const sva::PTransformd& X_b_p) const;
+
+	/** safe version of @see velocity.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
 	sva::MotionVecd sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const;
+
+	/** safe version of @see normalAcceleration.
+		* @throw std::domain_error If mb don't match mbc or normalAccB.
+		*/
+	sva::MotionVecd sNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const;
+
+	/** safe version of @see normalAcceleration.
+		* @throw std::domain_error If mb don't match mbc or normalAccB.
+		*/
+	sva::MotionVecd sNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const std::vector<sva::MotionVecd>& normalAccB,
+		const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const;
 
 	/** safe version of @see normalAcceleration.
 		* @throw std::domain_error If mb don't match mbc.

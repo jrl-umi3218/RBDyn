@@ -348,6 +348,12 @@ def build_jacobian(jac):
 
   jac.add_method('sJacobian', retval('Eigen::MatrixXd'),
                  [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const sva::PTransformd&', 'X_0_p')],
+                 throw=[dom_ex], custom_name='jacobian')
+
+  jac.add_method('sJacobian', retval('Eigen::MatrixXd'),
+                 [param('const rbd::MultiBody&', 'mb'),
                   param('const rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='jacobian')
 
@@ -410,6 +416,13 @@ def build_jacobian(jac):
                  throw=[dom_ex], custom_name='velocity',
                  is_const=True)
 
+  jac.add_method('sVelocity', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const sva::PTransformd&', 'X_b_p')],
+                 throw=[dom_ex], custom_name='velocity',
+                 is_const=True)
+
   jac.add_method('sBodyVelocity', retval('sva::MotionVecd'),
                  [param('const rbd::MultiBody&', 'mb'),
                   param('const rbd::MultiBodyConfig&', 'mbc')],
@@ -419,6 +432,23 @@ def build_jacobian(jac):
   jac.add_method('sNormalAcceleration', retval('sva::MotionVecd'),
                  [param('const rbd::MultiBody&', 'mb'),
                   param('const rbd::MultiBodyConfig&', 'mbc')],
+                 throw=[dom_ex], custom_name='normalAcceleration',
+                 is_const=True)
+
+  jac.add_method('sNormalAcceleration', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const sva::PTransformd&', 'X_b_p'),
+                  param('const sva::MotionVecd&', 'V_b_p')],
+                 throw=[dom_ex], custom_name='normalAcceleration',
+                 is_const=True)
+
+  jac.add_method('sNormalAcceleration', retval('sva::MotionVecd'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('const rbd::MultiBodyConfig&', 'mbc'),
+                  param('const std::vector<sva::MotionVecd>&', 'normalAccB'),
+                  param('const sva::PTransformd&', 'X_b_p'),
+                  param('const sva::MotionVecd&', 'V_b_p')],
                  throw=[dom_ex], custom_name='normalAcceleration',
                  is_const=True)
 

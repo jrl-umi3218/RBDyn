@@ -433,6 +433,23 @@ void Jacobian::fullJacobian(const MultiBody& mb,
 
 
 
+const Eigen::MatrixXd& Jacobian::sJacobian(
+	const MultiBody& mb, const MultiBodyConfig& mbc,
+	const sva::PTransformd& X_0_p)
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	return jacobian(mb, mbc, X_0_p);
+}
+
+
 const Eigen::MatrixXd&
 Jacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
@@ -607,6 +624,17 @@ void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 }
 
 
+sva::MotionVecd
+Jacobian::sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const sva::PTransformd& X_b_p) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+
+	return velocity(mb, mbc, X_b_p);
+}
+
+
 sva::MotionVecd Jacobian::sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc) const
 {
 	checkMatchBodyPos(mb, mbc);
@@ -625,6 +653,19 @@ sva::MotionVecd Jacobian::sBodyVelocity(const MultiBody& mb,
 }
 
 
+sva::MotionVecd
+Jacobian::sNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+		const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	return normalAcceleration(mb, mbc, X_b_p, V_b_p);
+}
+
+
 sva::MotionVecd Jacobian::sNormalAcceleration(const MultiBody& mb,
 	const MultiBodyConfig& mbc) const
 {
@@ -634,6 +675,19 @@ sva::MotionVecd Jacobian::sNormalAcceleration(const MultiBody& mb,
 	checkMatchParentToSon(mb, mbc);
 
 	return normalAcceleration(mb, mbc);
+}
+
+
+sva::MotionVecd
+Jacobian::sNormalAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc,
+	const std::vector<sva::MotionVecd>& normalAccB,
+	const sva::PTransformd& X_b_p, const sva::MotionVecd& V_b_p) const
+{
+	checkMatchBodyPos(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchBodiesVector(mb, normalAccB, "normalAccB");
+
+	return normalAcceleration(mb, mbc, normalAccB, X_b_p, V_b_p);
 }
 
 
