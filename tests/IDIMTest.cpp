@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(computeY)
 		forwardVelocity(mb, mbc);
 
 		id.inverseDynamics(mb, mbc);
-		idim.computeY(mb, mbc);
+		idim.sComputeY(mb, mbc);
 
 		paramToVector(mbc.jointTorque, idTorque);
 		idimTorque = idim.Y()*inertiaVec;

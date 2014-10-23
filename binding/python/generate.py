@@ -641,6 +641,8 @@ def build_zmp(mod):
                   param('Eigen::Vector3d', 'comA'),
                   param('double', 'altitude')])
 
+
+
 def build_confconv(conf):
   const = conf.add_function_as_constructor('rbd::ConfigConverter::sConstructor', 'ConfigConverter*',
                                    [param('const rbd::MultiBody&', 'mb1'),
@@ -657,6 +659,20 @@ def build_confconv(conf):
                   [param('const std::vector<std::vector<double> >&', 'from')])
   conf.add_method('convertJoint', retval('std::vector<double>'),
                   [param('const std::vector<double>&', 'from')])
+
+
+
+def build_idim(idim):
+  idim.add_constructor([])
+  idim.add_copy_constructor()
+  idim.add_constructor([param('const rbd::MultiBody&', 'mb')])
+
+
+  idim.add_method('sComputeY', None,
+                  [param('const rbd::MultiBody&', 'mb'),
+                   param('rbd::MultiBodyConfig&', 'mbc')],
+                  throw=[dom_ex], custom_name='computeY')
+  idim.add_method('Y', retval('Eigen::MatrixXd'), [], is_const=True)
 
 
 
@@ -680,6 +696,7 @@ if __name__ == '__main__':
   rbd.add_include('<CoM.h>')
   rbd.add_include('<Momentum.h>')
   rbd.add_include('<ZMP.h>')
+  rbd.add_include('<IDIM.h>')
 
   dom_ex = rbd.add_exception('std::domain_error', foreign_cpp_namespace=' ',
                              message_rvalue='%(EXC)s.what()')
@@ -704,6 +721,7 @@ if __name__ == '__main__':
   comJac = rbd.add_class('CoMJacobian')
   momentumMat = rbd.add_class('CentroidalMomentumMatrix')
   confconv = rbd.add_class('ConfigConverter')
+  idim = rbd.add_class('IDIM')
 
   # build list type
   rbd.add_container('std::vector<double>', 'double', 'vector')
@@ -739,6 +757,7 @@ if __name__ == '__main__':
   build_momentum(rbd, momentumMat)
   build_zmp(rbd)
   build_confconv(confconv)
+  build_idim(idim)
 
   with open(sys.argv[1], 'w') as f:
     rbd.generate(f)

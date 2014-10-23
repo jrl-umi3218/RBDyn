@@ -132,4 +132,15 @@ void IDIM::computeY(const MultiBody& mb, const MultiBodyConfig& mbc)
 	}
 }
 
+
+void IDIM::sComputeY(const MultiBody& mb, const MultiBodyConfig& mbc)
+{
+	checkMatchParentToSon(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+	checkMatchBodyAcc(mb, mbc);
+
+	computeY(mb, mbc);
+}
+
 } // rbd

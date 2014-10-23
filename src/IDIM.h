@@ -63,6 +63,9 @@ Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody& mb);
 class IDIM
 {
 public:
+	IDIM()
+	{}
+	/// @param mb MultiBody associated with this algorithm.
 	IDIM(const rbd::MultiBody& mb);
 
 	/**
@@ -78,6 +81,13 @@ public:
 	{
 		return Y_;
 	}
+
+	// safe version for python binding
+
+	/** safe version of @see inverseDynamics.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sComputeY(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
 
 private:
 	Eigen::MatrixXd Y_;
