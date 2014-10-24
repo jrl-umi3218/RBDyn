@@ -65,7 +65,7 @@ sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1>& vec)
 }
 
 
-sva::RBInertiad vectorToInertia(const Eigen::VectorXd& vec)
+sva::RBInertiad sVectorToInertia(const Eigen::VectorXd& vec)
 {
 	if(vec.rows() != 10)
 	{
