@@ -91,4 +91,10 @@ void InverseDynamics::sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc
 	inverseDynamics(mb, mbc);
 }
 
+
+const std::vector<sva::ForceVecd>& InverseDynamics::f() const
+{
+	return f_;
+}
+
 } // namespace rbd

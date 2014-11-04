@@ -485,6 +485,8 @@ def build_id(id):
                   param('rbd::MultiBodyConfig&', 'mbc')],
                  throw=[dom_ex], custom_name='inverseDynamics')
 
+  id.add_method('f', retval('std::vector<sva::ForceVecd>'), [], is_const=True)
+
 
 
 def build_fd(id):

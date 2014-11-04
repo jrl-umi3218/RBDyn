@@ -54,7 +54,17 @@ public:
 		*/
 	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
 
+	/**
+		* @brief Get the internal forces.
+		* @return vector of forces transmitted from body λ(i) to body i across
+		* joint i.
+		*/
+	const std::vector<sva::ForceVecd>& f() const;
+
 private:
+	/// @brief Internal forces.
+	/// f_ is the vector of forces transmitted from body λ(i) to body i across
+	/// joint i.
 	std::vector<sva::ForceVecd> f_;
 };
 

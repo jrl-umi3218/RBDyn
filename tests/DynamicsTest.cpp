@@ -85,6 +85,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
 	InverseDynamics id(mb);
 	id.inverseDynamics(mb, mbc);
 
+	BOOST_CHECK_EQUAL(int(id.f().size()), mb.nrBodies());
 	BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
 
 	mbc.q = {{}, {cst::pi<double>()}};
