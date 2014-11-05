@@ -312,7 +312,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	//             j1(0)  /  j2(1)     j3(2)
 	// root --j0(-1)-- b1(0) ---- b3(2) ---- b4(3)
 
-	RBInertiad r;
+	RBInertiad r(1., Vector3d::Random(), Matrix3d::Random());
 	std::vector<Body> bodies = {Body(r, 0, "b1"),
 															Body(r, 1, "b2"),
 															Body(r, 6, "b3"),
@@ -398,6 +398,25 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	std::vector<PTransformd> newXt = {newTrans, newTrans, I, tmp};
 	BOOST_CHECK_NO_THROW(mb.sTransforms(newXt));
 	BOOST_CHECK_THROW(mb.sTransforms({newTrans, newTrans, I}), std::runtime_error);
+	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, newXt);
+
+	// body setter
+	int b6Index = mb.bodyIndexById(6);
+	Body oldBody(mb.body(b6Index));
+	RBInertiad newR(123., Vector3d::Random(), Matrix3d::Random());
+	Body newBody(newR, 6, "b3");
+	BOOST_CHECK_NO_THROW(mb.sBody(b6Index, newBody));
+	BOOST_CHECK_THROW(mb.sBody(10, newBody), std::out_of_range);
+	BOOST_CHECK_EQUAL(mb.body(b6Index), newBody);
+	mb.body(b6Index, oldBody);
+	BOOST_CHECK_EQUAL(mb.body(b6Index), oldBody);
+
+	// bodies setter
+	std::vector<Body> newBodies = {Body(newR, 0, "b1"), Body(newR, 1, "b2"),
+		Body(newR, 6, "b3"), Body(r, 5, "b4")};
+	BOOST_CHECK_NO_THROW(mb.sBodies(newBodies));
+	BOOST_CHECK_THROW(mb.sBodies({Body(newR, 0, "b1"), Body(newR, 1, "b2")}),
+		std::runtime_error);
 	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, newXt);
 }
 

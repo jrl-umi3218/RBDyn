@@ -71,10 +71,22 @@ public:
 		return bodies_;
 	}
 
+	/// Set bodies of the multibody system.
+	void bodies(std::vector<Body> b)
+	{
+		bodies_ = std::move(b);
+	}
+
 	/// @return Body at num position in bodies list.
 	const Body& body(int num) const
 	{
 		return bodies_[num];
+	}
+
+	/// Set the body num in bodies list.
+	void body(int num, const Body& b)
+	{
+		bodies_[num] = b;
 	}
 
 	/// @return Joints of the multibody system.
@@ -213,12 +225,35 @@ public:
 
 	// safe accessors version for python binding
 
+	/** Safe version of @see bodies.
+		* @throw std::runtime_error.
+		*/
+	void sBodies(std::vector<Body> b)
+	{
+		if(b.size() != bodies_.size())
+		{
+			std::ostringstream str;
+			str << "bodies vector size mismatch: expected size "
+					<< bodies_.size() << " gived " << b.size();
+			throw std::runtime_error(str.str());
+		}
+		bodies(b);
+	}
+
 	/** Safe version of @see body.
 		* @throw std::out_of_range.
 		*/
 	const Body& sBody(int num) const
 	{
 		return bodies_.at(num);
+	}
+
+	/** Safe version of @see body.
+		* @throw std::out_of_range.
+		*/
+	void sBody(int num, const Body& b)
+	{
+		bodies_.at(num) = b;
 	}
 
 	/** Safe version of @see joint.

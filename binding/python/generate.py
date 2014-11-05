@@ -196,6 +196,12 @@ def build_mb(mb):
   mb.add_method('sBody', retval('rbd::Body'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='body')
 
+  mb.add_method('sBodies', None, [param('std::vector<rbd::Body>', 'bodies')],
+                throw=[run_ex], custom_name='bodies')
+  mb.add_method('sBody', None, [param('int', 'num'),
+                                param('const rbd::Body&', 'b')],
+                throw=[out_ex], custom_name='body')
+
   mb.add_method('joints', retval('std::vector<rbd::Joint>'), [], is_const=True)
   mb.add_method('sJoint', retval('rbd::Joint'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='joint')
