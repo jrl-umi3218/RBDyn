@@ -36,6 +36,9 @@
 #include "MultiBodyGraph.h"
 #include "CoM.h"
 
+// arm
+#include "XYZarm.h"
+
 const double TOL = 0.000001;
 
 
@@ -611,4 +614,25 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 		BOOST_CHECK_SMALL((normalAccFromJac - normalAccFromMbc1).norm(), TOL);
 		BOOST_CHECK_SMALL((normalAccFromJac - normalAccFromMbc2).norm(), TOL);
 	}
+
+	// create a multibody with new inertial parameter to test updateInertialParameters
+	std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
+
+	MultiBodyGraph badMbg;
+	MultiBody badMb;
+	MultiBodyConfig badMbc;
+	std::tie(badMb, badMbc, badMbg) = makeXYZarm();
+
+	BOOST_CHECK_THROW(comJac.sUpdateInertialParameters(badMb), std::domain_error);
+	BOOST_CHECK_NO_THROW(comJac.sUpdateInertialParameters(mb));
+	CoMJacobianDummy comJacDummyUpdated(mb, weight);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	// test jacobian
+	jacMat = comJac.jacobian(mb, mbc);
+	jacDummyMat = comJacDummyUpdated.jacobian(mb, mbc);
+	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
+
 }

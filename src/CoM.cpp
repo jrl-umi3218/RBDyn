@@ -264,13 +264,14 @@ CoMJacobian::CoMJacobian(const MultiBody& mb):
 	jointsSubBodies_(mb.nrJoints()),
 	bodiesCoMWorld_(mb.nrBodies()),
 	bodiesCoMVelB_(mb.nrBodies()),
-	normalAcc_(mb.nrJoints())
+	normalAcc_(mb.nrJoints()),
+	weight_(mb.nrBodies(), 1.)
 {
-	init(mb, std::vector<double>(mb.nrBodies(), 1.));
+	init(mb);
 }
 
 
-CoMJacobian::CoMJacobian(const MultiBody& mb, const std::vector<double>& weight):
+CoMJacobian::CoMJacobian(const MultiBody& mb, std::vector<double> weight):
 	jac_(3, mb.nrDof()),
 	jacDot_(3, mb.nrDof()),
 	bodiesCoeff_(mb.nrBodies()),
@@ -278,17 +279,36 @@ CoMJacobian::CoMJacobian(const MultiBody& mb, const std::vector<double>& weight)
 	jointsSubBodies_(mb.nrJoints()),
 	bodiesCoMWorld_(mb.nrBodies()),
 	bodiesCoMVelB_(mb.nrBodies()),
-	normalAcc_(mb.nrJoints())
+	normalAcc_(mb.nrJoints()),
+	weight_(std::move(weight))
 {
-  if(int(weight.size()) != mb.nrBodies())
-  {
-    std::stringstream ss;
-    ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
-          weight.size() << std::endl;
-    throw std::domain_error(ss.str());
-  }
+	if(int(weight_.size()) != mb.nrBodies())
+	{
+		std::stringstream ss;
+		ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
+					weight_.size() << std::endl;
+		throw std::domain_error(ss.str());
+	}
 
-  init(mb, weight);
+	init(mb);
+}
+
+
+void CoMJacobian::updateInertialParameters(const MultiBody& mb)
+{
+	double mass = 0.;
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		mass += mb.body(i).inertia().mass();
+	}
+
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+		double bodyMass = mb.body(i).inertia().mass();
+		bodiesCoeff_[i] = (bodyMass*weight_[i])/mass;
+		bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum()/bodyMass).eval());
+	}
 }
 
 
@@ -439,6 +459,20 @@ Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody& mb,
 }
 
 
+void CoMJacobian::sUpdateInertialParameters(const MultiBody& mb)
+{
+	if(int(bodiesCoeff_.size()) != mb.nrBodies())
+	{
+		std::stringstream ss;
+		ss << "mb should have " << bodiesCoeff_.size() << " bodies, not " <<
+					mb.nrBodies() << std::endl;
+		throw std::domain_error(ss.str());
+	}
+
+	updateInertialParameters(mb);
+}
+
+
 const Eigen::MatrixXd&
 CoMJacobian::sJacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
@@ -507,21 +541,9 @@ void jointBodiesSuccessors(const MultiBody& mb, int joint, std::vector<int>& sub
 }
 
 
-void CoMJacobian::init(const MultiBody& mb, const std::vector<double>& weight)
+void CoMJacobian::init(const MultiBody& mb)
 {
-	double mass = 0.;
-
-	for(int i = 0; i < mb.nrBodies(); ++i)
-	{
-		mass += mb.body(i).inertia().mass();
-	}
-
-	for(int i = 0; i < mb.nrBodies(); ++i)
-	{
-		double bodyMass = mb.body(i).inertia().mass();
-		bodiesCoeff_[i] = (bodyMass*weight[i])/mass;
-		bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum()/bodyMass).eval());
-	}
+	updateInertialParameters(mb);
 
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{

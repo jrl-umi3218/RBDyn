@@ -126,17 +126,25 @@ class CoMJacobian
 public:
 	CoMJacobian();
 
-	/// @param mb MultiBody used has model.
+	/// @param mb MultiBody used as model.
 	CoMJacobian(const MultiBody& mb);
 	/**
 	 * @param mb MultiBody used has model.
 	 * @param weight Per body weight.
 	 */
-	CoMJacobian(const MultiBody& mb, const std::vector<double>& weight);
+	CoMJacobian(const MultiBody& mb, std::vector<double> weight);
+
+	/**
+		* Compute bodies CoM position and mass based on a MultiBody.
+		* This method allow to update some pre-computed parameters
+		* when MultiBody inertia has changed.
+		* @param mb MultiBody used as model.
+		*/
+	void updateInertialParameters(const MultiBody& mb);
 
 	/**
 		* Compute the CoM jacobian.
-		* @param mb MultiBody used has model.
+		* @param mb MultiBody used as model.
 		* @param mbc Use bodyPosW and motionSubspace.
 		* @return CoM Jacobian of mb with mbc configuration.
 		*/
@@ -144,7 +152,7 @@ public:
 
 	/**
 		* Compute the time derivative of the CoM jacobian.
-		* @param mb MultiBody used has model.
+		* @param mb MultiBody used as model.
 		* @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
 		* @return Time derivativo of the jacobian of mb with mbc configuration.
 		*/
@@ -153,7 +161,7 @@ public:
 
 	/**
 		* Compute the com velocity (with weight) (J·alpha).
-		* @param mb MultiBody used has model.
+		* @param mb MultiBody used as model.
 		* @param mbc Use bodyPosW, bodyVelB.
 		* @return CoM velocity (with weight).
 		*/
@@ -161,7 +169,7 @@ public:
 
 	/**
 		* Compute the com normal acceleration (with weight) (JDot·alpha).
-		* @param mb MultiBody used has model.
+		* @param mb MultiBody used as model.
 		* @param mbc Use bodyPosW, bodyVelW, bodyVelB, jointVelocity, parentToSon.
 		* @return CoM normal acceleration (with weight).
 		*/
@@ -170,7 +178,7 @@ public:
 
 	/**
 		* Compute the com normal acceleration (with weight) (JDot·alpha).
-		* @param mb MultiBody used has model.
+		* @param mb MultiBody used as model.
 		* @param mbc Use bodyPosW, bodyVelW, bodyVelB.
 		* @param normalAccB Normal bodies acceleration in body frame.
 		* @return CoM normal acceleration (with weight).
@@ -179,6 +187,11 @@ public:
 		const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const;
 
 	// safe version for python binding
+
+	/** safe version of @see updateInertialParameters.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sUpdateInertialParameters(const MultiBody& mb);
 
 	/** safe version of @see jacobian.
 		* @throw std::domain_error If mb don't match mbc.
@@ -209,7 +222,7 @@ public:
 		const MultiBodyConfig& mbc, const std::vector<sva::MotionVecd>& normalAccB) const;
 
 private:
-	void init(const rbd::MultiBody& mb, const std::vector<double>& weight);
+	void init(const rbd::MultiBody& mb);
 
 private:
 	Eigen::MatrixXd jac_;
@@ -224,6 +237,8 @@ private:
 	std::vector<sva::MotionVecd> bodiesCoMVelB_;
 	// store normal acceleration of each bodies when calling normal acceleration
 	std::vector<sva::MotionVecd> normalAcc_;
+
+	std::vector<double> weight_;
 };
 
 
