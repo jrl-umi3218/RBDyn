@@ -630,9 +630,28 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	// test jacobian
+	// test jacobian with updated model
 	jacMat = comJac.jacobian(mb, mbc);
 	jacDummyMat = comJacDummyUpdated.jacobian(mb, mbc);
 	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
 
+	// test weight getter/setter
+	std::vector<double> weight2 = comJac.weight();
+	BOOST_CHECK_EQUAL_COLLECTIONS(weight.begin(), weight.end(),
+		weight2.begin(), weight2.end());
+
+	for(std::size_t i = 0; i < weight2.size(); ++i)
+	{
+		weight2[i] += 10.;
+	}
+
+	comJac.weight(mb, weight2);
+	BOOST_CHECK_EQUAL_COLLECTIONS(weight2.begin(), weight2.end(),
+		comJac.weight().begin(), comJac.weight().end());
+
+	CoMJacobianDummy comJacDummyWeight2(mb, weight2);
+	// test jacobian with new weight
+	jacMat = comJac.jacobian(mb, mbc);
+	jacDummyMat = comJacDummyWeight2.jacobian(mb, mbc);
+	BOOST_CHECK_SMALL((jacMat - jacDummyMat).norm(), TOL);
 }

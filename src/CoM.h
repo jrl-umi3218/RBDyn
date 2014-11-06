@@ -142,6 +142,12 @@ public:
 		*/
 	void updateInertialParameters(const MultiBody& mb);
 
+	/// @return Per bodies weight.
+	const std::vector<double>& weight() const;
+
+	/// Per bodies weight setter.
+	void weight(const MultiBody& mb, std::vector<double> w);
+
 	/**
 		* Compute the CoM jacobian.
 		* @param mb MultiBody used as model.
@@ -189,9 +195,15 @@ public:
 	// safe version for python binding
 
 	/** safe version of @see updateInertialParameters.
-		* @throw std::domain_error If mb don't match mbc.
+		* @throw std::domain_error If mb don't match the mb used in constructor.
 		*/
 	void sUpdateInertialParameters(const MultiBody& mb);
+
+	/** safe version of @see weight.
+		* @throw std::domain_error If mb don't match the mb used in constructor
+		* or w missmatch mb.
+		*/
+	void sWeight(const MultiBody& mb, std::vector<double> w);
 
 	/** safe version of @see jacobian.
 		* @throw std::domain_error If mb don't match mbc.

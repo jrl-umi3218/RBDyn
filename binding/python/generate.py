@@ -570,6 +570,13 @@ def build_com(mod, comD, comJ):
                  [param('const rbd::MultiBody&', 'mb')],
                  throw=[dom_ex], custom_name='updateInertialParameters')
 
+  comJ.add_method('weight', retval('std::vector<double>'),
+                 [], is_const=True)
+  comJ.add_method('sWeight', None,
+                  [param('const rbd::MultiBody&', 'mb'),
+                   param('std::vector<double>', 'weight')],
+                  throw=[dom_ex], custom_name='weight')
+
   comJ.add_method('sJacobian', retval('Eigen::MatrixXd'),
                  [param('const rbd::MultiBody&', 'mb'),
                   param('rbd::MultiBodyConfig&', 'mbc')],

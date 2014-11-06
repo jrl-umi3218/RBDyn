@@ -312,6 +312,19 @@ void CoMJacobian::updateInertialParameters(const MultiBody& mb)
 }
 
 
+const std::vector<double>& CoMJacobian::weight() const
+{
+	return weight_;
+}
+
+
+void CoMJacobian::weight(const MultiBody& mb, std::vector<double> w)
+{
+	weight_ = std::move(w);
+	updateInertialParameters(mb);
+}
+
+
 const Eigen::MatrixXd& CoMJacobian::jacobian(const MultiBody& mb,
 	const MultiBodyConfig& mbc)
 {
@@ -470,6 +483,28 @@ void CoMJacobian::sUpdateInertialParameters(const MultiBody& mb)
 	}
 
 	updateInertialParameters(mb);
+}
+
+
+void CoMJacobian::sWeight(const MultiBody& mb, std::vector<double> w)
+{
+	if(int(bodiesCoeff_.size()) != mb.nrBodies())
+	{
+		std::stringstream ss;
+		ss << "mb should have " << bodiesCoeff_.size() << " bodies, not " <<
+					mb.nrBodies() << std::endl;
+		throw std::domain_error(ss.str());
+	}
+
+	if(int(weight_.size()) != mb.nrBodies())
+	{
+		std::stringstream ss;
+		ss << "weight vector must be of size " << mb.nrBodies() << " not " <<
+					weight_.size() << std::endl;
+		throw std::domain_error(ss.str());
+	}
+
+	weight(mb, w);
 }
 
 
