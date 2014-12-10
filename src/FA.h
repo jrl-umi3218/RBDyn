@@ -15,6 +15,10 @@
 
 #pragma once
 
+// includes
+// SpaceVecAlg
+#include <SpaceVecAlg/SpaceVecAlg>
+
 namespace rbd
 {
 class MultiBody;
@@ -23,17 +27,20 @@ class MultiBodyConfig;
 /**
 	* Compute the forward acceleration of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use alphaD generalized acceleration vector, jointVelocity,
+	* @param mbc Use alphaD generalized acceleration vector, jointVelocity.
+	* @param A_0 initial acceleration in world coordinate.
 	* parentToSon and bodyVel.
 	* Fill bodyAccB.
 	*/
-void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc);
+void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
 
 /**
 	* Safe version.
 	* @see forwardAcceleration.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc);
+void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
 
 } // namespace rbd

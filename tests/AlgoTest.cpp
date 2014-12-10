@@ -30,6 +30,7 @@
 #include "FK.h"
 #include "FV.h"
 #include "FA.h"
+#include "ID.h"
 #include "Body.h"
 #include "Joint.h"
 #include "MultiBody.h"
@@ -608,3 +609,41 @@ BOOST_AUTO_TEST_CASE(FATest)
 	}
 }
 
+
+// test forward acceleration against inverse dynamics
+BOOST_AUTO_TEST_CASE(FAGravityTest)
+{
+	using namespace Eigen;
+
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc, mbcId;
+	rbd::MultiBodyGraph mbg;
+
+	std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+	rbd::InverseDynamics id(mb);
+	for(int i = 0; i < 10; ++i)
+	{
+		Eigen::VectorXd q(mb.nrParams()), alpha(mb.nrDof()), alphaD(mb.nrDof());
+		q.setRandom();
+		q.tail<4>().normalize();
+		alpha.setRandom();
+		alphaD.setRandom();
+
+		rbd::vectorToParam(q, mbc.q);
+		rbd::vectorToParam(alpha, mbc.alpha);
+		rbd::vectorToParam(alphaD, mbc.alphaD);
+
+		forwardKinematics(mb, mbc);
+		forwardVelocity(mb, mbc);
+		mbcId = mbc;
+
+		// compute acceleration through forwardAcceleration and
+		// inverseDynamics
+		forwardAcceleration(mb, mbc, sva::MotionVecd(Vector3d::Zero(), mbc.gravity));
+		id.inverseDynamics(mb, mbcId);
+
+		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.bodyAccB.begin(), mbc.bodyAccB.end(),
+			mbcId.bodyAccB.begin(), mbcId.bodyAccB.end());
+	}
+}

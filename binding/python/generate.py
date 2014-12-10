@@ -331,7 +331,9 @@ def build_algo(mod):
 
   mod.add_function('sForwardAcceleration', None,
                    [param('const MultiBody&', 'mb'),
-                    param('MultiBodyConfig&', 'mbc')],
+                    param('MultiBodyConfig&', 'mbc'),
+                    param('const sva::MotionVecd&', 'A_0',
+                          default_value='sva::MotionVecd(Eigen::Vector6d::Zero())')],
                    custom_name='forwardAcceleration',
                    throw=[dom_ex])
 

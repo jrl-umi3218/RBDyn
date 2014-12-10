@@ -25,7 +25,8 @@
 namespace rbd
 {
 
-void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc)
+void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+	const sva::MotionVecd& A_0)
 {
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
@@ -43,11 +44,12 @@ void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc)
 		if(pred[i] != -1)
 			mbc.bodyAccB[succ[i]] = X_p_i*mbc.bodyAccB[pred[i]] + ai_tan + vb_i.cross(vj_i);
 		else
-			mbc.bodyAccB[succ[i]] = ai_tan + vb_i.cross(vj_i);
+			mbc.bodyAccB[succ[i]] = X_p_i*A_0 + ai_tan + vb_i.cross(vj_i);
 	}
 }
 
-void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc)
+void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+	const sva::MotionVecd& A_0)
 {
 	checkMatchAlphaD(mb, mbc);
 	checkMatchParentToSon(mb, mbc);
@@ -56,7 +58,7 @@ void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc)
 
 	checkMatchBodyAcc(mb, mbc);
 
-	forwardAcceleration(mb, mbc);
+	forwardAcceleration(mb, mbc, A_0);
 }
 
 } // namespace rbd
