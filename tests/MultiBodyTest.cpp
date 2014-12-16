@@ -567,7 +567,9 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	mbg2.linkBodies(1, PTransformd(Matrix3d(sva::RotX(constants::pi<double>()/2.))),
 									3, PTransformd::Identity(), 2);
 
-	sva::PTransformd root(Vector3d(Vector3d::Random()));
+	// add () around the Vector3d because Clang think that
+	// a function declaration
+	sva::PTransformd root((Vector3d(Vector3d::Random())));
 	MultiBody mb4 = mbg2.makeMultiBody(0, true, root);
 
 
