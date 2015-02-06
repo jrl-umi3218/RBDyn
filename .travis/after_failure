@@ -1,0 +1,26 @@
+#!/bin/bash
+. .travis/common.sh
+
+# Set debug mode
+set -x
+set -v
+
+# Display post-failure environment
+echo "Environment:"
+env
+
+if [ -d debian ]; then
+    echo "Debian build failed"
+else
+    if [ ! x${DIST} = x ]; then
+	echo "skipping this build"
+	exit 0
+    fi
+
+    # Dump as much log as we can
+    find $build_dir -name "*.log" | xargs cat
+fi
+
+# End debug mode
+set +v
+set +x
