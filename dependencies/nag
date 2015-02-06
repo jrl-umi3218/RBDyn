@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Setup NAG
+#
+. .travis/common.sh
+
+build_dir=`mktemp -d`
+trap "rm -rf -- '$build_dir'" EXIT
+
+# Setup environment variables.
+export LD_LIBRARY_PATH="$install_dir/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`/pkgconfig:$PKG_CONFIG_PATH"
+
+# Checkout NAG.
+cd "$build_dir"
+wget "http://www.nag.co.uk/downloads/impl/cll6a23dhl.tgz"
+tar xzvf cll6a23dhl.tgz
+./install.sh -accept -installdir="$install_dir/NAG"

@@ -1,0 +1,214 @@
+#!/bin/bash
+
+rm -rf "$build_dir" "$install_dir"
+
+. .travis/common.sh
+
+# Set debug mode
+set -x
+set -v
+
+# Print Git version
+git --version
+
+# Setup Git identity.
+git config --global user.name "Thomas Moulard (Travis Automatic Builds)"
+git config --global user.email "thomas.moulard+travis@gmail.com"
+
+# Retrieve the submodules.
+git submodule update --quiet --init --recursive
+
+# Setup environment variables.
+export LD_LIBRARY_PATH="$install_dir/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+if [[ ${TRAVIS_OS_NAME} = linux ]]; then
+    # Speed up apt
+    sudo sh -c "echo \"force-unsafe-io\" > /etc/dpkg/dpkg.cfg.d/02apt-speedup"
+
+    # Update the apt local cache.
+    sudo apt-get update -qq
+
+    export LD_LIBRARY_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`:$LD_LIBRARY_PATH"
+    export PKG_CONFIG_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`/pkgconfig:$PKG_CONFIG_PATH"
+fi
+
+# Fetch tags to compute the distance between the last release tag
+# and us.
+git fetch --quiet --tags
+
+# Shortcuts.
+git_clone="git clone --quiet --recursive"
+
+# Display environment
+echo "Environment:"
+env
+
+# catkin_git_dependency
+# --------------------
+#
+catkin_git_dependency()
+{
+    _string=$1
+    git_dep=${_string%%:*}
+    git_dep_branch=${_string##*:}
+    # For ROS packages, the default version is named after the ROS distro.
+    if [ "$git_dep_branch" == "$git_dep" ]; then
+	git_dep_branch="$ROS_DISTRO"
+    fi
+    echo "--> Getting $git_dep (branch $git_dep_branch)"
+    CATKIN_WORKSPACE=$build_dir/..
+    cd $CATKIN_WORKSPACE/src
+    $git_clone -b $git_dep_branch "git://github.com/$git_dep" "$git_dep"
+}
+
+
+# build_git_dependency
+# --------------------
+#
+# Build a dependency directly from the Git development tree.
+# First argument: repository's GitHub URL + optional branch
+# For example: "jrl-umi3218/jrl-travis" or "jrl-umi3218/jrl-travis:dev"
+build_git_dependency()
+{
+    _string=$1
+    git_dep=${_string%%:*}
+    git_dep_branch=${_string##*:}
+    if [ "$git_dep_branch" == "$git_dep" ]; then
+	git_dep_branch="master"
+    fi
+    echo "--> Compiling $git_dep (branch $git_dep_branch)"
+    mkdir -p "$build_dir/$git_dep"
+    cd "$build_dir"
+    $git_clone -b $git_dep_branch "git://github.com/$git_dep" "$git_dep"
+    cd "$build_dir/$git_dep"
+    cmake . -DCMAKE_INSTALL_PREFIX:STRING="$install_dir" \
+            -DDISABLE_TESTS:BOOL=ON
+    make install || make
+}
+
+# Check if we are in a debian branch...
+if [ -d debian ]; then
+    if `test x${DIST} = x`; then
+	echo "distribution is not set, skipping this build"
+	exit 0
+    fi
+    echo "Target distribution: ${DIST}"
+
+    # If we are, we install Debian package development tools and
+    # create a sid pbuilder. Package dependencies will be installed
+    # automatically.
+    sudo apt-get install -qq			\
+	debootstrap devscripts			\
+	git-buildpackage debian-archive-keyring \
+	pkg-kde-tools dput eatmydata ccache
+
+    # Fix ccache use in pbuilder
+    sudo addgroup --system --gid 1234 ccache
+    sudo adduser --quiet --system --uid 1234 --ingroup ccache \
+	--home /var/cache/pbuilder --no-create-home pbuilder
+    sudo mkdir -p /var/cache/pbuilder/ccache
+    sudo chown -R pbuilder:ccache /var/cache/pbuilder/ccache
+    sudo chmod -R g+ws /var/cache/pbuilder/ccache
+
+    # Remove previous sandbox.
+    sudo rm -rf /var/cache/pbuilder/base-${DIST}.cow || true
+
+    # Create a pbuilder sandbox.
+    cp -f $root_dir/.travis/pbuilderrc $HOME/.pbuilderrc
+    sed -i "s|@DIST@|${DIST}|g" $HOME/.pbuilderrc
+
+    git-pbuilder create
+
+    # Speed up pbuilder.
+    echo "echo \"force-unsafe-io\" > /etc/dpkg/dpkg.cfg.d/02apt-speedup" | \
+	git-pbuilder login --save-after-exec
+
+    # Add additional PPAs
+    for ppa in ${DEBIAN_PPA}; do
+	echo "apt-add-repository ppa:${ppa}" | \
+	    git-pbuilder login --save-after-exec
+    done
+
+    # Retrieve PPA package list.
+    git-pbuilder update
+
+    # ccache is not necessary in our case and may cause permission
+    # issues.
+    echo "apt-get -y remove ccache" |			\
+	git-pbuilder login --save-after-exec
+else
+    if [ ! x${DIST} = x ]; then
+	echo "skipping this build"
+	exit 0
+    fi
+
+    if [[ ${TRAVIS_OS_NAME} = linux ]]; then
+	# Add additional PPAs
+	for ppa in ${MASTER_PPA}; do
+            sudo add-apt-repository -y ppa:${ppa}
+	done
+	sudo apt-get update -qq
+
+	# ...otherwise we install the dependencies explicitly.
+	sudo apt-get install -qq curl cppcheck ${APT_DEPENDENCIES}
+
+	# Install lcov and related dependencies
+	sudo apt-get install -qq lcov
+
+	# lcov will only be used on linux
+	gem install coveralls-lcov
+
+	# ...if a coverity id is set, get the tools.
+	if `! test x${COVERITY_TOKEN} = x`; then
+	    cd $build_dir
+            PROJECT_NAME=`basename $root_dir`
+            # Get appropriate download link
+            case `uname -m` in
+		i?86)
+                    BITS=32
+                    ;;
+		amd64|x86_64)
+                    BITS=64
+                    ;;
+            esac
+            coverity_download=https://scan.coverity.com/download/linux-${BITS}
+
+            # Download the file (token and project name required)
+            wget -O coverity_tool.tgz $coverity_download \
+		--post-data "token=${COVERITY_TOKEN}&project=${PROJECT_NAME}"
+	    tar xzf coverity_tool.tgz
+            coverity_dir=`find $build_dir -type d -name 'cov-analysis*'`
+	    export PATH="$build_dir/$coverity_dir/bin:$PATH"
+	else
+	    echo "coverity support is disabled in this build"
+	fi
+
+    elif [[ ${TRAVIS_OS_NAME} = osx ]]; then
+
+	# Add science-related repos
+	brew tap homebrew/science
+
+	# Update homebrew
+	brew update
+
+	# Install user-specified packages
+	brew install cppcheck ${HOMEBREW_DEPENDENCIES}
+    fi
+
+    # and we build directly dependencies from the Git repository
+    if `! test x${ROS_GIT_DEPENDENCIES} = x`; then
+      for package in ${ROS_GIT_DEPENDENCIES}; do
+        catkin_git_dependency "$package"
+      done
+    fi
+
+    cd $root_dir
+    for package in ${GIT_DEPENDENCIES}; do
+	build_git_dependency "$package"
+    done
+fi
+
+# End debug mode
+set +v
+set +x

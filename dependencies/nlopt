@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Setup NLopt
+#
+. .travis/common.sh
+
+build_dir=`mktemp -d`
+trap "rm -rf -- '$build_dir'" EXIT
+
+# Setup environment variables.
+export LD_LIBRARY_PATH="$install_dir/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`/pkgconfig:$PKG_CONFIG_PATH"
+
+# Checkout NLopt.
+cd "$build_dir"
+wget "http://ab-initio.mit.edu/nlopt/nlopt-2.4.1.tar.gz"
+tar xzvf nlopt-2.4.1.tar.gz
+cd nlopt-2.4.1
+
+export CXXFLAGS="$CXXFLAGS -fpermissive"
+export LDFLAGS="${LDFLAGS//,--as-needed}"
+
+mkdir -p build_cxx
+cd build_cxx
+../configure --prefix="$install_dir" --enable-shared --with-cxx --enable-maintainer-mode
+make
+make install
+
+cd ..
+mkdir -p build
+cd build
+../configure --prefix="$install_dir" --enable-shared --without-python --without-guile
+make
+make install
