@@ -29,8 +29,8 @@ Eigen::Vector3d computeCentroidalZMP(MultiBodyConfig& mbc, Eigen::Vector3d& com,
 	double g;
 	Eigen::Vector3d zmp;
 	g = mbc.gravity(2);
-	zmp(0) = com(0) - ((com(2) - altitude)*comA(0))/(comA(2)-g);
-	zmp(1) = com(1) - ((com(2) - altitude)*comA(1))/(comA(2)-g);
+	zmp(0) = com(0) - ((com(2) - altitude)*comA(0))/(comA(2)+g);
+	zmp(1) = com(1) - ((com(2) - altitude)*comA(1))/(comA(2)+g);
 	zmp(2) = altitude;
 	return zmp;
 }
