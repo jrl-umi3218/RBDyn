@@ -22,7 +22,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 /**
 	* Compute the forward acceleration of a MultiBody.

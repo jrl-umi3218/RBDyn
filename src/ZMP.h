@@ -21,7 +21,7 @@
 
 namespace rbd
 {
-class MultiBodyConfig;
+struct MultiBodyConfig;
 /**
 	 * Compute the ZMP in the world frame
 	 * as in Kajita's book on humanoid robots chap. 3 p.38

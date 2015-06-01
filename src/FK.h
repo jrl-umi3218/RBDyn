@@ -18,7 +18,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 /**
 	* Compute the forward kinematic of a MultiBody.

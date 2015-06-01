@@ -22,7 +22,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 class Jacobian;
 
 

@@ -21,7 +21,7 @@
 
 namespace rbd
 {
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 /**
 	* Algorithm to compute the jacobian of a specified body.

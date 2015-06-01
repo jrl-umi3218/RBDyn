@@ -25,7 +25,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 /**
 	* Inverse Dynamics algorithm.

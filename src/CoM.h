@@ -27,7 +27,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 /**
 	* Compute the Center of Mass (CoM) position of a multibody.

@@ -31,7 +31,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 
 /// Return the IMPhi matrix that compute I*m = IMPhi(m)*phi_i.

@@ -28,7 +28,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 /**
 	* Forward Dynamics algorithm.
