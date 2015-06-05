@@ -262,6 +262,22 @@ public:
 	std::map<int, sva::PTransformd> bodiesBaseTransform(int rootBodyId,
 		const sva::PTransformd& X_b0_j0=sva::PTransformd::Identity());
 
+	/**
+		* Return the dictionary of successor joints id by body id.
+		* @param rootBodyId Graph root.
+		* @return dictionary of successor joints id by body id.
+		* @throw std::out_of_range.
+		*/
+	std::map<int, std::vector<int>> successorJoints(int rootBodyId);
+
+	/**
+		* Return the dictionary of predecessor joint id by body id.
+		* @param rootBodyId Graph root.
+		* @return dictionary of predecessor joint id by body id.
+		* @throw std::out_of_range.
+		*/
+	std::map<int, int> predecessorJoint(int rootBodyId);
+
 private:
 	/**
 		* Find the arc jointId and remove it from the graph with his sub node.

@@ -368,6 +368,59 @@ std::map<int, sva::PTransformd> MultiBodyGraph::bodiesBaseTransform(int rootBody
 	return std::move(X_nb_b);
 }
 
+std::map<int, std::vector<int>> MultiBodyGraph::successorJoints(int rootBodyId)
+{
+	std::map<int, std::vector<int>> successorJoints;
+
+	std::function<void(const std::shared_ptr<Node> curNode,
+										 const std::shared_ptr<Node> fromNode)> computeSuccesors;
+
+	computeSuccesors = [&](const std::shared_ptr<Node> curNode,
+		const std::shared_ptr<Node> fromNode)
+	{
+		successorJoints[curNode->body.id()] = {};
+		for(Arc& a : curNode->arcs)
+		{
+			if(a.next != fromNode)
+			{
+				successorJoints[curNode->body.id()].push_back(a.joint.id());
+				computeSuccesors(a.next, curNode);
+			}
+		}
+	};
+
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+	computeSuccesors(rootNode, nullptr);
+	return std::move(successorJoints);
+}
+
+std::map<int, int> MultiBodyGraph::predecessorJoint(int rootBodyId)
+{
+	std::map<int, int> predJoint;
+
+	std::function<void(const std::shared_ptr<Node> curNode,
+										 const std::shared_ptr<Node> fromNode,
+										 int predJointId)> computePredecessor;
+
+	computePredecessor = [&](const std::shared_ptr<Node> curNode,
+		const std::shared_ptr<Node> fromNode, int predJointId)
+	{
+		predJoint[curNode->body.id()] = predJointId;
+
+		for(Arc& a : curNode->arcs)
+		{
+			if(a.next != fromNode)
+			{
+				computePredecessor(a.next, curNode, a.joint.id());
+			}
+		}
+	};
+
+	std::shared_ptr<Node> rootNode = bodyId2Node_.at(rootBodyId);
+	computePredecessor(rootNode, nullptr, -1);
+	return std::move(predJoint);
+}
+
 bool MultiBodyGraph::rmArc(Node& node, int parentJointId, int jointId)
 {
 	// depth first exploration of the graph

@@ -463,6 +463,46 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	BOOST_CHECK_NO_THROW(mbg1.makeMultiBody(0, true));
 	BOOST_CHECK_THROW(mbg1.makeMultiBody(10, true), std::out_of_range);
 
+	// test the successorJoints and predecessorJoint function
+	auto testSucc = [](const std::map<int, std::vector<int>>& s1,
+			const std::map<int, std::vector<int>>& s2)
+	{
+		BOOST_CHECK_EQUAL(s1.size(), s2.size());
+		auto it1 = s1.begin();
+		auto it2 = s2.begin();
+		for(; it1 != s1.end(); ++it1, ++it2)
+		{
+			BOOST_CHECK_EQUAL(it1->first, it2->first);
+			BOOST_CHECK_EQUAL_COLLECTIONS(it1->second.begin(), it1->second.end(),
+				it2->second.begin(), it2->second.end());
+		}
+	};
+	auto testPred = [](const std::map<int, int>& s1,
+			const std::map<int, int>& s2)
+	{
+		BOOST_CHECK_EQUAL(s1.size(), s2.size());
+		auto it1 = s1.begin();
+		auto it2 = s2.begin();
+		for(; it1 != s1.end(); ++it1, ++it2)
+		{
+			BOOST_CHECK_EQUAL(it1->first, it2->first);
+			BOOST_CHECK_EQUAL(it1->second, it2->second);
+		}
+	};
+	std::map<int, std::vector<int>> succRes1{
+			{0,{0,1}},
+			{1,{}},
+			{2,{2}},
+			{3,{}}};
+	std::map<int, int> predRes1{
+			{0,-1},
+			{1,0},
+			{2,1},
+			{3,2}};
+
+	testSucc(mbg1.successorJoints(0), succRes1);
+	testPred(mbg1.predecessorJoint(0), predRes1);
+
 	MultiBody mb1 = mbg1.makeMultiBody(0, true);
 
 
@@ -505,12 +545,42 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	// check MultiBody equality
 	checkMultiBodyEq(mb2, bodies, joints, pred, succ, parent, Xt);
 
+	// test the successorJoints and predecessorJoint function
+	std::map<int, std::vector<int>> succRes2{
+			{0,{0,1}},
+			{1,{}},
+			{2,{2}},
+			{3,{}}};
+	std::map<int, int> predRes2{
+			{0,-1},
+			{1,0},
+			{2,1},
+			{3,2}};
+
+	testSucc(mbg1.successorJoints(0), succRes2);
+	testPred(mbg1.predecessorJoint(0), predRes2);
+
 
 
 	//                     j1(0)     j2(1)      j3(2)
 	// root -fixed-  b2(1) ---- b1(0) ---- b3(2) ---- b4(3)
 
 	MultiBody mb3 = mbg1.makeMultiBody(1, true);
+
+	// test the successorJoints and predecessorJoint function
+	std::map<int, std::vector<int>> succRes3{
+			{1,{0}},
+			{0,{1}},
+			{2,{2}},
+			{3,{}}};
+	std::map<int, int> predRes3{
+			{1,-1},
+			{0,0},
+			{2,1},
+			{3,2}};
+
+	testSucc(mbg1.successorJoints(1), succRes3);
+	testPred(mbg1.predecessorJoint(1), predRes3);
 
 	bodies = {b2, b1, b3, b4};
 
@@ -571,6 +641,21 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	// a function declaration
 	sva::PTransformd root((Vector3d(Vector3d::Random())));
 	MultiBody mb4 = mbg2.makeMultiBody(0, true, root);
+
+	// test the successorJoints and predecessorJoint function
+	std::map<int, std::vector<int>> succRes4{
+			{0,{0}},
+			{1,{1, 2}},
+			{2,{}},
+			{3,{}}};
+	std::map<int, int> predRes4{
+			{0,-1},
+			{1,0},
+			{2,1},
+			{3,2}};
+
+	testSucc(mbg2.successorJoints(0), succRes4);
+	testPred(mbg2.predecessorJoint(0), predRes4);
 
 
 	bodies = {b1, b2, b3, b4};

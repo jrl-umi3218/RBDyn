@@ -173,6 +173,16 @@ def build_mbg(mbg):
                   param('const sva::PTransformd&', 'X_b0_j0', default_value='sva::PTransformd::Identity()')],
                  throw=(out_ex,))
 
+  mbg.add_method('successorJoints',
+                 retval('std::map<int, std::vector<int> >'),
+                 [param('int', 'rootBodyId')],
+                 throw=(out_ex,))
+
+  mbg.add_method('predecessorJoint',
+                 retval('std::map<int, int>'),
+                 [param('int', 'rootBodyId')],
+                 throw=(out_ex,))
+
 
 def build_mb(mb):
   mb.add_constructor([])
@@ -798,6 +808,10 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   # build map type
+  rbd.add_container('std::map<int, int>',
+                    ('int', 'int'), 'map')
+  rbd.add_container('std::map<int, std::vector<int> >',
+                    ('int', 'std::vector<int>'), 'map')
   rbd.add_container('std::map<int, std::vector<double> >',
                     ('int', 'std::vector<double>'), 'map')
   rbd.add_container('std::map<int, sva::PTransformd>',
