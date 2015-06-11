@@ -27,10 +27,10 @@ struct MultiBodyConfig;
 /**
 	* Compute the forward acceleration of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use alphaD generalized acceleration vector, jointVelocity.
-	* @param A_0 initial acceleration in world coordinate.
-	* parentToSon and bodyVel.
+	* @param mbc Use alphaD generalized acceleration vector, jointVelocity,
+	* parentToSon and bodyVelB.
 	* Fill bodyAccB.
+	* @param A_0 initial acceleration in world coordinate.
 	*/
 void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
 	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
