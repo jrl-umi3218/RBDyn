@@ -31,6 +31,7 @@
 #include "FV.h"
 #include "FA.h"
 #include "ID.h"
+#include "IK.h"
 #include "Body.h"
 #include "Joint.h"
 #include "MultiBody.h"
@@ -646,4 +647,62 @@ BOOST_AUTO_TEST_CASE(FAGravityTest)
 		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.bodyAccB.begin(), mbc.bodyAccB.end(),
 			mbcId.bodyAccB.begin(), mbcId.bodyAccB.end());
 	}
+}
+
+BOOST_AUTO_TEST_CASE(IKTest)
+{
+  using namespace Eigen;
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+
+  std::tie(mb, mbc, mbg) = makeXYZarm();
+
+  rbd::InverseKinematics ik(mb, 3);
+
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
+
+  sva::PTransformd target(mbc.bodyPosW[3]);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+
+  Eigen::Vector3d pos_vec(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  Eigen::Vector3d solution(0, 0, 0);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+
+  solution[0] = 1.;
+  mbc.q[1][0] = 1.;
+  rbd::forwardKinematics(mb, mbc);
+  target = sva::PTransformd(mbc.bodyPosW[3]);
+  mbc.q[1][0] = 0.;
+  rbd::forwardKinematics(mb, mbc);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+  pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+
+  solution = Eigen::Vector3d(0., 1., 0.);
+  mbc.q[1][0] = 0.;
+  mbc.q[2][0] = 1.;
+  mbc.q[3][0] = 0.;
+  rbd::forwardKinematics(mb, mbc);
+  target = sva::PTransformd(mbc.bodyPosW[3]);
+  mbc.q[2][0] = 0.;
+  rbd::forwardKinematics(mb, mbc);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+  pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+
+  solution = Eigen::Vector3d::Random();
+  mbc.q[1][0] = solution[0];
+  mbc.q[2][0] = solution[1];
+  mbc.q[3][0] = solution[2];
+  rbd::forwardKinematics(mb, mbc);
+  target = sva::PTransformd(mbc.bodyPosW[3]);
+  mbc.zero(mb);
+  rbd::forwardKinematics(mb, mbc);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+  pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  std::cout << pos_vec.transpose() << std::endl;
+  std::cout << solution.transpose() << std::endl;
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
 }
