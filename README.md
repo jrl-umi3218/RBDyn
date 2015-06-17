@@ -65,7 +65,7 @@ Where the main options are:
  * `-DCMAKE_INSTALL_PREFIX=some/path/to/install` default is `/usr/local`
  * `-DPYTHON_BINDING=ON` Build the python binding
  * `-DUNIT_TESTS=ON` Build unit tests.
- * `-DPYTHON_DEB_LAYOUT=OFF` install python library in `site-packages` (ON will install in `dist-packages`
+ * `-DPYTHON_DEB_LAYOUT=OFF` install python library in `site-packages` (ON will install in `dist-packages`)
 
 ### Arch Linux
 
