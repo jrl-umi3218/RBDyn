@@ -4,8 +4,8 @@ compiler:
   - clang
 env:
   global:
-  - APT_DEPENDENCIES="doxygen doxygen-latex libboost1.48-all-dev"
-  - GIT_DEPENDENCIES="jorisv/SpaceVecAlg"
+  - APT_DEPENDENCIES="doxygen doxygen-latex libboost1.48-all-dev python-numpy"
+  - GIT_DEPENDENCIES="jorisv/Eigen3ToPython jorisv/SpaceVecAlg"
   - DEBSIGN_KEYID=5AE5CD75
 notifications:
   email:
