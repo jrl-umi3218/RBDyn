@@ -14,16 +14,6 @@ build_package()
 {
     echo "--> Building package..."
 
-    # Coverity support
-    MAKE_PREFIX=""
-    if `test x${COVERITY_TOKEN} != x -a ${TRAVIS_OS_NAME} = linux`; then
-	coverity_dir=`find $build_dir -type d -name 'cov-analysis*'`
-	export PATH="$coverity_dir/bin:$PATH"
-	MAKE_PREFIX="cov-build --dir cov-int"
-    else
-	echo "coverity support is disabled in this build"
-    fi
-
     cd "$build_dir"
     cmake "$root_dir" -DCMAKE_INSTALL_PREFIX="$install_dir"	\
 	-DCMAKE_CXX_FLAGS="--coverage"				\

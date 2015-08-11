@@ -159,31 +159,6 @@ else
 	# lcov will only be used on linux
 	gem install coveralls-lcov
 
-	# ...if a coverity id is set, get the tools.
-	if `! test x${COVERITY_TOKEN} = x`; then
-	    cd $build_dir
-            PROJECT_NAME=`basename $root_dir`
-            # Get appropriate download link
-            case `uname -m` in
-		i?86)
-                    BITS=32
-                    ;;
-		amd64|x86_64)
-                    BITS=64
-                    ;;
-            esac
-            coverity_download=https://scan.coverity.com/download/linux-${BITS}
-
-            # Download the file (token and project name required)
-            wget -O coverity_tool.tgz $coverity_download \
-		--post-data "token=${COVERITY_TOKEN}&project=${PROJECT_NAME}"
-	    tar xzf coverity_tool.tgz
-            coverity_dir=`find $build_dir -type d -name 'cov-analysis*'`
-	    export PATH="$build_dir/$coverity_dir/bin:$PATH"
-	else
-	    echo "coverity support is disabled in this build"
-	fi
-
     elif [[ ${TRAVIS_OS_NAME} = osx ]]; then
 
 	# Add science-related repos
