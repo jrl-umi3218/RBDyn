@@ -50,7 +50,7 @@ In particular:
    * Run a CMake compatible `make distcheck` (build a release tarball
      and the rebuild the whole project from it.
    * Upload the latest Doxygen documentation to GitHub pages.
- * Integrate with [cppcheck][], [coverity][] to run
+ * Integrate with [cppcheck][] to run
    static analysis on the code and detect issues.
  * Use [coveralls.io][] to track test coverage.
  * Annotate (see [git-notes][]) successful builds with dependencies
@@ -102,8 +102,6 @@ dependencies or parameters:
    MASTER_PPA="boost-latest/ppa"
    ```
    
- * If `COVERITY_TOKEN` is set, [coverity][] integration will be setup
-   (`linux` only).
  * `LCOV_IGNORE_RULES` contains ignore rules for the [coveralls.io][]
    report (`linux` only). It should be provided in the form:
 
@@ -121,11 +119,6 @@ The build step in this case is just configuring the package, building
 the package, installing it and running the test suite.
 
 
-Again, if `COVERITY_TOKEN` is set on `linux`, the `cov-int` tool will
-be used to generate a report which will be uploaded to the Coverity
-website if the build is successful.
-
-
 ### After success
 
 The last step is uploading the documentation in case of success. To
@@ -137,7 +130,7 @@ account settings, Applications, Personal Access Token and click on
 to encrypt the environment variable:
 
 ```sh
-$ travis encrypt GH_PUSH_URI=https://<USERNAME>@<YOUR OAUTH TOKEN>:<ORGANIZATION>/<REPO> --add
+$ travis encrypt GH_PUSH_URI=https://<USERNAME>:<YOUR OAUTH TOKEN>@github.com/<ORGANIZATION>/<REPO> --add
 ```
 
 This has to be run in the project root-level directory. Do _not_ copy
@@ -156,10 +149,6 @@ _Be careful:_ the `gh-pages` must never run the build in this
 repository. As we are committing to this branch, using these scripts
 on this branch may result in an infinite number of successive build
 triggered by each documentation update.
-
-
-If `COVERITY_TOKEN` is set, a tarball containing the results of the
-build is created and uploaded to the website.
 
 
 To finish, a `git notes` is used to annotate the commit with the build
@@ -292,7 +281,6 @@ from source to allow you to go back to the exact setup used by Travis
 in this build.
 
 [git-notes]: https://www.kernel.org/pub/software/scm/git/docs/git-notes.html
-[coverity]: https://scan.coverity.com/
 
 License
 -------

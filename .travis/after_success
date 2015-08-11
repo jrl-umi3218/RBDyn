@@ -53,39 +53,13 @@ elif [[ ${TRAVIS_OS_NAME} = linux ]]; then
 	echo "skipping coveralls upload in non-gcc builds"
     fi
 
-    # Coverity support
-    if `! test x${COVERITY_TOKEN} = x`; then
-	cd $build_dir
-	PROJECT_NAME=`basename $root_dir`
-	PROJECT_VERSION=`PKG_CONFIG_PATH="$build_dir" pkg-config --modversion ${PROJECT_NAME}`
-	if `test x${PROJECT_NAME} = x`; then
-	    echo "failed to determine project name"
-	    exit 1
-	fi
-	if `test x${PROJECT_NAME} = x`; then
-	    echo "failed to determine project version"
-	    exit 1
-	fi
-	COVERITY_TARBALL=coverity-${PROJECT_NAME}-${PROJECT_VERSTION}.tgz
-	tar czvf ${COVERITY_TARBALL} cov-int
-	curl -s --form project=${PROJECT_NAME}			\
-	    --form token=${COVERITY_TOKEN}			\
-	    --form email=thomas.moulard@gmail.com		\
-	    --form file=@$build_dir/${COVERITY_TARBALL}	\
-	    --form version=${PROJECT_VERSION}			\
-	    --form description="${PROJECT_NAME} v${PROJECT_VERSION} (Travis upload)" \
-	    http://scan5.coverity.com/cgi-bin/upload.py || true
-	cd $root_dir
-    else
-	echo "coverity support is disabled in this build"
-    fi
-
     # If it's not a fork or a pull request
     if `test x${TRAVIS_REPO_SLUG} = x${GH_REPO} -a ${TRAVIS_PULL_REQUEST} = false`; then
 	# If encrypted username/tokens were not provided
 	if `test x${GH_TOKEN} = x -o x${GH_USERNAME} = x`; then
 	    echo "missing username and/or token for GitHub push"
 	else
+	    cd $root_dir
 	    # Set the push capable URL.
 	    #
 	    # Add the possibility to use three variables instead of one to
@@ -95,12 +69,15 @@ elif [[ ${TRAVIS_OS_NAME} = linux ]]; then
 	    fi
 	    git remote set-url origin "${GH_PUSH_URI}"
 
-	    # Update the documentation.
-	    # Retrieve last commit of the gh-pages branch.
-	    git fetch --depth=1 origin gh-pages:gh-pages
+	    # If we are on the master branch:
+	    if [[ ${TRAVIS_BRANCH} = master ]]; then
+		# Update the documentation.
+		# Retrieve last commit of the gh-pages branch.
+		git fetch --depth=1 origin gh-pages:gh-pages
 
-	    cd $build_dir/doc && $root_dir/cmake/github/update-doxygen-doc.sh \
-		-r $root_dir -b $build_dir
+		cd $build_dir/doc && $root_dir/cmake/github/update-doxygen-doc.sh \
+					 -r $root_dir -b $build_dir
+	    fi
 
 	    # Push git note indicating success
 	    cd $root_dir
