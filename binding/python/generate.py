@@ -701,6 +701,19 @@ def build_zmp(mod):
                   param('Eigen::Vector3d', 'com'),
                   param('Eigen::Vector3d', 'comA'),
                   param('double', 'altitude')])
+  mod.add_function('computeCentroidalZMPNoGravity',
+                 retval('Eigen::Vector3d'),
+                 [param('Eigen::Vector3d', 'com'),
+                  param('Eigen::Vector3d', 'comA'),
+                  param('double', 'altitude')])
+  mod.add_function('computeCentroidalZMPComplete',
+                 retval('Eigen::Vector3d'),
+                 [param('rbd::MultiBodyConfig', 'mbc'),
+                  param('Eigen::Vector3d', 'com'),
+                  param('Eigen::Vector3d', 'comA'),
+                  param('double', 'altitude'),
+                  param('sva::ForceVecd', 'wr_external'),
+                  param('double', 'mass')])
 
 
 
