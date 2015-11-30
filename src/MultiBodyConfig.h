@@ -53,10 +53,8 @@ struct RBDYN_DLLAPI MultiBodyConfig
 
 
 
-	/// External force acting on each body in world coordinate.
+	/// Total external force acting on each body in world coordinate.
 	std::vector<sva::ForceVecd> force;
-
-
 
 	/// Joints configuration (Xj).
 	std::vector<sva::PTransformd> jointConfig;
