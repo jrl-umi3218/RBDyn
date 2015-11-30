@@ -74,8 +74,7 @@ public:
 	};
 
 public:
-	Joint()
-	{}
+	Joint();
 
 	/**
 		* Compatibility constructor
@@ -254,9 +253,12 @@ inline std::ostream& operator<<(std::ostream& out, const Joint& b)
 	return out;
 }
 
+inline Joint::Joint() : dir_(0.0), params_(0), dof_(0), name_("") {}
 
 inline Joint::Joint(OldType type, bool forward, std::string name):
 	dir_(forward ? 1. : -1),
+	params_(0),
+	dof_(0),
 	name_(name)
 {
 	using namespace Eigen;
@@ -291,6 +293,8 @@ inline Joint::Joint(OldType type, bool forward, std::string name):
 inline Joint::Joint(Type type, const Eigen::Vector3d& axis,
 	bool forward, std::string name):
 	dir_(forward ? 1. : -1),
+	params_(0),
+	dof_(0),
 	name_(name)
 {
 	constructJoint(type, axis);
@@ -299,6 +303,8 @@ inline Joint::Joint(Type type, const Eigen::Vector3d& axis,
 
 inline Joint::Joint(Type type,	bool forward, std::string name):
 	dir_(forward ? 1. : -1),
+	params_(0),
+	dof_(0),
 	name_(name)
 {
 	constructJoint(type, Eigen::Vector3d::UnitZ());
