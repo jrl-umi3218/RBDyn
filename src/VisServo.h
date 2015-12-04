@@ -19,6 +19,8 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 /**
@@ -27,14 +29,14 @@ namespace rbd
 	* @param point2d normalized image coordinates (x,y) = (X/Z, Y/Z)
 	* @param depthEstimate an estimate of the point depth Z
 	*/
-Eigen::MatrixXd imagePointJacobian(const Eigen::Vector2d& point2d, const double depthEstimate);
+RBDYN_DLLAPI Eigen::MatrixXd imagePointJacobian(const Eigen::Vector2d& point2d, const double depthEstimate);
 
 /**
 	* Compute the interaction matrix of an image point
 	*
 	* @param point3d metric location of the point relative to the camera frame
 	*/
-Eigen::MatrixXd imagePointJacobian(const Eigen::Vector3d& point3d);
+RBDYN_DLLAPI Eigen::MatrixXd imagePointJacobian(const Eigen::Vector3d& point3d);
 
 /**
 	* Compute the interaction matrix of a pose

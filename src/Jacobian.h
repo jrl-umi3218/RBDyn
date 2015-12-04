@@ -19,6 +19,8 @@
 // RBDyn
 #include "MultiBody.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 struct MultiBodyConfig;
@@ -26,7 +28,7 @@ struct MultiBodyConfig;
 /**
 	* Algorithm to compute the jacobian of a specified body.
 	*/
-class Jacobian
+class RBDYN_DLLAPI Jacobian
 {
 public:
 	Jacobian();

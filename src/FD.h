@@ -25,6 +25,8 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -33,7 +35,7 @@ struct MultiBodyConfig;
 /**
 	* Forward Dynamics algorithm.
 	*/
-class ForwardDynamics
+class RBDYN_DLLAPI ForwardDynamics
 {
 public:
 	ForwardDynamics()
