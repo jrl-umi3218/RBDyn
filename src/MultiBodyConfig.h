@@ -26,10 +26,12 @@
 // RBDyn
 #include "MultiBody.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 
-struct MultiBodyConfig
+struct RBDYN_DLLAPI MultiBodyConfig
 {
 	MultiBodyConfig()
 	{}
@@ -103,7 +105,7 @@ struct MultiBodyConfig
 	* Convert a MultiBodyConfig to another MultiBodyConfig of the same MultiBodyGraph.
 	* This class only convert q, alpha, alphaD and force.
 	*/
-class ConfigConverter
+class RBDYN_DLLAPI ConfigConverter
 {
 public:
 	ConfigConverter(const MultiBody& from, const MultiBody& to);
@@ -150,14 +152,14 @@ private:
 	* @param v Parameter vector.
 	* @param e Output Eigen vector (must be of the good size).
 	*/
-void paramToVector(const std::vector<std::vector<double>>& v,
+RBDYN_DLLAPI void paramToVector(const std::vector<std::vector<double>>& v,
 	Eigen::Ref<Eigen::VectorXd> e);
 
 /**
 	* Safe version of @see paramToVector.
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
-void sParamToVector(const std::vector<std::vector<double>>& v,
+RBDYN_DLLAPI void sParamToVector(const std::vector<std::vector<double>>& v,
 	Eigen::Ref<Eigen::VectorXd> e);
 
 
@@ -168,14 +170,14 @@ void sParamToVector(const std::vector<std::vector<double>>& v,
 	* @param v Parameter vector.
 	* @return Parameter converted in eigen vector.
 	*/
-Eigen::VectorXd paramToVector(const MultiBody& mb,
+RBDYN_DLLAPI Eigen::VectorXd paramToVector(const MultiBody& mb,
 	const std::vector<std::vector<double>>& v);
 
 /**
 	* Safe version of @see paramToVector.
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
-Eigen::VectorXd sParamToVector(const MultiBody& mb,
+RBDYN_DLLAPI Eigen::VectorXd sParamToVector(const MultiBody& mb,
 	const std::vector<std::vector<double>>& v);
 
 
@@ -186,14 +188,14 @@ Eigen::VectorXd sParamToVector(const MultiBody& mb,
 	* @param v dof vector.
 	* @return dof converted in eigen vector.
 	*/
-Eigen::VectorXd dofToVector(const MultiBody& mb,
+RBDYN_DLLAPI Eigen::VectorXd dofToVector(const MultiBody& mb,
 	const std::vector<std::vector<double>>& v);
 
 /**
 	* Safe version of @see paramToDof.
 	* @throw std::out_of_range if dof and Eigen vector mismatch.
 	*/
-Eigen::VectorXd sDofToVector(const MultiBody& mb,
+RBDYN_DLLAPI Eigen::VectorXd sDofToVector(const MultiBody& mb,
 	const std::vector<std::vector<double>>& v);
 
 
@@ -203,14 +205,14 @@ Eigen::VectorXd sDofToVector(const MultiBody& mb,
 	* @param e Eigen vector.
 	* @param e Output Parameter vector (must be of the good size).
 	*/
-void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
+RBDYN_DLLAPI void vectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
 	std::vector<std::vector<double>>& v);
 
 /**
 	* Safe version of @see vectorToParam.
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
-void sVectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
+RBDYN_DLLAPI void sVectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
 	std::vector<std::vector<double>>& v);
 
 
@@ -221,14 +223,14 @@ void sVectorToParam(const Eigen::Ref<const Eigen::VectorXd>& e,
 	* @param e Eigen vector.
 	* @return Eigen vector converted in parameter vector.
 	*/
-std::vector<std::vector<double>> vectorToParam(const MultiBody& mb,
+RBDYN_DLLAPI std::vector<std::vector<double>> vectorToParam(const MultiBody& mb,
 	const Eigen::VectorXd& e);
 
 /**
 	* Safe version of @see vectorToParam.
 	* @throw std::out_of_range if param and Eigen vector mismatch.
 	*/
-std::vector<std::vector<double>> sVectorToParam(const MultiBody& mb,
+RBDYN_DLLAPI std::vector<std::vector<double>> sVectorToParam(const MultiBody& mb,
 	const Eigen::VectorXd& e);
 
 
@@ -239,14 +241,14 @@ std::vector<std::vector<double>> sVectorToParam(const MultiBody& mb,
 	* @param e Eigen vector.
 	* @return Eigen vector converted in parameter vector.
 	*/
-std::vector<std::vector<double>> vectorToDof(const MultiBody& mb,
+RBDYN_DLLAPI std::vector<std::vector<double>> vectorToDof(const MultiBody& mb,
 	const Eigen::VectorXd& e);
 
 /**
 	* Safe version of @see vectorToDof.
 	* @throw std::out_of_range if dof and Eigen vector mismatch.
 	*/
-std::vector<std::vector<double>> sVectorToDof(const MultiBody& mb,
+RBDYN_DLLAPI std::vector<std::vector<double>> sVectorToDof(const MultiBody& mb,
 	const Eigen::VectorXd& e);
 
 
@@ -262,41 +264,41 @@ void checkMatchJointsVector(const MultiBody& mb, const std::vector<T>& vec,
 	const std::string& name);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.bodyPosW.
-void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchBodyPos(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.parentToSon.
-void checkMatchParentToSon(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchParentToSon(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and
 /// (mbc.bodyVelW, mbc.bodyVelB).
-void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchBodyVel(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.bodyAccB.
-void checkMatchBodyAcc(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchBodyAcc(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.jointConfig.
-void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchJointConf(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.jointVelocity.
-void checkMatchJointVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchJointVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.jointTorque.
-void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.motionSubspace.
-void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.q.
-void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.alpha.
-void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.alphaD.
-void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.force.
-void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 

@@ -24,6 +24,8 @@
 // RBDyn
 #include "Jacobian.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -35,7 +37,7 @@ struct MultiBodyConfig;
 	* @param mbc Use bodyPosW.
 	* @return CoM position in world frame.
 	*/
-Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 /**
@@ -44,7 +46,7 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
 	* @param mbc Use bodyPosW and bodyVelB.
 	* @return CoM velocity in world frame.
 	*/
-Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 /**
@@ -53,13 +55,13 @@ Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& m
 	* @param mbc Use bodyPosW, bodyVelW, bodyVelB, and bodyAccB.
 	* @return CoM velocity in world frame.
 	*/
-Eigen::Vector3d computeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI Eigen::Vector3d computeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 /**
 	* Compute the CoM jacobian with a simple but slow algorithm.
 	*/
-class CoMJacobianDummy
+class RBDYN_DLLAPI CoMJacobianDummy
 {
 public:
 	CoMJacobianDummy();
@@ -121,7 +123,7 @@ private:
 /**
 	* Compute the CoM jacobian
 	*/
-class CoMJacobian
+class RBDYN_DLLAPI CoMJacobian
 {
 public:
 	CoMJacobian();
@@ -261,7 +263,7 @@ private:
 	* @see computeCoM.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 /**
@@ -269,7 +271,7 @@ Eigen::Vector3d sComputeCoM(const MultiBody& mb, const MultiBodyConfig& mbc);
 	* @see computeCoMVelocity.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 /**
@@ -277,7 +279,7 @@ Eigen::Vector3d sComputeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& 
 	* @see computeCoMAcceleration.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-Eigen::Vector3d sComputeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc);
+RBDYN_DLLAPI Eigen::Vector3d sComputeCoMAcceleration(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 
 } // namespace rbd

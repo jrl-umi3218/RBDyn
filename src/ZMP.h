@@ -19,6 +19,8 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 struct MultiBodyConfig;
@@ -31,7 +33,7 @@ struct MultiBodyConfig;
 	 *	the gravity term
 	 * @param altitude Double representing the surface's altitude in world frame
 	 */
-Eigen::Vector3d computeCentroidalZMP(MultiBodyConfig& mbc, Eigen::Vector3d& com,
+RBDYN_DLLAPI Eigen::Vector3d computeCentroidalZMP(MultiBodyConfig& mbc, Eigen::Vector3d& com,
 		Eigen::Vector3d& comA, double altitude);
 
 }

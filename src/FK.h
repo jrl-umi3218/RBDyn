@@ -15,6 +15,8 @@
 
 #pragma once
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -26,13 +28,13 @@ struct MultiBodyConfig;
 	* @param mbc Use q generalized position vector. Fill bodyPosW, jointConfig
 	* and parentToSon.
 	*/
-void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+RBDYN_DLLAPI void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
 
 /**
 	* Safe version.
 	* @see forwardKinematics.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+RBDYN_DLLAPI void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
 
 } // namespace rbd

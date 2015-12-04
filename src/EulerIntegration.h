@@ -22,6 +22,8 @@
 // RBDyn
 #include "Joint.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -34,7 +36,7 @@ struct MultiBodyConfig;
 	* @param step Integration step.
 	* @param q Joint configuration vector.
 	*/
-void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
+RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 	double step, std::vector<double>& q);
 
 /**
@@ -43,9 +45,9 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 	* @param mbc Use alphaD, alpha and q. Fill alpha and q.
 	* @param step Integration step.
 	*/
-void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step);
+RBDYN_DLLAPI void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step);
 
 /// safe version of @see eulerIntegration.
-void sEulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step);
+RBDYN_DLLAPI void sEulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step);
 
 } // namepsace rbd
