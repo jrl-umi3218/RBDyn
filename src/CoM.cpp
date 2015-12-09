@@ -35,6 +35,7 @@ Eigen::Vector3d computeCoM(const MultiBody& mb, const MultiBodyConfig& mbc)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		double mass = bodies[i].inertia().mass();
+		assert(mass > 0 && "Invalid inertia. Mass must be strictly positive");
 		Vector3d comT = bodies[i].inertia().momentum()/mass;
 
 		totalMass += mass;
@@ -57,6 +58,7 @@ Eigen::Vector3d computeCoMVelocity(const MultiBody& mb, const MultiBodyConfig& m
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		double mass = bodies[i].inertia().mass();
+		assert(mass > 0 && "Invalid inertia. Mass must be strictly positive");
 		Vector3d comT = bodies[i].inertia().momentum()/mass;
 
 		totalMass += mass;
@@ -83,6 +85,7 @@ Eigen::Vector3d computeCoMAcceleration(const MultiBody& mb, const MultiBodyConfi
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		double mass = bodies[i].inertia().mass();
+		assert(mass > 0 && "Invalid inertia. Mass must be strictly positive");
 		Vector3d comT = bodies[i].inertia().momentum()/mass;
 
 		totalMass += mass;
@@ -180,6 +183,8 @@ CoMJacobianDummy::jacobian(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
+		assert(bodies[i].inertia().mass() > 0
+			&& "Invalid inertia. Mass must be strictly positive");
 		const MatrixXd& jac = jacVec_[i].jacobian(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
 		jac_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
@@ -202,6 +207,8 @@ CoMJacobianDummy::jacobianDot(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
+		assert(bodies[i].inertia().mass() > 0
+			&& "Invalid inertia. Mass must be strictly positive");
 		const MatrixXd& jac = jacVec_[i].jacobianDot(mb, mbc);
 		jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
 		jacDot_.noalias() += jacFull_*(bodies[i].inertia().mass()*bodiesWeight_[i]);
@@ -239,6 +246,8 @@ void CoMJacobianDummy::init(const rbd::MultiBody& mb)
 	using namespace Eigen;
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
+		assert(mb.body(i).inertia().mass() > 0
+			&& "Invalid inertia. Mass must be strictly positive");
 		Vector3d comT = mb.body(i).inertia().momentum()/
 			mb.body(i).inertia().mass();
 		jacVec_[i] = Jacobian(mb, mb.body(i).id(), comT);
@@ -306,6 +315,8 @@ void CoMJacobian::updateInertialParameters(const MultiBody& mb)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		double bodyMass = mb.body(i).inertia().mass();
+		assert(bodyMass > 0 && "Invalid inertia. Mass must be strictly positive");
+		assert(mass > 0 && "Invalid inertia. Mass must be strictly positive");
 		bodiesCoeff_[i] = (bodyMass*weight_[i])/mass;
 		bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum()/bodyMass).eval());
 	}
