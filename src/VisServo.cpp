@@ -20,7 +20,7 @@
 namespace rbd
 {
 
-Eigen::MatrixXd interactionMatrix(const Eigen::Vector2d& point2d, double depthEstimate)
+Eigen::MatrixXd imagePointJacobian(const Eigen::Vector2d& point2d, const double depthEstimate)
 {
 	Eigen::MatrixXd m(2,6);
 	m << point2d[0]*point2d[1], -(1+point2d[0]*point2d[0]),  point2d[1], -1./depthEstimate, 0., point2d[0]/depthEstimate,
@@ -28,7 +28,7 @@ Eigen::MatrixXd interactionMatrix(const Eigen::Vector2d& point2d, double depthEs
 	return m;
 }
 
-Eigen::MatrixXd interactionMatrix(const Eigen::Vector3d& point3d)
+Eigen::MatrixXd imagePointJacobian(const Eigen::Vector3d& point3d)
 {
 	// normalized image coordinates
 	double x = point3d[0] / point3d[2];
@@ -39,4 +39,46 @@ Eigen::MatrixXd interactionMatrix(const Eigen::Vector3d& point3d)
 	return m;
 }
 
+Eigen::MatrixXd poseJacobian(const Eigen::Matrix3d& rotation)
+{
+	Eigen::MatrixXd m(6,6);
+	Eigen::Matrix3d i3 = Eigen::Matrix3d::Identity();
+
+	// convert rotation matrix into axis-angle representation
+	double rot_angle;
+	Eigen::Vector3d rot_axis;
+	getAngleAxis(rotation.transpose(), rot_angle, rot_axis);
+
+	// create the rotation jacobian
+	Eigen::Matrix3d L_theta_u;
+	double sinc_part;
+	if(fabs(rot_angle) < 1.0e-8)
+	{
+		sinc_part = 1.0; // TODO: more simplifications based on this
+	}
+	else
+	{
+		sinc_part = ((std::sin(rot_angle))/rot_angle)/(std::pow(((std::sin(rot_angle/2.))/(rot_angle/2.)),2));
+	}
+
+	Eigen::Matrix3d axis_antisym;
+	axis_antisym << 0., -rot_axis(2), rot_axis(1),
+									rot_axis(2), 0., -rot_axis(0),
+									-rot_axis(1), rot_axis(0), 0.;
+
+	L_theta_u = i3 - rot_angle*0.5*axis_antisym + (1-(sinc_part))*axis_antisym*axis_antisym;
+	m << L_theta_u, Eigen::Matrix3d::Zero(),
+			 Eigen::Matrix3d::Zero(), rotation.transpose();
+	return m;
+}
+
+void getAngleAxis(const Eigen::Matrix3d& rotation, double& rot_angle, Eigen::Vector3d& rot_axis)
+{
+	// TODO: try to use a better conversion, this is based on the sva::rotationVelocity implementation which has known issues
+	double acosV = (rotation(0,0) + rotation(1,1) + rotation(2,2) - 1.)*0.5;
+	rot_angle = std::acos(std::min(std::max(acosV,-1.),1.));
+	rot_axis << -rotation(2,1) + rotation(1,2),
+							-rotation(0,2) + rotation(2,0),
+							-rotation(1,0) + rotation(0,1);
+}
 }
