@@ -40,8 +40,10 @@ Eigen::MatrixXd imagePointJacobian(const Eigen::Vector3d& point3d);
 	* Compute the interaction matrix of a pose
 	*
 	* @param rotation matrix
+	* @param rot_angle_threshold is the minimum angle of an axis angle representation where the angle
+	*		is considered as zero
 	*/
-Eigen::MatrixXd poseJacobian(const Eigen::Matrix3d& rotation);
+Eigen::MatrixXd poseJacobian(const Eigen::Matrix3d& rotation, const double rot_angle_threshold=1.0e-8);
 
 /**
 	* Compute the angle and axis of an angle-axis rotation representation given a rotation matrix
