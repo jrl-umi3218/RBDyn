@@ -18,7 +18,6 @@
 #include <iostream>
 
 // boost
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JointTest
 #include <boost/test/unit_test.hpp>
 #include <boost/math/constants/constants.hpp>
