@@ -58,11 +58,11 @@ makeXYZSarmRandomCoM(bool isFixed=true)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(RBInertiad(EScalar::Random()(0)*10., h, I), 0, "b0");
-	Body b1(RBInertiad(EScalar::Random()(0)*10., h, I), 1, "b1");
-	Body b2(RBInertiad(EScalar::Random()(0)*10., h, I), 2, "b2");
-	Body b3(RBInertiad(EScalar::Random()(0)*10., h, I), 3, "b3");
-	Body b4(RBInertiad(EScalar::Random()(0)*10., h, I), 4, "b4");
+	Body b0(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 0, "b0");
+	Body b1(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 1, "b1");
+	Body b2(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 2, "b2");
+	Body b3(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 3, "b3");
+	Body b4(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 4, "b4");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);

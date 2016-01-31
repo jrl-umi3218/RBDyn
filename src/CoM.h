@@ -241,6 +241,8 @@ private:
 	Eigen::MatrixXd jacDot_;
 
 	std::vector<double> bodiesCoeff_;
+
+	/// @brief list of CoM of the bodies. Bodies with null mass have a (0,0,0) CoM
 	std::vector<sva::PTransformd> bodiesCoM_;
 	std::vector<std::vector<int>> jointsSubBodies_;
 
