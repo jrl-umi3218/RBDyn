@@ -45,7 +45,7 @@ RBDYN_DLLAPI Eigen::MatrixXd imagePointJacobian(const Eigen::Vector3d& point3d);
 	* @param rot_angle_threshold is the minimum angle of an axis angle representation where the angle
 	*		is considered as zero
 	*/
-Eigen::MatrixXd poseJacobian(const Eigen::Matrix3d& rotation, const double rot_angle_threshold=1.0e-8);
+RBDYN_DLLAPI Eigen::MatrixXd poseJacobian(const Eigen::Matrix3d& rotation, const double rot_angle_threshold=1.0e-8);
 
 /**
 	* Compute the angle and axis of an angle-axis rotation representation given a rotation matrix
@@ -54,6 +54,6 @@ Eigen::MatrixXd poseJacobian(const Eigen::Matrix3d& rotation, const double rot_a
 	* @param rot_angle as output angle
 	* @param rot_axis as output axis
 	*/
-void getAngleAxis(const Eigen::Matrix3d& rotation, double& rot_angle, Eigen::Vector3d& rot_axis);
+RBDYN_DLLAPI void getAngleAxis(const Eigen::Matrix3d& rotation, double& rot_angle, Eigen::Vector3d& rot_axis);
 }
 
