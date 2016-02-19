@@ -2,6 +2,7 @@ RBDyn
 =====
 
 [![Build Status](https://travis-ci.org/jorisv/RBDyn.svg?branch=master)](https://travis-ci.org/jorisv/RBDyn)
+[![AppVeyor status](https://ci.appveyor.com/api/projects/status/t0x6t0l8qfvih0qa/branch/topic/Win32?svg=true)](https://ci.appveyor.com/project/gergondet/rbdyn/branch/topic/Win32)
 
 RBDyn provide a set of class and function to model the dynamics of rigid body systems.
 
