@@ -12,7 +12,7 @@ GH_PUSH_URI=${GH_PUSH_URI:-"\#EDITED\#"}
 
 
 # Anonymize the output.
-./.travis/$1 2>&1 | sed					\
+`dirname $0`/$1 2>&1 | sed					\
     -e "s|${COVERITY_TOKEN}|\#EDITED\#|g"		\
     -e "s|${GNUPG_PASSPHRASE}|\#EDITED\#|g"		\
     -e "s|${GH_USERNAME}|\#EDITED\#|g"			\
