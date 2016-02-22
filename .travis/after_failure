@@ -1,5 +1,5 @@
 #!/bin/bash
-. .travis/common.sh
+. `dirname $0`/common.sh
 
 # Set debug mode
 set -x
@@ -13,8 +13,8 @@ if [ -d debian ]; then
     echo "Debian build failed"
 else
     if [ ! x${DIST} = x ]; then
-	echo "skipping this build"
-	exit 0
+      echo "skipping this build"
+      exit 0
     fi
 
     # Dump as much log as we can
