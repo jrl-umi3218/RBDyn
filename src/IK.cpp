@@ -58,7 +58,7 @@ bool InverseKinematics::inverseKinematics(const MultiBody& mb, MultiBodyConfig& 
 	Eigen::Vector6d v = Eigen::Vector6d::Ones();
 	Eigen::Vector3d rotErr;
 	Eigen::VectorXd res = Eigen::VectorXd::Zero(3);
-	while(iter < MAX_IK_ITERATIONS && ! converged)
+	while( ! converged && iter < MAX_IK_ITERATIONS)
 	{
 		jacMat = jac_.jacobian(mb, mbc);
 		//non-strict zeros in jacobian can be a problem...
