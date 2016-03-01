@@ -29,12 +29,11 @@
 namespace rbd
 {
 
-static const int MAX_IK_ITERATIONS = 50;
-static const double LAMBDA = 0.9;
-static const double IK_THRESHOLD = 1e-8;
-static const double ALMOST_ZERO = 1e-8;
-
 InverseKinematics::InverseKinematics(const MultiBody& mb, int ef_index):
+	max_iterations_(ik::MAX_ITERATIONS),
+	lambda_(ik::LAMBDA),
+	threshold_(ik::THRESHOLD),
+	almost_zero_(ik::ALMOST_ZERO),
 	ef_index_(ef_index),
 	jac_(mb, mb.body(ef_index).id()),
 	svd_()
@@ -58,17 +57,16 @@ bool InverseKinematics::inverseKinematics(const MultiBody& mb, MultiBodyConfig& 
 	Eigen::Vector6d v = Eigen::Vector6d::Ones();
 	Eigen::Vector3d rotErr;
 	Eigen::VectorXd res = Eigen::VectorXd::Zero(3);
-	while( ! converged && iter < MAX_IK_ITERATIONS)
+	while( ! converged && iter < max_iterations_)
 	{
 		jacMat = jac_.jacobian(mb, mbc);
 		//non-strict zeros in jacobian can be a problem...
-		double eps = ALMOST_ZERO;
-		jacMat = jacMat.unaryExpr(CwiseRoundOp(-eps, eps));
+		jacMat = jacMat.unaryExpr(CwiseRoundOp(-almost_zero_, almost_zero_));
 		svd_.compute(jacMat, Eigen::ComputeThinU | Eigen::ComputeThinV);
 		rotErr = sva::rotationError(mbc.bodyPosW[ef_index_].rotation(),
 		                            ef_target.rotation());
 		v << rotErr, ef_target.translation() - mbc.bodyPosW[ef_index_].translation();
-		converged = v.norm() < IK_THRESHOLD;
+		converged = v.norm() < threshold_;
 		res = svd_.solve(v);
 
 		dof = 0;
@@ -77,7 +75,7 @@ bool InverseKinematics::inverseKinematics(const MultiBody& mb, MultiBodyConfig& 
 			std::vector<double>& qi = mbc.q[index];
 			for(auto &qv : qi)
 			{
-				qv += LAMBDA*res[dof];
+				qv += lambda_*res[dof];
 				++dof;
 			}
 		}

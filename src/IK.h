@@ -29,6 +29,15 @@ namespace rbd
 class MultiBody;
 class MultiBodyConfig;
 
+namespace ik {
+
+static constexpr int MAX_ITERATIONS = 50;
+static constexpr double LAMBDA = 0.9;
+static constexpr double THRESHOLD = 1e-8;
+static constexpr double ALMOST_ZERO = 1e-8;
+
+} // ik
+
 /**
 	* Inverse Kinematics algorithm.
 	*/
@@ -58,6 +67,12 @@ public:
 	* @brief Find q that minimizes the distance between ef and ef_target.
 	* @return Bool if convergence has been reached
 	*/
+
+public:
+	int max_iterations_;
+	double lambda_;
+	double threshold_;
+	double almost_zero_;
 
 private:
 	// @brief ef_index is the End Effector index used to build jacobian
