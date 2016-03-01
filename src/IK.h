@@ -47,12 +47,13 @@ public:
 	* Fill q with new generalized position
 	*/
 	bool inverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc,
-                               const sva::PTransformd& ef_target);
+			       const sva::PTransformd& ef_target);
 
 	/** safe version of @see inverseKinematics.
 	* @throw std::domain_error If mb doesn't match mbc.
 	*/
-	//void sInverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+	bool sInverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc,
+				const sva::PTransformd& ef_target);
 	/**
 	* @brief Find q that minimizes the distance between ef and ef_target.
 	* @return Bool if convergence has been reached

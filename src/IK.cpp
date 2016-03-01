@@ -89,4 +89,15 @@ bool InverseKinematics::inverseKinematics(const MultiBody& mb, MultiBodyConfig& 
 	return converged;
 }
 
+bool InverseKinematics::sInverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc,
+					   const sva::PTransformd& ef_target)
+{
+	checkMatchQ(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+
+	return inverseKinematics(mb, mbc, ef_target);
+}
+
 } // namespace rbd
