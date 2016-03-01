@@ -75,9 +75,9 @@ bool InverseKinematics::inverseKinematics(const MultiBody& mb, MultiBodyConfig& 
 		for(auto index : jac_.jointsPath())
 		{
 			std::vector<double>& qi = mbc.q[index];
-			for(auto qv=qi.begin(); qv!=qi.end(); ++qv)
+			for(auto &qv : qi)
 			{
-				*qv += LAMBDA*res[dof];
+				qv += LAMBDA*res[dof];
 				++dof;
 			}
 		}
