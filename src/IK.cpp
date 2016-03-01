@@ -29,6 +29,16 @@
 namespace rbd
 {
 
+namespace {
+
+struct CwiseRoundOp {
+	CwiseRoundOp(const double& inf, const double& sup) : m_inf(inf), m_sup(sup) {}
+	double operator()(const double& x) const { return x>m_inf && x<m_sup ? 0 : x; }
+	double m_inf, m_sup;
+};
+
+} // anonymous
+
 InverseKinematics::InverseKinematics(const MultiBody& mb, int ef_index):
 	max_iterations_(ik::MAX_ITERATIONS),
 	lambda_(ik::LAMBDA),
@@ -39,12 +49,6 @@ InverseKinematics::InverseKinematics(const MultiBody& mb, int ef_index):
 	svd_()
 {
 }
-
-struct CwiseRoundOp {
-	CwiseRoundOp(const double& inf, const double& sup) : m_inf(inf), m_sup(sup) {}
-	double operator()(const double& x) const { return x>m_inf && x<m_sup ? 0 : x; }
-	double m_inf, m_sup;
-};
 
 bool InverseKinematics::inverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc,
                                           const sva::PTransformd& ef_target)
