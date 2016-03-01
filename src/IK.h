@@ -53,7 +53,8 @@ public:
 	* @param mb MultiBody used has model.
 	* @param mbc Use q generalized position vector
 	* @return bool if computation has converged
-	* Fill q with new generalized position
+	* Fill q with new generalized position, bodyPosW, jointConfig
+	* and parentToSon
 	*/
 	bool inverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc,
 			       const sva::PTransformd& ef_target);
@@ -68,10 +69,13 @@ public:
 	* @return Bool if convergence has been reached
 	*/
 
-public:
+	// @brief Maximum number of iterations
 	int max_iterations_;
+	// @brief Learning rate
 	double lambda_;
+	// @brief Stopping criterion
 	double threshold_;
+	// @brief Rounding threshold for the Jacobian
 	double almost_zero_;
 
 private:
