@@ -701,7 +701,40 @@ BOOST_AUTO_TEST_CASE(IKTest)
   rbd::forwardKinematics(mb, mbc);
   BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
   pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
-  std::cout << pos_vec.transpose() << std::endl;
-  std::cout << solution.transpose() << std::endl;
   BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+}
+
+BOOST_AUTO_TEST_CASE(FailureIKTest)
+{
+  using namespace Eigen;
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+
+  std::tie(mb, mbc, mbg) = makeXYZarm();
+
+  rbd::InverseKinematics ik(mb, 3);
+
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
+
+  // This target is outside the reach of the arm
+  sva::PTransformd target(sva::RotX(M_PI/2), Eigen::Vector3d(0., 0.5, 2.5));
+  BOOST_CHECK(!ik.inverseKinematics(mb, mbc, target));
+
+  Eigen::VectorXd q_target(mb.nrParams());
+  Eigen::VectorXd q(mb.nrParams());
+
+  q_target << M_PI/2, 0, 0;
+  rbd::paramToVector(mbc.q, q);
+
+  BOOST_CHECK_SMALL((q_target - q).norm(), TOL);
+
+  /* This target is reachable, but IK will fail if given
+   * a too low maximum number of iterations */
+  ik.max_iterations_ = 10;
+  sva::PTransformd reachable_target(sva::RotX(-M_PI/2), Eigen::Vector3d(0., 0.5, -2.));
+  BOOST_CHECK(!ik.inverseKinematics(mb, mbc, reachable_target));
+  ik.max_iterations_ = 40;
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, reachable_target));
 }
