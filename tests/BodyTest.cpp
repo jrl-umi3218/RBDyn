@@ -45,9 +45,8 @@ BOOST_AUTO_TEST_CASE(BodyTest)
 	RBInertiad rbi(mass, h, I);
 
 	// Test first constructor
-	Body b1(rbi, 0, "b1");
+	Body b1(rbi, "b1");
 
-	BOOST_CHECK_EQUAL(b1.id(), 0);
 	BOOST_CHECK_EQUAL(b1.name(), "b1");
 	BOOST_CHECK_EQUAL(b1.inertia().mass(), rbi.mass());
 	BOOST_CHECK_EQUAL(b1.inertia().momentum(), rbi.momentum());
@@ -55,9 +54,8 @@ BOOST_AUTO_TEST_CASE(BodyTest)
 
 
 	// Test second constructor
-	Body b2(mass, Vector3d::UnitX(), I, 1, "b2");
+	Body b2(mass, Vector3d::UnitX(), I, "b2");
 
-	BOOST_CHECK_EQUAL(b2.id(), 1);
 	BOOST_CHECK_EQUAL(b2.name(), "b2");
 	BOOST_CHECK_EQUAL(b2.inertia().mass(), mass);
 	BOOST_CHECK_EQUAL(b2.inertia().momentum(), mass*Vector3d::UnitX());

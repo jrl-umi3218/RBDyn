@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 	for(int i = 0; i < 100; ++i)
 	{
 		q.setRandom();
-		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
 		alpha.setRandom();
 		rbd::vectorToParam(q, mbc.q);
 		rbd::vectorToParam(alpha, mbc.alpha);
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 		CentroidalMomentumMatrix cmmW(mb, weight);
 
 		q.setRandom();
-		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
 		alpha.setRandom();
 		rbd::vectorToParam(q, mbc.q);
 		rbd::vectorToParam(alpha, mbc.alpha);
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 	for(int i = 0; i < 10; ++i)
 	{
 		q.setRandom();
-		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
 		alpha.setRandom();
 		alphaD.setRandom();
 		rbd::vectorToParam(q, mbc.q);
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 		CentroidalMomentumMatrix cmmW(mb, weight);
 
 		q.setRandom();
-		q.segment<4>(mb.jointPosInParam(mb.jointIndexById(3))).normalize();
+		q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
 		alpha.setRandom();
 		alphaD.setZero();
 		rbd::vectorToParam(q, mbc.q);

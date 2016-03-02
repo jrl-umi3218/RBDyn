@@ -38,12 +38,10 @@ public:
 
 	/**
 		* @param rbInertia Body spatial rigid body inertia.
-		* @param id Body id, must be unique in a multibody.
-		* @param name Body name.
+		* @param name Body name, must be unique in a multibody.
 		*/
-	Body(const sva::RBInertiad& rbInertia, int id, std::string name):
+	Body(const sva::RBInertiad& rbInertia, std::string name):
 		inertia_(rbInertia),
-		id_(id),
 		name_(name)
 	{}
 
@@ -51,21 +49,13 @@ public:
 		* @param mass Body mass.
 		* @param com Body center of mass.
 		* @param inertia Body inertia matrix at body origin.
-		* @param id Body id, must be unique in a multibody.
-		* @param name Body name.
+		* @param name Body name, must be unique in a multibody.
 		*/
 	Body(double mass, const Eigen::Vector3d& com, const Eigen::Matrix3d& inertia,
-		int id, std::string name):
+		std::string name):
 		inertia_(mass, mass*com, inertia),
-		id_(id),
 		name_(name)
 	{}
-
-	/// @return Body id.
-	int id() const
-	{
-		return id_;
-	}
 
 	/// @return Body name.
 	const std::string& name() const
@@ -81,24 +71,23 @@ public:
 
 	bool operator==(const Body& b) const
 	{
-		return id_ == b.id_ && name_ == b.name_;
+		return name_ == b.name_;
 	}
 
 	bool operator!=(const Body& b) const
 	{
-		return id_ != b.id_ || name_ != b.name_;
+		return name_ != b.name_;
 	}
 
 private:
 	sva::RBInertiad inertia_;
-
-	int id_;
 	std::string name_;
+
 };
 
 inline std::ostream& operator<<(std::ostream& out, const Body& b)
 {
-	out << "Body: " << b.id() << ", " << b.name();
+	out << "Body: " << b.name();
 	return out;
 }
 
