@@ -507,7 +507,6 @@ def build_id(id):
 
 
 def build_ik(ik):
-  ik.add_constructor([])
   ik.add_copy_constructor()
   ik.add_constructor([param('const rbd::MultiBody&', 'mb'), param('int', 'ef_index')])
 
