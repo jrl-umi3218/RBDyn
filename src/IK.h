@@ -44,8 +44,6 @@ static constexpr double ALMOST_ZERO = 1e-8;
 class InverseKinematics
 {
 public:
-	InverseKinematics()
-	{}
 	/// @param mb MultiBody associated with this algorithm.
 	InverseKinematics(const MultiBody& mb, int ef_index);
 	/**
