@@ -440,7 +440,7 @@ void CentroidalMomentumMatrix::init(const rbd::MultiBody& mb)
 	using namespace Eigen;
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
-		jacVec_[i] = Jacobian(mb, mb.body(i).id());
+		jacVec_[i] = Jacobian(mb, mb.body(i).name());
 		jacWork_[i].resize(6, jacVec_[i].dof());
 	}
 }

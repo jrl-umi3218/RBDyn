@@ -60,10 +60,10 @@ BOOST_AUTO_TEST_CASE(OneBody)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
+	Body b0(rbi, "b0");
+	Body b1(rbi, "b1");
 
-	Joint j0(Joint::RevX, true, 0, "j0");
+	Joint j0(Joint::RevX, true, "j0");
 
 	MultiBodyGraph mbg;
 
@@ -72,10 +72,10 @@ BOOST_AUTO_TEST_CASE(OneBody)
 
 	mbg.addJoint(j0);
 
-	mbg.linkBodies(0, PTransformd::Identity(),
-								 1, PTransformd::Identity(), 0);
+	mbg.linkBodies("b0", PTransformd::Identity(),
+			 "b1", PTransformd::Identity(), "j0");
 
-	MultiBody mb = mbg.makeMultiBody(0, true);
+	MultiBody mb = mbg.makeMultiBody("b0", true);
 
 	MultiBodyConfig mbc(mb);
 	mbc.zero(mb);
@@ -220,14 +220,14 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 	RBInertiad I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
 
-	Body b0(I0, 0, "b0");
-	Body b1(I1, 1, "b1");
-	Body b2(I2, 2, "b2");
-	Body b3(I3, 3, "b3");
+	Body b0(I0, "b0");
+	Body b1(I1, "b1");
+	Body b2(I2, "b2");
+	Body b3(I3, "b3");
 
-	Joint j0 = Joint(Joint::Spherical, true, 0, "j0");
-	Joint j1 = Joint(Joint::RevX, true, 1, "j1");
-	Joint j2 = Joint(Joint::RevZ, true, 2, "j2");
+	Joint j0 = Joint(Joint::Spherical, true, "j0");
+	Joint j1 = Joint(Joint::RevX, true, "j1");
+	Joint j2 = Joint(Joint::RevZ, true, "j2");
 
 
 	MultiBodyGraph mbg;
@@ -241,14 +241,14 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransformd(Vector3d(0., 0.5, 0.)),
-								 1, PTransformd(Vector3d(0., -0.5, 0.)), 0);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 2, PTransformd(Vector3d(0., 0., 0.)), 1);
-	mbg.linkBodies(1, PTransformd(Vector3d(-0.5, 0., 0.)),
-								 3, PTransformd(Vector3d(0., 0., 0.)), 2);
+	mbg.linkBodies("b0", PTransformd(Vector3d(0., 0.5, 0.)),
+			 "b1", PTransformd(Vector3d(0., -0.5, 0.)), "j0");
+	mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)),
+			 "b2", PTransformd(Vector3d(0., 0., 0.)), "j1");
+	mbg.linkBodies("b1", PTransformd(Vector3d(-0.5, 0., 0.)),
+			 "b3", PTransformd(Vector3d(0., 0., 0.)), "j2");
 
-	MultiBody mb = mbg.makeMultiBody(0, true);
+	MultiBody mb = mbg.makeMultiBody("b0", true);
 
 	MultiBodyConfig mbc(mb);
 
@@ -383,14 +383,14 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 	RBInertiad I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
 		Matrix3d::Random().triangularView<Lower>());
 
-	Body b0(I0, 0, "b0");
-	Body b1(I1, 1, "b1");
-	Body b2(I2, 2, "b2");
-	Body b3(I3, 3, "b3");
+	Body b0(I0, "b0");
+	Body b1(I1, "b1");
+	Body b2(I2, "b2");
+	Body b3(I3, "b3");
 
-	Joint j0 = Joint(Joint::Spherical, true, 0, "j0");
-	Joint j1 = Joint(Joint::RevX, true, 1, "j1");
-	Joint j2 = Joint(Joint::RevZ, true, 2, "j2");
+	Joint j0 = Joint(Joint::Spherical, true, "j0");
+	Joint j1 = Joint(Joint::RevX, true, "j1");
+	Joint j2 = Joint(Joint::RevZ, true, "j2");
 
 
 	MultiBodyGraph mbg;
@@ -404,14 +404,14 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransformd(Vector3d(0., 0.5, 0.)),
-								 1, PTransformd(Vector3d(0., -0.5, 0.)), 0);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 2, PTransformd(Vector3d(0., 0., 0.)), 1);
-	mbg.linkBodies(1, PTransformd(Vector3d(-0.5, 0., 0.)),
-								 3, PTransformd(Vector3d(0., 0., 0.)), 2);
+	mbg.linkBodies("b0", PTransformd(Vector3d(0., 0.5, 0.)),
+			 "b1", PTransformd(Vector3d(0., -0.5, 0.)), "j0");
+	mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)),
+			 "b2", PTransformd(Vector3d(0., 0., 0.)), "j1");
+	mbg.linkBodies("b1", PTransformd(Vector3d(-0.5, 0., 0.)),
+			"b3", PTransformd(Vector3d(0., 0., 0.)), "j2");
 
-	MultiBody mb = mbg.makeMultiBody(0, false);
+	MultiBody mb = mbg.makeMultiBody("b0", false);
 
 	MultiBodyConfig mbc(mb);
 
@@ -545,17 +545,17 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphMerge)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	std::map<int, std::vector<double>> configById;
-	configById[0] = {0.};
-	configById[1] = {0.};
-	configById[2] = {0.};
-	configById[3] = {1., 0., 0., 0.};
+	std::map<std::string, std::vector<double>> configByName;
+	configByName["j0"] = {0.};
+	configByName["j1"] = {0.};
+	configByName["j2"] = {0.};
+	configByName["j3"] = {1., 0., 0., 0.};
 
 	// merge b2, b3 and b4 in b1
-	mbg.mergeSubBodies(0, "j1", configById);
-	mbg.mergeSubBodies(0, "j3", configById);
+	mbg.mergeSubBodies("b0", "j1", configByName);
+	mbg.mergeSubBodies("b0", "j3", configByName);
 
-	rbd::MultiBody mbMerged = mbg.makeMultiBody(0, true);
+	rbd::MultiBody mbMerged = mbg.makeMultiBody("b0", true);
 
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), 2);
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 1);

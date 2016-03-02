@@ -48,67 +48,44 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	MultiBodyGraph mbg1;
 
 	// test addBody
-	Body b1(RBInertiad(), 0, "b1");
-	Body b2(RBInertiad(), 1, "b2");
-	Body b3(RBInertiad(), 2, "b3");
-	Body b4(RBInertiad(), 3, "b4");
+	Body b1(RBInertiad(), "b1");
+	Body b2(RBInertiad(), "b2");
+	Body b3(RBInertiad(), "b3");
+	Body b4(RBInertiad(), "b4");
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b1));
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b2));
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b3));
 	BOOST_CHECK_NO_THROW(mbg1.addBody(b4));
 
-	// id already exist
-	BOOST_CHECK_THROW(mbg1.addBody(Body(RBInertiad(), 0, "b3")), std::domain_error);
+	// name already exists
+	BOOST_CHECK_THROW(mbg1.addBody(Body(RBInertiad(), "b3")), std::domain_error);
 
 	// must be 4 nodes
 	BOOST_CHECK_EQUAL(mbg1.nrNodes(), 4);
 
-	// test nodeById
+	// test nodeByName
 	std::shared_ptr<MultiBodyGraph::Node> node1, node2;
-	BOOST_CHECK_NO_THROW(node1 = mbg1.nodeById(0));
-	BOOST_CHECK_NO_THROW(node2 = mbg1.nodeById(1));
+	BOOST_CHECK_NO_THROW(node1 = mbg1.nodeByName("b1"));
+	BOOST_CHECK_NO_THROW(node2 = mbg1.nodeByName("b2"));
 	BOOST_CHECK_EQUAL(node1->body, b1);
 	BOOST_CHECK_EQUAL(node2->body, b2);
 
-	// check non-existant id
-	BOOST_CHECK_THROW(mbg1.nodeById(10), std::out_of_range);
-
-
 	// test addJoint
-	Joint j1(Joint::RevX, true, 0, "j1");
-	Joint j2(Joint::RevX, true, 1, "j2");
-	Joint j3(Joint::RevX, true, 2, "j3");
+	Joint j1(Joint::RevX, true, "j1");
+	Joint j2(Joint::RevX, true, "j2");
+	Joint j3(Joint::RevX, true, "j3");
 	BOOST_CHECK_NO_THROW(mbg1.addJoint(j1));
 	BOOST_CHECK_NO_THROW(mbg1.addJoint(j2));
 	BOOST_CHECK_NO_THROW(mbg1.addJoint(j3));
 
-	// id already exist
-	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, true, 0, "j4")), std::domain_error);
-
-	// name already exist
-	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, true, 3, "j1")), std::domain_error);
+	// name already exists
+	BOOST_CHECK_THROW(mbg1.addJoint(Joint(Joint::RevX, true, "j3")), std::domain_error);
 
 	// must be 3 joints
 	BOOST_CHECK_EQUAL(mbg1.nrJoints(), 3);
 
-	// test bodyIdByName
-	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b1"), 0);
-	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b2"), 1);
-	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b3"), 2);
-	BOOST_CHECK_EQUAL(mbg1.bodyIdByName("b4"), 3);
-
-	// test jointById
-	std::shared_ptr<Joint> joint1, joint2, joint3;
-	BOOST_CHECK_NO_THROW(joint1 = mbg1.jointById(0));
-	BOOST_CHECK_NO_THROW(joint2 = mbg1.jointById(1));
-	BOOST_CHECK_NO_THROW(joint3 = mbg1.jointById(2));
-
-	BOOST_CHECK_EQUAL(*joint1, j1);
-	BOOST_CHECK_EQUAL(*joint2, j2);
-	BOOST_CHECK_EQUAL(*joint3, j3);
-
 	// test jointByName
-	// test also jointIdByName since jointByName use jointIdByName
+	std::shared_ptr<Joint> joint1, joint2, joint3;
 	BOOST_CHECK_NO_THROW(joint1 = mbg1.jointByName("j1"));
 	BOOST_CHECK_NO_THROW(joint2 = mbg1.jointByName("j2"));
 	BOOST_CHECK_NO_THROW(joint3 = mbg1.jointByName("j3"));
@@ -117,33 +94,30 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 	BOOST_CHECK_EQUAL(*joint2, j2);
 	BOOST_CHECK_EQUAL(*joint3, j3);
 
-	// check non-existant id
-	BOOST_CHECK_THROW(mbg1.jointById(10), std::out_of_range);
-
 	// check non-existant name
 	BOOST_CHECK_THROW(mbg1.jointByName("j10"), std::out_of_range);
 
 	// test linkBody
-	//        b2(1)
-	//   j1(0)  /  j2(1)     j3(2)
-	//       b1(0) ---- b3(2) ---- b4(3)
+	//        b2
+	//   j1  /   j2      j3
+	//       b1 ---- b3 ---- b4
 
-	BOOST_CHECK_NO_THROW(mbg1.linkBodies(0, PTransformd::Identity(),
-		1, PTransformd::Identity(), 0));
-	BOOST_CHECK_NO_THROW(mbg1.linkBodies(0, PTransformd::Identity(),
-		2, PTransformd::Identity(), 1));
-	BOOST_CHECK_NO_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
-		3, PTransformd::Identity(), 2));
+	BOOST_CHECK_NO_THROW(mbg1.linkBodies("b1", PTransformd::Identity(),
+		"b2", PTransformd::Identity(), "j1"));
+	BOOST_CHECK_NO_THROW(mbg1.linkBodies("b1", PTransformd::Identity(),
+		"b3", PTransformd::Identity(), "j2"));
+	BOOST_CHECK_NO_THROW(mbg1.linkBodies("b3", PTransformd::Identity(),
+		"b4", PTransformd::Identity(), "j3"));
 
 	// check non-existant body 1
-	BOOST_CHECK_THROW(mbg1.linkBodies(10, PTransformd::Identity(),
-		3, PTransformd::Identity(), 2), std::out_of_range);
+	BOOST_CHECK_THROW(mbg1.linkBodies("b10", PTransformd::Identity(),
+		"b4", PTransformd::Identity(), "j3"), std::out_of_range);
 	// check non-existant body 2
-	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
-		10, PTransformd::Identity(), 2), std::out_of_range);
+	BOOST_CHECK_THROW(mbg1.linkBodies("b3", PTransformd::Identity(),
+		"b10", PTransformd::Identity(), "j3"), std::out_of_range);
 	// check non-existant joint
-	BOOST_CHECK_THROW(mbg1.linkBodies(2, PTransformd::Identity(),
-		3, PTransformd::Identity(), 10), std::out_of_range);
+	BOOST_CHECK_THROW(mbg1.linkBodies("b3", PTransformd::Identity(),
+		"b4", PTransformd::Identity(), "j10"), std::out_of_range);
 }
 
 
@@ -182,9 +156,9 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	BOOST_CHECK_EQUAL(mb.nrJoints(), 5);
 	BOOST_CHECK_EQUAL(mb.nrBodies(), 5);
 
-	mbg.removeJoint(0, "j3");
+	mbg.removeJoint("b0", "j3");
 
-	mb = mbg.makeMultiBody(0, true);
+	mb = mbg.makeMultiBody("b0", true);
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 3);
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), 4);
 	BOOST_CHECK_EQUAL(mb.nrJoints(), 4);
@@ -197,8 +171,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
-	mbg.removeJoint(0, "j0");
-	mb = mbg.makeMultiBody(0, true);
+	mbg.removeJoint("b0", "j0");
+	mb = mbg.makeMultiBody("b0", true);
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 0);
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), 1);
 	BOOST_CHECK_EQUAL(mb.nrJoints(), 1);
@@ -212,8 +186,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
-	mbg.removeJoints(0, std::vector<std::string>({"j3", "j2"}));
-	mb = mbg.makeMultiBody(0, true);
+	mbg.removeJoints("b0", std::vector<std::string>({"j3", "j2"}));
+	mb = mbg.makeMultiBody("b0", true);
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 2);
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), 3);
 	BOOST_CHECK_EQUAL(mb.nrJoints(), 3);
@@ -225,8 +199,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
-	mbg.removeJoint(0, 1);
-	mb = mbg.makeMultiBody(0, true);
+	mbg.removeJoint("b0", "j1");
+	mb = mbg.makeMultiBody("b0", true);
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 2);
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), 3);
 	BOOST_CHECK_EQUAL(mb.nrJoints(), 3);
@@ -238,8 +212,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyGraphRmTest)
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), mbgBack.nrJoints());
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), mbgBack.nrNodes());
 
-	mbg.removeJoints(0, std::vector<int>({1, 2}));
-	mb = mbg.makeMultiBody(0, true);
+	mbg.removeJoints("b0", std::vector<std::string>({"j1", "j2"}));
+	mb = mbg.makeMultiBody("b0", true);
 	BOOST_CHECK_EQUAL(mbg.nrJoints(), 2);
 	BOOST_CHECK_EQUAL(mbg.nrNodes(), 3);
 	BOOST_CHECK_EQUAL(mb.nrJoints(), 3);
@@ -256,19 +230,19 @@ void checkMultiBodyEq(const rbd::MultiBody& mb, std::vector<rbd::Body> bodies,
 {
 	// bodies
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.bodies().begin(), mb.bodies().end(),
-																bodies.begin(), bodies.end());
+					bodies.begin(), bodies.end());
 	// joints
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.joints().begin(), mb.joints().end(),
-																joints.begin(), joints.end());
+					joints.begin(), joints.end());
 	// pred
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.predecessors().begin(), mb.predecessors().end(),
-																pred.begin(), pred.end());
+					pred.begin(), pred.end());
 	// succ
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.successors().begin(), mb.successors().end(),
-																succ.begin(), succ.end());
+					succ.begin(), succ.end());
 	// parent
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.parents().begin(), mb.parents().end(),
-																parent.begin(), parent.end());
+					parent.begin(), parent.end());
 
 	// Xt
 	BOOST_CHECK_EQUAL_COLLECTIONS(mb.transforms().begin(),
@@ -309,20 +283,20 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	using namespace Eigen;
 	using namespace sva;
 	using namespace rbd;
-	//                   b2(1)
-	//             j1(0)  /  j2(1)     j3(2)
-	// root --j0(-1)-- b1(0) ---- b3(2) ---- b4(3)
+	//              b2
+	//          j1  /  j2      j3
+	// root --j0-- b1 ---- b6 ---- b5
 
 	RBInertiad r(1., Vector3d::Random(), Matrix3d::Random());
-	std::vector<Body> bodies = {Body(r, 0, "b1"),
-															Body(r, 1, "b2"),
-															Body(r, 6, "b3"),
-															Body(r, 5, "b4")};
+	std::vector<Body> bodies = {Body(r, "b1"),
+					Body(r, "b2"),
+					Body(r, "b3"),
+					Body(r, "b4")};
 
-	std::vector<Joint> joints = {Joint(Joint::RevX, true, -1, "j0"),
-															 Joint(Joint::RevX, true, 0, "j1"),
-															 Joint(Joint::RevX, true, 11, "j2"),
-															 Joint(Joint::RevX, true, 4, "j3")};
+	std::vector<Joint> joints = {Joint(Joint::RevX, true, "j0"),
+					Joint(Joint::RevX, true, "j1"),
+					Joint(Joint::RevX, true, "j2"),
+					Joint(Joint::RevX, true, "j3")};
 
 	std::vector<int> pred = {-1, 0, 0, 2};
 	std::vector<int> succ = {0, 1, 2, 3};
@@ -337,18 +311,18 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	// check MultiBody equality
 	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, Xt);
 
-	// Id2Index
-	// bodyIndexById
-	BOOST_CHECK_EQUAL(mb.bodyIndexById(0), 0);
-	BOOST_CHECK_EQUAL(mb.bodyIndexById(1), 1);
-	BOOST_CHECK_EQUAL(mb.bodyIndexById(6), 2);
-	BOOST_CHECK_EQUAL(mb.bodyIndexById(5), 3);
+	// NameToIndex
+	// bodyIndexByName
+	BOOST_CHECK_EQUAL(mb.bodyIndexByName("b1"), 0);
+	BOOST_CHECK_EQUAL(mb.bodyIndexByName("b2"), 1);
+	BOOST_CHECK_EQUAL(mb.bodyIndexByName("b3"), 2);
+	BOOST_CHECK_EQUAL(mb.bodyIndexByName("b4"), 3);
 
-	// jointIndexById
-	BOOST_CHECK_EQUAL(mb.jointIndexById(-1), 0);
-	BOOST_CHECK_EQUAL(mb.jointIndexById(0), 1);
-	BOOST_CHECK_EQUAL(mb.jointIndexById(11), 2);
-	BOOST_CHECK_EQUAL(mb.jointIndexById(4), 3);
+	// jointIndexByName
+	BOOST_CHECK_EQUAL(mb.jointIndexByName("j0"), 0);
+	BOOST_CHECK_EQUAL(mb.jointIndexByName("j1"), 1);
+	BOOST_CHECK_EQUAL(mb.jointIndexByName("j2"), 2);
+	BOOST_CHECK_EQUAL(mb.jointIndexByName("j3"), 3);
 
 	// safe accessors
 	// body
@@ -376,12 +350,12 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	BOOST_CHECK_THROW(mb.sTransform(10), std::out_of_range);
 
 	// bodyIndexById
-	BOOST_CHECK_NO_THROW(mb.sBodyIndexById(0));
-	BOOST_CHECK_THROW(mb.sBodyIndexById(10), std::out_of_range);
+	BOOST_CHECK_NO_THROW(mb.sBodyIndexByName("b1"));
+	BOOST_CHECK_THROW(mb.sBodyIndexByName("b10"), std::out_of_range);
 
 	// jointIndexById
-	BOOST_CHECK_NO_THROW(mb.sJointIndexById(0));
-	BOOST_CHECK_THROW(mb.sJointIndexById(10), std::out_of_range);
+	BOOST_CHECK_NO_THROW(mb.sJointIndexByName("j0"));
+	BOOST_CHECK_THROW(mb.sJointIndexByName("j10"), std::out_of_range);
 
 
 	// Setter test
@@ -402,21 +376,21 @@ BOOST_AUTO_TEST_CASE(MultiBodyTest)
 	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, newXt);
 
 	// body setter
-	int b6Index = mb.bodyIndexById(6);
-	Body oldBody(mb.body(b6Index));
+	int b3Index = mb.bodyIndexByName("b3");
+	Body oldBody(mb.body(b3Index));
 	RBInertiad newR(123., Vector3d::Random(), Matrix3d::Random());
-	Body newBody(newR, 6, "b3");
-	BOOST_CHECK_NO_THROW(mb.sBody(b6Index, newBody));
+	Body newBody(newR, "b3");
+	BOOST_CHECK_NO_THROW(mb.sBody(b3Index, newBody));
 	BOOST_CHECK_THROW(mb.sBody(10, newBody), std::out_of_range);
-	BOOST_CHECK_EQUAL(mb.body(b6Index), newBody);
-	mb.body(b6Index, oldBody);
-	BOOST_CHECK_EQUAL(mb.body(b6Index), oldBody);
+	BOOST_CHECK_EQUAL(mb.body(b3Index), newBody);
+	mb.body(b3Index, oldBody);
+	BOOST_CHECK_EQUAL(mb.body(b3Index), oldBody);
 
 	// bodies setter
-	std::vector<Body> newBodies = {Body(newR, 0, "b1"), Body(newR, 1, "b2"),
-		Body(newR, 6, "b3"), Body(r, 5, "b4")};
+	std::vector<Body> newBodies = {Body(newR, "b1"), Body(newR, "b2"),
+		Body(newR, "b3"), Body(r, "b4")};
 	BOOST_CHECK_NO_THROW(mb.sBodies(newBodies));
-	BOOST_CHECK_THROW(mb.sBodies({Body(newR, 0, "b1"), Body(newR, 1, "b2")}),
+	BOOST_CHECK_THROW(mb.sBodies({Body(newR, "b1"), Body(newR, "b2")}),
 		std::runtime_error);
 	checkMultiBodyEq(mb, bodies, joints, pred, succ, parent, newXt);
 }
@@ -433,40 +407,40 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	MultiBodyGraph mbg1;
 
 	RBInertiad rbi(1., Vector3d::Zero(), Matrix3d::Identity());
-	Body b1(rbi, 0, "b1");
-	Body b2(rbi, 1, "b2");
-	Body b3(rbi, 2, "b3");
-	Body b4(rbi, 3, "b4");
+	Body b1(rbi, "b1");
+	Body b2(rbi, "b2");
+	Body b3(rbi, "b3");
+	Body b4(rbi, "b4");
 	mbg1.addBody(b1);
 	mbg1.addBody(b2);
 	mbg1.addBody(b3);
 	mbg1.addBody(b4);
 
-	Joint j1(Joint::RevX, true, 0, "j1");
-	Joint j2(Joint::RevX, true, 1, "j2");
-	Joint j3(Joint::RevX, true, 2, "j3");
+	Joint j1(Joint::RevX, true, "j1");
+	Joint j2(Joint::RevX, true, "j2");
+	Joint j3(Joint::RevX, true, "j3");
 	mbg1.addJoint(j1);
 	mbg1.addJoint(j2);
 	mbg1.addJoint(j3);
 
-	//        b2(1)
-	//   j1(0)  /  j2(1)     j3(2)
-	//       b1(0) ---- b3(2) ---- b4(3)
-	mbg1.linkBodies(0, PTransformd::Identity(), 1, PTransformd::Identity(), 0);
-	mbg1.linkBodies(0, PTransformd::Identity(), 2, PTransformd::Identity(), 1);
-	mbg1.linkBodies(2, PTransformd::Identity(), 3, PTransformd::Identity(), 2);
+	//        b2
+	//   j1  /   j2      j3
+	//       b1 ---- b3 ---- b4
+	mbg1.linkBodies("b1", PTransformd::Identity(), "b2", PTransformd::Identity(), "j1");
+	mbg1.linkBodies("b1", PTransformd::Identity(), "b3", PTransformd::Identity(), "j2");
+	mbg1.linkBodies("b3", PTransformd::Identity(), "b4", PTransformd::Identity(), "j3");
 
 
-	//                b2(1)
-	//          j1(0)  /  j2(1)     j3(2)
-	// root -fixed- b1(0) ---- b3(2) ---- b4(3)
+	//                b2
+	//           j1  /  j2      j3
+	// root -fixed- b1 ---- b3 ---- b4
 
-	BOOST_CHECK_NO_THROW(mbg1.makeMultiBody(0, true));
-	BOOST_CHECK_THROW(mbg1.makeMultiBody(10, true), std::out_of_range);
+	BOOST_CHECK_NO_THROW(mbg1.makeMultiBody("b1", true));
+	BOOST_CHECK_THROW(mbg1.makeMultiBody("b10", true), std::out_of_range);
 
 	// test the successorJoints and predecessorJoint function
-	auto testSucc = [](const std::map<int, std::vector<int>>& s1,
-			const std::map<int, std::vector<int>>& s2)
+	auto testSucc = [](const std::map<std::string, std::vector<std::string>>& s1,
+			const std::map<std::string, std::vector<std::string>>& s2)
 	{
 		BOOST_CHECK_EQUAL(s1.size(), s2.size());
 		auto it1 = s1.begin();
@@ -478,8 +452,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 				it2->second.begin(), it2->second.end());
 		}
 	};
-	auto testPred = [](const std::map<int, int>& s1,
-			const std::map<int, int>& s2)
+	auto testPred = [](const std::map<std::string, std::string>& s1,
+			const std::map<std::string, std::string>& s2)
 	{
 		BOOST_CHECK_EQUAL(s1.size(), s2.size());
 		auto it1 = s1.begin();
@@ -490,26 +464,26 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 			BOOST_CHECK_EQUAL(it1->second, it2->second);
 		}
 	};
-	std::map<int, std::vector<int>> succRes1{
-			{0,{0,1}},
-			{1,{}},
-			{2,{2}},
-			{3,{}}};
-	std::map<int, int> predRes1{
-			{0,-1},
-			{1,0},
-			{2,1},
-			{3,2}};
+	std::map<std::string, std::vector<std::string>> succRes1{
+			{"b1",{"j1","j2"}},
+			{"b2",{}},
+			{"b3",{"j3"}},
+			{"b4",{}}};
+	std::map<std::string, std::string> predRes1{
+			{"b1","Root"},
+			{"b2","j1"},
+			{"b3","j2"},
+			{"b4","j3"}};
 
-	testSucc(mbg1.successorJoints(0), succRes1);
-	testPred(mbg1.predecessorJoint(0), predRes1);
+	testSucc(mbg1.successorJoints("b1"), succRes1);
+	testPred(mbg1.predecessorJoint("b1"), predRes1);
 
-	MultiBody mb1 = mbg1.makeMultiBody(0, true);
+	MultiBody mb1 = mbg1.makeMultiBody("b1", true);
 
 
 	std::vector<Body> bodies = {b1, b2, b3, b4};
 
-	std::vector<Joint> joints = {Joint(Joint::Fixed, true, -1, "Root"),
+	std::vector<Joint> joints = {Joint(Joint::Fixed, true, "Root"),
 		j1, j2, j3};
 
 	std::vector<int> pred = {-1, 0, 0, 2};
@@ -523,70 +497,70 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	checkMultiBodyEq(mb1, bodies, joints, pred, succ, parent, Xt);
 
 	// check bodyIndexById
-	BOOST_CHECK_EQUAL(mb1.bodyIndexById(0), 0);
-	BOOST_CHECK_EQUAL(mb1.bodyIndexById(1), 1);
-	BOOST_CHECK_EQUAL(mb1.bodyIndexById(2), 2);
-	BOOST_CHECK_EQUAL(mb1.bodyIndexById(3), 3);
+	BOOST_CHECK_EQUAL(mb1.bodyIndexByName("b1"), 0);
+	BOOST_CHECK_EQUAL(mb1.bodyIndexByName("b2"), 1);
+	BOOST_CHECK_EQUAL(mb1.bodyIndexByName("b3"), 2);
+	BOOST_CHECK_EQUAL(mb1.bodyIndexByName("b4"), 3);
 
 	// check jointIndexById
-	BOOST_CHECK_EQUAL(mb1.jointIndexById(-1), 0);
-	BOOST_CHECK_EQUAL(mb1.jointIndexById(0), 1);
-	BOOST_CHECK_EQUAL(mb1.jointIndexById(1), 2);
-	BOOST_CHECK_EQUAL(mb1.jointIndexById(2), 3);
+	BOOST_CHECK_EQUAL(mb1.jointIndexByName("Root"), 0);
+	BOOST_CHECK_EQUAL(mb1.jointIndexByName("j1"), 1);
+	BOOST_CHECK_EQUAL(mb1.jointIndexByName("j2"), 2);
+	BOOST_CHECK_EQUAL(mb1.jointIndexByName("j3"), 3);
 
 
 
-	//                b2(1)
-	//          j1(0)  /  j2(1)     j3(2)
-	// root -free- b1(0) ---- b3(2) ---- b4(3)
+	//                b2
+	//          j1  /  j2      j3
+	// root -free- b1 ---- b3 ---- b4
 
-	MultiBody mb2 = mbg1.makeMultiBody(0, false);
-	joints = {Joint(Joint::Free, true, -1, "Root"), j1, j2, j3};
+	MultiBody mb2 = mbg1.makeMultiBody("b1", false);
+	joints = {Joint(Joint::Free, true, "Root"), j1, j2, j3};
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb2, bodies, joints, pred, succ, parent, Xt);
 
 	// test the successorJoints and predecessorJoint function
-	std::map<int, std::vector<int>> succRes2{
-			{0,{0,1}},
-			{1,{}},
-			{2,{2}},
-			{3,{}}};
-	std::map<int, int> predRes2{
-			{0,-1},
-			{1,0},
-			{2,1},
-			{3,2}};
+	std::map<std::string, std::vector<std::string>> succRes2{
+			{"b1", {"j1","j2"}},
+			{"b2", {}},
+			{"b3", {"j3"}},
+			{"b4", {}}};
+	std::map<std::string, std::string> predRes2{
+			{"b1", "Root"},
+			{"b2", "j1"},
+			{"b3", "j2"},
+			{"b4", "j3"}};
 
-	testSucc(mbg1.successorJoints(0), succRes2);
-	testPred(mbg1.predecessorJoint(0), predRes2);
+	testSucc(mbg1.successorJoints("b1"), succRes2);
+	testPred(mbg1.predecessorJoint("b1"), predRes2);
 
 
 
-	//                     j1(0)     j2(1)      j3(2)
-	// root -fixed-  b2(1) ---- b1(0) ---- b3(2) ---- b4(3)
+	//                   j1      j2      j3
+	// root -fixed-  b2 ---- b1 ---- b3 ---- b4
 
-	MultiBody mb3 = mbg1.makeMultiBody(1, true);
+	MultiBody mb3 = mbg1.makeMultiBody("b2", true);
 
 	// test the successorJoints and predecessorJoint function
-	std::map<int, std::vector<int>> succRes3{
-			{1,{0}},
-			{0,{1}},
-			{2,{2}},
-			{3,{}}};
-	std::map<int, int> predRes3{
-			{1,-1},
-			{0,0},
-			{2,1},
-			{3,2}};
+	std::map<std::string, std::vector<std::string>> succRes3{
+			{"b2", {"j1"}},
+			{"b1", {"j2"}},
+			{"b3", {"j3"}},
+			{"b4", {}}};
+	std::map<std::string, std::string> predRes3{
+			{"b2", "Root"},
+			{"b1", "j1"},
+			{"b3", "j2"},
+			{"b4", "j3"}};
 
-	testSucc(mbg1.successorJoints(1), succRes3);
-	testPred(mbg1.predecessorJoint(1), predRes3);
+	testSucc(mbg1.successorJoints("b2"), succRes3);
+	testPred(mbg1.predecessorJoint("b2"), predRes3);
 
 	bodies = {b2, b1, b3, b4};
 
 	j1.forward(false);
-	joints = {Joint(Joint::Fixed, true, -1, "Root"), j1, j2, j3};
+	joints = {Joint(Joint::Fixed, true, "Root"), j1, j2, j3};
 
 	pred = {-1, 0, 1, 2};
 	succ = {0, 1, 2, 3};
@@ -595,29 +569,28 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	Xt = {I, I, I, I};
 
 	// check joint j1 direction
-	// check bodyIndexById
 	BOOST_CHECK_EQUAL(mb3.joint(1).forward(), false);
 
 	// check MultiBody equality
 	checkMultiBodyEq(mb3, bodies, joints, pred, succ, parent, Xt);
 
-	// check bodyIndexById
-	BOOST_CHECK_EQUAL(mb3.bodyIndexById(0), 1);
-	BOOST_CHECK_EQUAL(mb3.bodyIndexById(1), 0);
-	BOOST_CHECK_EQUAL(mb3.bodyIndexById(2), 2);
-	BOOST_CHECK_EQUAL(mb3.bodyIndexById(3), 3);
+	// check bodyIndexByName
+	BOOST_CHECK_EQUAL(mb3.bodyIndexByName("b1"), 1);
+	BOOST_CHECK_EQUAL(mb3.bodyIndexByName("b2"), 0);
+	BOOST_CHECK_EQUAL(mb3.bodyIndexByName("b3"), 2);
+	BOOST_CHECK_EQUAL(mb3.bodyIndexByName("b4"), 3);
 
-	// check jointIndexById
-	BOOST_CHECK_EQUAL(mb3.jointIndexById(-1), 0);
-	BOOST_CHECK_EQUAL(mb3.jointIndexById(0), 1);
-	BOOST_CHECK_EQUAL(mb3.jointIndexById(1), 2);
-	BOOST_CHECK_EQUAL(mb3.jointIndexById(2), 3);
+	// check jointIndexByName
+	BOOST_CHECK_EQUAL(mb3.jointIndexByName("Root"), 0);
+	BOOST_CHECK_EQUAL(mb3.jointIndexByName("j1"), 1);
+	BOOST_CHECK_EQUAL(mb3.jointIndexByName("j2"), 2);
+	BOOST_CHECK_EQUAL(mb3.jointIndexByName("j3"), 3);
 
 
 
-	// check transform
-	//                                  tx(1)-tz(-1) --- B3
-	// root -fixed- B1 -tx(1)-ty(-1)- B2 /
+	// check transform                         j2
+	//                       j1           tx(1)-tz(-1) --- B3
+	// root -fixed- B1 -tx(1)-ty(-1)- B2 /     j3
 	//                                   \ rx(90)-I ---- B4
 
 	MultiBodyGraph mbg2;
@@ -631,37 +604,37 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 	mbg2.addJoint(j2);
 	mbg2.addJoint(j3);
 
-	mbg2.linkBodies(0, PTransformd(Vector3d(Vector3d::UnitX())),
-									1, PTransformd(Vector3d(-Vector3d::UnitY())), 0);
-	mbg2.linkBodies(1, PTransformd(Vector3d(Vector3d::UnitX())),
-									2, PTransformd(Vector3d(-Vector3d::UnitZ())), 1);
-	mbg2.linkBodies(1, PTransformd(Matrix3d(sva::RotX(constants::pi<double>()/2.))),
-									3, PTransformd::Identity(), 2);
+	mbg2.linkBodies("b1", PTransformd(Vector3d(Vector3d::UnitX())),
+			"b2", PTransformd(Vector3d(-Vector3d::UnitY())), "j1");
+	mbg2.linkBodies("b2", PTransformd(Vector3d(Vector3d::UnitX())),
+			"b3", PTransformd(Vector3d(-Vector3d::UnitZ())), "j2");
+	mbg2.linkBodies("b2", PTransformd(Matrix3d(sva::RotX(constants::pi<double>()/2.))),
+			"b4", PTransformd::Identity(), "j3");
 
 	// add () around the Vector3d because Clang think that
 	// a function declaration
 	sva::PTransformd root((Vector3d(Vector3d::Random())));
-	MultiBody mb4 = mbg2.makeMultiBody(0, true, root);
+	MultiBody mb4 = mbg2.makeMultiBody("b1", true, root);
 
 	// test the successorJoints and predecessorJoint function
-	std::map<int, std::vector<int>> succRes4{
-			{0,{0}},
-			{1,{1, 2}},
-			{2,{}},
-			{3,{}}};
-	std::map<int, int> predRes4{
-			{0,-1},
-			{1,0},
-			{2,1},
-			{3,2}};
+	std::map<std::string, std::vector<std::string>> succRes4{
+			{"b1", {"j1"}},
+			{"b2", {"j2", "j3"}},
+			{"b3", {}},
+			{"b4", {}}};
+	std::map<std::string, std::string> predRes4{
+			{"b1", "Root"},
+			{"b2", "j1"},
+			{"b3", "j2"},
+			{"b4", "j3"}};
 
-	testSucc(mbg2.successorJoints(0), succRes4);
-	testPred(mbg2.predecessorJoint(0), predRes4);
+	testSucc(mbg2.successorJoints("b1"), succRes4);
+	testPred(mbg2.predecessorJoint("b1"), predRes4);
 
 
 	bodies = {b1, b2, b3, b4};
 
-	joints = {Joint(Joint::Fixed, true, -1, "Root"), j1, j2, j3};
+	joints = {Joint(Joint::Fixed, true, "Root"), j1, j2, j3};
 
 	pred = {-1, 0, 1, 1};
 	succ = {0, 1, 2, 3};
@@ -729,29 +702,29 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
+	Body b0(rbi, "b0");
+	Body b1(rbi, "b1");
+	Body b2(rbi, "b2");
+	Body b3(rbi, "b3");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
 	mbg.addBody(b2);
 	mbg.addBody(b3);
 
-	Joint j0(Joint::Spherical, true, 0, "j0");
-	Joint j1(Joint::Spherical, true, 1, "j1");
-	Joint j2(Joint::RevX, true, 2, "j2");
+	Joint j0(Joint::Spherical, true, "j0");
+	Joint j1(Joint::Spherical, true, "j1");
+	Joint j2(Joint::RevX, true, "j2");
 
 	mbg.addJoint(j0);
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransformd::Identity(), 1, PTransformd::Identity(), 0);
-	mbg.linkBodies(1, PTransformd::Identity(), 2, PTransformd::Identity(), 1);
-	mbg.linkBodies(2, PTransformd::Identity(), 3, PTransformd::Identity(), 2);
+	mbg.linkBodies("b0", PTransformd::Identity(), "b1", PTransformd::Identity(), "j0");
+	mbg.linkBodies("b1", PTransformd::Identity(), "b2", PTransformd::Identity(), "j1");
+	mbg.linkBodies("b2", PTransformd::Identity(), "b3", PTransformd::Identity(), "j2");
 
-	MultiBody mb = mbg.makeMultiBody(0, true);
+	MultiBody mb = mbg.makeMultiBody("b0", true);
 
 	MultiBodyConfig mbc(mb);
 
@@ -806,7 +779,7 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
 	}
 
 	// test zero configuration
-	mb = mbg.makeMultiBody(0, false);
+	mb = mbg.makeMultiBody("b0", false);
 
 	mbc = MultiBodyConfig(mb);
 	mbc.zero(mb);
@@ -865,31 +838,31 @@ BOOST_AUTO_TEST_CASE(ConfigConverterTest)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
+	Body b0(rbi, "b0");
+	Body b1(rbi, "b1");
+	Body b2(rbi, "b2");
+	Body b3(rbi, "b3");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
 	mbg.addBody(b2);
 	mbg.addBody(b3);
 
-	Joint j0(Joint::Spherical, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevX, true, 2, "j2");
+	Joint j0(Joint::Spherical, true, "j0");
+	Joint j1(Joint::RevY, true, "j1");
+	Joint j2(Joint::RevX, true, "j2");
 
 	mbg.addJoint(j0);
 	mbg.addJoint(j1);
 	mbg.addJoint(j2);
 
-	mbg.linkBodies(0, PTransformd::Identity(), 1, PTransformd::Identity(), 0);
-	mbg.linkBodies(1, PTransformd::Identity(), 2, PTransformd::Identity(), 1);
-	mbg.linkBodies(2, PTransformd::Identity(), 3, PTransformd::Identity(), 2);
+	mbg.linkBodies("b0", PTransformd::Identity(), "b1", PTransformd::Identity(), "j0");
+	mbg.linkBodies("b1", PTransformd::Identity(), "b2", PTransformd::Identity(), "j1");
+	mbg.linkBodies("b2", PTransformd::Identity(), "b3", PTransformd::Identity(), "j2");
 
-	MultiBody mb1 = mbg.makeMultiBody(0, true);
-	MultiBody mb2 = mbg.makeMultiBody(3, true);
-	MultiBody mb3 = mbg.makeMultiBody(1, true);
+	MultiBody mb1 = mbg.makeMultiBody("b0", true);
+	MultiBody mb2 = mbg.makeMultiBody("b3", true);
+	MultiBody mb3 = mbg.makeMultiBody("b1", true);
 
 	ConfigConverter* mb1tomb2 = ConfigConverter::sConstructor(mb1, mb2);
 	ConfigConverter* mb1tomb3 = ConfigConverter::sConstructor(mb1, mb3);
@@ -959,49 +932,49 @@ BOOST_AUTO_TEST_CASE(MultiBodyBaseTransformTest)
 	rbd::MultiBodyConfig mbc0, mbc3, mbc4;
 	rbd::MultiBodyGraph mbg;
 	sva::PTransformd mb3Surface(Quaterniond(Vector4d::Random()).normalized(),
-															Vector3d::Random());
+					Vector3d::Random());
 	sva::PTransformd mb4Surface(Quaterniond(Vector4d::Random()).normalized(),
-															Vector3d::Random());
+					Vector3d::Random());
 	std::tie(mb0, mbc0, mbg) = makeXYZSarm();
 	// the multibody graph is construct with the old body linking api
 	// so even the multibody from body 0 must have transform to each bodies base
-	auto mb0ToBase = mbg.bodiesBaseTransform(0);
+	auto mb0ToBase = mbg.bodiesBaseTransform("b0");
 
 	VectorXd q(VectorXd::Random(mb0.nrParams()));
 	// we must normalize the configuration of the spherical joint
-	q.segment(mb0.jointPosInParam(mb0.jointIndexById(3)), 4).normalize();
+	q.segment(mb0.jointPosInParam(mb0.jointIndexByName("j3")), 4).normalize();
 	rbd::vectorToParam(q, mbc0.q);
 	rbd::forwardKinematics(mb0, mbc0);
 
 	// since the multibody is construct with the old body linking api
 	// we must add an offset to joint origin of mb3 that correspond mb0 transform
 	// to body base
-	mb3 = mbg.makeMultiBody(3, true, mb3Surface*mb0ToBase[3]*mbc0.bodyPosW[mb0.bodyIndexById(3)],
+	mb3 = mbg.makeMultiBody("b3", true, mb3Surface*mb0ToBase["b3"]*mbc0.bodyPosW[mb0.bodyIndexByName("b3")],
 			mb3Surface);
 	rbd::ConfigConverter mb0ToMb3(mb0, mb3);
 	mbc3 = rbd::MultiBodyConfig(mb3);
 	mb0ToMb3.convert(mbc0, mbc3);
 	rbd::forwardKinematics(mb3, mbc3);
-	auto mb3ToBase = mbg.bodiesBaseTransform(3, mb3Surface);
+	auto mb3ToBase = mbg.bodiesBaseTransform("b3", mb3Surface);
 
-	mb4 = mbg.makeMultiBody(4, true, mb4Surface*mb0ToBase[4]*mbc0.bodyPosW[mb0.bodyIndexById(4)],
+	mb4 = mbg.makeMultiBody("b4", true, mb4Surface*mb0ToBase["b4"]*mbc0.bodyPosW[mb0.bodyIndexByName("b4")],
 			mb4Surface);
 	mbc4 = rbd::MultiBodyConfig(mb4);
 	rbd::ConfigConverter mb0ToMb4(mb0, mb4);
 	mb0ToMb4.convert(mbc0, mbc4);
 	rbd::forwardKinematics(mb4, mbc4);
-	auto mb4ToBase = mbg.bodiesBaseTransform(4, mb4Surface);
+	auto mb4ToBase = mbg.bodiesBaseTransform("b4", mb4Surface);
 
 	for(int bi = 0; bi < mb0.nrBodies(); ++bi)
 	{
-		int id = mb0.body(bi).id();
-		int mb3Index = mb3.bodyIndexById(id);
-		int mb4Index = mb4.bodyIndexById(id);
-		BOOST_CHECK_SMALL(((mb0ToBase[id]*mbc0.bodyPosW[bi]).matrix() -
-											 (mb3ToBase[id]*mbc3.bodyPosW[mb3Index]).matrix()).norm(),
+		std::string name = mb0.body(bi).name();
+		int mb3Index = mb3.bodyIndexByName(name);
+		int mb4Index = mb4.bodyIndexByName(name);
+		BOOST_CHECK_SMALL(((mb0ToBase[name]*mbc0.bodyPosW[bi]).matrix() -
+											 (mb3ToBase[name]*mbc3.bodyPosW[mb3Index]).matrix()).norm(),
 											1e-8);
-		BOOST_CHECK_SMALL(((mb0ToBase[id]*mbc0.bodyPosW[bi]).matrix() -
-											 (mb4ToBase[id]*mbc4.bodyPosW[mb4Index]).matrix()).norm(),
+		BOOST_CHECK_SMALL(((mb0ToBase[name]*mbc0.bodyPosW[bi]).matrix() -
+											 (mb4ToBase[name]*mbc4.bodyPosW[mb4Index]).matrix()).norm(),
 											1e-8);
 	}
 }

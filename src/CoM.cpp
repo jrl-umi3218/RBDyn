@@ -253,7 +253,7 @@ void CoMJacobianDummy::init(const rbd::MultiBody& mb)
 		if(bodyMass > 0)
 			comT = mb.body(i).inertia().momentum()/bodyMass;
 
-		jacVec_[i] = Jacobian(mb, mb.body(i).id(), comT);
+		jacVec_[i] = Jacobian(mb, mb.body(i).name(), comT);
 		totalMass_ += mb.body(i).inertia().mass();
 	}
 }

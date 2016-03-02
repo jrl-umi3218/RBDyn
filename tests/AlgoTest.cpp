@@ -388,11 +388,11 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
+	Body b0(rbi, "b0");
 
 	mbg.addBody(b0);
 
-	MultiBody mb = mbg.makeMultiBody(0, false);
+	MultiBody mb = mbg.makeMultiBody("b0", false);
 
 	MultiBodyConfig mbc(mb);
 
@@ -482,7 +482,7 @@ double testEulerInteg(rbd::Joint::Type jType, const Eigen::Vector3d& axis,
 	using namespace Eigen;
 	using namespace rbd;
 
-	Joint j(jType, axis, true, 0, std::string(""));
+	Joint j(jType, axis, true, std::string("0"));
 	std::vector<double> qVec(j.params()), alphaVec(j.dof());
 	for(int i = 0; i < j.params(); ++i)
 	{
@@ -575,7 +575,7 @@ BOOST_AUTO_TEST_CASE(FATest)
 	std::vector<rbd::Jacobian> jacs(mb.nrBodies());
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
-		jacs[i] = rbd::Jacobian(mb, i);
+		jacs[i] = rbd::Jacobian(mb, mb.body(i).name());
 	}
 
 	Eigen::MatrixXd fullJac(6, mb.nrDof());
