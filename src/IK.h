@@ -51,8 +51,10 @@ public:
 	* @param mb MultiBody used has model.
 	* @param mbc Use q generalized position vector
 	* @return bool if computation has converged
-	* Fill q with new generalized position, bodyPosW, jointConfig
-	* and parentToSon
+	* Fill q with new generalized position, update bodyPosW,
+	* jointConfig and parentToSon. All computations are done
+	* in-place : even if computation does not converge,
+	* mbc will be modified.
 	*/
 	bool inverseKinematics(const MultiBody& mb, MultiBodyConfig& mbc,
 			       const sva::PTransformd& ef_target);
