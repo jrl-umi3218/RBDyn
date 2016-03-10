@@ -253,7 +253,11 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
 	// test pose
+#ifdef __i386__
+	BOOST_CHECK_SMALL((j.pose(q).matrix() - rot.matrix()).array().abs().sum(), TOL);
+#else
 	BOOST_CHECK_EQUAL(j.pose(q), rot);
+#endif
 
 	// test motion
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), S*alphaE);
@@ -261,7 +265,11 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	// test inverse polarity
 	j.forward(false);
 	BOOST_CHECK_EQUAL(j.motionSubspace(), -S);
+#ifdef __i386__
+	BOOST_CHECK_SMALL((j.pose(q).matrix() - rot.inv().matrix()).array().abs().sum(), TOL);
+#else
 	BOOST_CHECK_EQUAL(j.pose(q), rot.inv());
+#endif
 	BOOST_CHECK_EQUAL(j.motion(alpha).vector(), -S*alphaE);
 }
 

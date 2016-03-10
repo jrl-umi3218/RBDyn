@@ -297,7 +297,11 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 		}
 	}
 
+#ifdef __i386__
+	BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
+#else
 	BOOST_CHECK_EQUAL(fd.C(), ID_C);
+#endif
 
 
 	// check FD H against ID H
@@ -456,7 +460,11 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 		}
 	}
 
+#ifdef __i386__
+	BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
+#else
 	BOOST_CHECK_EQUAL(fd.C(), ID_C);
+#endif
 
 
 	// check FD H against ID H

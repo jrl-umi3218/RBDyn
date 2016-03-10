@@ -644,7 +644,14 @@ BOOST_AUTO_TEST_CASE(FAGravityTest)
 		forwardAcceleration(mb, mbc, sva::MotionVecd(Vector3d::Zero(), mbc.gravity));
 		id.inverseDynamics(mb, mbcId);
 
+#ifdef __i386__
+		for(size_t j = 0; j < mbc.bodyAccB.size(); ++j)
+		{
+			BOOST_CHECK_SMALL((mbc.bodyAccB[j] - mbcId.bodyAccB[j]).vector().array().abs().sum(), TOL);
+		}
+#else
 		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.bodyAccB.begin(), mbc.bodyAccB.end(),
 			mbcId.bodyAccB.begin(), mbcId.bodyAccB.end());
+#endif
 	}
 }
