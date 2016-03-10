@@ -25,6 +25,7 @@ set(HEADERS Body.h Joint.h MultiBodyGraph.h MultiBody.h MultiBodyConfig.h
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
 PKG_CONFIG_USE_DEPENDENCY(RBDyn SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
+set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
 
 set(INSTALL_PATH include/RBDyn)
 install(FILES ${HEADERS} DESTINATION ${INSTALL_PATH})
