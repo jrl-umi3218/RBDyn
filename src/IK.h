@@ -43,7 +43,7 @@ static constexpr double ALMOST_ZERO = 1e-8;
 /**
 	* Inverse Kinematics algorithm.
 	*/
-class InverseKinematics
+class RBDYN_DLLAPI InverseKinematics
 {
 public:
 	/// @param mb MultiBody associated with this algorithm.
