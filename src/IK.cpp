@@ -47,7 +47,7 @@ InverseKinematics::InverseKinematics(const MultiBody& mb, int ef_index):
 	threshold_(ik::THRESHOLD),
 	almost_zero_(ik::ALMOST_ZERO),
 	ef_index_(ef_index),
-	jac_(mb, mb.body(ef_index).id()),
+	jac_(mb, mb.body(ef_index).name()),
 	svd_()
 {
 }
