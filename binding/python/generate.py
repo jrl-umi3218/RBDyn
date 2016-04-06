@@ -508,6 +508,15 @@ def build_id(id):
   id.add_method('f', retval('std::vector<sva::ForceVecd>'), [], is_const=True)
 
 
+def build_ik(ik):
+  ik.add_copy_constructor()
+  ik.add_constructor([param('const rbd::MultiBody&', 'mb'), param('int', 'ef_index')])
+
+  ik.add_method('sInverseKinematics', retval('bool'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc'),
+                  param('const sva::PTransformd&', 'ef_target')],
+                 throw=[dom_ex], custom_name='inverseKinematics')
 
 def build_fd(id):
   fd.add_constructor([])
@@ -778,6 +787,7 @@ if __name__ == '__main__':
   rbd.add_include('<Jacobian.h>')
   rbd.add_include('<ID.h>')
   rbd.add_include('<FD.h>')
+  rbd.add_include('<IK.h>')
   rbd.add_include('<EulerIntegration.h>')
   rbd.add_include('<CoM.h>')
   rbd.add_include('<Momentum.h>')
@@ -803,6 +813,7 @@ if __name__ == '__main__':
   jac = rbd.add_class('Jacobian')
   id = rbd.add_class('InverseDynamics')
   fd = rbd.add_class('ForwardDynamics')
+  ik = rbd.add_class('InverseKinematics')
   comDummy = rbd.add_class('CoMJacobianDummy')
   comJac = rbd.add_class('CoMJacobian')
   momentumMat = rbd.add_class('CentroidalMomentumMatrix')
@@ -843,6 +854,7 @@ if __name__ == '__main__':
   build_algo(rbd)
   build_id(id)
   build_fd(fd)
+  build_ik(ik)
   build_com(rbd, comDummy, comJac)
   build_momentum(rbd, momentumMat)
   build_zmp(rbd)
