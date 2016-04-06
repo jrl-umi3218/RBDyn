@@ -45,19 +45,19 @@ makeXYZarm(bool isFixed=true)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(rbi, 2, "b2");
-	Body b3(rbi, 3, "b3");
+	Body b0(rbi, "b0");
+	Body b1(rbi, "b1");
+	Body b2(rbi, "b2");
+	Body b3(rbi, "b3");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
 	mbg.addBody(b2);
 	mbg.addBody(b3);
 
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
+	Joint j0(Joint::RevX, true, "j0");
+	Joint j1(Joint::RevY, true, "j1");
+	Joint j2(Joint::RevZ, true, "j2");
 
 	mbg.addJoint(j0);
 	mbg.addJoint(j1);
@@ -72,11 +72,11 @@ makeXYZarm(bool isFixed=true)
 	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
+	mbg.linkBodies("b0", to, "b1", from, "j0");
+	mbg.linkBodies("b1", to, "b2", from, "j1");
+	mbg.linkBodies("b2", to, "b3", from, "j2");
 
-	MultiBody mb = mbg.makeMultiBody(0, isFixed);
+	MultiBody mb = mbg.makeMultiBody("b0", isFixed);
 
 	MultiBodyConfig mbc(mb);
 	mbc.zero(mb);

@@ -100,8 +100,8 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeXYZSarm();
 
-	Jacobian jac1(mb, 3);
-	Jacobian jac2(mb, 4);
+	Jacobian jac1(mb, "b3");
+	Jacobian jac2(mb, "b4");
 
 	// test jointsPath
 	std::vector<int> jointPath1 = {0, 1, 2, 3};
@@ -119,8 +119,8 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	// chain 1
 	std::vector<Body> bodies = {mb.body(0), mb.body(1), mb.body(2), mb.body(3)};
 
-	std::vector<Joint> joints = {Joint(Joint::Fixed, true, -1, "Root"),
-															 mb.joint(1), mb.joint(2), mb.joint(3)};
+	std::vector<Joint> joints = {Joint(Joint::Fixed, true, "Root"),
+					mb.joint(1), mb.joint(2), mb.joint(3)};
 
 	std::vector<int> pred = {-1, 0, 1, 2};
 	std::vector<int> succ = {0, 1, 2, 3};
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
 	// chain 2
 	bodies = {mb.body(0), mb.body(1), mb.body(4)};
 
-	joints = {Joint(Joint::Fixed, true, -1, "Root"), mb.joint(1), mb.joint(4)};
+	joints = {Joint(Joint::Fixed, true, "Root"), mb.joint(1), mb.joint(4)};
 
 	pred = {-1, 0, 1};
 	succ = {0, 1, 2};
@@ -258,8 +258,8 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 	MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeXYZSarm();
 
-	Jacobian jac1(mb, 3);
-	Jacobian jac2(mb, 4);
+	Jacobian jac1(mb, "b3");
+	Jacobian jac2(mb, "b4");
 
 	mbc.q = {{}, {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
 	forwardKinematics(mb, mbc);
@@ -304,8 +304,8 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 	MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeXYZSarm(false);
 
-	Jacobian jac1(mb, 3);
-	Jacobian jac2(mb, 4);
+	Jacobian jac1(mb, "b3");
+	Jacobian jac2(mb, "b4");
 
 	Quaterniond quat(AngleAxisd(cst::pi<double>()/2., Vector3d::UnitX())*
 		AngleAxisd(cst::pi<double>()/8., Vector3d::UnitZ()));
@@ -359,7 +359,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 	MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeSSSarm(true);
 
-	Jacobian jac1(mb, 3);
+	Jacobian jac1(mb, "b3");
 
 	mbc.q = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
 	forwardKinematics(mb, mbc);
@@ -478,7 +478,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 	MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeSSSarm(true);
 
-	Jacobian jac1(mb, 3);
+	Jacobian jac1(mb, "b3");
 
 	mbc.q = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
 	mbc.alpha = {{}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
@@ -575,7 +575,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 
 
 	// test with a point
-	Jacobian jacP(mb, 3, Vector3d::Random()*10.);
+	Jacobian jacP(mb, "b3", Vector3d::Random()*10.);
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		for(int j = 0; j < mb.joint(i).dof(); ++j)
@@ -591,11 +591,11 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 
 	// test with free flyier
 
-	MultiBody mbF = mbg.makeMultiBody(0, false);
+	MultiBody mbF = mbg.makeMultiBody("b0", false);
 
 	MultiBodyConfig mbcF(mbF);
 
-	Jacobian jacF(mbF, 3);
+	Jacobian jacF(mbF, "b3");
 
 	mbcF.q = {{1., 0., 0., 0., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
 	mbcF.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}, {0., 0., 0.}};
@@ -674,8 +674,8 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 
 	Vector3d point = Vector3d::Random()*10.;
 
-	Jacobian jacO(mb, 3);
-	Jacobian jacP(mb, 3, point);
+	Jacobian jacO(mb, "b3");
+	Jacobian jacP(mb, "b3", point);
 
 
 	mbc.q = {{}, {1., 0., 0., 0.}, {1., 0., 0., 0.}, {1., 0., 0., 0.}};
@@ -734,8 +734,8 @@ BOOST_AUTO_TEST_CASE(JacobianVectorTest)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	rbd::Jacobian jac1(mb, 3);
-	rbd::Jacobian jac2(mb, 4, Eigen::Vector3d(0.1, -0.1, 0.2));
+	rbd::Jacobian jac1(mb, "b3");
+	rbd::Jacobian jac2(mb, "b4", Eigen::Vector3d(0.1, -0.1, 0.2));
 
 	for(int i = 0; i < 50; ++i)
 	{
@@ -743,7 +743,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorTest)
 		q.setRandom();
 		// normalize free flyier and spherical joint
 		q.head<4>().normalize();
-		q.segment(mb.jointPosInParam(mb.jointIndexById(3)), 4).normalize();
+		q.segment(mb.jointPosInParam(mb.jointIndexByName("j3")), 4).normalize();
 		rbd::vectorToParam(q, mbc.q);
 		forwardKinematics(mb, mbc);
 
@@ -816,8 +816,8 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 	forwardKinematics(mb, mbc);
 	forwardVelocity(mb, mbc);
 
-	Jacobian jac1(mb, 3);
-	Jacobian jac2(mb, 4);
+	Jacobian jac1(mb, "b3");
+	Jacobian jac2(mb, "b4");
 
 	for(int i = 0; i < 50; ++i)
 	{
@@ -826,7 +826,7 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
 		alpha.setRandom();
 		// normalize free flyier and spherical joint
 		q.head<4>().normalize();
-		q.segment(mb.jointPosInParam(mb.jointIndexById(3)), 4).normalize();
+		q.segment(mb.jointPosInParam(mb.jointIndexByName("j3")), 4).normalize();
 		rbd::vectorToParam(q, mbc.q);
 		rbd::vectorToParam(alpha, mbc.alpha);
 		forwardKinematics(mb, mbc);

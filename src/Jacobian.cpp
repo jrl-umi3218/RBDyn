@@ -32,13 +32,14 @@ namespace rbd
 Jacobian::Jacobian()
 {}
 
-Jacobian::Jacobian(const MultiBody& mb, int bodyId, const Eigen::Vector3d& point):
+Jacobian::Jacobian(const MultiBody& mb, const std::string& bodyName,
+		const Eigen::Vector3d& point):
   jointsPath_(),
   point_(point),
   jac_(),
   jacDot_()
 {
-  int index = mb.sBodyIndexById(bodyId);
+  int index = mb.sBodyIndexByName(bodyName);
 
 	int dof = 0;
 	while(index != -1)

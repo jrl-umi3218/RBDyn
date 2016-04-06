@@ -43,7 +43,7 @@ Eigen::Matrix3<T> QuatToE(const std::vector<T>& q);
 
 /**
 	* Joint representation.
-	* Hold joint id and name and compute transformation, speed and motion
+	* Hold joint name (used as identifier) and compute transformation, speed and motion
 	* subspace.
 	* WARNING : Free joint translation parameters are in FP coordinate (Example 4.5 p81).
 	*/
@@ -81,29 +81,25 @@ public:
 		* Compatibility constructor
 		* @param type Joint type.
 		* @param forward Joint is in forward direction if true.
-		* @param id Joint id, must be unique in a multibody.
-		* @param name Joint name.
+		* @param name Joint name, must be unique in a multibody.
 		*/
-	Joint(OldType type, bool forward, int id, std::string name);
+	Joint(OldType type, bool forward, std::string name);
 
 	/**
 		* @param type Joint type.
 		* @param axis User specified.
 		* @param forward Joint is in forward direction if true.
-		* @param id Joint id, must be unique in a multibody.
-		* @param name Joint name.
+		* @param name Joint name must be unique in a multibody.
 		*/
-	Joint(Type type, const Eigen::Vector3d& axis, bool forward, int id,
+	Joint(Type type, const Eigen::Vector3d& axis, bool forward,
 		std::string name);
 
 	/**
 		* @param type Joint type.
 		* @param forward Joint is in forward direction if true.
-		* @param id Joint id, must be unique in a multibody.
-		* @param name Joint name.
+		* @param name Joint name, must be unique in a multibody.
 		*/
-	Joint(Type type, bool forward, int id,
-		std::string name);
+	Joint(Type type, bool forward, std::string name);
 
 	/// @return Joint type.
 	Type type() const
@@ -146,12 +142,6 @@ public:
 	int dof() const
 	{
 		return dof_;
-	}
-
-	/// @return Joint id.
-	int id() const
-	{
-		return id_;
 	}
 
 	/// @return Joint name.
@@ -224,12 +214,12 @@ public:
 
 	bool operator==(const Joint& b) const
 	{
-		return id_ == b.id_ && name_ == b.name_;
+		return name_ == b.name_;
 	}
 
 	bool operator!=(const Joint& b) const
 	{
-		return id_ != b.id_ || name_ != b.name_;
+		return name_ != b.name_;
 	}
 
 public:
@@ -254,21 +244,19 @@ private:
 	int params_;
 	int dof_;
 
-	int id_;
 	std::string name_;
 };
 
 
 inline std::ostream& operator<<(std::ostream& out, const Joint& b)
 {
-	out << "Joint: " << b.id() << ", " << b.name();
+	out << "Joint: " << b.name();
 	return out;
 }
 
 
-inline Joint::Joint(OldType type, bool forward, int id, std::string name):
+inline Joint::Joint(OldType type, bool forward, std::string name):
 	dir_(forward ? 1. : -1),
-	id_(id),
 	name_(name)
 {
 	using namespace Eigen;
@@ -301,18 +289,16 @@ inline Joint::Joint(OldType type, bool forward, int id, std::string name):
 
 
 inline Joint::Joint(Type type, const Eigen::Vector3d& axis,
-	bool forward, int id, std::string name):
+	bool forward, std::string name):
 	dir_(forward ? 1. : -1),
-	id_(id),
 	name_(name)
 {
 	constructJoint(type, axis);
 }
 
 
-inline Joint::Joint(Type type,	bool forward, int id, std::string name):
+inline Joint::Joint(Type type,	bool forward, std::string name):
 	dir_(forward ? 1. : -1),
-	id_(id),
 	name_(name)
 {
 	constructJoint(type, Eigen::Vector3d::UnitZ());

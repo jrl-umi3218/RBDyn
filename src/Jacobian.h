@@ -38,11 +38,11 @@ public:
 	/**
 		* Create a jacobian from the root body to the specified body.
 		* @param mb Multibody where bodyId is in.
-		* @param bodyId Specified body.
+		* @param bodyName Specified body.
 		* @param point Point in the body exprimed in body coordinate.
 		* @throw std::out_of_range If bodyId don't exist.
 		*/
-	Jacobian(const MultiBody& mb, int bodyId,
+	Jacobian(const MultiBody& mb, const std::string& bodyName,
 		const Eigen::Vector3d& point=Eigen::Vector3d::Zero());
 
 	/**

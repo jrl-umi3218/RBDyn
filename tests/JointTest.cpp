@@ -39,7 +39,7 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(type, forward, 0, "rev");
+	Joint j(type, forward, "rev");
 	double dir = forward ? 1. : -1;
 
 	// test motion
@@ -56,7 +56,6 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	BOOST_CHECK_EQUAL(j.type(), Joint::Rev);
 	BOOST_CHECK_EQUAL(j.params(), 1);
 	BOOST_CHECK_EQUAL(j.dof(), 1);
-	BOOST_CHECK_EQUAL(j.id(), 0);
 	BOOST_CHECK_EQUAL(j.name(), "rev");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
@@ -73,14 +72,14 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool fo
 	BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2.*motion).vector());
 }
 
-void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool forward)
+void testPrismatic(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool forward)
 {
 	using namespace Eigen;
 	using namespace sva;
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(type, forward, 0, "prism");
+	Joint j(type, forward, "prism");
 	double dir = forward ? 1. : -1;
 
 	// test motion
@@ -97,7 +96,6 @@ void testPrismatique(rbd::Joint::OldType type, const Eigen::Vector3d& axis, bool
 	BOOST_CHECK_EQUAL(j.type(), Joint::Prism);
 	BOOST_CHECK_EQUAL(j.params(), 1);
 	BOOST_CHECK_EQUAL(j.dof(), 1);
-	BOOST_CHECK_EQUAL(j.id(), 0);
 	BOOST_CHECK_EQUAL(j.name(), "prism");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
@@ -121,8 +119,8 @@ BOOST_AUTO_TEST_CASE(JointTest)
 	using namespace rbd;
 
 	// test operator==
-	Joint j1(Joint::RevX, true, 0, "j1");
-	Joint j2(Joint::RevX, false, 1, "j2");
+	Joint j1(Joint::RevX, true, "j1");
+	Joint j2(Joint::RevX, false, "j2");
 
 	BOOST_CHECK_EQUAL(j1, j1);
 	BOOST_CHECK_NE(j1, j2);
@@ -185,24 +183,24 @@ BOOST_AUTO_TEST_CASE(PrismXTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testPrismatique(Joint::PrismX, Vector3d::UnitX(), true);
-	testPrismatique(Joint::PrismX, Vector3d::UnitX(), false);
+	testPrismatic(Joint::PrismX, Vector3d::UnitX(), true);
+	testPrismatic(Joint::PrismX, Vector3d::UnitX(), false);
 }
 
 BOOST_AUTO_TEST_CASE(PrismYTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testPrismatique(Joint::PrismY, Vector3d::UnitY(), true);
-	testPrismatique(Joint::PrismY, Vector3d::UnitY(), false);
+	testPrismatic(Joint::PrismY, Vector3d::UnitY(), true);
+	testPrismatic(Joint::PrismY, Vector3d::UnitY(), false);
 }
 
 BOOST_AUTO_TEST_CASE(PrismZTest)
 {
 	using namespace Eigen;
 	using namespace rbd;
-	testPrismatique(Joint::PrismZ, Vector3d::UnitZ(), true);
-	testPrismatique(Joint::PrismZ, Vector3d::UnitZ(), false);
+	testPrismatic(Joint::PrismZ, Vector3d::UnitZ(), true);
+	testPrismatic(Joint::PrismZ, Vector3d::UnitZ(), false);
 }
 
 BOOST_AUTO_TEST_CASE(SphericalTest)
@@ -212,7 +210,7 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(Joint::Spherical, true, 2, "sphere");
+	Joint j(Joint::Spherical, true, "sphere");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,3);
@@ -240,7 +238,6 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
 	BOOST_CHECK_EQUAL(j.type(), Joint::Spherical);
 	BOOST_CHECK_EQUAL(j.params(), 4);
 	BOOST_CHECK_EQUAL(j.dof(), 3);
-	BOOST_CHECK_EQUAL(j.id(), 2);
 	BOOST_CHECK_EQUAL(j.name(), "sphere");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
@@ -280,7 +277,7 @@ BOOST_AUTO_TEST_CASE(PlanarTest)
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(Joint::Planar, true, 2, "planar");
+	Joint j(Joint::Planar, true, "planar");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,3);
@@ -305,7 +302,6 @@ BOOST_AUTO_TEST_CASE(PlanarTest)
 	BOOST_CHECK_EQUAL(j.type(), Joint::Planar);
 	BOOST_CHECK_EQUAL(j.params(), 3);
 	BOOST_CHECK_EQUAL(j.dof(), 3);
-	BOOST_CHECK_EQUAL(j.id(), 2);
 	BOOST_CHECK_EQUAL(j.name(), "planar");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
@@ -338,7 +334,7 @@ BOOST_AUTO_TEST_CASE(CylindricalTest)
 	namespace constants = boost::math::constants;
 
 	Vector3d axis(Vector3d::Random().normalized());
-	Joint j(Joint::Cylindrical, axis, true, 2, "cylindrical");
+	Joint j(Joint::Cylindrical, axis, true, "cylindrical");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,2);
@@ -363,7 +359,6 @@ BOOST_AUTO_TEST_CASE(CylindricalTest)
 	BOOST_CHECK_EQUAL(j.type(), Joint::Cylindrical);
 	BOOST_CHECK_EQUAL(j.params(), 2);
 	BOOST_CHECK_EQUAL(j.dof(), 2);
-	BOOST_CHECK_EQUAL(j.id(), 2);
 	BOOST_CHECK_EQUAL(j.name(), "cylindrical");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
@@ -395,7 +390,7 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	using namespace rbd;
 	namespace constants = boost::math::constants;
 
-	Joint j(Joint::Free, true, 2, "free");
+	Joint j(Joint::Free, true, "free");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Identity(6,6);
@@ -425,7 +420,6 @@ BOOST_AUTO_TEST_CASE(FreeTest)
 	BOOST_CHECK_EQUAL(j.type(), Joint::Free);
 	BOOST_CHECK_EQUAL(j.params(), 7);
 	BOOST_CHECK_EQUAL(j.dof(), 6);
-	BOOST_CHECK_EQUAL(j.id(), 2);
 	BOOST_CHECK_EQUAL(j.name(), "free");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
@@ -456,7 +450,7 @@ BOOST_AUTO_TEST_CASE(FixedTest)
 	using namespace sva;
 	using namespace rbd;
 
-	Joint j(Joint::Fixed, true, 2, "fixed");
+	Joint j(Joint::Fixed, true, "fixed");
 
 	// subspace data
 	MatrixXd S = MatrixXd::Zero(6,0);
@@ -465,7 +459,6 @@ BOOST_AUTO_TEST_CASE(FixedTest)
 	BOOST_CHECK_EQUAL(j.type(), Joint::Fixed);
 	BOOST_CHECK_EQUAL(j.params(), 0);
 	BOOST_CHECK_EQUAL(j.dof(), 0);
-	BOOST_CHECK_EQUAL(j.id(), 2);
 	BOOST_CHECK_EQUAL(j.name(), "fixed");
 	BOOST_CHECK_EQUAL(j.motionSubspace(), S);
 
