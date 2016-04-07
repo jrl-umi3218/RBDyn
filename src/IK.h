@@ -29,7 +29,7 @@
 namespace rbd
 {
 class MultiBody;
-class MultiBodyConfig;
+struct MultiBodyConfig;
 
 namespace ik {
 
