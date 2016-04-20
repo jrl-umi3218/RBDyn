@@ -503,8 +503,6 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
-	sva::PTransformd I(sva::PTransformd::Identity());
-
 	MultiBodyGraph mbg;
 	MultiBody mb;
 	MultiBodyConfig mbc;
