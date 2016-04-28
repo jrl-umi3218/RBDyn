@@ -8,7 +8,7 @@ fi
 
 ${SUDO_CMD} sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -c -s` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | ${SUDO_CMD} apt-key add -
-${SUDO_CMD} apt-get update
+${SUDO_CMD} apt-get update -qq
 
 if `test x${ROS_DISTRO} = xjade`; then
   ${SUDO_CMD} apt-get install -qq ros-jade-ros-base ros-jade-rosdoc-lite python-catkin-lint
