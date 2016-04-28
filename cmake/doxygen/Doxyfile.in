@@ -791,7 +791,7 @@ HTML_FOOTER            = @PROJECT_SOURCE_DIR@/cmake/doxygen/footer.html
 # the style sheet file to the HTML output directory, so don't put your own
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = @PROJECT_SOURCE_DIR@/cmake/doxygen/doxygen.css
+HTML_STYLESHEET        = @PROJECT_BINARY_DIR@/doc/doxygen.css
 
 # If the HTML_TIMESTAMP tag is set to YES then the footer of each generated HTML
 # page will contain the date and time when the page was generated. Setting
