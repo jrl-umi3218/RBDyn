@@ -283,7 +283,7 @@ tmp=`mktemp -d` || abort "cannot create the temporary directory"
 trap "rm -rf -- '$tmp'" EXIT
 
 cd $root_dir
-head_commit=`${GIT} log --format=oneline HEAD^.. | cut -d' ' -f1`
+head_commit=`${GIT} rev-parse HEAD`
 
 
 echo "* Clone the project..."

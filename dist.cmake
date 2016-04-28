@@ -26,8 +26,9 @@
 MACRO(_SETUP_PROJECT_DIST)
   IF(UNIX)
     FIND_PROGRAM(TAR tar)
-    FIND_PROGRAM(GPG gpg)   
+    FIND_PROGRAM(GPG gpg)
 
+    # Use git-archive-all.sh to generate distributable source code
     ADD_CUSTOM_TARGET(distdir
       COMMAND
       rm -f /tmp/${PROJECT_NAME}.tar
@@ -48,16 +49,51 @@ MACRO(_SETUP_PROJECT_DIST)
       COMMENT "Generating dist directory..."
       )
 
-    ADD_CUSTOM_TARGET(dist
+    # Create a tar.gz tarball for the project, and generate the signature
+    ADD_CUSTOM_TARGET(dist_targz
       COMMAND
-      ${TAR} czf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz
-                 ${PROJECT_NAME}-${PROJECT_VERSION}/
+      ${TAR} -czf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz
+                  ${PROJECT_NAME}-${PROJECT_VERSION}/
       && ${GPG} --detach-sign --armor -o
       ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz.sig
       ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz 
-      && rm -rf ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}/
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      COMMENT "Generating tarball..."
+      COMMENT "Generating tar.gz tarball and its signature..."
+      )
+
+    # Create a tar.bz2 tarball for the project, and generate the signature
+    ADD_CUSTOM_TARGET(dist_tarbz2
+      COMMAND
+      ${TAR} -cjf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.bz2
+                  ${PROJECT_NAME}-${PROJECT_VERSION}/
+      && ${GPG} --detach-sign --armor -o
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.bz2.sig
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.bz2
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMENT "Generating tar.bz2 tarball and its signature..."
+      )
+
+    # Create a tar.xz tarball for the project, and generate the signature
+    ADD_CUSTOM_TARGET(dist_tarxz
+      COMMAND
+      ${TAR} -cJf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.xz
+                  ${PROJECT_NAME}-${PROJECT_VERSION}/
+      && ${GPG} --detach-sign --armor -o
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.xz.sig
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.xz
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMENT "Generating tar.xz tarball and its signature..."
+      )
+
+    # Alias: dist = dist_targz (backward compatibility)
+    ADD_CUSTOM_TARGET(dist DEPENDS dist_targz)
+
+    # TODO: call this during `make clean`
+    ADD_CUSTOM_TARGET(distclean
+      COMMAND
+      rm -rf ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}/
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMENT "Cleaning dist sources..."
       )
 
     ADD_CUSTOM_TARGET(distorig
@@ -68,7 +104,9 @@ MACRO(_SETUP_PROJECT_DIST)
       COMMENT "Generating orig tarball..."
       )
 
-    ADD_DEPENDENCIES(dist distdir)
+    ADD_DEPENDENCIES(dist_targz distdir)
+    ADD_DEPENDENCIES(dist_tarbz2 distdir)
+    ADD_DEPENDENCIES(dist_tarxz distdir)
     ADD_DEPENDENCIES(distorig dist)
   ELSE()
     #FIXME: what to do here?

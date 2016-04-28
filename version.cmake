@@ -72,7 +72,7 @@ MACRO(VERSION_COMPUTE)
     # Run describe: search for *signed* tags starting with v, from the HEAD and
     # display only the first four characters of the commit id.
     EXECUTE_PROCESS(
-      COMMAND ${GIT} describe --abbrev=4 --match=v* HEAD
+      COMMAND ${GIT} describe --tags --abbrev=4 --match=v* HEAD
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       RESULT_VARIABLE GIT_DESCRIBE_RESULT
       OUTPUT_VARIABLE GIT_DESCRIBE_OUTPUT

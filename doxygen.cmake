@@ -19,85 +19,127 @@
 # Look for Doxygen, add a custom rule to generate the documentation
 # and install the documentation properly.
 #
+# Available user options (to be set before calling SETUP_PROJECT):
+#   DOXYGEN_DOT_IMAGE_FORMAT: format for dot images. Defaults to "svg".
+#   DOXYGEN_USE_MATHJAX: use MathJax to render LaTeX equations. Defaults to "NO".
 MACRO(_SETUP_PROJECT_DOCUMENTATION)
   # Search for Doxygen.
   FIND_PACKAGE(Doxygen)
 
   IF(NOT DOXYGEN_FOUND)
-    MESSAGE(FATAL_ERROR "Failed to find Doxygen.")
-  ENDIF(NOT DOXYGEN_FOUND)
+    MESSAGE("Failed to find Doxygen, documentation will not be generated.")
+  ELSE(NOT DOXYGEN_FOUND)
+    # Generate variable to be substitued in Doxyfile.in
+    # for dot use.
+    IF(DOXYGEN_DOT_FOUND)
+      SET(HAVE_DOT YES)
+    ELSE(DOXYGEN_DOT_FOUND)
+      SET(HAVE_DOT NO)
+    ENDIF(DOXYGEN_DOT_FOUND)
 
-  # Search for Perl.
-  FIND_PROGRAM(PERL perl DOC "the Perl interpreter")
-  IF(NOT PERL)
-    MESSAGE(SEND_ERROR "Failed to find Perl.")
-  ENDIF(NOT PERL)
+    # Dot support.
+    IF(NOT DEFINED DOXYGEN_DOT_IMAGE_FORMAT)
+      SET(DOXYGEN_DOT_IMAGE_FORMAT "svg")
+    ENDIF()
 
-  # Generate variable to be substitued in Doxyfile.in
-  # for dot use.
-  IF(DOXYGEN_DOT_FOUND)
-    SET(HAVE_DOT YES)
-  ELSE(DOXYGEN_DOT_FOUND)
-    SET(HAVE_DOT NO)
-  ENDIF(DOXYGEN_DOT_FOUND)
+    # MathJax support.
+    IF(NOT DEFINED DOXYGEN_USE_MATHJAX)
+      SET(DOXYGEN_USE_MATHJAX "NO")
+    ENDIF()
 
-  # Teach CMake how to generate the documentation.
-  IF(MSVC)
-    # FIXME: it is impossible to trigger documentation installation
-    # at install, so put the target in ALL instead.
-    ADD_CUSTOM_TARGET(doc ALL
+    # HTML style sheet configuration
+    IF(NOT DEFINED DOXYGEN_USE_TEMPLATE_CSS)
+      SET(DOXYGEN_USE_TEMPLATE_CSS "YES")
+    ENDIF()
+
+    # Teach CMake how to generate the documentation.
+    IF(MSVC)
+      # FIXME: it is impossible to trigger documentation installation
+      # at install, so put the target in ALL instead.
+      ADD_CUSTOM_TARGET(doc ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+        WORKING_DIRECTORY doc
+        COMMENT "Generating Doxygen documentation"
+        )
+    ELSE(MSVC)
+      ADD_CUSTOM_TARGET(doc
+        COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+        WORKING_DIRECTORY doc
+        COMMENT "Generating Doxygen documentation"
+        )
+
+      INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} doc)")
+    ENDIF(MSVC)
+
+    IF (DOXYGEN_USE_TEMPLATE_CSS)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/header.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/footer.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen.css
+        COMMAND ${DOXYGEN_EXECUTABLE} -w html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/header.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/footer.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen.css
+        WORKING_DIRECTORY doc
+        COMMENT "Generating Doxygen template files"
+        )
+    ELSE (DOXYGEN_USE_TEMPLATE_CSS)
+      FILE (COPY
+        ${PROJECT_SOURCE_DIR}/cmake/doxygen/doxygen.css
+        DESTINATION
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/
+        )
+    ENDIF (DOXYGEN_USE_TEMPLATE_CSS)
+
+    ADD_CUSTOM_COMMAND(
+      OUTPUT
+      ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
+      ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
       COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
       WORKING_DIRECTORY doc
       COMMENT "Generating Doxygen documentation"
       )
-  ELSE(MSVC)
-    ADD_CUSTOM_TARGET(doc
-      COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
-      WORKING_DIRECTORY doc
-      COMMENT "Generating Doxygen documentation"
+
+    # Clean generated files.
+    SET_PROPERTY(
+      DIRECTORY APPEND PROPERTY
+      ADDITIONAL_MAKE_CLEAN_FILES
+      ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
+      ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen.log
+      ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
       )
 
-    INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} doc)")
-  ENDIF(MSVC)
+    # Install MathJax minimal version.
+    IF(${DOXYGEN_USE_MATHJAX} STREQUAL "YES")
+      FILE(COPY ${PROJECT_SOURCE_DIR}/cmake/doxygen/MathJax
+           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html)
+    ENDIF()
 
-  ADD_CUSTOM_COMMAND(
-    OUTPUT
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
-    COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
-    WORKING_DIRECTORY doc
-    COMMENT "Generating Doxygen documentation"
-    )
-
-  # Clean generated files.
-  SET_PROPERTY(
-    DIRECTORY APPEND PROPERTY
-    ADDITIONAL_MAKE_CLEAN_FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen.log
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
-    )
-
-  # Install generated files.
-  INSTALL(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
-    DESTINATION ${CMAKE_INSTALL_DOCDIR}/doxygen-html)
-  INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
-    DESTINATION ${CMAKE_INSTALL_DOCDIR})
-
-  IF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
-    INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/pictures
+    # Install generated files.
+    INSTALL(
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
       DESTINATION ${CMAKE_INSTALL_DOCDIR}/doxygen-html)
-  ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
+    INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
+      DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
-  LIST(APPEND LOGGING_WATCHED_VARIABLES
-    DOXYGEN_SKIP_DOT
-    DOXYGEN_EXECUTABLE
-    DOXYGEN_FOUND
-    DOXYGEN_DOT_EXECUTABLE
-    DOXYGEN_DOT_FOUND
-    DOXYGEN_DOT_PATH
-    )
+    IF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
+      INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/pictures
+        DESTINATION ${CMAKE_INSTALL_DOCDIR}/doxygen-html)
+    ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
+
+    LIST(APPEND LOGGING_WATCHED_VARIABLES
+      DOXYGEN_SKIP_DOT
+      DOXYGEN_EXECUTABLE
+      DOXYGEN_FOUND
+      DOXYGEN_DOT_EXECUTABLE
+      DOXYGEN_DOT_FOUND
+      DOXYGEN_DOT_PATH
+      DOXYGEN_DOT_IMAGE_FORMAT
+      DOXYGEN_USE_MATHJAX
+      DOXYGEN_USE_TEMPLATE_CSS
+      )
+  ENDIF(NOT DOXYGEN_FOUND)
 ENDMACRO(_SETUP_PROJECT_DOCUMENTATION)
 
 # _SETUP_PROJECT_DOCUMENTATION_FINALIZE
@@ -109,20 +151,50 @@ ENDMACRO(_SETUP_PROJECT_DOCUMENTATION)
 # the replacement of user-defined variables.
 #
 MACRO(_SETUP_PROJECT_DOCUMENTATION_FINALIZE)
-  # Generate Doxyfile.extra.
-  CONFIGURE_FILE(
-    ${PROJECT_SOURCE_DIR}/doc/Doxyfile.extra.in
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile.extra
-    @ONLY
-    )
-  # Generate Doxyfile.
-  CONFIGURE_FILE(
-    ${PROJECT_SOURCE_DIR}/cmake/doxygen/Doxyfile.in
-    ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
-    @ONLY
-    )
-  FILE(STRINGS ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile.extra doxyfile_extra)
-  FOREACH(x ${doxyfile_extra})
-    FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile ${x} "\n")
-  ENDFOREACH(x in doxyfile_extra)
+  IF(DOXYGEN_FOUND)
+    IF(NOT ${DOXYGEN_USE_MATHJAX} STREQUAL "YES")
+      # Make sure latex, dvips and gs are available
+      FIND_PROGRAM(LATEX latex DOC "LaTeX compiler")
+      FIND_PROGRAM(DVIPS dvips DOC "DVI to PostScript converter")
+      FIND_PROGRAM(GS gs DOC "GhostScript interpreter")
+
+      IF(NOT (LATEX AND GS AND DVIPS))
+        MESSAGE("Failed to find latex/dvips/gs, will use MathJax backend.")
+        SET(DOXYGEN_USE_MATHJAX "YES")
+      ENDIF()
+    ENDIF()
+
+    IF(${DOXYGEN_USE_MATHJAX} STREQUAL "YES")
+      MESSAGE("-- Doxygen rendering: using MathJax backend")
+      SET(DOXYGEN_HEADER_NAME "header-mathjax.html")
+    ELSE()
+      MESSAGE("-- Doxygen rendering: using LaTeX backend")
+      SET(DOXYGEN_HEADER_NAME "header.html")
+    ENDIF()
+
+    # Generate Doxyfile.extra.
+    IF(EXISTS ${PROJECT_SOURCE_DIR}/doc/Doxyfile.extra.in)
+      CONFIGURE_FILE(
+        ${PROJECT_SOURCE_DIR}/doc/Doxyfile.extra.in
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile.extra
+        @ONLY
+        )
+    ELSE()
+      CONFIGURE_FILE(
+        ${PROJECT_SOURCE_DIR}/cmake/doxygen/Doxyfile.extra.in
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile.extra
+        @ONLY
+        )
+    ENDIF()
+    # Generate Doxyfile.
+    CONFIGURE_FILE(
+      ${PROJECT_SOURCE_DIR}/cmake/doxygen/Doxyfile.in
+      ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
+      @ONLY
+      )
+    FILE(STRINGS ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile.extra doxyfile_extra)
+    FOREACH(x ${doxyfile_extra})
+      FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile ${x} "\n")
+    ENDFOREACH(x in doxyfile_extra)
+  ENDIF(DOXYGEN_FOUND)
 ENDMACRO(_SETUP_PROJECT_DOCUMENTATION_FINALIZE)
