@@ -60,7 +60,7 @@ function setup_build
 
 function install_choco_dependencies
 {
-  ForEach($choco_dep in $Env:CHOCO_DEPENDENCIES.split(';'))
+  ForEach($choco_dep in $Env:CHOCO_DEPENDENCIES.split(' '))
   {
     choco install $choco_dep
   }
@@ -68,7 +68,7 @@ function install_choco_dependencies
 
 function install_git_dependencies
 {
-  ForEach($g_dep in $Env:GIT_DEPENDENCIES.split(';'))
+  ForEach($g_dep in $Env:GIT_DEPENDENCIES.split(' '))
   {
     cd $Env:SOURCE_FOLDER
     git_dependency_parsing $g_dep
@@ -77,8 +77,13 @@ function install_git_dependencies
     git submodule update --init
     md build
     cd build
-    cmake ../ -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX="${Env:CMAKE_INSTALL_PREFIX}" -DPYTHON_BINDING=OFF
+    # For projects that use cmake_add_subfortran directory this removes sh.exe
+    # from the path
+    $Env:Path = $Env:Path -replace "Git","dummy"
+    cmake ../ -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX="${Env:CMAKE_INSTALL_PREFIX}" -DPYTHON_BINDING=OFF -DMINGW_GFORTRAN="$env:MINGW_GFORTRAN"
     msbuild INSTALL.vcxproj
+    # Reverse our dirty work
+    $Env:Path = $Env:Path -replace "dummy","Git"
   }
 }
 
@@ -94,6 +99,9 @@ function build_project
   git submodule update --init
   md build
   cd build
-  cmake ../ -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX="${Env:CMAKE_INSTALL_PREFIX}" -DPYTHON_BINDING=OFF
+  # See comment in dependencies regarding $Env:Path manipulation
+  $Env:Path = $Env:Path -replace "Git","dummy"
+  cmake ../ -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX="${Env:CMAKE_INSTALL_PREFIX}" -DPYTHON_BINDING=OFF -DMINGW_GFORTRAN="$env:MINGW_GFORTRAN"
   msbuild INSTALL.vcxproj
+  $Env:Path = $Env:Path -replace "dummy","Git"
 }

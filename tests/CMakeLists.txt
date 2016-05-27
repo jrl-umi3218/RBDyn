@@ -17,30 +17,45 @@
 
 ENABLE_TESTING()
 
-set(BOOST_COMPONENTS unit_test_framework timer system)
+set(BOOST_COMPONENTS unit_test_framework timer system filesystem)
 SEARCH_FOR_BOOST()
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
 add_definitions(-DTESTS_DATA_DIR="${PROJECT_SOURCE_DIR}/tests")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIR})
 
 set(HEADERS XXXarm.h XYZarm.h XYZSarm.h Tree30Dof.h SSSarm.h)
 
 macro(addUnitTest name)
   if(${UNIT_TESTS})
     add_executable(${name} ${name}.cpp ${HEADERS})
-    target_link_libraries(${name} ${Boost_LIBRARIES} RBDyn)
+    if(MSVC)
+      # for msvc, we let boost auto-link do the work
+	    target_link_libraries(${name} RBDyn)
+    else(MSVC)
+      target_link_libraries(${name} ${Boost_LIBRARIES} RBDyn)
+    endif(MSVC)
     PKG_CONFIG_USE_DEPENDENCY(${name} SpaceVecAlg)
     add_test(${name}Unit ${name})
+	# Adding a project configuration file (for MSVC only)
+    GENERATE_MSVC_DOT_USER_FILE(${name})
   endif()
 endmacro(addUnitTest)
 
 macro(addBenchmark name)
   if(${BENCHMARKS})
     add_executable(${name} ${name}.cpp ${HEADERS})
-    target_link_libraries(${name} ${Boost_LIBRARIES} RBDyn)
+    if(MSVC)
+      # for msvc, we let boost auto-link do the work
+	    target_link_libraries(${name} RBDyn)
+    else(MSVC)
+      target_link_libraries(${name} ${Boost_LIBRARIES} RBDyn)
+    endif(MSVC)
     PKG_CONFIG_USE_DEPENDENCY(${name} SpaceVecAlg)
+	# Adding a project configuration file (for MSVC only)
+    GENERATE_MSVC_DOT_USER_FILE(${name})
   endif()
 endmacro(addBenchmark)
 

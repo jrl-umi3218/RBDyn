@@ -104,10 +104,6 @@ MACRO(_SETUP_PROJECT_HEADER)
     ${PROJECT_SOURCE_DIR}/cmake/config.h.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/config.h
     )
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${HEADER_DIR}
-    PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE
-    )
 
   # Default include directories:
   # - top-level build directory (for generated non-distributed headers).

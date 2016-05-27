@@ -24,6 +24,14 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <boost/timer/timer.hpp>
+// The inclusion of boost chrono was commented in timer.hpp for boost >= 1.60.
+// Because of this, the auto-link feature does not incude the chrono library
+// anymore, what causes a link error. 
+// (see also https://svn.boost.org/trac/boost/ticket/11862)
+// We add manually the line.
+// Possible alternative: include only for specific version of boost and 
+// auto-link capable compiler
+#include <boost/chrono/chrono.hpp>
 
 // RBDyn
 #include "CoM.h"
