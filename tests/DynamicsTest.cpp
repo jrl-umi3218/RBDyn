@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -295,7 +297,11 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 		}
 	}
 
+#ifdef __i386__
+	BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
+#else
 	BOOST_CHECK_EQUAL(fd.C(), ID_C);
+#endif
 
 
 	// check FD H against ID H
@@ -454,7 +460,11 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 		}
 	}
 
+#ifdef __i386__
+	BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
+#else
 	BOOST_CHECK_EQUAL(fd.C(), ID_C);
+#endif
 
 
 	// check FD H against ID H
@@ -496,7 +506,7 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 
 	paramToVector(mbc.jointTorque, vT2);
 
-	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-10);
+	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-9);
 
 
 	// alphaD -> ID -> torque -> FD -> alphaD

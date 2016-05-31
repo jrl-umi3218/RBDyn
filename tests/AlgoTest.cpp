@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -642,7 +644,14 @@ BOOST_AUTO_TEST_CASE(FAGravityTest)
 		forwardAcceleration(mb, mbc, sva::MotionVecd(Vector3d::Zero(), mbc.gravity));
 		id.inverseDynamics(mb, mbcId);
 
+#ifdef __i386__
+		for(size_t j = 0; j < mbc.bodyAccB.size(); ++j)
+		{
+			BOOST_CHECK_SMALL((mbc.bodyAccB[j] - mbcId.bodyAccB[j]).vector().array().abs().sum(), TOL);
+		}
+#else
 		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.bodyAccB.begin(), mbc.bodyAccB.end(),
 			mbcId.bodyAccB.begin(), mbcId.bodyAccB.end());
+#endif
 	}
 }

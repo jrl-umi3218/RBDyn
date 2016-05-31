@@ -1,0 +1,4 @@
+INPUT                  = @PROJECT_SOURCE_DIR@/include
+IMAGE_PATH             = @PROJECT_SOURCE_DIR@/doc/pictures
+FILE_PATTERNS          = *.h *.idl
+

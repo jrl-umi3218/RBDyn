@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Install pybindgen v 0.16.0
+
+. `dirname $0`/../common.sh
+
+# Install dependencies
+${SUDO_CMD} apt-get install -qq gccxml python-pygccxml
+
+# Get pybindgen
+cd "$build_dir"
+wget --quiet https://pybindgen.googlecode.com/files/pybindgen-0.16.0.tar.bz2
+tar xjf pybindgen-0.16.0.tar.bz2
+cd "$build_dir/pybindgen-0.16.0/"
+
+# Configure build and install
+./waf configure
+./waf
+${SUDO_CMD} ./waf install

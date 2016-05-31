@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -15,6 +17,8 @@
 
 #pragma once
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -27,13 +31,13 @@ struct MultiBodyConfig;
 	* and parentToSon.
 	* Fill jointVelocity, motionSubspace, bodyVelW and bodyVelB.
 	*/
-void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
+RBDYN_DLLAPI void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 
 /**
 	* Safe version.
 	* @see forwardVelocity.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-void sForwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
+RBDYN_DLLAPI void sForwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 
 } // namespace rbd

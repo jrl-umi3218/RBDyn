@@ -1,0 +1,39 @@
+variables:
+  CI_OS_NAME: @CI_OS_NAME@
+  CI_TOOL: gitlab-ci
+  APT_DEPENDENCIES: @APT_DEPENDENCIES@
+  GIT_DEPENDENCIES: @GIT_DEPENDENCIES@
+	ROS_GIT_DEPENDENCIES: @ROS_GIT_DEPENDENCIES@
+	ROS_DISTRO: @ROS_DISTRO@
+	PARALLEL_JOBS: @PARALLEL_JOBS@
+
+# Secured variable are stored in the project
+# See: http://doc.gitlab.com/ci/variables/README.html
+
+# Notifications (email/chatroom) are also handled by gitlab directly
+
+before_script:
+  - ./.jrl-ci/run before_install
+
+# The following is just an example possibility to run gcc/clang builds
+# One could set environment variable and apt dependencies to do the job
+
+build_gcc:
+  stage: build
+  script:
+    - ./.jrl-ci/run build
+    - ./.jrl-ci/run after_success
+  tags:
+    - GCC
+
+build_clang:
+  stage: build
+  script:
+    - ./.jrl-ci/run build
+    - ./.jrl-ci/run after_success
+  tags:
+    - clang
+  allow_failure: true
+
+stages:
+  - build

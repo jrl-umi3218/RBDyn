@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -28,6 +30,8 @@
 #include "Body.h"
 #include "Joint.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 
@@ -35,7 +39,7 @@ namespace rbd
 	* Kinematic tree of a multibody system.
 	* Same representation as featherstone except joint 0 is the root joint.
 	*/
-class MultiBody
+class RBDYN_DLLAPI MultiBody
 {
 public:
 	MultiBody();

@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -19,6 +21,8 @@
 // RBDyn
 #include "MultiBody.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 struct MultiBodyConfig;
@@ -26,7 +30,7 @@ struct MultiBodyConfig;
 /**
 	* Algorithm to compute the jacobian of a specified body.
 	*/
-class Jacobian
+class RBDYN_DLLAPI Jacobian
 {
 public:
 	Jacobian();

@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -28,6 +30,8 @@
 #include "Body.h"
 #include "Joint.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -38,7 +42,7 @@ class MultiBody;
 	* to create a kinematic tree from any body as root.
 	* The graph must be cycle free (closed loop is not supported).
 	*/
-class MultiBodyGraph
+class RBDYN_DLLAPI MultiBodyGraph
 {
 public:
 	struct Node;
