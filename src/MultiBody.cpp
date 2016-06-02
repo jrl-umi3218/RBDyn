@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -46,8 +48,8 @@ MultiBody::MultiBody(std::vector<Body> bodies, std::vector<Joint> joints,
 {
 	for(int i = 0; i < static_cast<int>(bodies_.size()); ++i)
 	{
-		bodyId2Ind_[bodies_[i].id()] = i;
-		jointId2Ind_[joints_[i].id()] = i;
+		bodyNameToInd_[bodies_[i].name()] = i;
+		jointNameToInd_[joints_[i].name()] = i;
 
 		jointPosInParam_[i] = nrParams_;
 		jointPosInDof_[i] = nrDof_;

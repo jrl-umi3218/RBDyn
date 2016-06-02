@@ -2,7 +2,7 @@
 #
 # Setup NAG
 #
-. .travis/common.sh
+. `dirname $0`/../common.sh
 
 build_dir=`mktemp -d`
 trap "rm -rf -- '$build_dir'" EXIT
@@ -15,6 +15,6 @@ export PKG_CONFIG_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARC
 
 # Checkout NAG.
 cd "$build_dir"
-wget "http://www.nag.co.uk/downloads/impl/cll6a23dhl.tgz"
-tar xzvf cll6a23dhl.tgz
+wget "http://www.nag.co.uk/downloads/impl/cll6i25dcl.tgz"
+tar xzvf cll6i25dcl.tgz
 ./install.sh -accept -installdir="$install_dir/NAG"

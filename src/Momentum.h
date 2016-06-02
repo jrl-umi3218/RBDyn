@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -20,6 +22,10 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
+#include <rbdyn/config.hh>
+
+#include <vector>
+
 namespace rbd
 {
 class MultiBody;
@@ -35,7 +41,7 @@ class Jacobian;
 	* @param com CoM position.
 	* @return centroidal momentum at the CoM frame.
 	*/
-sva::ForceVecd computeCentroidalMomentum(const MultiBody& mb,
+RBDYN_DLLAPI sva::ForceVecd computeCentroidalMomentum(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com);
 
 
@@ -47,7 +53,7 @@ sva::ForceVecd computeCentroidalMomentum(const MultiBody& mb,
 	* @param comDot CoM velocity.
 	* @return Derivative of the centroidal momentum at the CoM frame.
 	*/
-sva::ForceVecd computeCentroidalMomentumDot(const MultiBody& mb,
+RBDYN_DLLAPI sva::ForceVecd computeCentroidalMomentumDot(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
 	const Eigen::Vector3d& comDot);
 
@@ -56,7 +62,7 @@ sva::ForceVecd computeCentroidalMomentumDot(const MultiBody& mb,
 	* Compute the Centroidal momentum matrix (Jacobian)
 	* as describe in [Orin and Gosawami 2008].
 	*/
-class CentroidalMomentumMatrix
+class RBDYN_DLLAPI CentroidalMomentumMatrix
 {
 public:
 	CentroidalMomentumMatrix();
@@ -207,7 +213,7 @@ private:
 	* @see computeCentroidalMomentum.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-sva::ForceVecd sComputeCentroidalMomentum(const MultiBody& mb,
+RBDYN_DLLAPI sva::ForceVecd sComputeCentroidalMomentum(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com);
 
 /**
@@ -215,7 +221,7 @@ sva::ForceVecd sComputeCentroidalMomentum(const MultiBody& mb,
 	* @see computeCentroidalMomentumDot.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-sva::ForceVecd sComputeCentroidalMomentumDot(const MultiBody& mb,
+RBDYN_DLLAPI sva::ForceVecd sComputeCentroidalMomentumDot(const MultiBody& mb,
 	const MultiBodyConfig& mbc, const Eigen::Vector3d& com,
 	const Eigen::Vector3d& comDot);
 

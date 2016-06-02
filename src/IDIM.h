@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -22,51 +24,52 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
-/// The method define bellow allow to estimate the inertial parameter of
-/// a rigid body system.
-/// We define the inertial parameter of a body i as the 10d vector
-/// phi_i = [m, h, I] = [m, hx, hy, hz, Ixx, Ixy, Ixz, Iyy, Iyz, Yzz]
-
+#include <rbdyn/config.hh>
 
 namespace rbd
 {
 class MultiBody;
 struct MultiBodyConfig;
 
-
 /// Return the IMPhi matrix that compute I*m = IMPhi(m)*phi_i.
-Eigen::Matrix<double, 6, 10> IMPhi(const sva::MotionVecd& mv);
+RBDYN_DLLAPI Eigen::Matrix<double, 6, 10> IMPhi(const sva::MotionVecd& mv);
 
-/// Convert a RBInertiad into a phi vector.
-Eigen::Matrix<double, 10, 1> inertiaToVector(const sva::RBInertiad& rbi);
+/** Convert a RBInertiad into a phi vector.
+ *  We define the inertial parameters of a body i as the 10d vector
+ *  phi_i = [m, h, I] = [m, hx, hy, hz, Ixx, Ixy, Ixz, Iyy, Iyz, Yzz]
+ */
+
+RBDYN_DLLAPI Eigen::Matrix<double, 10, 1> inertiaToVector(const sva::RBInertiad& rbi);
+
 
 /// Convert a phi vector into a RBInertiad.
-sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1>& vec);
+RBDYN_DLLAPI sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1>& vec);
 
 /**
-	* Safe version of @see vectorToInertia.
-	* @throw std::out_of_range if the vector don't have 10 rows.
-	*/
-sva::RBInertiad sVectorToInertia(const Eigen::VectorXd& vec);
+ * Safe version of @see vectorToInertia.
+ * @throw std::out_of_range if the vector don't have 10 rows.
+ */
+RBDYN_DLLAPI sva::RBInertiad sVectorToInertia(const Eigen::VectorXd& vec);
 
 /** Apply inertiaToVector to all MultiBody Body and concatenate it into one vector
-	* Phi = [phi_0, ..., phi_N]
-	*/
-Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody& mb);
-
+ * Phi = [phi_0, ..., phi_N]
+ */
+RBDYN_DLLAPI Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody& mb);
 
 /**
-	* IDIM stand for Inverse Dynamics Identification Model.
-	* This class allow to compute the Y matrix that compute the torque vector with
-	* the Phi vector : torque = Y Phi.
-	* The Y matrix is the concatenation of Y_{BI} and Y_{JI} matrix in the paper :
-	* Study on Dynamics Identification of the Foot Viscoelasticity of a Humanoid Robot
-	* Mikami, Yuya
-	* Moulard, Thomas
-	* Yoshida, Eiichi
-	* Venture, Gentiane.
-	*/
-class IDIM
+ * IDIM stand for Inverse Dynamics Identification Model. It is used to
+ * estimate the inertial parameters of a rigid body system.
+ * This class allows to compute the Y matrix that linearizes the dynamics w.r.t.
+ * the Phi vector and the torque: torque = Y*Phi.
+ * The Y matrix is the concatenation of Y_{BI} and Y_{JI} matrix in the paper :
+ * Study on Dynamics Identification of the Foot Viscoelasticity of a Humanoid Robot
+ * Mikami, Yuya
+ * Moulard, Thomas
+ * Yoshida, Eiichi
+ * Venture, Gentiane.
+ */
+
+class RBDYN_DLLAPI IDIM
 {
 public:
 	IDIM()

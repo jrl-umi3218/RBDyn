@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -44,7 +46,7 @@ BOOST_AUTO_TEST_CASE(Jacobian)
 	rbd::MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::Jacobian jac(mb, mbg.bodyIdByName("LARM6"));
+	rbd::Jacobian jac(mb, "LARM6");
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
@@ -69,7 +71,7 @@ BOOST_AUTO_TEST_CASE(BodyJacobian)
 	rbd::MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::Jacobian jac(mb, mbg.bodyIdByName("LARM6"));
+	rbd::Jacobian jac(mb, "LARM6");
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
@@ -94,7 +96,7 @@ BOOST_AUTO_TEST_CASE(VectorBodyJacobian)
 	rbd::MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::Jacobian jac(mb, mbg.bodyIdByName("LARM6"));
+	rbd::Jacobian jac(mb, "LARM6");
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
@@ -119,7 +121,7 @@ BOOST_AUTO_TEST_CASE(JacobianDot)
 	rbd::MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::Jacobian jac(mb, mbg.bodyIdByName("LARM6"));
+	rbd::Jacobian jac(mb, "LARM6");
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
@@ -144,7 +146,7 @@ BOOST_AUTO_TEST_CASE(BodyJacobianDot)
 	rbd::MultiBodyGraph mbg;
 	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::Jacobian jac(mb, mbg.bodyIdByName("LARM6"));
+	rbd::Jacobian jac(mb, "LARM6");
 
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);

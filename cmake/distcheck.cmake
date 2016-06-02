@@ -37,6 +37,7 @@ MACRO(DISTCHECK_SETUP)
   IF(UNIX)
     FIND_PROGRAM(SED sed)
     SET(INSTDIR ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}/_inst)
+    SET(DISTCHECK_MAKEFLAGS "" CACHE PATH "MAKEFLAGS used for distcheck's make")
     ADD_CUSTOM_TARGET(distcheck
       COMMAND
       find . -type d -print0 | xargs -0 chmod a-w
@@ -76,7 +77,7 @@ MACRO(DISTCHECK_SETUP)
       && cd _build
       && cmake -DCMAKE_INSTALL_PREFIX=${INSTDIR} .. || cmake ..
          || (echo "ERROR: the cmake configuration failed." && false)
-      && make
+      && make ${DISTCHECK_MAKEFLAGS}
          || (echo "ERROR: the compilation failed." && false)
       && make test
          || (echo "ERROR: the test suite failed." && false)

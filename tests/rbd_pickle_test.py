@@ -1,5 +1,22 @@
 #! /usr/bin/env python2
 
+# Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+#
+# This file is part of RBDyn.
+#
+# RBDyn is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# RBDyn is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
+
 import sys
 import os
 sys.path.insert(0, os.path.join("@CMAKE_CURRENT_BINARY_DIR@", '../binding/python'))
@@ -15,24 +32,24 @@ if __name__ == '__main__':
   rbd.copy_reg_pickle()
 
   # create a body with random inertia
-  def makeBody(bId, bName):
+  def makeBody(bName):
     I = sva.RBInertiad(e3.Vector3d.Random().x(),
                        e3.Vector3d.Random(), e3.Matrix3d.Random())
-    return rbd.Body(I, bId, bName)
+    return rbd.Body(I, bName)
 
-  body = makeBody(4, 'testBody')
+  body = makeBody('testBody')
 
-  jR = rbd.Joint(rbd.Joint.Rev, e3.Vector3d.Random().normalized(), True, 5, 'jR')
+  jR = rbd.Joint(rbd.Joint.Rev, e3.Vector3d.Random().normalized(), True, 'jR')
   jP = rbd.Joint(rbd.Joint.Prism, e3.Vector3d.Random().normalized(),
-                 False, 10, 'jP')
-  jS = rbd.Joint(rbd.Joint.Spherical, False, 100, 'jS')
-  jPla = rbd.Joint(rbd.Joint.Planar, True, 0, 'jPla')
+                 False, 'jP')
+  jS = rbd.Joint(rbd.Joint.Spherical, False, 'jS')
+  jPla = rbd.Joint(rbd.Joint.Planar, True, 'jPla')
   jC = rbd.Joint(rbd.Joint.Cylindrical, e3.Vector3d.Random().normalized(),
-                 False, 50, 'jC')
-  jFree = rbd.Joint(rbd.Joint.Free, True, 2344, 'jFree')
-  jFix = rbd.Joint(rbd.Joint.Fixed, False, 3998, 'jFix')
+                 False, 'jC')
+  jFree = rbd.Joint(rbd.Joint.Free, True, 'jFree')
+  jFix = rbd.Joint(rbd.Joint.Fixed, False, 'jFix')
 
-  mb = rbd.MultiBody([makeBody(i, 'body%s' % i) for i in xrange(7)],
+  mb = rbd.MultiBody([makeBody('body%s' % i) for i in xrange(7)],
                      [jR, jP, jS, jPla, jC, jFree, jFix],
                      range(-1, 6), range(0, 7), range(-1, 6),
                      [sva.PTransformd(e3.Vector3d(0.,i,0.)) for i in xrange(7)])
@@ -45,13 +62,11 @@ if __name__ == '__main__':
 
   def bodyEq(b1, b2):
     return b1.inertia() == b2.inertia() and\
-      b1.name() == b2.name() and\
-      b1.id() == b2.id()
+      b1.name() == b2.name()
 
   def jointEq(j1, j2):
     return j1.type() == j2.type() and\
       j1.name() == j2.name() and\
-      j1.id() == j2.id() and\
       j1.direction() == j2.direction() and\
       list(j1.motionSubspace()) == list(j2.motionSubspace())
 

@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -30,6 +32,7 @@
 #include "FV.h"
 #include "FA.h"
 #include "ID.h"
+#include "IK.h"
 #include "Body.h"
 #include "Joint.h"
 #include "MultiBody.h"
@@ -385,11 +388,11 @@ BOOST_AUTO_TEST_CASE(FreeFlyerTest)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
+	Body b0(rbi, "b0");
 
 	mbg.addBody(b0);
 
-	MultiBody mb = mbg.makeMultiBody(0, false);
+	MultiBody mb = mbg.makeMultiBody("b0", false);
 
 	MultiBodyConfig mbc(mb);
 
@@ -479,7 +482,7 @@ double testEulerInteg(rbd::Joint::Type jType, const Eigen::Vector3d& axis,
 	using namespace Eigen;
 	using namespace rbd;
 
-	Joint j(jType, axis, true, 0, std::string(""));
+	Joint j(jType, axis, true, std::string("0"));
 	std::vector<double> qVec(j.params()), alphaVec(j.dof());
 	for(int i = 0; i < j.params(); ++i)
 	{
@@ -572,7 +575,7 @@ BOOST_AUTO_TEST_CASE(FATest)
 	std::vector<rbd::Jacobian> jacs(mb.nrBodies());
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
-		jacs[i] = rbd::Jacobian(mb, i);
+		jacs[i] = rbd::Jacobian(mb, mb.body(i).name());
 	}
 
 	Eigen::MatrixXd fullJac(6, mb.nrDof());
@@ -642,7 +645,105 @@ BOOST_AUTO_TEST_CASE(FAGravityTest)
 		forwardAcceleration(mb, mbc, sva::MotionVecd(Vector3d::Zero(), mbc.gravity));
 		id.inverseDynamics(mb, mbcId);
 
+#ifdef __i386__
+		for(size_t j = 0; j < mbc.bodyAccB.size(); ++j)
+		{
+			BOOST_CHECK_SMALL((mbc.bodyAccB[j] - mbcId.bodyAccB[j]).vector().array().abs().sum(), TOL);
+		}
+#else
 		BOOST_CHECK_EQUAL_COLLECTIONS(mbc.bodyAccB.begin(), mbc.bodyAccB.end(),
 			mbcId.bodyAccB.begin(), mbcId.bodyAccB.end());
+#endif
 	}
+}
+
+BOOST_AUTO_TEST_CASE(IKTest)
+{
+  using namespace Eigen;
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+
+  std::tie(mb, mbc, mbg) = makeXYZarm();
+
+  rbd::InverseKinematics ik(mb, 3);
+
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
+
+  sva::PTransformd target(mbc.bodyPosW[3]);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+
+  Eigen::Vector3d pos_vec(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  Eigen::Vector3d solution(0, 0, 0);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+
+  solution[0] = 1.;
+  mbc.q[1][0] = 1.;
+  rbd::forwardKinematics(mb, mbc);
+  target = sva::PTransformd(mbc.bodyPosW[3]);
+  mbc.q[1][0] = 0.;
+  rbd::forwardKinematics(mb, mbc);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+  pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+
+  solution = Eigen::Vector3d(0., 1., 0.);
+  mbc.q[1][0] = 0.;
+  mbc.q[2][0] = 1.;
+  mbc.q[3][0] = 0.;
+  rbd::forwardKinematics(mb, mbc);
+  target = sva::PTransformd(mbc.bodyPosW[3]);
+  mbc.q[2][0] = 0.;
+  rbd::forwardKinematics(mb, mbc);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+  pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+
+  solution = Eigen::Vector3d::Random();
+  mbc.q[1][0] = solution[0];
+  mbc.q[2][0] = solution[1];
+  mbc.q[3][0] = solution[2];
+  rbd::forwardKinematics(mb, mbc);
+  target = sva::PTransformd(mbc.bodyPosW[3]);
+  mbc.zero(mb);
+  rbd::forwardKinematics(mb, mbc);
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, target));
+  pos_vec = Eigen::Vector3d(mbc.q[1][0], mbc.q[2][0], mbc.q[3][0]);
+  BOOST_CHECK_SMALL((pos_vec - solution).norm(), TOL);
+}
+
+BOOST_AUTO_TEST_CASE(FailureIKTest)
+{
+  using namespace Eigen;
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+
+  std::tie(mb, mbc, mbg) = makeXYZarm();
+
+  rbd::InverseKinematics ik(mb, 3);
+
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
+
+  // This target is outside the reach of the arm
+  sva::PTransformd target(sva::RotX(M_PI/2), Eigen::Vector3d(0., 0.5, 2.5));
+  BOOST_CHECK(!ik.inverseKinematics(mb, mbc, target));
+
+  Eigen::VectorXd q_target(mb.nrParams());
+  Eigen::VectorXd q(mb.nrParams());
+
+  q_target << M_PI/2, 0, 0;
+  rbd::paramToVector(mbc.q, q);
+
+  BOOST_CHECK_SMALL((q_target - q).norm(), TOL);
+
+  /* This target is reachable, but IK will fail if given
+   * a too low maximum number of iterations */
+  ik.max_iterations_ = 10;
+  sva::PTransformd reachable_target(sva::RotX(-M_PI/2), Eigen::Vector3d(0., 0.5, -2.));
+  BOOST_CHECK(!ik.inverseKinematics(mb, mbc, reachable_target));
+  ik.max_iterations_ = 40;
+  BOOST_CHECK(ik.inverseKinematics(mb, mbc, reachable_target));
 }
