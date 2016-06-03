@@ -26,6 +26,7 @@ INCLUDE(cmake/msvc-specific.cmake)
 SET(PROJECT_NAME RBDyn)
 SET(PROJECT_DESCRIPTION "...")
 SET(PROJECT_URL "https://github.com/jorisv/RBDyn")
+SET(PROJECT_DEBUG_POSTFIX "_d")
 
 # Disable -Werror on Unix for now.
 SET(CXX_DISABLE_WERROR True)
@@ -48,8 +49,8 @@ ADD_REQUIRED_DEPENDENCY("SpaceVecAlg")
 
 #########################
 
-# For MSVC, set local environment variable to enable finding the built dlls
-# of roboptim-core and the plugins when launching ctest with RUN_TESTS
+# For MSVC, set local environment variable to enable finding the built dll
+# of the main library when launching ctest with RUN_TESTS
 IF(MSVC)
   SET(CMAKE_MSVCIDE_RUN_PATH "\$(SolutionDir)/src/\$(Configuration)")
 ENDIF(MSVC)
