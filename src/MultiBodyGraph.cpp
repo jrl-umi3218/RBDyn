@@ -351,6 +351,54 @@ MultiBodyGraph::predecessorJoint(const std::string& rootBodyName)
 	return std::move(predJoint);
 }
 
+MultiBodyGraph MultiBodyGraph::fixJoints(const MultiBodyGraph& other, 
+        const std::vector<std::string>& jointsToFix, bool fixAllJoints)
+{
+  MultiBodyGraph mbg(other);
+  if (fixAllJoints)
+  {
+    for (auto& jointPtr : mbg.joints_)
+    {
+      if (jointPtr != nullptr)
+      {
+        jointPtr.reset(new Joint(Joint::Type::Fixed, Eigen::Vector3d::Zero(), 
+                       jointPtr->forward(), jointPtr->name()));
+      }
+    }
+  }
+  else
+  {
+    for (const std::string& jointName : jointsToFix)
+    {
+      auto jointPtr = mbg.jointNameToJoint_.at(jointName);
+      jointPtr.reset(new Joint(Joint::Type::Fixed, Eigen::Vector3d::Zero(), 
+                      jointPtr->forward(), jointPtr->name()));
+    }
+  }
+
+  for (auto& node : mbg.nodes_)
+  {
+    if (node == nullptr)
+    {
+      continue;
+    }
+    for (auto& arc : node->arcs)
+    {
+      const auto & jName = arc.joint.name();
+      for (const auto & n : jointsToFix)
+      {
+        if (n == jName || fixAllJoints)
+        {
+          arc.joint = Joint(Joint::Type::Fixed, Eigen::Vector3d::Zero(), 
+                            arc.joint.forward(), arc.joint.name());
+          break;
+        }
+      }
+    }
+  }
+  return mbg;
+}
+
 bool MultiBodyGraph::rmArc(Node& node, const std::string& parentJointName,
 		const std::string& jointName)
 {
