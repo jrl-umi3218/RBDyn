@@ -89,7 +89,9 @@ BOOST_AUTO_TEST_CASE(XXXArmTorqueJacobian)
   test(output, mb, mbc, IS, Vector3d(0.4, 0.1, 0.2));
 
   std::cout << output->str() << std::endl;
+#ifndef __i386__
   BOOST_CHECK(output->match_pattern());
+#endif
 }  // end of namespace rbd
 }
 
