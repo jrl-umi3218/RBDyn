@@ -2,7 +2,7 @@
 #
 # Setup NLopt
 #
-. .travis/common.sh
+. `dirname $0`/../common.sh
 
 build_dir=`mktemp -d`
 trap "rm -rf -- '$build_dir'" EXIT

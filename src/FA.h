@@ -19,6 +19,8 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 class MultiBody;
@@ -32,7 +34,7 @@ struct MultiBodyConfig;
 	* Fill bodyAccB.
 	* @param A_0 initial acceleration in world coordinate.
 	*/
-void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+RBDYN_DLLAPI void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
 	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
 
 /**
@@ -40,7 +42,7 @@ void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
 	* @see forwardAcceleration.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+RBDYN_DLLAPI void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
 	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
 
 } // namespace rbd

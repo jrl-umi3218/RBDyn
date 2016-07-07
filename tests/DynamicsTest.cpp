@@ -496,7 +496,7 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 
 	paramToVector(mbc.jointTorque, vT2);
 
-	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-10);
+	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-9);
 
 
 	// alphaD -> ID -> torque -> FD -> alphaD

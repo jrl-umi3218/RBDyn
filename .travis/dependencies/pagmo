@@ -2,8 +2,8 @@
 #
 # Setup PaGMO
 #
-. .travis/common.sh
-pagmo_pc_file="`pwd`/.travis/dependencies/pagmo.pc"
+. `dirname $0`/common.sh
+pagmo_pc_file="`dirname $0`/dependencies/pagmo.pc"
 build_dir=`mktemp -d`
 trap "rm -rf -- '$build_dir'" EXIT
 

@@ -45,7 +45,11 @@ MACRO(RELEASE_SETUP)
       && cmake ${PROJECT_SOURCE_DIR}
       && make distcheck
        || (echo "Please fix distcheck first."
-           && ${GIT} tag -d v$$VERSION && cmake ${PROJECT_SOURCE_DIR} && false)
+           && cd ${PROJECT_SOURCE_DIR}
+           && ${GIT} tag -d v$$VERSION
+           && cd ${CMAKE_BINARY_DIR}
+           && cmake ${PROJECT_SOURCE_DIR}
+           && false)
       && echo "Please, run 'git push --tags' to finalize this release."
       )
   ENDIF()
