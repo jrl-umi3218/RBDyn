@@ -1,3 +1,5 @@
+# Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+#
 # This file is part of RBDyn.
 #
 # RBDyn is free software: you can redistribute it and/or modify
@@ -44,15 +46,12 @@ def import_eigen3_types(mod):
 def build_body(bd):
   bd.add_copy_constructor()
   bd.add_constructor([param('sva::RBInertiad', 'rbInertia'),
-                      param('int', 'id'),
                       param('std::string', 'name')])
   bd.add_constructor([param('double', 'mass'),
                       param('Eigen::Vector3d', 'com'),
                       param('Eigen::Matrix3d', 'inertia'),
-                      param('int', 'id'),
                       param('std::string', 'name')])
 
-  bd.add_method('id', retval('int'), [], is_const=True)
   bd.add_method('name', retval('std::string'), [], is_const=True)
   bd.add_method('inertia', retval('sva::RBInertiad'), [], is_const=True)
 
@@ -64,15 +63,15 @@ def build_body(bd):
 
 
 def build_joint(jt):
-  jt.add_enum('Type',    ['Rev', 'Prism',
-                          'Spherical', 'Planar', 'Cylindrical',
-                          'Free', 'Fixed'])
+  jt.add_enum('Type', ['Rev', 'Prism',
+                       'Spherical', 'Planar', 'Cylindrical',
+                       'Free', 'Fixed'])
 
   jt.add_copy_constructor()
   jt.add_constructor([param('rbd::Joint::Type', 'type'), param('Eigen::Vector3d', 'axis'),
-                      param('bool', 'forward'), param('int', 'id'), param('std::string', 'name')])
+                      param('bool', 'forward'), param('std::string', 'name')])
   jt.add_constructor([param('rbd::Joint::Type', 'type'), param('bool', 'forward'),
-                      param('int', 'id'), param('std::string', 'name')])
+                      param('std::string', 'name')])
 
   jt.add_method('type', retval('rbd::Joint::Type'), [], is_const=True)
 
@@ -82,7 +81,6 @@ def build_joint(jt):
 
   jt.add_method('params', retval('int'), [], is_const=True)
   jt.add_method('dof', retval('int'), [], is_const=True)
-  jt.add_method('id', retval('int'), [], is_const=True)
   jt.add_method('name', retval('std::string'), [], is_const=True)
 
   jt.add_method('motionSubspace', retval('Eigen::MatrixXd'), [], is_const=True)
@@ -119,68 +117,66 @@ def build_mbg(mbg):
   mbg.add_method('addJoint', None, [param('rbd::Joint', 'joint')], throw=[dom_ex])
 
   mbg.add_method('linkBodies', None,
-                 [param('int', 'b1Id'), param('sva::PTransformd', 'tB1'),
-                  param('int', 'b2Id'), param('sva::PTransformd', 'tB2'),
-                  param('int', 'jointId'), param('bool', 'isB1toB2', default_value='true')],
+                 [param('const std::string&', 'b1Name'),
+                  param('sva::PTransformd', 'tB1'),
+                  param('const std::string&', 'b2Name'),
+                  param('sva::PTransformd', 'tB2'),
+                  param('const std::string&', 'jointName'),
+                  param('bool', 'isB1toB2', default_value='true')],
                  throw=[out_ex])
 
   mbg.add_method('nrNodes', retval('int'), [], is_const=True)
   mbg.add_method('nrJoints', retval('int'), [], is_const=True)
 
-  mbg.add_method('jointIdByName', retval('int'), [param('const std::string&', 'name')],
-                 is_const=True, throw=[out_ex])
-  mbg.add_method('bodyIdByName', retval('int'), [param('const std::string&', 'name')],
-                 is_const=True, throw=[out_ex])
-
-  mbg.add_method('removeJoint', None, [param('int', 'rootBodyId'),
-                                       param('int', 'id')],
+  mbg.add_method('removeJoint', None, [param('std::string&', 'rootBodyName'),
+                                       param('std::string&', 'name')],
                  throw=(out_ex,))
-  mbg.add_method('removeJoint', None, [param('int', 'rootBodyId'),
+  mbg.add_method('removeJoint', None, [param('std::string&', 'rootBodyName'),
                                        param('const std::string&', 'name')],
                  throw=(out_ex,))
-  mbg.add_method('removeJoints', None, [param('int', 'rootBodyId'),
-                                        param('const std::vector<int>&', 'ids')],
+  mbg.add_method('removeJoints', None, [param('std::string&', 'rootBodyName'),
+                                        param('const std::vector<std::string>&', 'names')],
                  throw=(out_ex,))
-  mbg.add_method('removeJoints', None, [param('int', 'rootBodyId'),
+  mbg.add_method('removeJoints', None, [param('std::string&', 'rootBodyName'),
                                         param('const std::vector<std::string>&', 'names')],
                  throw=(out_ex,))
 
-  mbg.add_method('mergeSubBodies', None, [param('int', 'rootBodyId'),
-                                          param('int', 'id'),
-                                          param('const std::map<int, std::vector<double> >&', 'jointPosById')],
-                 throw=(out_ex, dom_ex))
-  mbg.add_method('mergeSubBodies', None, [param('int', 'rootBodyId'),
+  mbg.add_method('mergeSubBodies', None, [param('const std::string&', 'rootBodyName'),
                                           param('const std::string&', 'name'),
-                                          param('const std::map<int, std::vector<double> >&', 'jointPosById')],
+                                          param('const std::map<std::string, std::vector<double> >&', 'jointPosByName')],
+                 throw=(out_ex, dom_ex))
+  mbg.add_method('mergeSubBodies', None, [param('std::string&', 'rootBodyName'),
+                                          param('const std::string&', 'name'),
+                                          param('const std::map<std::string, std::vector<double> >&', 'jointPosByName')],
                  throw=(out_ex, dom_ex))
 
   mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
-                 [param('int', 'rootById'), param('bool', 'isFixed'),
+                 [param('std::string&', 'rootBodyName'), param('bool', 'isFixed'),
                   param('const sva::PTransformd&', 'X_0_j0', default_value='sva::PTransformd::Identity()'),
                   param('const sva::PTransformd&', 'X_b0_j0', default_value='sva::PTransformd::Identity()')],
                  throw=(out_ex,))
 
   mbg.add_method('makeMultiBody', retval('rbd::MultiBody'),
-                 [param('int', 'rootById'), param('rbd::Joint::Type', 'rootJointType'),
+                 [param('std::string&', 'rootBodyName'), param('rbd::Joint::Type', 'rootJointType'),
                   param('const Eigen::Vector3d&', 'axis'),
                   param('const sva::PTransformd&', 'X_0_j0', default_value='sva::PTransformd::Identity()'),
                   param('const sva::PTransformd&', 'X_b0_j0', default_value='sva::PTransformd::Identity()')],
                  throw=(out_ex,))
 
   mbg.add_method('bodiesBaseTransform',
-                 retval('std::map<int, sva::PTransformd>'),
-                 [param('int', 'rootBodyId'),
+                 retval('std::map<std::string, sva::PTransformd>'),
+                 [param('std::string&', 'rootBodyName'),
                   param('const sva::PTransformd&', 'X_b0_j0', default_value='sva::PTransformd::Identity()')],
                  throw=(out_ex,))
 
   mbg.add_method('successorJoints',
-                 retval('std::map<int, std::vector<int> >'),
-                 [param('int', 'rootBodyId')],
+                 retval('std::map<std::string, std::vector<std::string> >'),
+                 [param('std::string&', 'rootBodyName')],
                  throw=(out_ex,))
 
   mbg.add_method('predecessorJoint',
-                 retval('std::map<int, int>'),
-                 [param('int', 'rootBodyId')],
+                 retval('std::map<std::string, std::string>'),
+                 [param('const std::string&', 'rootBodyName')],
                  throw=(out_ex,))
 
 
@@ -246,10 +242,10 @@ def build_mb(mb):
   mb.add_method('sJointPosInDof', retval('int'), [param('int', 'num')],
                 is_const=True, throw=[out_ex], custom_name='jointPosInDof')
 
-  mb.add_method('sBodyIndexById', retval('int'), [param('int', 'id')],
-                is_const=True, throw=[out_ex], custom_name='bodyIndexById')
+  mb.add_method('sBodyIndexByName', retval('int'), [param('const std::string&', 'name')],
+                is_const=True, throw=[out_ex], custom_name='bodyIndexByName')
 
-  mb.add_method('sJointIndexById', retval('int'), [param('int', 'id')],
+  mb.add_method('sJointIndexByName', retval('int'), [param('const std::string&', 'name')],
                 is_const=True, throw=[out_ex], custom_name='jointIndexById')
 
 
@@ -359,7 +355,7 @@ def build_jacobian(jac):
   jac.add_constructor([])
   jac.add_copy_constructor()
   jac.add_constructor([param('const rbd::MultiBody&', 'mb'),
-                       param('int', 'bodyId'),
+                       param('const std::string&', 'bodyName'),
                        param('const Eigen::Vector3d&', 'point',
                              default_value='Eigen::Vector3d::Zero()')],
                      throw=[out_ex])
@@ -506,6 +502,15 @@ def build_id(id):
   id.add_method('f', retval('std::vector<sva::ForceVecd>'), [], is_const=True)
 
 
+def build_ik(ik):
+  ik.add_copy_constructor()
+  ik.add_constructor([param('const rbd::MultiBody&', 'mb'), param('int', 'ef_index')])
+
+  ik.add_method('sInverseKinematics', retval('bool'),
+                 [param('const rbd::MultiBody&', 'mb'),
+                  param('rbd::MultiBodyConfig&', 'mbc'),
+                  param('const sva::PTransformd&', 'ef_target')],
+                 throw=[dom_ex], custom_name='inverseKinematics')
 
 def build_fd(id):
   fd.add_constructor([])
@@ -776,6 +781,7 @@ if __name__ == '__main__':
   rbd.add_include('<Jacobian.h>')
   rbd.add_include('<ID.h>')
   rbd.add_include('<FD.h>')
+  rbd.add_include('<IK.h>')
   rbd.add_include('<EulerIntegration.h>')
   rbd.add_include('<CoM.h>')
   rbd.add_include('<Momentum.h>')
@@ -801,6 +807,7 @@ if __name__ == '__main__':
   jac = rbd.add_class('Jacobian')
   id = rbd.add_class('InverseDynamics')
   fd = rbd.add_class('ForwardDynamics')
+  ik = rbd.add_class('InverseKinematics')
   comDummy = rbd.add_class('CoMJacobianDummy')
   comJac = rbd.add_class('CoMJacobian')
   momentumMat = rbd.add_class('CentroidalMomentumMatrix')
@@ -821,14 +828,14 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   # build map type
-  rbd.add_container('std::map<int, int>',
-                    ('int', 'int'), 'map')
-  rbd.add_container('std::map<int, std::vector<int> >',
-                    ('int', 'std::vector<int>'), 'map')
-  rbd.add_container('std::map<int, std::vector<double> >',
-                    ('int', 'std::vector<double>'), 'map')
-  rbd.add_container('std::map<int, sva::PTransformd>',
-                    ('int', 'sva::PTransformd'), 'map')
+  rbd.add_container('std::map<std::string, std::string>',
+                    ('std::string', 'std::string'), 'map')
+  rbd.add_container('std::map<std::string, std::vector<std::string> >',
+                    ('std::string', 'std::vector<std::string>'), 'map')
+  rbd.add_container('std::map<std::string, std::vector<double> >',
+                    ('std::string', 'std::vector<double>'), 'map')
+  rbd.add_container('std::map<std::string, sva::PTransformd>',
+                    ('std::string', 'sva::PTransformd'), 'map')
 
   build_body(body)
   build_joint(joint)
@@ -841,6 +848,7 @@ if __name__ == '__main__':
   build_algo(rbd)
   build_id(id)
   build_fd(fd)
+  build_ik(ik)
   build_com(rbd, comDummy, comJac)
   build_momentum(rbd, momentumMat)
   build_zmp(rbd)

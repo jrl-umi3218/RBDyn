@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -113,7 +115,7 @@ BOOST_AUTO_TEST_CASE(computeY)
 	newB.reserve(oldB.size());
 	for(const Body& b: mb.bodies())
 	{
-		newB.push_back(Body(randomInertia(), b.id(), b.name()));
+		newB.push_back(Body(randomInertia(), b.name()));
 	}
 	mb = MultiBody(newB, mb.joints(), mb.predecessors(), mb.successors(),
 		mb.parents(), mb.transforms());

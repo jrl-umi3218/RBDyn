@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -251,7 +253,7 @@ void CoMJacobianDummy::init(const rbd::MultiBody& mb)
 		if(bodyMass > 0)
 			comT = mb.body(i).inertia().momentum()/bodyMass;
 
-		jacVec_[i] = Jacobian(mb, mb.body(i).id(), comT);
+		jacVec_[i] = Jacobian(mb, mb.body(i).name(), comT);
 		totalMass_ += mb.body(i).inertia().mass();
 	}
 }

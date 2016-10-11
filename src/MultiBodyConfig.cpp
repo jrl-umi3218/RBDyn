@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -111,12 +113,12 @@ ConfigConverter::ConfigConverter(const MultiBody& from, const MultiBody& to):
 
 	for(std::size_t i = 0; i < joints.size() - 1; ++i)
 	{
-		jInd_[i] = to.jointIndexById(joints[i + 1].id());
+		jInd_[i] = to.jointIndexByName(joints[i + 1].name());
 	}
 
 	for(std::size_t i = 0; i < bodies.size(); ++i)
 	{
-		bInd_[i] = to.bodyIndexById(bodies[i].id());
+		bInd_[i] = to.bodyIndexByName(bodies[i].name());
 	}
 }
 
@@ -150,11 +152,11 @@ ConfigConverter* ConfigConverter::sConstructor(const MultiBody& from, const Mult
 	if(isOk)
 	{
 		const std::vector<Joint>& joints = from.joints();
-		const std::unordered_map<int, int>& jI2Ito = to.jointIndexById();
+		const std::unordered_map<std::string, int>& jI2Ito = to.jointIndexByName();
 
 		for(const Joint& j: joints)
 		{
-			if(jI2Ito.find(j.id()) == jI2Ito.end())
+			if(jI2Ito.find(j.name()) == jI2Ito.end())
 			{
 				isOk = false;
 				break;
@@ -165,11 +167,11 @@ ConfigConverter* ConfigConverter::sConstructor(const MultiBody& from, const Mult
 	if(isOk)
 	{
 		const std::vector<Body>& bodies = from.bodies();
-		const std::unordered_map<int, int>& bI2Ito = to.bodyIndexById();
+		const std::unordered_map<std::string, int>& bI2Ito = to.bodyIndexByName();
 
 		for(const Body& b: bodies)
 		{
-			if(bI2Ito.find(b.id()) == bI2Ito.end())
+			if(bI2Ito.find(b.name()) == bI2Ito.end())
 			{
 				isOk = false;
 				break;

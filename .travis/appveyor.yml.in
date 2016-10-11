@@ -1,0 +1,51 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+clone_folder: C:/devel-src/@PROJECT_NAME@
+# The following lines output the connection parameters for the RDE in AppVeyor
+# at the start of the build. Be advised that this may allow people to tinker
+# with your build
+# init:
+# - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+environment:
+  CI_OS_NAME: win32
+  CI_TOOL: appveyor
+# Dependencies should be a list of dependencies separated by spaces
+  CHOCO_DEPENDENCIES: @CHOCO_DEPENDENCIES@
+  GIT_DEPENDENCIES: @GIT_DEPENDENCIES@
+# Should be the same as clone_folder
+  PROJECT_SOURCE_DIR: C:/devel-src/@PROJECT_NAME@
+# Do not tinker with the variables below unless you know what you are doing
+  SOURCE_FOLDER: C:/devel-src
+  CMAKE_INSTALL_PREFIX: C:/devel
+  PATH: C:/devel/bin;C:\Libraries\boost_1_59_0\lib64-msvc-14.0;C:\msys64\mingw64\bin;%PATH%
+  PKG_CONFIG_PATH: C:/devel/lib/pkgconfig
+  BOOST_ROOT: C:\Libraries\boost_1_59_0
+  BOOST_LIBRARYDIR: C:\Libraries\boost_1_59_0\lib64-msvc-14.0
+  MINGW_GFORTRAN: C:\msys64\mingw64\bin\gfortran.exe
+# N.B: empty lines here and in test_script are VERY important
+build_script:
+- ps: >-
+    Set-PSDebug -Trace 1
+
+    . ./.jrl-ci/functions.ps1
+
+    setup_build
+
+    ./.jrl-ci/dependencies/eigen-3.2.ps1
+
+    install_dependencies
+
+    build_project
+test_script:
+- cmd: >-
+    cd %PROJECT_SOURCE_DIR%
+
+    ctest
+# Similar to the init script, this gives access to a remote desktop session
+# after the build finished, the session is locked until you login to delete a
+# file on the dekstop, useful for debugging
+# on_finish:
+# - ps: >-
+#     reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v UserAuthentication /t REG_DWORD /d 0 /f
+#-
+#     $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

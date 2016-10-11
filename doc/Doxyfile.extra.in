@@ -1,4 +1,6 @@
-INPUT                  = @CMAKE_SOURCE_DIR@/include
+INPUT                  = @CMAKE_SOURCE_DIR@/src @CMAKE_SOURCE_DIR@/README.md
+USE_MDFILE_AS_MAINPAGE = @CMAKE_SOURCE_DIR@/README.md
 IMAGE_PATH             = @CMAKE_SOURCE_DIR@/doc/pictures
 FILE_PATTERNS          = *.h *.idl
-
+TAGFILES = \
+"@SPACEVECALG_DOXYGENDOCDIR@/SpaceVecAlg.doxytag = @SPACEVECALG_DOXYGENDOCDIR@"

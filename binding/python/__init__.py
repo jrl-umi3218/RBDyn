@@ -1,3 +1,5 @@
+# Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+#
 # This file is part of RBDyn.
 #
 # RBDyn is free software: you can redistribute it and/or modify
@@ -18,15 +20,15 @@ import eigen3 as e3
 
 # pickle, cPickle and copy support for Body, Joint and MultiBody
 
-def bodyConstructor(inertia, bId, bName):
-  return Body(inertia, bId, bName)
+def bodyConstructor(inertia, bName):
+  return Body(inertia, bName)
 
 def bodyPickle(b):
-  return bodyConstructor, (b.inertia(), b.id(), b.name())
+  return bodyConstructor, (b.inertia(), b.name())
 
 
-def jointConstructor(jType, axis, forward, jId, jName):
-  return Joint(jType, e3.Vector3d(*axis), forward, jId, jName)
+def jointConstructor(jType, axis, forward, jName):
+  return Joint(jType, e3.Vector3d(*axis), forward, jName)
 
 def jointPickle(j):
   axis = None
@@ -52,7 +54,7 @@ def jointPickle(j):
   else:
     raise RuntimeError('%s is an unknow joint type' % j.type())
 
-  return jointConstructor, (j.type(), list(axis), j.forward(), j.id(), j.name())
+  return jointConstructor, (j.type(), list(axis), j.forward(), j.name())
 
 
 def multiBodyConstructor(bodies, joints, pred, succ, parent, Xt):

@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -30,13 +32,14 @@ namespace rbd
 Jacobian::Jacobian()
 {}
 
-Jacobian::Jacobian(const MultiBody& mb, int bodyId, const Eigen::Vector3d& point):
+Jacobian::Jacobian(const MultiBody& mb, const std::string& bodyName,
+		const Eigen::Vector3d& point):
   jointsPath_(),
   point_(point),
   jac_(),
   jacDot_()
 {
-  int index = mb.sBodyIndexById(bodyId);
+  int index = mb.sBodyIndexByName(bodyName);
 
 	int dof = 0;
 	while(index != -1)

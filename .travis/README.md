@@ -33,9 +33,9 @@ directory.
 Features
 --------
 
-Unless Python or Ruby packages, streamlined C++ application deployment
+Unlike Python or Ruby packages, streamlined C++ application deployment
 is extremely challenging. Portability issues, compilation flags,
-interoperability between packages is notable difficult to ensure.
+interoperability between packages is notably difficult to ensure.
 
 This submodule contains a set of shell scripts which can be used to
 help Travis integrate with various services and tools useful for any
@@ -80,8 +80,8 @@ Development branch
 ### Before Install
 
 In this case, the complex part is that we have to obtain the project
-current dependencies both from APT and those which must be compiled
-from source.
+current dependencies both those available from APT and those which
+must be compiled from source.
 
 The following environment variables are defining the project
 dependencies or parameters:
@@ -179,11 +179,11 @@ automatically by using the `Build-Depends` field of the
 
 ### Build
 
-The `build` step first generate a fake entry into the
+The `build` step first generates a fake entry into the
 `debian/changelog` file indicating that this build is a snapshot.
 
 `git-buildpackage` is then called to try building the package into the
-pbuilder sandbox. If it success, `git-buidpackage` is called once more
+pbuilder sandbox. If it succeeds, `git-buildpackage` is called once more
 to generate a source package.
 
 To sign the package so that it can be uploaded to a remote location
@@ -252,15 +252,15 @@ All the fields `@FOO@` must be replaced by their real value.
 ### Looking for successful builds
 
 The `after_success` script is automatically adding a [git-notes][] to
-all the successful build. These notes will not be displayed by default
-though. To retrieve the notes and display them:
+every successful build. These notes will not be displayed by default
+though. To retrieve the notes and display them, type:
 
 ```sh
 $ git fetch origin refs/notes/travis:refs/notes/travis
 $ git log --notes=travis --show-notes
 ```
 
-You should see an output like this one:
+You should see an output similar to this one:
 
 ```
 commit 8e78835cdbbf89f099f394dce9f6083dc802c994
@@ -276,7 +276,7 @@ Date:   Mon Sep 16 13:37:19 2013 +0900
 	Dependencies commit id:
 ```
 
-The note also contain the commit id of all the dependencies installed
+The notes also contain the commit id of all the dependencies installed
 from source to allow you to go back to the exact setup used by Travis
 in this build.
 

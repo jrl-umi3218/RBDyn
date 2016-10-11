@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -58,11 +60,11 @@ makeXYZSarmRandomCoM(bool isFixed=true)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 0, "b0");
-	Body b1(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 1, "b1");
-	Body b2(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 2, "b2");
-	Body b3(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 3, "b3");
-	Body b4(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), 4, "b4");
+	Body b0(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), "b0");
+	Body b1(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), "b1");
+	Body b2(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), "b2");
+	Body b3(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), "b3");
+	Body b4(RBInertiad((fabs(EScalar::Random()(0))+1e-8)*10., h, I), "b4");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
@@ -70,10 +72,10 @@ makeXYZSarmRandomCoM(bool isFixed=true)
 	mbg.addBody(b3);
 	mbg.addBody(b4);
 
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
-	Joint j3(Joint::Spherical, true, 3, "j3");
+	Joint j0(Joint::RevX, true, "j0");
+	Joint j1(Joint::RevY, true, "j1");
+	Joint j2(Joint::RevZ, true, "j2");
+	Joint j3(Joint::Spherical, true, "j3");
 
 	mbg.addJoint(j0);
 	mbg.addJoint(j1);
@@ -91,13 +93,13 @@ makeXYZSarmRandomCoM(bool isFixed=true)
 	PTransformd from(Vector3d(0., -0.5, 0.));
 
 
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
-	mbg.linkBodies(1, PTransformd(Vector3d(0.5, 0., 0.)),
-								 4, PTransformd(Vector3d(-0.5, 0., 0.)), 3);
+	mbg.linkBodies("b0", to, "b1", from, "j0");
+	mbg.linkBodies("b1", to, "b2", from, "j1");
+	mbg.linkBodies("b2", to, "b3", from, "j2");
+	mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)),
+			"b4", PTransformd(Vector3d(-0.5, 0., 0.)), "j3");
 
-	MultiBody mb = mbg.makeMultiBody(0, isFixed);
+	MultiBody mb = mbg.makeMultiBody("b0", isFixed);
 
 	MultiBodyConfig mbc(mb);
 	mbc.zero(mb);
@@ -123,19 +125,19 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 
 	RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, 0, "b0");
-	Body b1(rbi, 1, "b1");
-	Body b2(RBInertiad(2., h, I), 2, "b2");
-	Body b3(rbi, 3, "b3");
+	Body b0(rbi, "b0");
+	Body b1(rbi, "b1");
+	Body b2(RBInertiad(2., h, I), "b2");
+	Body b3(rbi, "b3");
 
 	mbg.addBody(b0);
 	mbg.addBody(b1);
 	mbg.addBody(b2);
 	mbg.addBody(b3);
 
-	Joint j0(Joint::RevX, true, 0, "j0");
-	Joint j1(Joint::RevY, true, 1, "j1");
-	Joint j2(Joint::RevZ, true, 2, "j2");
+	Joint j0(Joint::RevX, true, "j0");
+	Joint j1(Joint::RevY, true, "j1");
+	Joint j2(Joint::RevZ, true, "j2");
 
 	mbg.addJoint(j0);
 	mbg.addJoint(j1);
@@ -149,12 +151,12 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
 	PTransformd to(Vector3d(0., 0.5, 0.));
 	PTransformd from(Vector3d(0., 0., 0.));
 
-	mbg.linkBodies(0, to, 1, from, 0);
-	mbg.linkBodies(1, to, 2, from, 1);
-	mbg.linkBodies(2, to, 3, from, 2);
+	mbg.linkBodies("b0", to, "b1", from, "j0");
+	mbg.linkBodies("b1", to, "b2", from, "j1");
+	mbg.linkBodies("b2", to, "b3", from, "j2");
 
 
-	MultiBody mb = mbg.makeMultiBody(0, true);
+	MultiBody mb = mbg.makeMultiBody("b0", true);
 	MultiBodyConfig mbc(mb);
 	mbc.zero(mb);
 
@@ -501,8 +503,6 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 	using namespace rbd;
 	namespace cst = boost::math::constants;
 
-	sva::PTransformd I(sva::PTransformd::Identity());
-
 	MultiBodyGraph mbg;
 	MultiBody mb;
 	MultiBodyConfig mbc;
@@ -588,7 +588,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 		alpha.setRandom();
 		// normalize free flyier and spherical joint
 		q.head<4>().normalize();
-		q.segment(mb.jointPosInParam(mb.jointIndexById(3)), 4).normalize();
+		q.segment(mb.jointPosInParam(mb.jointIndexByName("j3")), 4).normalize();
 		rbd::vectorToParam(q, mbc.q);
 		rbd::vectorToParam(alpha, mbc.alpha);
 		forwardKinematics(mb, mbc);

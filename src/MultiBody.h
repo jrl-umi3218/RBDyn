@@ -1,3 +1,5 @@
+// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+//
 // This file is part of RBDyn.
 //
 // RBDyn is free software: you can redistribute it and/or modify
@@ -28,6 +30,8 @@
 #include "Body.h"
 #include "Joint.h"
 
+#include <rbdyn/config.hh>
+
 namespace rbd
 {
 
@@ -35,7 +39,7 @@ namespace rbd
 	* Kinematic tree of a multibody system.
 	* Same representation as featherstone except joint 0 is the root joint.
 	*/
-class MultiBody
+class RBDYN_DLLAPI MultiBody
 {
 public:
 	MultiBody();
@@ -161,28 +165,28 @@ public:
 		Xt_[num] = Xt;
 	}
 
-	/// @return Index of the body with Id id.
-	int bodyIndexById(int id) const
+	/// @return Index of the body with name 'name'.
+	int bodyIndexByName(const std::string& name) const
 	{
-		return bodyId2Ind_.find(id)->second;
+		return bodyNameToInd_.find(name)->second;
 	}
 
-	/// @return Index of the joint with Id id.
-	int jointIndexById(int id) const
+	/// @return Index of the joint with name 'name'.
+	int jointIndexByName(const std::string& name) const
 	{
-		return jointId2Ind_.find(id)->second;
+		return jointNameToInd_.find(name)->second;
 	}
 
-	/// @return Hash map of body index by id.
-	const std::unordered_map<int, int>& bodyIndexById() const
+	/// @return Hash map of body index by name.
+	const std::unordered_map<std::string, int>& bodyIndexByName() const
 	{
-		return bodyId2Ind_;
+		return bodyNameToInd_;
 	}
 
-	/// @return Hash map of joint index by id.
-	const std::unordered_map<int, int>& jointIndexById() const
+	/// @return Hash map of joint index by name.
+	const std::unordered_map<std::string, int>& jointIndexByName() const
 	{
-		return jointId2Ind_;
+		return jointNameToInd_;
 	}
 
 	/// @return the joint i position in parameter vector (q).
@@ -335,20 +339,22 @@ public:
 		return jointPosInDof_.at(i);
 	}
 
-	/** Safe version of @see bodyIndexById.
-		* @throw std::out_of_range.
-		*/
-	int sBodyIndexById(int id) const
+	/** Safe version of @see bodyIndexByName.
+	 * @throw std::out_of_range
+	 */
+
+	int sBodyIndexByName(const std::string& name) const
 	{
-		return bodyId2Ind_.at(id);
+		return bodyNameToInd_.at(name);
 	}
 
-	/** Safe version of @see jointIndexById.
-		* @throw std::out_of_range.
-		*/
-	int sJointIndexById(int id) const
+	/** Safe version of @see jointIndexByName.
+	 * @throw std::out_of_range
+	 */
+
+	int sJointIndexByName(const std::string& name) const
 	{
-		return jointId2Ind_.at(id);
+		return jointNameToInd_.at(name);
 	}
 
 private:
@@ -361,8 +367,8 @@ private:
 	/// Transformation from the body base to joint i
 	std::vector<sva::PTransformd> Xt_;
 
-	std::unordered_map<int, int> bodyId2Ind_;
-	std::unordered_map<int, int> jointId2Ind_;
+	std::unordered_map<std::string, int> bodyNameToInd_;
+	std::unordered_map<std::string, int> jointNameToInd_;
 
 	/// Position of joint i in parameter vector.
 	std::vector<int> jointPosInParam_;
