@@ -18,6 +18,7 @@
 #pragma once
 
 // include
+#include <vector>
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
