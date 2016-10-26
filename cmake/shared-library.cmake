@@ -32,6 +32,10 @@ ELSEIF(UNIX)
   # have since been fixed.
   # See: https://github.com/ros/catkin/issues/694#issuecomment-88323282
   # Note: ld version on Linux can be 2.25.1 or 2.24
+  IF (NOT CMAKE_LINKER)
+    INCLUDE(CMakeFindBinUtils)
+  ENDIF()
+
   EXECUTE_PROCESS(COMMAND ${CMAKE_LINKER} -v OUTPUT_VARIABLE LD_VERSION_STR ERROR_VARIABLE LD_VERSION_STR)
   STRING(REGEX MATCH "([0-9]+\\.[0-9]+(\\.[0-9]+)?)" LD_VERSION ${LD_VERSION_STR})
   IF(${LD_VERSION} VERSION_LESS "2.24.90")

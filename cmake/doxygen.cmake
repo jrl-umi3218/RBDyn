@@ -23,6 +23,7 @@
 #   DOXYGEN_DOT_IMAGE_FORMAT: format for dot images. Defaults to "svg".
 #   DOXYGEN_USE_MATHJAX: use MathJax to render LaTeX equations. Defaults to "NO".
 MACRO(_SETUP_PROJECT_DOCUMENTATION)
+
   # Search for Doxygen.
   FIND_PACKAGE(Doxygen)
 
@@ -47,6 +48,11 @@ MACRO(_SETUP_PROJECT_DOCUMENTATION)
       SET(DOXYGEN_USE_MATHJAX "NO")
     ENDIF()
 
+    # HTML style sheet configuration
+    IF(NOT DEFINED DOXYGEN_USE_TEMPLATE_CSS)
+      SET(DOXYGEN_USE_TEMPLATE_CSS "YES")
+    ENDIF()
+
     # Teach CMake how to generate the documentation.
     IF(MSVC)
       # FIXME: it is impossible to trigger documentation installation
@@ -63,8 +69,31 @@ MACRO(_SETUP_PROJECT_DOCUMENTATION)
         COMMENT "Generating Doxygen documentation"
         )
 
-      INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} doc)")
+      IF(_INSTALL_DOC)
+        INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} doc)")
+      ENDIF(_INSTALL_DOC)
     ENDIF(MSVC)
+
+    IF (DOXYGEN_USE_TEMPLATE_CSS)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/header.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/footer.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen.css
+        COMMAND ${DOXYGEN_EXECUTABLE} -w html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/header.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/footer.html
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen.css
+        WORKING_DIRECTORY doc
+        COMMENT "Generating Doxygen template files"
+        )
+    ELSE (DOXYGEN_USE_TEMPLATE_CSS)
+      FILE (COPY
+        ${PROJECT_SOURCE_DIR}/cmake/doxygen/doxygen.css
+        DESTINATION
+        ${CMAKE_CURRENT_BINARY_DIR}/doc/
+        )
+    ENDIF (DOXYGEN_USE_TEMPLATE_CSS)
 
     ADD_CUSTOM_COMMAND(
       OUTPUT
@@ -91,16 +120,18 @@ MACRO(_SETUP_PROJECT_DOCUMENTATION)
     ENDIF()
 
     # Install generated files.
-    INSTALL(
-      FILES ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
-      DESTINATION ${CMAKE_INSTALL_DOCDIR}/doxygen-html)
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
-      DESTINATION ${CMAKE_INSTALL_DOCDIR})
-
-    IF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
-      INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/pictures
+    IF(_INSTALL_DOC)
+      INSTALL(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/doc/${PROJECT_NAME}.doxytag
         DESTINATION ${CMAKE_INSTALL_DOCDIR}/doxygen-html)
-    ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
+      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen-html
+        DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+      IF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
+        INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/pictures
+          DESTINATION ${CMAKE_INSTALL_DOCDIR}/doxygen-html)
+      ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/doc/pictures)
+    ENDIF(_INSTALL_DOC)
 
     LIST(APPEND LOGGING_WATCHED_VARIABLES
       DOXYGEN_SKIP_DOT
@@ -111,6 +142,7 @@ MACRO(_SETUP_PROJECT_DOCUMENTATION)
       DOXYGEN_DOT_PATH
       DOXYGEN_DOT_IMAGE_FORMAT
       DOXYGEN_USE_MATHJAX
+      DOXYGEN_USE_TEMPLATE_CSS
       )
   ENDIF(NOT DOXYGEN_FOUND)
 ENDMACRO(_SETUP_PROJECT_DOCUMENTATION)
