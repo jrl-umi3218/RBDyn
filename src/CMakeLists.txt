@@ -27,10 +27,18 @@ PKG_CONFIG_USE_DEPENDENCY(RBDyn SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
 set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
 
-set(INSTALL_PATH include/RBDyn)
-install(FILES ${HEADERS} DESTINATION ${INSTALL_PATH})
-install(TARGETS RBDyn 
-                      RUNTIME DESTINATION bin
-                      LIBRARY DESTINATION lib
-                      ARCHIVE DESTINATION lib
+
+# Targets:
+#   * <prefix>/lib/libbar.a
+#   * <prefix>/lib/libbaz.a
+#   * header location after install: <prefix>/include/foo/Bar.hpp
+#   * headers can be included by C++ code `#include <foo/Bar.hpp>`
+install(
+    TARGETS RBDyn
+    EXPORT "${TARGETS_EXPORT_NAME}"
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "bin"
+    INCLUDES DESTINATION "${INCLUDE_INSTALL_DIR}"
 )
+install(FILES ${HEADERS} DESTINATION ${INCLUDE_INSTALL_DESTINATION})
