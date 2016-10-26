@@ -82,7 +82,43 @@ MACRO(SEARCH_FOR_BOOST)
       Boost_${UPPERCOMPONENT}_LIBRARY_RELEASE
       )
   ENDFOREACH()
+
+  # On darwin systems, we must link againt boost_python with unresolved symbols.
+  # We then remove boost_python from the global Boost_LIBRARIES list to handle it with specific care.
+  IF(Boost_PYTHON_LIBRARY)
+    LIST(REMOVE_ITEM Boost_LIBRARIES ${Boost_PYTHON_LIBRARY})
+    MESSAGE(WARNING 
+            "The boost_python library have been removed from the Boost_LIBRARIES variable.
+            \n To link againt boost_python, please use the macro TARGET_LINK_BOOST_PYTHON."
+           )
+  ENDIF(Boost_PYTHON_LIBRARY)
+
 ENDMACRO(SEARCH_FOR_BOOST)
+
+# TARGET_LINK_BOOST_PYTHON
+# ------------------------
+#
+# Link target againt boost_python library.
+# \input target is either a library or an executable
+# On darwin systems, boost_python is not linked against any python library.
+# This linkage is resolved at execution time via the python interpreter.
+# We then need to stipulate that boost_python has unresolved symbols at compile time for a library target.
+# Otherwise, for executables we need to link to a specific version of python.
+#
+MACRO(TARGET_LINK_BOOST_PYTHON target)
+  IF(APPLE)
+    GET_TARGET_PROPERTY(TARGET_TYPE ${target} TYPE)
+
+    IF(${TARGET_TYPE} MATCHES EXECUTABLE)
+      TARGET_LINK_LIBRARIES(${target} ${Boost_PYTHON_LIBRARY})
+    ELSE(${TARGET_TYPE} MATCHES EXECUTABLE)
+      TARGET_LINK_LIBRARIES(${target} -Wl,-undefined,dynamic_lookup,${Boost_PYTHON_LIBRARIES})
+    ENDIF(${TARGET_TYPE} MATCHES EXECUTABLE)
+
+  ELSE(APPLE)
+    TARGET_LINK_LIBRARIES(${target} ${Boost_PYTHON_LIBRARY})
+  ENDIF(APPLE)
+ENDMACRO(TARGET_LINK_BOOST_PYTHON)
 
 # PKG_CONFIG_APPEND_BOOST_LIBS
 # ----------------------------
@@ -100,10 +136,15 @@ MACRO(PKG_CONFIG_APPEND_BOOST_LIBS)
   FOREACH(COMPONENT ${ARGN})
     IF(APPLE)
       STRING(TOUPPER ${COMPONENT} UPPERCOMPONENT)
-      PKG_CONFIG_APPEND_LIBS_RAW(${Boost_${UPPERCOMPONENT}_LIBRARY})
-    ELSE()
+      STRING(TOLOWER ${COMPONENT} LOWERCOMPONENT)
+      IF("${LOWERCOMPONENT}" MATCHES "python")
+        PKG_CONFIG_APPEND_LIBS_RAW(-Wl,-undefined,dynamic_lookup,${Boost_${UPPERCOMPONENT}_LIBRARY})
+      ELSE("${LOWERCOMPONENT}" MATCHES "python")
+        PKG_CONFIG_APPEND_LIBS_RAW(${Boost_${UPPERCOMPONENT}_LIBRARY})
+      ENDIF("${LOWERCOMPONENT}" MATCHES "python")
+    ELSE(APPLE)
       STRING(TOLOWER ${COMPONENT} LOWERCOMPONENT)
       PKG_CONFIG_APPEND_LIBS(boost_${LOWERCOMPONENT})
-    ENDIF()
+    ENDIF(APPLE)
   ENDFOREACH()
 ENDMACRO(PKG_CONFIG_APPEND_BOOST_LIBS)
