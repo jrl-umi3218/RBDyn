@@ -34,7 +34,7 @@ namespace rbd
 
 /**
 	* Utility function to compute a rotation matrix from the parameter vector.
-	* @param q parameter vector with a least 4 values.
+	* @param q parameter vector with a least 4 values (treated as wxyz).
 	* @return Rotation matrix in successor frame.
 	*/
 template<typename T>
