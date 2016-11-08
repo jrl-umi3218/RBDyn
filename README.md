@@ -33,7 +33,34 @@ The [SpaceVecAlg and RBDyn tutorial](https://github.com/jorisv/sva_rbdyn_tutoria
 Installing
 ------
 
-### Manual
+
+### Ubuntu 14.04 and 16.04 binary ppa install
+
+Use the [multi-contact-unstable](https://launchpad.net/~pierre-gergondet+ppa/+archive/ubuntu/multi-contact-unstable) ppa:
+```bash
+sudo add-apt-repository ppa:pierre-gergondet+ppa/multi-contact-unstable
+sudo apt-get update
+sudo apt-get install rbdyn
+```
+
+### Homebrew OS X install
+
+Install from the command line using [Homebrew](brew.sh):
+
+```bash
+# install homebrew package manager
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# install caskroom application manager
+brew install caskroom/cask/brew-cask
+# tap homebrew-science package repository
+brew tap homebrew/science
+# tap ahundt-robotics repository
+brew tap ahundt/robotics
+# install tasks and all its dependencies
+brew install rbdyn
+```
+
+## Manually build from source
 
 #### Dependencies
 
