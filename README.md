@@ -30,6 +30,8 @@ A short tutorial is available [here](https://github.com/jorisv/sva_rbdyn_present
 
 The [SpaceVecAlg and RBDyn tutorial](https://github.com/jorisv/sva_rbdyn_tutorials) is also a big ressource to understand how to use RBDyn by providing a lot of IPython Notebook that will present real use case.
 
+A doxygen documentation is available [online](https://jrl-umi3218.github.io/RBDyn).
+
 Installing
 ------
 
