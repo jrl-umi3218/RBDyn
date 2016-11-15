@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['depthdotjacobian',['depthDotJacobian',['../a00038.html#a731b8c0b3d37872f0a22fd46d008e970',1,'rbd']]],
   ['direction',['direction',['../a00013.html#afdca9b1edf014edfc39447079bb1706c',1,'rbd::Joint']]],
   ['dof',['dof',['../a00012.html#ab5871ae582b0d6802816646e64b38cff',1,'rbd::Jacobian::dof()'],['../a00013.html#a2c33de3bbc848266662b506028810f83',1,'rbd::Joint::dof()']]],
   ['doftovector',['dofToVector',['../a00038.html#a35ba4e7bcaf28864ee5b873aa2f7ad98',1,'rbd']]],

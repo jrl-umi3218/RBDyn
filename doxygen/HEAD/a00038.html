@@ -298,18 +298,27 @@ Functions</h2></td></tr>
 <tr class="separator:a5a321010d59e162b9e53722eee7a97b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c0a3a499a70eddeb7eb992690ab4985"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a7c0a3a499a70eddeb7eb992690ab4985">checkMatchForce</a> (const <a class="el" href="a00014.html">MultiBody</a> &amp;mb, const <a class="el" href="a00015.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="separator:a7c0a3a499a70eddeb7eb992690ab4985"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeebb73b9ba032f830fa7df4164903d45"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#aeebb73b9ba032f830fa7df4164903d45">imagePointJacobian</a> (const Eigen::Vector2d &amp;point2d, const double depthEstimate)</td></tr>
-<tr class="memdesc:aeebb73b9ba032f830fa7df4164903d45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="#aeebb73b9ba032f830fa7df4164903d45">More...</a><br/></td></tr>
-<tr class="separator:aeebb73b9ba032f830fa7df4164903d45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdeb17011822a80a35a56545bbc2c33e"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#afdeb17011822a80a35a56545bbc2c33e">imagePointJacobian</a> (const Eigen::Vector3d &amp;point3d)</td></tr>
-<tr class="memdesc:afdeb17011822a80a35a56545bbc2c33e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="#afdeb17011822a80a35a56545bbc2c33e">More...</a><br/></td></tr>
-<tr class="separator:afdeb17011822a80a35a56545bbc2c33e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4973835c6f2dddd13adba7d4d1e2351"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#ab4973835c6f2dddd13adba7d4d1e2351">poseJacobian</a> (const Eigen::Matrix3d &amp;rotation, const double rot_angle_threshold=1.0e-8)</td></tr>
-<tr class="memdesc:ab4973835c6f2dddd13adba7d4d1e2351"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of a pose.  <a href="#ab4973835c6f2dddd13adba7d4d1e2351">More...</a><br/></td></tr>
-<tr class="separator:ab4973835c6f2dddd13adba7d4d1e2351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07491bc6c9c4efc66e979df49eec7a77"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a07491bc6c9c4efc66e979df49eec7a77">imagePointJacobian</a> (const Eigen::Vector2d &amp;point2d, const double depthEstimate, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
+<tr class="memdesc:a07491bc6c9c4efc66e979df49eec7a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="#a07491bc6c9c4efc66e979df49eec7a77">More...</a><br/></td></tr>
+<tr class="separator:a07491bc6c9c4efc66e979df49eec7a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a3f883d5b2cb2d74f03f930d7097aa91e">imagePointJacobian</a> (const Eigen::Vector3d &amp;point3d, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
+<tr class="memdesc:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="#a3f883d5b2cb2d74f03f930d7097aa91e">More...</a><br/></td></tr>
+<tr class="separator:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af911cb4aaa8f45c453f0eb8af449e402"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#af911cb4aaa8f45c453f0eb8af449e402">imagePointJacobianDot</a> (const Eigen::Vector2d imagePoint, const Eigen::Vector2d imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
+<tr class="memdesc:af911cb4aaa8f45c453f0eb8af449e402"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix derivative of an image point.  <a href="#af911cb4aaa8f45c453f0eb8af449e402">More...</a><br/></td></tr>
+<tr class="separator:af911cb4aaa8f45c453f0eb8af449e402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#aa7c485df3cfdbc0819e75bbea7cb2632">poseJacobian</a> (const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac, const double rot_angle_threshold=1.0e-8)</td></tr>
+<tr class="memdesc:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of a pose.  <a href="#aa7c485df3cfdbc0819e75bbea7cb2632">More...</a><br/></td></tr>
+<tr class="separator:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a731b8c0b3d37872f0a22fd46d008e970"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a731b8c0b3d37872f0a22fd46d008e970">depthDotJacobian</a> (const Eigen::Vector2d imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</td></tr>
+<tr class="memdesc:a731b8c0b3d37872f0a22fd46d008e970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of the depth derivative.  <a href="#a731b8c0b3d37872f0a22fd46d008e970">More...</a><br/></td></tr>
+<tr class="separator:a731b8c0b3d37872f0a22fd46d008e970"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a42e2c6560ae5a3978c5d999e5dfb9375">getAngleAxis</a> (const Eigen::Matrix3d &amp;rotation, double &amp;rot_angle, Eigen::Vector3d &amp;rot_axis)</td></tr>
 <tr class="memdesc:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the angle and axis of an angle-axis rotation representation given a rotation matrix.  <a href="#a42e2c6560ae5a3978c5d999e5dfb9375">More...</a><br/></td></tr>
 <tr class="separator:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af84dc61728c402a7a3a5b61dc7b8a780"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#af84dc61728c402a7a3a5b61dc7b8a780">getSkewSym</a> (const Eigen::Vector3d &amp;vector, Eigen::Matrix3d &amp;matrix)</td></tr>
+<tr class="memdesc:af84dc61728c402a7a3a5b61dc7b8a780"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obtain the skew-symmetric (or anti-symmetric) matrix of a vector.  <a href="#af84dc61728c402a7a3a5b61dc7b8a780">More...</a><br/></td></tr>
+<tr class="separator:af84dc61728c402a7a3a5b61dc7b8a780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a394e1cd05547fb851d8dbe8f0ddbbbe5"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a394e1cd05547fb851d8dbe8f0ddbbbe5">computeCentroidalZMP</a> (<a class="el" href="a00015.html">MultiBodyConfig</a> &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude)</td></tr>
 <tr class="memdesc:a394e1cd05547fb851d8dbe8f0ddbbbe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the ZMP in the world frame as in Kajita's book on humanoid robots chap.  <a href="#a394e1cd05547fb851d8dbe8f0ddbbbe5">More...</a><br/></td></tr>
 <tr class="separator:a394e1cd05547fb851d8dbe8f0ddbbbe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1147,6 +1156,47 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a731b8c0b3d37872f0a22fd46d008e970"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">RBDYN_DLLAPI void rbd::depthDotJacobian </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Vector2d&#160;</td>
+          <td class="paramname"><em>imagePointSpeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>depthEstimate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Matrix&lt; double, 1, 6 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>jac</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compute the interaction matrix of the depth derivative. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">imagePointSpeed</td><td>is the normalized 2D coordinate speed </td></tr>
+    <tr><td class="paramname">depthEstimate</td><td>is the estimate of the current depth </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a35ba4e7bcaf28864ee5b873aa2f7ad98"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1428,12 +1478,47 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aeebb73b9ba032f830fa7df4164903d45"></a>
+<a class="anchor" id="af84dc61728c402a7a3a5b61dc7b8a780"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">RBDYN_DLLAPI Eigen::MatrixXd rbd::imagePointJacobian </td>
+          <td class="memname">RBDYN_DLLAPI void rbd::getSkewSym </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
+          <td class="paramname"><em>vector</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Matrix3d &amp;&#160;</td>
+          <td class="paramname"><em>matrix</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Obtain the skew-symmetric (or anti-symmetric) matrix of a vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vector</td><td>as input </td></tr>
+    <tr><td class="paramname">matrix</td><td>as output </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a07491bc6c9c4efc66e979df49eec7a77"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">RBDYN_DLLAPI void rbd::imagePointJacobian </td>
           <td>(</td>
           <td class="paramtype">const Eigen::Vector2d &amp;&#160;</td>
           <td class="paramname"><em>point2d</em>, </td>
@@ -1442,7 +1527,13 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>depthEstimate</em>&#160;</td>
+          <td class="paramname"><em>depthEstimate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Matrix&lt; double, 2, 6 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>jac</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1457,22 +1548,33 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">point2d</td><td>normalized image coordinates (x,y) = (X/Z, Y/Z) </td></tr>
     <tr><td class="paramname">depthEstimate</td><td>an estimate of the point depth Z </td></tr>
+    <tr><td class="paramname">jac</td><td>is the output <a class="el" href="a00012.html" title="Algorithm to compute the jacobian of a specified body. ">Jacobian</a> </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a class="anchor" id="afdeb17011822a80a35a56545bbc2c33e"></a>
+<a class="anchor" id="a3f883d5b2cb2d74f03f930d7097aa91e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">RBDYN_DLLAPI Eigen::MatrixXd rbd::imagePointJacobian </td>
+          <td class="memname">RBDYN_DLLAPI void rbd::imagePointJacobian </td>
           <td>(</td>
           <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
-          <td class="paramname"><em>point3d</em></td><td>)</td>
+          <td class="paramname"><em>point3d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">Eigen::Matrix&lt; double, 2, 6 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>jac</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1481,6 +1583,63 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">point3d</td><td>metric location of the point relative to the camera frame </td></tr>
+    <tr><td class="paramname">jac</td><td>is the output <a class="el" href="a00012.html" title="Algorithm to compute the jacobian of a specified body. ">Jacobian</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af911cb4aaa8f45c453f0eb8af449e402"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">RBDYN_DLLAPI void rbd::imagePointJacobianDot </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Vector2d&#160;</td>
+          <td class="paramname"><em>imagePoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Vector2d&#160;</td>
+          <td class="paramname"><em>imagePointSpeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>depth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>depthDot</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Matrix&lt; double, 2, 6 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>jac</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compute the interaction matrix derivative of an image point. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">imagePoint</td><td>is the normalized 2D point </td></tr>
+    <tr><td class="paramname">imagePointSpeed</td><td>is the speed of the normalized 2D point </td></tr>
+    <tr><td class="paramname">depth</td><td>is the depth estimate </td></tr>
+    <tr><td class="paramname">depthDot</td><td>is the derivative of the depth estimate </td></tr>
+    <tr><td class="paramname">jac</td><td>is the output <a class="el" href="a00012.html" title="Algorithm to compute the jacobian of a specified body. ">Jacobian</a> </td></tr>
   </table>
   </dd>
 </dl>
@@ -1685,15 +1844,21 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ab4973835c6f2dddd13adba7d4d1e2351"></a>
+<a class="anchor" id="aa7c485df3cfdbc0819e75bbea7cb2632"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">RBDYN_DLLAPI Eigen::MatrixXd rbd::poseJacobian </td>
+          <td class="memname">RBDYN_DLLAPI void rbd::poseJacobian </td>
           <td>(</td>
           <td class="paramtype">const Eigen::Matrix3d &amp;&#160;</td>
           <td class="paramname"><em>rotation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Matrix&lt; double, 6, 6 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>jac</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1713,6 +1878,7 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rotation</td><td>matrix </td></tr>
+    <tr><td class="paramname">jac</td><td>is the output <a class="el" href="a00012.html" title="Algorithm to compute the jacobian of a specified body. ">Jacobian</a> </td></tr>
     <tr><td class="paramname">rot_angle_threshold</td><td>is the minimum angle of an axis angle representation where the angle is considered as zero </td></tr>
   </table>
   </dd>
@@ -2463,7 +2629,7 @@ template&lt;typename T &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="a00038.html">rbd</a></li>
-    <li class="footer">Generated on Thu Nov 10 2016 06:00:45 for RBDyn by
+    <li class="footer">Generated on Tue Nov 15 2016 00:59:58 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
