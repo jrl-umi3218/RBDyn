@@ -100,6 +100,15 @@ public:
 		*/
 	Joint(Type type, bool forward, std::string name);
 
+	/**
+	 * Specify mimic information.
+	 *
+	 * @param name Name of the joint that will be mimiced.
+	 * @param multiplier Mimic multiplier
+	 * @param offset Mimic offset
+	 */
+	void set_mimic(const std::string & name, double multiplier, double offset);
+
 	/// @return Joint type.
 	Type type() const
 	{
@@ -147,6 +156,30 @@ public:
 	const std::string& name() const
 	{
 		return name_;
+	}
+
+	/// @return True if the joint is a mimic joint
+	bool is_mimic() const
+	{
+		return is_mimic_;
+	}
+
+	/// @return Mimiced name
+	const std::string& mimic_name() const
+	{
+		return mimic_name_;
+	}
+
+	/// @return Mimic multiplier
+	double mimic_multiplier() const
+	{
+		return mimic_multiplier_;
+	}
+
+	/// @return Mimic offset
+	double mimic_offset() const
+	{
+		return mimic_offset_;
 	}
 
 	/// @return Joint motion subspace in successor frame coordinate.
@@ -244,6 +277,11 @@ private:
 	int dof_;
 
 	std::string name_;
+
+	bool is_mimic_ = false;
+	std::string mimic_name_ = "";
+	double mimic_multiplier_ = 1.0;
+	double mimic_offset_ = 0.0;
 };
 
 
@@ -308,6 +346,14 @@ inline Joint::Joint(Type type,	bool forward, std::string name):
 	name_(name)
 {
 	constructJoint(type, Eigen::Vector3d::UnitZ());
+}
+
+inline void Joint::set_mimic(const std::string & name, double multiplier, double offset)
+{
+	is_mimic_ = true;
+	mimic_name_ = name;
+	mimic_multiplier_ = multiplier;
+	mimic_offset_ = offset;
 }
 
 
@@ -416,7 +462,15 @@ inline sva::MotionVecd Joint::tanAccel(const std::vector<double>& alphaD) const
 
 inline std::vector<double> Joint::zeroParam() const
 {
-	return ZeroParam(type_);
+	auto q = ZeroParam(type_);
+	if(is_mimic_)
+	{
+		for(auto & qi : q)
+		{
+			qi += mimic_offset_;
+		}
+	}
+	return q;
 }
 
 
