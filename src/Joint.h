@@ -107,7 +107,7 @@ public:
 	 * @param multiplier Mimic multiplier
 	 * @param offset Mimic offset
 	 */
-	void setMimic(const std::string & name, double multiplier, double offset);
+	void makeMimic(const std::string & name, double multiplier, double offset);
 
 	/// @return Joint type.
 	Type type() const
@@ -348,7 +348,7 @@ inline Joint::Joint(Type type,	bool forward, std::string name):
 	constructJoint(type, Eigen::Vector3d::UnitZ());
 }
 
-inline void Joint::setMimic(const std::string & name, double multiplier, double offset)
+inline void Joint::makeMimic(const std::string & name, double multiplier, double offset)
 {
 	isMimic_ = true;
 	mimicName_ = name;
