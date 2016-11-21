@@ -101,7 +101,9 @@ public:
 	Joint(Type type, bool forward, std::string name);
 
 	/**
-	 * Specify mimic information.
+	 * Make the joint mimic and specify mimic information.
+	 *
+	 * This change cannot be reversed.
 	 *
 	 * @param name Name of the joint that will be mimiced.
 	 * @param multiplier Mimic multiplier
