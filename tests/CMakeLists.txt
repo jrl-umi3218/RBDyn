@@ -29,7 +29,7 @@ link_directories(${Boost_LIBRARY_DIR})
 set(HEADERS XXXarm.h XYZarm.h XYZSarm.h Tree30Dof.h SSSarm.h)
 
 macro(addUnitTest name)
-  if(${UNIT_TESTS})
+  if(NOT ${DISABLE_TESTS})
     add_executable(${name} ${name}.cpp ${HEADERS})
     if(MSVC)
       # for msvc, we let boost auto-link do the work
