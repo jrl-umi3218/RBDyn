@@ -24,7 +24,7 @@ add_definitions(-DBOOST_TEST_DYN_LINK)
 add_definitions(-DTESTS_DATA_DIR="${PROJECT_SOURCE_DIR}/tests")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIR})
+link_directories(${Boost_LIBRARY_DIR} ${Boost_LIBRARY_DIRS})
 
 set(HEADERS XXXarm.h XYZarm.h XYZSarm.h Tree30Dof.h SSSarm.h)
 
