@@ -3,7 +3,7 @@ RBDyn
 
 [![License LGPL 3](https://img.shields.io/badge/license-LGPLv3-green.svg)](http://www.gnu.org/licenses/lgpl-3.0.txt)
 [![Build Status](https://travis-ci.org/jrl-umi3218/RBDyn.svg?branch=master)](https://travis-ci.org/jrl-umi3218/RBDyn)
-[![AppVeyor status](https://ci.appveyor.com/api/projects/status/76dqnpu9ckaoyes7/branch/master?svg=true)](https://ci.appveyor.com/project/gergondet/rbdyn-a5fgp/branch/master)
+[![AppVeyor status](https://ci.appveyor.com/api/projects/status/k2l715sc47t9u411/branch/master?svg=true)](https://ci.appveyor.com/project/gergondet/rbdyn/branch/master)
 
 RBDyn provide a set of class and function to model the dynamics of rigid body systems.
 
