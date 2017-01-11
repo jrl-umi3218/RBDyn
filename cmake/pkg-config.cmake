@@ -401,6 +401,7 @@ MACRO(ADD_DEPENDENCY P_REQUIRED COMPILE_TIME_ONLY PKG_CONFIG_STRING PKG_CONFIG_D
            setting PROJECT_DEBUG_POSTFIX to generate different libraries and pc files in
            debug mode.")
       ENDIF()
+
       _ADD_TO_LIST(_PKG_CONFIG_REQUIRES "${PKG_CONFIG_STRING}" ",")
     ENDIF()
   ENDIF()
