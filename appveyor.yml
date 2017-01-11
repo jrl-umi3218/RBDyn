@@ -24,7 +24,7 @@ environment:
   CI_OS_NAME: win32
   CI_TOOL: appveyor
   CHOCO_DEPENDENCIES: "doxygen.portable"
-  GIT_DEPENDENCIES: "gergondet/SpaceVecAlg#topic/Win32"
+  GIT_DEPENDENCIES: "jrl-umi3218/SpaceVecAlg"
 # Should be the same as clone_folder
   PROJECT_SOURCE_DIR: C:/devel-src/RBDyn
 # Do not tinker with the variables below unless you know what you are doing
