@@ -28,11 +28,6 @@ set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
 set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
 
 
-# Targets:
-#   * <prefix>/lib/libbar.a
-#   * <prefix>/lib/libbaz.a
-#   * header location after install: <prefix>/include/foo/Bar.hpp
-#   * headers can be included by C++ code `#include <foo/Bar.hpp>`
 install(
     TARGETS RBDyn
     EXPORT "${TARGETS_EXPORT_NAME}"
