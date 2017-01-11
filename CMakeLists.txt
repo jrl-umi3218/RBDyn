@@ -34,7 +34,7 @@ SET(CXX_DISABLE_WERROR True)
 SETUP_PROJECT()
 
 option(PYTHON_BINDING "Generate python binding." OFF)
-option(UNIT_TESTS "Generate unit tests." ON)
+option(DISABLE_TESTS "Disable unit tests." OFF)
 option(BENCHMARKS "Generate benchmarks." OFF)
 
 if(NOT WIN32)
@@ -57,7 +57,7 @@ ENDIF(MSVC)
 
 add_subdirectory(src)
 
-if(${UNIT_TESTS} OR ${BENCHMARKS})
+if(NOT ${DISABLE_TESTS} OR ${BENCHMARKS})
   add_subdirectory(tests)
 endif()
 
