@@ -203,6 +203,8 @@ private:
 	std::vector<Eigen::MatrixXd> jacWork_;
 	std::vector<double> bodiesWeight_;
 	std::vector<sva::MotionVecd> normalAcc_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 

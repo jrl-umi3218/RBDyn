@@ -66,6 +66,8 @@ public:
 		sva::PTransformd X; ///< Position of the joint in body coordinate.
 		Joint joint; ///< Joint with right direction.
 		std::shared_ptr<Node> next; ///< successor node.
+	public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	};
 
 	/**
@@ -80,6 +82,8 @@ public:
 
 		Body body;
 		std::vector<Arc> arcs; ///< Outgoing arc.
+	public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	};
 
 public:
@@ -306,6 +310,8 @@ private:
 
 	std::map<std::string, std::shared_ptr<Node>> bodyNameToNode_;
 	std::map<std::string, std::shared_ptr<Joint>> jointNameToJoint_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 }

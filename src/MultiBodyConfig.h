@@ -97,6 +97,8 @@ struct RBDYN_DLLAPI MultiBodyConfig
 
 	std::vector<Eigen::MatrixXd> python_motionSubspace();
 	void python_motionSubspace(const std::vector<Eigen::MatrixXd>& v);
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 
@@ -143,6 +145,8 @@ public:
 private:
 	std::vector<int> jInd_;
 	std::vector<int> bInd_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 

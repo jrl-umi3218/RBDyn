@@ -70,6 +70,8 @@ private:
 	/// f_ is the vector of forces transmitted from body λ(i) to body i across
 	/// joint i.
 	std::vector<sva::ForceVecd> f_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } // namespace rbd

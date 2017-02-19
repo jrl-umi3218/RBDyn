@@ -100,6 +100,8 @@ public:
 
 private:
 	Eigen::MatrixXd Y_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } // rbd

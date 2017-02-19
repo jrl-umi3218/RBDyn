@@ -37,6 +37,8 @@ struct CwiseRoundOp {
 	CwiseRoundOp(const double& inf, const double& sup) : m_inf(inf), m_sup(sup) {}
 	double operator()(const double& x) const { return x>m_inf && x<m_sup ? 0 : x; }
 	double m_inf, m_sup;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } // anonymous

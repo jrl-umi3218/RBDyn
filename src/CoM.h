@@ -119,6 +119,8 @@ private:
 	std::vector<Jacobian> jacVec_;
 	double totalMass_;
 	std::vector<double> bodiesWeight_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 
@@ -257,6 +259,8 @@ private:
 	std::vector<sva::MotionVecd> normalAcc_;
 
 	std::vector<double> weight_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 

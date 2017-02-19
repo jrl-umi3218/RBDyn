@@ -123,6 +123,8 @@ private:
 	std::vector<int> dofPos_;
 
 	Eigen::LDLT<Eigen::MatrixXd> ldlt_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } // namespace rbd

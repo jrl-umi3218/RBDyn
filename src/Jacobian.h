@@ -389,6 +389,8 @@ private:
 
 	Eigen::MatrixXd jac_;
 	Eigen::MatrixXd jacDot_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } // namespace rbd
