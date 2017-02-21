@@ -40,7 +40,7 @@ class RBDYN_DLLAPI InverseStatics
   InverseStatics(const MultiBody& mb);
 
   void setJacobianSize(const MultiBody& mb, const MultiBodyConfig& mbc,
-                       const std::vector<Eigen::MatrixXd>& jacMomentsAndForces);
+                       const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& jacMomentsAndForces);
 
   /**
     * Compute the inverse statics.
@@ -69,7 +69,7 @@ class RBDYN_DLLAPI InverseStatics
     */
   void computeTorqueJacobianJoint(
       const MultiBody& mb, MultiBodyConfig& mbc,
-      const std::vector<Eigen::MatrixXd>& jacMomentsAndForces);
+      const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& jacMomentsAndForces);
 
   /**
     * Default version of computeTorqeuJacobienJoint
@@ -91,7 +91,7 @@ class RBDYN_DLLAPI InverseStatics
     */
   const std::vector<sva::ForceVecd>& f() const { return f_; };
 
-  const std::vector<Eigen::MatrixXd>& jointTorqueDiff() const
+  const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& jointTorqueDiff() const
   {
     return jointTorqueDiff_;
   };
@@ -101,8 +101,8 @@ class RBDYN_DLLAPI InverseStatics
   /// f_ is the vector of forces transmitted from body λ(i) to body i across
   /// joint i.
   std::vector<sva::ForceVecd> f_;
-  std::vector<Eigen::MatrixXd> df_;
-  std::vector<Eigen::MatrixXd> jointTorqueDiff_;
+  std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > df_;
+  std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > jointTorqueDiff_;
   std::vector<Jacobian> jacW_;
   Eigen::MatrixXd fullJac_;
   bool jacobianSizeHasBeenSet_;

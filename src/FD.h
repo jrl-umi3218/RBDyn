@@ -23,6 +23,7 @@
 
 // Eigen
 #include <Eigen/Core>
+#include <Eigen/StdVector>
 
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
@@ -111,7 +112,7 @@ private:
 
 	// H computation
 	std::vector<sva::RBInertiad> I_st_;
-	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> F_;
+	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>, Eigen::aligned_allocator<Eigen::Matrix<double, 6, Eigen::Dynamic>> > F_;
 
 	// C computation
 	std::vector<sva::MotionVecd> acc_;

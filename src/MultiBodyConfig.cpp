@@ -74,9 +74,9 @@ void MultiBodyConfig::zero(const MultiBody& mb)
 }
 
 
-std::vector<Eigen::MatrixXd> MultiBodyConfig::python_motionSubspace()
+std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > MultiBodyConfig::python_motionSubspace()
 {
-	std::vector<Eigen::MatrixXd> ret(motionSubspace.size());
+	std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > ret(motionSubspace.size());
 
 	for(std::size_t i = 0; i < ret.size(); ++i)
 	{
@@ -87,7 +87,7 @@ std::vector<Eigen::MatrixXd> MultiBodyConfig::python_motionSubspace()
 }
 
 
-void MultiBodyConfig::python_motionSubspace(const std::vector<Eigen::MatrixXd>& v)
+void MultiBodyConfig::python_motionSubspace(const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& v)
 {
 	motionSubspace.resize(v.size());
 	for(std::size_t i = 0; i < v.size(); ++i)

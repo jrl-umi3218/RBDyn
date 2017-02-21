@@ -54,7 +54,7 @@ void test(boost::shared_ptr<boost::test_tools::output_test_stream> output,
 {
   Eigen::MatrixXd jacQ(3,3);
   Eigen::MatrixXd jacF(3,24);
-  std::vector<Eigen::MatrixXd> jacMomentAndForces(4);
+  std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > jacMomentAndForces(4);
   (*output) << "\n\n\nChange config to " << q.transpose() << std::endl;
   mbc.q[1][0] = q(0);
   mbc.q[2][0] = q(1);

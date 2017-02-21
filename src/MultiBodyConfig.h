@@ -68,7 +68,7 @@ struct RBDYN_DLLAPI MultiBodyConfig
 
 
 	/// Motion subspace (Xj.j.subspace).
-	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> motionSubspace;
+	std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>, Eigen::aligned_allocator<Eigen::Matrix<double, 6, Eigen::Dynamic>> > motionSubspace;
 
 
 
@@ -95,8 +95,8 @@ struct RBDYN_DLLAPI MultiBodyConfig
 
 	// python binding function
 
-	std::vector<Eigen::MatrixXd> python_motionSubspace();
-	void python_motionSubspace(const std::vector<Eigen::MatrixXd>& v);
+	std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > python_motionSubspace();
+	void python_motionSubspace(const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& v);
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
@@ -118,11 +118,11 @@ public:
 		* Convert a vector representing joint data.
 		* The first joint (base) is ignored.
 		*/
-	template<typename T>
-	void convertJoint(const std::vector<T>& from, std::vector<T>& to) const;
+	template<typename T, typename U>
+	void convertJoint(const std::vector<T,U>& from, std::vector<T,U>& to) const;
 
-	template<typename T>
-	std::vector<T> convertJoint(const std::vector<T>& from) const;
+	template<typename T, typename U>
+	std::vector<T,U> convertJoint(const std::vector<T,U>& from) const;
 
 	// safe version for python binding
 
@@ -139,8 +139,8 @@ public:
 	/** safe version of @see convertJoint.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
-	template<typename T>
-	void sConvertJoint(const std::vector<T>& from, std::vector<T>& to) const;
+	template<typename T, typename U>
+	void sConvertJoint(const std::vector<T,U>& from, std::vector<T,U>& to) const;
 
 private:
 	std::vector<int> jInd_;
@@ -258,13 +258,13 @@ RBDYN_DLLAPI std::vector<std::vector<double>> sVectorToDof(const MultiBody& mb,
 
 
 /// @throw std::domain_error If there is a mismatch between mb.nrBodies and vec.size()
-template <typename T>
-void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T>& vec,
+template <typename T, typename U>
+void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T,U>& vec,
 	const std::string& name);
 
 /// @throw std::domain_error If there is a mismatch between mb.nrJoints and vec.size()
-template <typename T>
-void checkMatchJointsVector(const MultiBody& mb, const std::vector<T>& vec,
+template <typename T, typename U>
+void checkMatchJointsVector(const MultiBody& mb, const std::vector<T,U>& vec,
 	const std::string& name);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.bodyPosW.
@@ -306,8 +306,8 @@ RBDYN_DLLAPI void checkMatchForce(const MultiBody& mb, const MultiBodyConfig& mb
 
 
 
-template <typename T>
-void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T>& vec,
+template <typename T,typename U>
+void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T,U>& vec,
 	const std::string& name)
 {
 	if(int(vec.size()) != mb.nrBodies())
@@ -320,8 +320,8 @@ void checkMatchBodiesVector(const MultiBody& mb, const std::vector<T>& vec,
 }
 
 
-template <typename T>
-void checkMatchJointsVector(const MultiBody& mb, const std::vector<T>& vec,
+template <typename T, typename U>
+void checkMatchJointsVector(const MultiBody& mb, const std::vector<T,U>& vec,
 	const std::string& name)
 {
 	if(int(vec.size()) != mb.nrJoints())
@@ -335,9 +335,9 @@ void checkMatchJointsVector(const MultiBody& mb, const std::vector<T>& vec,
 
 
 
-template<typename T>
+template<typename T, typename U>
 inline void
-ConfigConverter::convertJoint(const std::vector<T>& from, std::vector<T>& to) const
+ConfigConverter::convertJoint(const std::vector<T,U>& from, std::vector<T,U>& to) const
 {
 	for(std::size_t i = 0; i < jInd_.size(); ++i)
 	{
@@ -347,9 +347,9 @@ ConfigConverter::convertJoint(const std::vector<T>& from, std::vector<T>& to) co
 
 
 
-template<typename T>
+template<typename T, typename U>
 inline void
-ConfigConverter::sConvertJoint(const std::vector<T>& from, std::vector<T>& to) const
+ConfigConverter::sConvertJoint(const std::vector<T,U>& from, std::vector<T,U>& to) const
 {
 	if(from.size() != to.size())
 	{
@@ -361,9 +361,9 @@ ConfigConverter::sConvertJoint(const std::vector<T>& from, std::vector<T>& to) c
 
 
 
-template<typename T>
-inline std::vector<T>
-ConfigConverter::convertJoint(const std::vector<T>& from) const
+template<typename T, typename U>
+inline std::vector<T,U>
+ConfigConverter::convertJoint(const std::vector<T,U>& from) const
 {
 	std::vector<T> to(from.size());
 	for(std::size_t i = 0; i < jInd_.size(); ++i)

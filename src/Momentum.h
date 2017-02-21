@@ -200,7 +200,7 @@ private:
 	Eigen::MatrixXd jacFull_;
 
 	std::vector<Jacobian> jacVec_;
-	std::vector<Eigen::MatrixXd> jacWork_;
+	std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > jacWork_;
 	std::vector<double> bodiesWeight_;
 	std::vector<sva::MotionVecd> normalAcc_;
 public:
