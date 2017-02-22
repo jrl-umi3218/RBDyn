@@ -120,7 +120,7 @@ void InverseStatics::inverseStatics(const MultiBody& mb, MultiBodyConfig& mbc)
 
 void InverseStatics::computeTorqueJacobianJoint(
     const MultiBody& mb, MultiBodyConfig& mbc,
-    const std::vector<MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& jacMomentsAndForces)
+    const std::vector<MatrixXd>& jacMomentsAndForces)
 {
   assert(jacMomentsAndForces.size() == static_cast<size_t>(mb.nrBodies()));
 
@@ -230,7 +230,7 @@ void InverseStatics::computeTorqueJacobianJoint(
 void InverseStatics::computeTorqueJacobianJoint(const MultiBody& mb,
                                                 MultiBodyConfig& mbc)
 {
-  std::vector<MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > jacMandF;
+  std::vector<MatrixXd> jacMandF;
   for (int i = 0; i < mb.nrJoints(); ++i) jacMandF.push_back(MatrixXd(0, 0));
 
   computeTorqueJacobianJoint(mb, mbc, jacMandF);
