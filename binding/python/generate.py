@@ -268,7 +268,7 @@ def build_mbc(mbc):
   mbc.add_instance_attribute('jointVelocity', 'std::vector<sva::MotionVecd>')
   mbc.add_instance_attribute('jointTorque', 'std::vector<std::vector<double> >')
 
-  mbc.add_instance_attribute('motionSubspace', 'std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >',
+  mbc.add_instance_attribute('motionSubspace', 'std::vector<Eigen::MatrixXd>',
                              getter='python_motionSubspace',
                              setter='python_motionSubspace')
 
@@ -825,7 +825,7 @@ if __name__ == '__main__':
   rbd.add_container('std::vector<sva::MotionVecd>', 'sva::MotionVecd', 'vector')
   rbd.add_container('std::vector<sva::ForceVecd>', 'sva::ForceVecd', 'vector')
   rbd.add_container('std::vector<sva::RBInertiad>', 'sva::RBInertiad', 'vector')
-  rbd.add_container('std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >', 'Eigen::MatrixXd', 'vector')
+  rbd.add_container('std::vector<Eigen::MatrixXd>', 'Eigen::MatrixXd', 'vector')
 
   # build map type
   rbd.add_container('std::map<std::string, std::string>',

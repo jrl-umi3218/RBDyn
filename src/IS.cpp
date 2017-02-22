@@ -60,7 +60,7 @@ InverseStatics::InverseStatics(const MultiBody& mb)
 void InverseStatics::setJacobianSize(
     const MultiBody& mb,
     const MultiBodyConfig& mbc,
-    const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& jacMomentsAndForces)
+    const std::vector<Eigen::MatrixXd>& jacMomentsAndForces)
 {
   const std::vector<Body>& bodies = mb.bodies();
 

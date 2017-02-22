@@ -95,8 +95,8 @@ struct RBDYN_DLLAPI MultiBodyConfig
 
 	// python binding function
 
-	std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> > python_motionSubspace();
-	void python_motionSubspace(const std::vector<Eigen::MatrixXd, Eigen::aligned_allocator<Eigen::MatrixXd> >& v);
+	std::vector<Eigen::MatrixXd> python_motionSubspace();
+	void python_motionSubspace(const std::vector<Eigen::MatrixXd>& v);
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
