@@ -1,5 +1,5 @@
-#!/bin/sh
-# Copyright (C) 2008-2014 LAAS-CNRS, JRL AIST-CNRS.
+#!/bin/bash
+# Copyright (C) 2008-2017 LAAS-CNRS, JRL AIST-CNRS.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,40 +49,6 @@ me=$0
 bme=`basename "$0"`
 
 
- # ----------------------- #
- # Cross-links management. #
- # ----------------------- #
-#
-# This stores the doxygen /online/ documentation
-# so that installdox can be called to fix links before upload.
-#
-# Please note that this script makes the assumption that the unstable
-# documentation should be used for cross-links which is not what we
-# want.
-
-# FIXME: find a way to link against the "real" corresponding version.
-
-ia="abstract-robot-dynamics"
-ia="$ia jrl-mathtools jrl-mal jrl-dynamics jrl-walkgen"
-ia="$ia dynamic-graph dg-middleware"
-ia="$ia sot-core sot-dynamic sot-pattern-generator"
-ia="$ia sot-openhrp sot-openhrp-scripts"
-installdox_args="$ia"
-
-iu="http://laas.github.com/abstract-robot-dynamics/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/jrl-mathtools/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/jrl-mal/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/jrl-dynamics/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/jrl-walkgen/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/dynamic-graph/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/dg-middleware/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/sot-core/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/sot-dynamic/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/sot-pattern-generator/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/sot-openhrp/doxygen/HEAD/"
-iu="$iu http://jrl-umi3218.github.com/sot-openhrp-scripts/doxygen/HEAD/"
-installdox_urls="$iu"
-
   # ----------------------- #
   # Customizable variables. #
   # ----------------------- #
@@ -92,6 +58,51 @@ installdox_urls="$iu"
   # ---------------- #
   # Helper functions #
   # ---------------- #
+
+# git_dependency_parsing
+# ----------------------
+#
+# From an entry in GIT_DEPENDENCIES variable set git_dep, git_dep_uri and
+# git_dep_branch in the environment
+# For example given the input "jrl-umi3218/jrl-travis" the following variables
+# are defined in the environment:
+# - git_dep jrl-umi3218/jrl-travis
+# - git_dep_uri git://github.com/jrl-umi3218/jrl-travis
+# - git_dep_branch master
+# - git_dep_github true
+# - git_dep_organization jrl-umi3218
+# - git_dep_project jrl-travis
+# Or, given the input git@github.com:jrl-umi3218/jrl-travis#thebranch
+# - git_dep jrl-umi3218/jrl-travis
+# - git_dep_uri git@github.com:jrl-umi3218/jrl-travis
+# - git_dep_branch thebranch
+# - git_dep_github false
+# The second (optional) argument allows to defined the default branch (defaults
+# to master)
+git_dependency_parsing()
+{
+  _input=$1
+  export git_dep=${_input%%#*}
+  export git_dep_branch=${_input##*#}
+  if [ "$git_dep_branch" == "$git_dep" ]; then
+    if [ -e "$2" ]; then
+      export git_dep_branch=$2
+    else
+      export git_dep_branch="master"
+    fi
+  fi
+  git_dep_uri_base=${git_dep%%:*}
+  if [ "$git_dep_uri_base" == "$git_dep" ]; then
+    export git_dep_uri="git://github.com/$git_dep"
+    export git_dep_github=true
+    export git_dep_organization=${git_dep%%/*}
+    export git_dep_project=${git_dep##*/}
+  else
+    export git_dep_uri=$git_dep
+    export git_dep=${git_dep##*:}
+    export git_dep_github=false
+  fi
+}
 
 set_colors()
 {
@@ -161,7 +172,7 @@ yesno()
 version()
 {
     echo 'update-doxygen-doc.sh
-Copyright (C) 2010-2014 LAAS-CNRS, JRL CNRS/AIST.
+Copyright (C) 2008-2017 LAAS-CNRS, JRL CNRS/AIST.
 This is free software; see the source for copying conditions.
 There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.'
@@ -299,28 +310,20 @@ mkdir -p doxygen/${doc_version}
 cp -rf ${build_dir}/doc/doxygen-html/* doxygen/${doc_version}/ \
  || abort "failed to copy the documentation"
 
-if test -x "$tmp/project/doxygen/$doc_version/installdox"; then
-    echo "* Run installdox to fix documentation cross-links..."
-
-    cd $tmp/project/doxygen/$doc_version/ || abort "Failed to change directory."
-
-    # Patch installdox to never abort.
-    # installdox normally checks that _all_ links are substituted.
-    # This is not what we want, we call installdox one dependency at a time
-    # to avoid resolving documentation dependencies manually.
-    sed 's|&usage();||g' installdox > installdox.fixed
-    chmod 755 installdox.fixed
-
-    i=1
-    for doxytag in $installdox_args; do
-	url=`echo "$installdox_urls" | cut -d' ' -f$i`
-	./installdox.fixed -q -l ${doxytag}.doxytag@$url \
-	    2> /dev/null > /dev/null \
-	    || true
-	i=$((i+1))
-    done
-    cd $tmp/project || abort "Failed to change directory."
-fi
+echo "* Fixing cross links..."
+cd "$tmp/project/doxygen/$doc_version"
+for package in ${GIT_DEPENDENCIES}
+do
+  git_dependency_parsing $package
+  if [ $git_dep_github = true ]; then
+    doxygen_url="https://${git_dep_organization}.github.io/${git_dep_project}/doxygen/HEAD/"
+    git_dep_pc=`find /tmp/_ci/build/$git_dep \( ! -regex '.*/\..*' \) -name '*.pc'`
+    git_dep_pc=`basename $git_dep_pc .pc`
+    git_dep_doxygen=`pkg-config --variable=doxygendocdir $git_dep_pc`
+    find . -type f -print0 |xargs -0 sed -i "s@$git_dep_doxygen@$doxygen_url@g"
+  fi
+done
+cd "$tmp/project/"
 
 echo "* Generate the commit..."
 ${GIT} add doxygen/$doc_version \
