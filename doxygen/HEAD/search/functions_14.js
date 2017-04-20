@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['vector',['vector',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00002.html#a80a9f43ca5332f256d5eaa23122cc467',1,'sva::ForceVec::vector()'],['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00003.html#a76edf478c9a99e518590dfb7d8d50b94',1,'sva::MotionVec::vector()']]],
-  ['vector3tocrossmatrix',['vector3ToCrossMatrix',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00016.html#a34d0d0706dc16ae0358433af740a48fd',1,'Eigen']]],
-  ['vector6tocrossdualmatrix',['vector6ToCrossDualMatrix',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00016.html#a2964e2c4bbe44365032512d28ce500ee',1,'Eigen']]],
-  ['vector6tocrossmatrix',['vector6ToCrossMatrix',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00016.html#a843e61000f53c05966116a6dead6d7cb',1,'Eigen']]],
+  ['vector',['vector',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00002.html#a80a9f43ca5332f256d5eaa23122cc467',1,'sva::ForceVec::vector()'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00003.html#a76edf478c9a99e518590dfb7d8d50b94',1,'sva::MotionVec::vector()']]],
+  ['vector3tocrossmatrix',['vector3ToCrossMatrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00016.html#a34d0d0706dc16ae0358433af740a48fd',1,'Eigen']]],
+  ['vector6tocrossdualmatrix',['vector6ToCrossDualMatrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00016.html#a2964e2c4bbe44365032512d28ce500ee',1,'Eigen']]],
+  ['vector6tocrossmatrix',['vector6ToCrossMatrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00016.html#a843e61000f53c05966116a6dead6d7cb',1,'Eigen']]],
   ['vectorbodyjacobian',['vectorBodyJacobian',['../a00012.html#a0d3308ac8f2e127cc6c6fd93c7454924',1,'rbd::Jacobian']]],
   ['vectorjacobian',['vectorJacobian',['../a00012.html#a20dd50b529f11d23467aca84cd28f0c7',1,'rbd::Jacobian']]],
   ['vectortodof',['vectorToDof',['../a00038.html#a4e26c3bab795feca51d727beb784cf13',1,'rbd']]],

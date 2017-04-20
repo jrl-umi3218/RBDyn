@@ -29,7 +29,7 @@ var searchData=
   ['sforwardkinematics',['sForwardKinematics',['../a00038.html#a11ae46b6402eb8d74f53677aca71babb',1,'rbd']]],
   ['sforwardvelocity',['sForwardVelocity',['../a00038.html#a6fdbf73c467ae855e5aadcc0589b55ab',1,'rbd']]],
   ['sfulljacobian',['sFullJacobian',['../a00012.html#acb9f42dd134d5cc0c72a2ec46044eb1a',1,'rbd::Jacobian']]],
-  ['sinc_5finv',['sinc_inv',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00018.html#a3cad8a4ff91f4aace786395eaaef6834',1,'sva']]],
+  ['sinc_5finv',['sinc_inv',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00018.html#a3cad8a4ff91f4aace786395eaaef6834',1,'sva']]],
   ['sinversedynamics',['sInverseDynamics',['../a00009.html#a46dcfb8735a7b54039d3190f3c653a35',1,'rbd::InverseDynamics']]],
   ['sinversekinematics',['sInverseKinematics',['../a00010.html#a007d635fbd464139be26fa9470ee81bd',1,'rbd::InverseKinematics']]],
   ['sinversestatics',['sInverseStatics',['../a00011.html#a3ca5175516c017b4dccd7dd2740ec435',1,'rbd::InverseStatics']]],

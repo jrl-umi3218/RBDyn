@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['sva',['sva',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00018.html',1,'']]],
-  ['sva_5finternal',['sva_internal',['/tmp/_ci/install/share/doc/SpaceVecAlg/doxygen-html/a00019.html',1,'sva']]]
+  ['sva',['sva',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00018.html',1,'']]],
+  ['sva_5finternal',['sva_internal',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00019.html',1,'sva']]]
 ];
