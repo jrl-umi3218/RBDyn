@@ -1,11 +1,15 @@
 var searchData=
 [
+  ['makemimic',['makeMimic',['../a00013.html#a08aad92ddc12b89bf2e1fb29557ee53f',1,'rbd::Joint']]],
   ['makemultibody',['makeMultiBody',['../a00016.html#a0b609d5bef110eff5e418222b99daa14',1,'rbd::MultiBodyGraph::makeMultiBody(const std::string &amp;rootBodyName, bool isFixed, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())'],['../a00016.html#a53753c50aecde8267783c1c7380b84e3',1,'rbd::MultiBodyGraph::makeMultiBody(const std::string &amp;rootBodyName, Joint::Type rootJointType, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())'],['../a00016.html#aee451c3b6806f21bf44b9103c3498155',1,'rbd::MultiBodyGraph::makeMultiBody(const std::string &amp;rootBodyName, Joint::Type rootJointType, const Eigen::Vector3d &amp;axis, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())']]],
   ['mass',['mass',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00005.html#a95a7437e72a1cb2f0f76c966d49cbe23',1,'sva::RBInertia']]],
   ['massmatrix',['massMatrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00001.html#a5564cb8ad83b29b2c051dd20f6492f8f',1,'sva::ABInertia']]],
   ['matrix',['matrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00001.html#a6de052f0c556b42ce886c97a3a71d72c',1,'sva::ABInertia::matrix()'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00004.html#a54562972abd09161aee465c592c14047',1,'sva::PTransform::matrix()'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00005.html#a175ff0a93ded97638e29edabc636de0c',1,'sva::RBInertia::matrix()'],['../a00003.html#a243021236968a021276f62fc83c0bf9d',1,'rbd::CentroidalMomentumMatrix::matrix()']]],
   ['matrixdot',['matrixDot',['../a00003.html#a667a59e07fb0fe78f3f1d117600ee6cc',1,'rbd::CentroidalMomentumMatrix']]],
   ['mergesubbodies',['mergeSubBodies',['../a00016.html#a6c2f62094dc38b89089d09b5c4d4a367',1,'rbd::MultiBodyGraph']]],
+  ['mimicmultiplier',['mimicMultiplier',['../a00013.html#aef9c90271d63f71d5877803b46b89f04',1,'rbd::Joint']]],
+  ['mimicname',['mimicName',['../a00013.html#a056957ec5f28c6f195725c0bbc198417',1,'rbd::Joint']]],
+  ['mimicoffset',['mimicOffset',['../a00013.html#a4d0da089f1c459ca321c195dd3c0986a',1,'rbd::Joint']]],
   ['momentum',['momentum',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00005.html#a5cedeb34319545322a29375562c836d9',1,'sva::RBInertia::momentum()'],['../a00003.html#acee38a47ef2de6763398d5bbc7e2d271',1,'rbd::CentroidalMomentumMatrix::momentum()']]],
   ['motion',['motion',['../a00013.html#a09167c4dded9cd28c727f5463edec2c7',1,'rbd::Joint']]],
   ['motionangular',['motionAngular',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00018.html#a2453bbce65af3c0244ddb1b6bd5d8ce2',1,'sva::motionAngular(Eigen::MatrixBase&lt; Derived &gt; &amp;mv)'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00018.html#a4559ada646b1360e454b8e4c111b7f30',1,'sva::motionAngular(const Eigen::MatrixBase&lt; Derived &gt; &amp;mv)']]],

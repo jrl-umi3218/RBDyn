@@ -147,6 +147,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4d6f669123be6cb78d28963739c59044"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a6b428b8aca7c270a2f62a298adaf1e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#a9a6b428b8aca7c270a2f62a298adaf1e">Joint</a> (<a class="el" href="a00013.html#afff99e26b5eeb3d899af433df385f4fd">Type</a> <a class="el" href="a00013.html#aa49d49bd3dba1da996132022006161a6">type</a>, bool <a class="el" href="a00013.html#a02568f77b66e4fa130481e0bcd4db11b">forward</a>, std::string <a class="el" href="a00013.html#a2127811f5687ba3dc7279be166b9e17a">name</a>)</td></tr>
 <tr class="separator:a9a6b428b8aca7c270a2f62a298adaf1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08aad92ddc12b89bf2e1fb29557ee53f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#a08aad92ddc12b89bf2e1fb29557ee53f">makeMimic</a> (const std::string &amp;<a class="el" href="a00013.html#a2127811f5687ba3dc7279be166b9e17a">name</a>, double multiplier, double offset)</td></tr>
+<tr class="memdesc:a08aad92ddc12b89bf2e1fb29557ee53f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the joint mimic and specify mimic information.  <a href="#a08aad92ddc12b89bf2e1fb29557ee53f">More...</a><br/></td></tr>
+<tr class="separator:a08aad92ddc12b89bf2e1fb29557ee53f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa49d49bd3dba1da996132022006161a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a00013.html#afff99e26b5eeb3d899af433df385f4fd">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#aa49d49bd3dba1da996132022006161a6">type</a> () const </td></tr>
 <tr class="separator:aa49d49bd3dba1da996132022006161a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdca9b1edf014edfc39447079bb1706c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#afdca9b1edf014edfc39447079bb1706c">direction</a> () const </td></tr>
@@ -163,6 +166,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2c33de3bbc848266662b506028810f83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2127811f5687ba3dc7279be166b9e17a"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#a2127811f5687ba3dc7279be166b9e17a">name</a> () const </td></tr>
 <tr class="separator:a2127811f5687ba3dc7279be166b9e17a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b5a9107fcc0c81e23c6048f1aae1d52"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#a7b5a9107fcc0c81e23c6048f1aae1d52">isMimic</a> () const </td></tr>
+<tr class="separator:a7b5a9107fcc0c81e23c6048f1aae1d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a056957ec5f28c6f195725c0bbc198417"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#a056957ec5f28c6f195725c0bbc198417">mimicName</a> () const </td></tr>
+<tr class="separator:a056957ec5f28c6f195725c0bbc198417"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef9c90271d63f71d5877803b46b89f04"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#aef9c90271d63f71d5877803b46b89f04">mimicMultiplier</a> () const </td></tr>
+<tr class="separator:aef9c90271d63f71d5877803b46b89f04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d0da089f1c459ca321c195dd3c0986a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#a4d0da089f1c459ca321c195dd3c0986a">mimicOffset</a> () const </td></tr>
+<tr class="separator:a4d0da089f1c459ca321c195dd3c0986a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0bd602bfefd7ec344b1679a573465dc"><td class="memItemLeft" align="right" valign="top">const Eigen::Matrix&lt; double, <br class="typebreak"/>
 6, Eigen::Dynamic &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00013.html#ac0bd602bfefd7ec344b1679a573465dc">motionSubspace</a> () const </td></tr>
 <tr class="separator:ac0bd602bfefd7ec344b1679a573465dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -560,6 +571,155 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7b5a9107fcc0c81e23c6048f1aae1d52"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rbd::Joint::isMimic </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True if the joint is a mimic joint </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a08aad92ddc12b89bf2e1fb29557ee53f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rbd::Joint::makeMimic </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>multiplier</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>offset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Make the joint mimic and specify mimic information. </p>
+<p>This change cannot be reversed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Name of the joint that will be mimiced. </td></tr>
+    <tr><td class="paramname">multiplier</td><td>Mimic multiplier </td></tr>
+    <tr><td class="paramname">offset</td><td>Mimic offset </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>References <a class="el" href="a00013.html#a2127811f5687ba3dc7279be166b9e17a">name()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aef9c90271d63f71d5877803b46b89f04"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rbd::Joint::mimicMultiplier </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Mimic multiplier </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a056957ec5f28c6f195725c0bbc198417"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; rbd::Joint::mimicName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Mimiced name </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a4d0da089f1c459ca321c195dd3c0986a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rbd::Joint::mimicOffset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Mimic offset </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a09167c4dded9cd28c727f5463edec2c7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -643,7 +803,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="a00013.html" title="Joint representation. ">Joint</a> name. </dd></dl>
 
-<p>Referenced by <a class="el" href="a00038.html#ac3088586b9fe6169533319c4dba20e9f">rbd::operator&lt;&lt;()</a>.</p>
+<p>Referenced by <a class="el" href="a00013.html#a08aad92ddc12b89bf2e1fb29557ee53f">makeMimic()</a>, and <a class="el" href="a00038.html#ac3088586b9fe6169533319c4dba20e9f">rbd::operator&lt;&lt;()</a>.</p>
 
 </div>
 </div>
@@ -1043,7 +1203,7 @@ template&lt;typename T &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="a00038.html">rbd</a></li><li class="navelem"><a class="el" href="a00013.html">Joint</a></li>
-    <li class="footer">Generated on Thu Apr 20 2017 03:02:47 for RBDyn by
+    <li class="footer">Generated on Tue May 23 2017 04:35:07 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
