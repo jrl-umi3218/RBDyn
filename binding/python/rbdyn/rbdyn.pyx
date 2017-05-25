@@ -1,6 +1,7 @@
 # distutils: language = c++
 
 cimport rbdyn.c_rbdyn as c_rbdyn
+cimport rbdyn.c_rbdyn_private as c_rbdyn_private
 cimport sva.c_sva as c_sva
 cimport eigen.c_eigen as c_eigen
 cimport sva.sva as sva
@@ -38,10 +39,10 @@ cdef class DoubleVectorWrapper(object):
         step = 1
       j = 0
       for i in xrange(start, stop, step):
-        c_rbdyn.dv_set_item(deref(self.v), i, value[j])
+        c_rbdyn_private.dv_set_item(deref(self.v), i, value[j])
         j += 1
     else:
-      c_rbdyn.dv_set_item(deref(self.v), idx, value)
+      c_rbdyn_private.dv_set_item(deref(self.v), idx, value)
   def __repr__(self):
     return deref(self.v).__repr__()
   def __copy__(self):
@@ -95,10 +96,10 @@ cdef class DoubleVectorVectorWrapper(object):
         step = 1
       j = 0
       for i in xrange(start, stop, step):
-        c_rbdyn.dvv_set_item(deref(self.v), i, value[j])
+        c_rbdyn_private.dvv_set_item(deref(self.v), i, value[j])
         j += 1
     else:
-      c_rbdyn.dvv_set_item(deref(self.v), idx, value)
+      c_rbdyn_private.dvv_set_item(deref(self.v), idx, value)
   def __repr__(self):
     return deref(self.v).__repr__()
   def __copy__(self):
@@ -149,9 +150,9 @@ cdef class Body(object):
       raise NotImplementedError("This comparison is not supported")
 
   def __str__(self):
-    return c_rbdyn.BodyToString(self.impl)
+    return c_rbdyn_private.BodyToString(self.impl)
   def __repr__(self):
-    return c_rbdyn.BodyToString(self.impl)
+    return c_rbdyn_private.BodyToString(self.impl)
 
   @staticmethod
   def pickle(b):
@@ -246,16 +247,16 @@ cdef class Joint(object):
       raise NotImplementedError("This comparison is not supported")
 
   def __str__(self):
-    return c_rbdyn.JointToString(self.impl)
+    return c_rbdyn_private.JointToString(self.impl)
   def __repr__(self):
-    return c_rbdyn.JointToString(self.impl)
+    return c_rbdyn_private.JointToString(self.impl)
 
   @staticmethod
   def ZeroParam(int jt):
-    return c_rbdyn.ZeroParam(<c_rbdyn.JointType>jt)
+    return c_rbdyn_private.ZeroParam(<c_rbdyn.JointType>jt)
   @staticmethod
   def ZeroDof(int jt):
-    return c_rbdyn.ZeroDof(<c_rbdyn.JointType>jt)
+    return c_rbdyn_private.ZeroDof(<c_rbdyn.JointType>jt)
   @staticmethod
   def pickle(j):
     axis = None
@@ -509,7 +510,7 @@ cdef MultiBody MultiBodyFromC(const c_rbdyn.MultiBody& mb, cppbool copy = True):
     ret.impl = new c_rbdyn.MultiBody(mb)
   else:
     ret.__own_impl = False
-    ret.impl = &(c_rbdyn.const_cast_mb(mb))
+    ret.impl = &(c_rbdyn_private.const_cast_mb(mb))
   return ret
 
 cdef MultiBodyGraph MultiBodyGraphFromC(const c_rbdyn.MultiBodyGraph & mbg, cppbool copy = True):
@@ -518,7 +519,7 @@ cdef MultiBodyGraph MultiBodyGraphFromC(const c_rbdyn.MultiBodyGraph & mbg, cppb
     ret.impl = new c_rbdyn.MultiBodyGraph(mbg)
   else:
     ret.__own_impl = False
-    ret.impl = &(c_rbdyn.const_cast_mbg(mbg))
+    ret.impl = &(c_rbdyn_private.const_cast_mbg(mbg))
   return ret
 
 cdef class MotionSubspaceVector(object):
@@ -661,7 +662,7 @@ cdef MultiBodyConfig MultiBodyConfigFromC(const c_rbdyn.MultiBodyConfig& mbc, cp
     ret.impl = new c_rbdyn.MultiBodyConfig(mbc)
   else:
     ret.__own_impl = False
-    ret.impl = &(c_rbdyn.const_cast_mbc(mbc))
+    ret.impl = &(c_rbdyn_private.const_cast_mbc(mbc))
   return ret
 
 cdef class MultiBodyConfigVector(object):
@@ -689,7 +690,7 @@ cdef class MultiBodyConfigVector(object):
       raise IndexError
   def __setitem__(self, int idx, MultiBodyConfig mbc):
     if idx < self.v.size():
-      c_rbdyn.mbcv_set_item(deref(self.v), idx, deref(mbc.impl))
+      c_rbdyn_private.mbcv_set_item(deref(self.v), idx, deref(mbc.impl))
     else:
       raise IndexError
   @staticmethod
@@ -703,7 +704,7 @@ cdef class ConfigConverter(object):
   def __copyctor__(self, ConfigConverter other):
     self.impl = new c_rbdyn.ConfigConverter(deref(other.impl))
   def __mbsctor__(self, MultiBody mb1, MultiBody mb2):
-    self.impl = c_rbdyn.ConfigConverterConstructor(deref(mb1.impl),
+    self.impl = c_rbdyn_private.ConfigConverterConstructor(deref(mb1.impl),
         deref(mb2.impl))
   def __cinit__(self, *args):
     if len(args) == 1 and isinstance(args[0], ConfigConverter):
