@@ -17,7 +17,7 @@
 
 // include
 // Associated header
-#include "VisServo.h"
+#include "RBDyn/VisServo.h"
 
 namespace rbd
 {

@@ -16,13 +16,13 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "FA.h"
+#include "RBDyn/FA.h"
 
 // includes
 // RBdyn
-#include "Joint.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
+#include "RBDyn/Joint.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 namespace rbd
 {

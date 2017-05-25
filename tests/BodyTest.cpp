@@ -27,7 +27,7 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "Body.h"
+#include "RBDyn/Body.h"
 
 BOOST_AUTO_TEST_CASE(BodyTest)
 {

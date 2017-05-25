@@ -28,18 +28,18 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "FK.h"
-#include "FV.h"
-#include "FA.h"
-#include "ID.h"
-#include "IK.h"
-#include "Body.h"
-#include "Joint.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "MultiBodyGraph.h"
-#include "EulerIntegration.h"
-#include "Jacobian.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/FA.h"
+#include "RBDyn/ID.h"
+#include "RBDyn/IK.h"
+#include "RBDyn/Body.h"
+#include "RBDyn/Joint.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/EulerIntegration.h"
+#include "RBDyn/Jacobian.h"
 
 // arm
 #include "XYZarm.h"

@@ -20,11 +20,11 @@
 #include <tuple>
 
 // RBDyn
-#include "Body.h"
-#include "Joint.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "MultiBodyGraph.h"
+#include "RBDyn/Body.h"
+#include "RBDyn/Joint.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/MultiBodyGraph.h"
 
 
 /// @return A simple XXX arm with Y as up axis.

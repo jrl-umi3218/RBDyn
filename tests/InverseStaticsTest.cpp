@@ -28,16 +28,16 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "FK.h"
-#include "FV.h"
-#include "FD.h"
-#include "IS.h"
-#include "Body.h"
-#include "Joint.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "MultiBodyGraph.h"
-#include "util.hh"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/FD.h"
+#include "RBDyn/IS.h"
+#include "RBDyn/Body.h"
+#include "RBDyn/Joint.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/util.hh"
 #include "fixture.hh"
 
 // arm

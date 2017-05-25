@@ -17,10 +17,10 @@
 
 // include
 // Associated header
-#include "ZMP.h"
+#include "RBDyn/ZMP.h"
 
 // RBDyn
-#include "MultiBodyConfig.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 namespace rbd
 {

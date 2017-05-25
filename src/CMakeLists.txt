@@ -18,15 +18,14 @@
 set(SOURCES MultiBodyGraph.cpp MultiBody.cpp MultiBodyConfig.cpp
   FK.cpp FV.cpp FA.cpp Jacobian.cpp ID.cpp IK.cpp IS.cpp FD.cpp EulerIntegration.cpp
   CoM.cpp Momentum.cpp ZMP.cpp IDIM.cpp VisServo.cpp)
-set(HEADERS Body.h Joint.h MultiBodyGraph.h MultiBody.h MultiBodyConfig.h
-  FK.h FV.h FA.h Jacobian.h ID.h IK.h IS.h FD.h EulerIntegration.h CoM.h
-  Momentum.h ZMP.h IDIM.h VisServo.h)
+set(HEADERS RBDyn/Body.h RBDyn/Joint.h RBDyn/MultiBodyGraph.h RBDyn/MultiBody.h RBDyn/MultiBodyConfig.h
+  RBDyn/FK.h RBDyn/FV.h RBDyn/FA.h RBDyn/Jacobian.h RBDyn/ID.h RBDyn/IK.h RBDyn/IS.h RBDyn/FD.h RBDyn/EulerIntegration.h RBDyn/CoM.h
+  RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
-PKG_CONFIG_USE_DEPENDENCY(RBDyn SpaceVecAlg)
+pkg_config_use_dependency(RBDyn SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
 set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
-
 
 install(
     TARGETS RBDyn

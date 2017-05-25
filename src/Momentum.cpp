@@ -16,13 +16,13 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "Momentum.h"
+#include "RBDyn/Momentum.h"
 
 // includes
 // RBDyn
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "Jacobian.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/Jacobian.h"
 
 namespace rbd
 {

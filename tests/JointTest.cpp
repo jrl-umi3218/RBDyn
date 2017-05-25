@@ -28,7 +28,7 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "Joint.h"
+#include "RBDyn/Joint.h"
 
 const double TOL = 1e-10;
 

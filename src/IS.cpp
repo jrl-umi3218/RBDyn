@@ -15,19 +15,19 @@
 #include <iostream>
 
 // associated header
-#include "IS.h"
+#include "RBDyn/IS.h"
 
 // includes
 // sva
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "util.hh"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "FK.h"
-#include "FV.h"
-#include "Jacobian.h"
+#include "RBDyn/util.hh"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/Jacobian.h"
 
 namespace rbd
 {

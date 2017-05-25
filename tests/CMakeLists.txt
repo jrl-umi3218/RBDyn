@@ -73,10 +73,3 @@ addUnitTest("IntegrationTest")
 
 addBenchmark("JacobianBench")
 addBenchmark("DynamicsBench")
-
-if(${PYTHON_BINDING})
-  set(PYTHON_TEST_COMMAND "${PYTHON_EXECUTABLE}")
-  configure_file(rbd_pickle_test.py ${CMAKE_CURRENT_BINARY_DIR}/rbd_pickle_test.py)
-  add_test(rbdPickleTestUnit ${PYTHON_TEST_COMMAND}
-    "${CMAKE_CURRENT_BINARY_DIR}/rbd_pickle_test.py")
-endif()

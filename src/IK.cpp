@@ -16,14 +16,14 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "IK.h"
+#include "RBDyn/IK.h"
 
 // includes
 // RBDyn
-#include "FK.h"
-#include "FV.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 //SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>

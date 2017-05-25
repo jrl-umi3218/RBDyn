@@ -16,12 +16,12 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "EulerIntegration.h"
+#include "RBDyn/EulerIntegration.h"
 
 // includes
 // RBDyn
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 namespace
 {
