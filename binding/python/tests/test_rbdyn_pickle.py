@@ -19,7 +19,7 @@ import unittest
 
 import pickle
 
-import eigen3 as e3
+import eigen as e3
 import sva
 import rbdyn as rbd
 

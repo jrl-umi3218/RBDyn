@@ -216,6 +216,8 @@ cdef class Joint(object):
       self.__copyctor__(args[0])
     elif len(args) == 4 and isinstance(args[1], eigen.Vector3d):
       self.__axisctor__(args[0],args[1],args[2],args[3])
+    elif len(args) == 4 and isinstance(args[1], list):
+      self.__axisctor__(args[0],eigen.Vector3d(args[1]),args[2],args[3])
     elif len(args) == 3:
       self.__ctor__(args[0],args[1],args[2])
     else:
@@ -278,7 +280,7 @@ cdef class Joint(object):
   def pickle(j):
     axis = None
     def reverse(v):
-      return j.direction() * v
+      return j.direction() * v[0]
     if j.type() == Joint.Rev:
       axis = eigen.Vector3d(*map(reverse, list(j.motionSubspace())[:3]))
     elif j.type() == Joint.Prism:
@@ -1100,6 +1102,7 @@ def copy_reg_pickle():
     import copy_reg as copyreg
 
   # Register SVA pickle needed by RBDyn
+  import sva
   sva.copy_reg_pickle()
 
   copyreg.pickle(Body, Body.pickle)
