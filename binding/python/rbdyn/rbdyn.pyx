@@ -137,9 +137,13 @@ cdef DoubleVectorVectorWrapper DoubleVectorVectorWrapperFromC(vector[vector[doub
 cdef class Body(object):
   def __copyctor__(self, Body other):
     self.impl = other.impl
-  def __rbictor__(self, sva.RBInertiad rbInertia, string name):
+  def __rbictor__(self, sva.RBInertiad rbInertia, name):
+    if isinstance(name, unicode):
+      name = name.encode(u'ascii')
     self.impl = c_rbdyn.Body(deref(rbInertia.impl), name)
-  def __comictor__(self, double mass, eigen.Vector3d com, eigen.Matrix3d inertia, string name):
+  def __comictor__(self, double mass, eigen.Vector3d com, eigen.Matrix3d inertia, name):
+    if isinstance(name, unicode):
+      name = name.encode(u'ascii')
     self.impl = c_rbdyn.Body(mass, com.impl, inertia.impl, name)
   def __cinit__(self, *args):
     if len(args) == 0:
@@ -203,11 +207,15 @@ cdef class Joint(object):
   Fixed = c_rbdyn.JointFixed
   def __copyctor__(self, Joint other):
     self.impl = other.impl
-  def __axisctor__(self, int t, eigen.Vector3d axis, cppbool forward, string name):
+  def __axisctor__(self, int t, eigen.Vector3d axis, cppbool forward, name):
     assert(t >= Joint.Rev and t <= Joint.Fixed)
+    if isinstance(name, unicode):
+      name = name.encode(u'ascii')
     self.impl = c_rbdyn.Joint(<c_rbdyn.JointType>t, axis.impl, forward, name)
-  def __ctor__(self, int t, cppbool forward, string name):
+  def __ctor__(self, int t, cppbool forward, name):
     assert(t >= Joint.Rev and t <= Joint.Fixed)
+    if isinstance(name, unicode):
+      name = name.encode(u'ascii')
     self.impl = c_rbdyn.Joint(<c_rbdyn.JointType>t, forward, name)
   def __cinit__(self, *args):
     if len(args) == 0:
@@ -323,7 +331,7 @@ cdef class MultiBody(object):
       del self.impl
   def __copyctor__(self, MultiBody other):
     self.impl = new c_rbdyn.MultiBody(deref(other.impl))
-  def __ctor__(self, BodyVector bodies, JointVector joints, vector[int] pred, vector[int] succ, vector[int] parent, sva.PTransformdVector Xt):
+  def __ctor__(self, BodyVector bodies, JointVector joints, pred, succ, parent, sva.PTransformdVector Xt):
     self.impl = new c_rbdyn.MultiBody(bodies.v, joints.v, pred, succ, parent, deref(Xt.v))
   def __cinit__(self, *args, skip_alloc = False):
     self.__own_impl = True
@@ -408,9 +416,9 @@ cdef class MultiBody(object):
     return self.impl.jointsPosInDof()
   def jointPosInDof(self, int i):
     return self.impl.sJointPosInDof(i)
-  def bodyIndexByName(self, string name):
+  def bodyIndexByName(self, name):
     return self.impl.sBodyIndexByName(name)
-  def jointIndexByName(self, string name):
+  def jointIndexByName(self, name):
     return self.impl.sJointIndexByName(name)
   @staticmethod
   def pickle(mb):
@@ -467,28 +475,28 @@ cdef class MultiBodyGraph(object):
     self.impl.addBody(b.impl)
   def addJoint(self, Joint j):
     self.impl.addJoint(j.impl)
-  def linkBodies(self, string b1Name, sva.PTransformd tB1, string b2Name, sva.PTransformd tB2, string jointName, cppbool isB1toB2 = True):
+  def linkBodies(self, b1Name, sva.PTransformd tB1, b2Name, sva.PTransformd tB2, jointName, cppbool isB1toB2 = True):
     self.impl.linkBodies(b1Name, deref(tB1.impl), b2Name, deref(tB2.impl), jointName, isB1toB2)
   def nrNodes(self):
     return self.impl.nrNodes()
   def nrJoints(self):
     return self.impl.nrJoints()
-  def removeJoint(self, string rootBodyName, string arg):
+  def removeJoint(self, rootBodyName, arg):
       self.impl.removeJoint(rootBodyName, arg)
-  def removeJoints(self, string rootBodyName, arg):
+  def removeJoints(self, rootBodyName, arg):
     if isinstance(arg, list) and len(arg) > 0:
       if isinstance(arg[0], basestring):
         self.impl.removeJointsSV(rootBodyName,arg)
-  def mergeSubBodies(self, string rootBodyName, string jName, arg):
+  def mergeSubBodies(self, rootBodyName, jName, arg):
     if isinstance(arg, dict) and len(arg) > 0 and isinstance(arg.values()[0],list):
         self.impl.mergeSubBodies(rootBodyName, jName, <cppmap[string,vector[double]]>arg)
-  def __makeMB(self, string rBName, cppbool isFixed, sva.PTransformd X_0_j0 = sva.PTransformd.Identity(), sva.PTransformd X_b0_j0 = sva.PTransformd.Identity()):
+  def __makeMB(self, rBName, cppbool isFixed, sva.PTransformd X_0_j0 = sva.PTransformd.Identity(), sva.PTransformd X_b0_j0 = sva.PTransformd.Identity()):
     return MultiBodyFromC(self.impl.makeMultiBody(rBName, isFixed,
       deref(X_0_j0.impl), deref(X_b0_j0.impl)))
-  def __makeMBWAxis(self, string rBName, c_rbdyn.JointType tp, eigen.Vector3d ax, sva.PTransformd X_0_j0 = sva.PTransformd.Identity(), sva.PTransformd X_b0_j0 = sva.PTransformd.Identity()):
+  def __makeMBWAxis(self, rBName, c_rbdyn.JointType tp, eigen.Vector3d ax, sva.PTransformd X_0_j0 = sva.PTransformd.Identity(), sva.PTransformd X_b0_j0 = sva.PTransformd.Identity()):
     return MultiBodyFromC(self.impl.makeMultiBody(rBName, tp, ax.impl,
       deref(X_0_j0.impl), deref(X_b0_j0.impl)))
-  def makeMultiBody(self, string rootBodyName, *args):
+  def makeMultiBody(self, rootBodyName, *args):
     # Possible calls
     # bool, (PT, (PT))
     # int, V3d, (PT, (PT))
@@ -512,14 +520,14 @@ cdef class MultiBodyGraph(object):
     else:
       raise TypeError("Not enough arguments passed to makeMultiBody")
     raise TypeError("Wrong arguments passed to makeMultiBody")
-  def bodiesBaseTransform(self, string rootBodyName, sva.PTransformd X_b0_j0 = sva.PTransformd.Identity()):
+  def bodiesBaseTransform(self, rootBodyName, sva.PTransformd X_b0_j0 = sva.PTransformd.Identity()):
     cdef cppmap[string,c_sva.PTransformd] res = self.impl.bodiesBaseTransform(rootBodyName, deref(X_b0_j0.impl))
     ret = {}
     for it in res:
       ret[it.first] = sva.PTransformdFromC(it.second)
     return ret
 
-  def successorJoints(self, string rootBodyName):
+  def successorJoints(self, rootBodyName):
     cdef cppmap[string, vector[string]] res = self.impl.successorJoints(rootBodyName)
     return res
 
@@ -787,7 +795,7 @@ def vectorToDof(MultiBody mb, eigen.VectorXd v):
 cdef class Jacobian(object):
   def __copyctor__(self, Jacobian other):
     self.impl = c_rbdyn.Jacobian(other.impl)
-  def __mbvctor__(self, MultiBody mb, string bodyName, eigen.Vector3d point = eigen.Vector3d.Zero()):
+  def __mbvctor__(self, MultiBody mb, bodyName, eigen.Vector3d point = eigen.Vector3d.Zero()):
     self.impl = c_rbdyn.Jacobian(deref(mb.impl), bodyName, point.impl)
   def __cinit__(self, *args):
     if len(args) == 0:

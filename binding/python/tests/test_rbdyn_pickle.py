@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 # Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 # This file is part of RBDyn.
@@ -46,10 +48,10 @@ class TestRBDynPickle(unittest.TestCase):
     jFree = rbd.Joint(rbd.Joint.Free, True, 'jFree')
     jFix = rbd.Joint(rbd.Joint.Fixed, False, 'jFix')
 
-    mb = rbd.MultiBody([makeBody('body%s' % i) for i in xrange(7)],
+    mb = rbd.MultiBody([makeBody('body%s' % i) for i in range(7)],
                        [jR, jP, jS, jPla, jC, jFree, jFix],
-                       range(-1, 6), range(0, 7), range(-1, 6),
-                       [sva.PTransformd(e3.Vector3d(0.,i,0.)) for i in xrange(7)])
+                       list(range(-1, 6)), list(range(0, 7)), list(range(-1, 6)),
+                       [sva.PTransformd(e3.Vector3d(0.,i,0.)) for i in range(7)])
 
 
     def test(v, func):
