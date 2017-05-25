@@ -1,6 +1,4 @@
-#! /usr/bin/env python2
-
-# Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+# Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 # This file is part of RBDyn.
 #
