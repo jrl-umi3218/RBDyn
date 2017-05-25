@@ -40,11 +40,14 @@ before_install:
 - pushd .
 - cd /tmp/_ci/build
 - export install_dir=/tmp/_ci/install
+- export OLD_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 - export PKG_CONFIG_PATH="$install_dir/lib/pkgconfig:$install_dir/share/pkgconfig:$PKG_CONFIG_PATH"
 - git clone -b topic/Cython https://github.com/jrl-umi3218/Eigen3ToPython
 - cd Eigen3ToPython
 - pip install -r requirements.txt
 - pip install . -vvv
+- export PKG_CONFIG_PATH=$OLD_PKG_CONFIG_PATH
+- unset install_dir
 - popd
 - ./.travis/run  before_install
 matrix:
