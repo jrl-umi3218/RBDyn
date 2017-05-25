@@ -50,7 +50,7 @@ namespace
     const double taylor_2_bound = sqrt(taylor_0_bound);
     const double taylor_n_bound = sqrt(taylor_2_bound);
 
-    if (abs(x) >= taylor_n_bound)
+    if (std::abs(x) >= taylor_n_bound)
     {
       return(std::sin(x) / x);
     }
@@ -59,14 +59,14 @@ namespace
       // approximation by taylor series in x at 0 up to order 0
       double result = 1;
 
-      if (abs(x) >= taylor_0_bound)
+      if (std::abs(x) >= taylor_0_bound)
       {
         double x2 = x*x;
 
         // approximation by taylor series in x at 0 up to order 2
         result -= x2 / 6;
 
-        if (abs(x) >= taylor_2_bound)
+        if (std::abs(x) >= taylor_2_bound)
         {
           // approximation by taylor series in x at 0 up to order 4
           result += (x2*x2) / 120;

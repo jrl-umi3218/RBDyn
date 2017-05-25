@@ -461,9 +461,10 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 
 
 	// X unit rot
+  const double pi = cst::pi<double>();
 	q = {1., 0., 0., 0., 0., 0., 0.};
-	goalQ = {std::sqrt(2.)/2., std::sqrt(2.)/2., 0., 0., 0., 0., 0.},
-	eulerJointIntegration(Joint::Free, {cst::pi<double>()/2., 0., 0., 0., 0., 0.}, { 0., 0., 0., 0., 0., 0. }, 1., q);
+	goalQ = {std::cos(pi/4), std::sin(pi/4), 0., 0., 0., 0., 0.},
+	eulerJointIntegration(Joint::Free, {pi/2., 0., 0., 0., 0., 0.}, { 0., 0., 0., 0., 0., 0. }, 1., q);
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
 

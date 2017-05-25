@@ -175,7 +175,7 @@ void testConstantAccelerationIntegration(Joint::Type type,
   eulerIntegration(mb, mbc0, step);
 
   //integrating with constant velocity on small time step
-  const int N = 1000;
+  const int N = 5000;
   for (int i = 0; i < N; ++i)
   {
     eulerIntegration(mb, mbc, step/N);
