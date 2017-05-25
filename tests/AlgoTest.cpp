@@ -429,18 +429,19 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 	using namespace std;
 	using namespace Eigen;
 	using namespace rbd;
+  namespace cst = boost::math::constants;
 
 	// 1 dof joint
 
 	// static
 	vector<double> q = {0.};
 
-	eulerJointIntegration(Joint::Rev, {0.}, 1., q);
+  eulerJointIntegration(Joint::Rev, { 0. }, { 0. }, 1., q);
 
 	BOOST_CHECK_EQUAL(q[0], 0.);
 
 	// moving
-	eulerJointIntegration(Joint::Rev, {1.}, 1., q);
+	eulerJointIntegration(Joint::Rev, {1.}, { 0. }, 1., q);
 
 	BOOST_CHECK_EQUAL(q[0], 1.);
 
@@ -450,26 +451,26 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 	// static
 	q = {1., 0., 0., 0., 0., 0., 0.};
 	vector<double> goalQ = q;
-	eulerJointIntegration(Joint::Spherical, {0., 0., 0., 0., 0., 0.}, 1., q);
+	eulerJointIntegration(Joint::Spherical, {0., 0., 0., 0., 0., 0.}, { 0., 0., 0., 0., 0., 0. }, 1., q);
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
 	// X unit move
 	goalQ = {1., 0., 0., 0., 1., 0., 0.},
-	eulerJointIntegration(Joint::Free, {0., 0., 0., 1., 0., 0.}, 1., q);
+	eulerJointIntegration(Joint::Free, {0., 0., 0., 1., 0., 0.}, { 0., 0., 0., 0., 0., 0. }, 1., q);
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
 
 	// X unit rot
 	q = {1., 0., 0., 0., 0., 0., 0.};
-	goalQ = {1./std::sqrt(1.25), 0.5/std::sqrt(1.25), 0., 0., 0., 0., 0.},
-	eulerJointIntegration(Joint::Free, {1., 0., 0., 0., 0., 0.}, 1., q);
+	goalQ = {std::sqrt(2.)/2., std::sqrt(2.)/2., 0., 0., 0., 0., 0.},
+	eulerJointIntegration(Joint::Free, {cst::pi<double>()/2., 0., 0., 0., 0., 0.}, { 0., 0., 0., 0., 0., 0. }, 1., q);
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
 
 	// planar
 	q = {0., 0., 0.};
 	goalQ = {1., 1., 1.};
-	eulerJointIntegration(Joint::Planar, {1., 1., 1.}, 1., q);
+  eulerJointIntegration(Joint::Planar, { 1., 1., 1. }, { 0., 0., 0. }, 1., q);
 	BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 }
 
@@ -483,7 +484,7 @@ double testEulerInteg(rbd::Joint::Type jType, const Eigen::Vector3d& axis,
 	using namespace rbd;
 
 	Joint j(jType, axis, true, std::string("0"));
-	std::vector<double> qVec(j.params()), alphaVec(j.dof());
+	std::vector<double> qVec(j.params()), alphaVec(j.dof()), alphaDVec(j.dof());
 	for(int i = 0; i < j.params(); ++i)
 	{
 		qVec[i] = q[i];
@@ -491,12 +492,13 @@ double testEulerInteg(rbd::Joint::Type jType, const Eigen::Vector3d& axis,
 	for(int i = 0; i < j.dof(); ++i)
 	{
 		alphaVec[i] = alpha[i];
+    alphaDVec[i] = 0.;
 	}
 
 	sva::PTransformd initPos(j.pose(qVec));
 	sva::MotionVecd motion(j.motion(alphaVec));
 
-	eulerJointIntegration(jType, alphaVec, timeStep, qVec);
+	eulerJointIntegration(jType, alphaVec, alphaDVec, timeStep, qVec);
 	sva::PTransformd endPos(j.pose(qVec));
 
 	// linear velocity is set in initPos frame

@@ -34,12 +34,13 @@ struct MultiBodyConfig;
 /**
 	* Integrate joint configuration.
 	* @param type Joint type.
-	* @param alpha Joint velocity vector.
+  * @param alpha Joint velocity vector.
+  * @param alphaD Joint acceleration vector.
 	* @param step Integration step.
 	* @param q Joint configuration vector.
 	*/
 RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
-	double step, std::vector<double>& q);
+  const std::vector<double>& alphaD,  double step, std::vector<double>& q);
 
 /**
 	* Use the euler method to integrate.
