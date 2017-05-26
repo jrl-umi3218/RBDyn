@@ -166,9 +166,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a36f0a66ff371f16920fa8451d48e3014"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a36f0a66ff371f16920fa8451d48e3014">sComputeCoMAcceleration</a> (const <a class="el" href="a00014.html">MultiBody</a> &amp;mb, const <a class="el" href="a00015.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="memdesc:a36f0a66ff371f16920fa8451d48e3014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version.  <a href="#a36f0a66ff371f16920fa8451d48e3014">More...</a><br/></td></tr>
 <tr class="separator:a36f0a66ff371f16920fa8451d48e3014"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab88f71d718e5b2284b82166e651e3696"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#ab88f71d718e5b2284b82166e651e3696">eulerJointIntegration</a> (<a class="el" href="a00013.html#afff99e26b5eeb3d899af433df385f4fd">Joint::Type</a> type, const std::vector&lt; double &gt; &amp;alpha, double step, std::vector&lt; double &gt; &amp;q)</td></tr>
-<tr class="memdesc:ab88f71d718e5b2284b82166e651e3696"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate joint configuration.  <a href="#ab88f71d718e5b2284b82166e651e3696">More...</a><br/></td></tr>
-<tr class="separator:ab88f71d718e5b2284b82166e651e3696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bd2d0d6d7e28cb91bf1d4595c170eed"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#a3bd2d0d6d7e28cb91bf1d4595c170eed">eulerJointIntegration</a> (<a class="el" href="a00013.html#afff99e26b5eeb3d899af433df385f4fd">Joint::Type</a> type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q)</td></tr>
+<tr class="memdesc:a3bd2d0d6d7e28cb91bf1d4595c170eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate joint configuration.  <a href="#a3bd2d0d6d7e28cb91bf1d4595c170eed">More...</a><br/></td></tr>
+<tr class="separator:a3bd2d0d6d7e28cb91bf1d4595c170eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1d5e428f8fea58734485e214420ad45"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00038.html#af1d5e428f8fea58734485e214420ad45">eulerIntegration</a> (const <a class="el" href="a00014.html">MultiBody</a> &amp;mb, <a class="el" href="a00015.html">MultiBodyConfig</a> &amp;mbc, double step)</td></tr>
 <tr class="memdesc:af1d5e428f8fea58734485e214420ad45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use the euler method to integrate.  <a href="#af1d5e428f8fea58734485e214420ad45">More...</a><br/></td></tr>
 <tr class="separator:af1d5e428f8fea58734485e214420ad45"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1275,7 +1275,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ab88f71d718e5b2284b82166e651e3696"></a>
+<a class="anchor" id="a3bd2d0d6d7e28cb91bf1d4595c170eed"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1290,6 +1290,12 @@ template&lt;typename T &gt; </div>
           <td></td>
           <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>alphaD</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1316,6 +1322,7 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">type</td><td><a class="el" href="a00013.html" title="Joint representation. ">Joint</a> type. </td></tr>
     <tr><td class="paramname">alpha</td><td><a class="el" href="a00013.html" title="Joint representation. ">Joint</a> velocity vector. </td></tr>
+    <tr><td class="paramname">alphaD</td><td><a class="el" href="a00013.html" title="Joint representation. ">Joint</a> acceleration vector. </td></tr>
     <tr><td class="paramname">step</td><td>Integration step. </td></tr>
     <tr><td class="paramname">q</td><td><a class="el" href="a00013.html" title="Joint representation. ">Joint</a> configuration vector. </td></tr>
   </table>
@@ -2629,7 +2636,7 @@ template&lt;typename T &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="a00038.html">rbd</a></li>
-    <li class="footer">Generated on Tue May 23 2017 04:35:18 for RBDyn by
+    <li class="footer">Generated on Fri May 26 2017 10:10:07 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
