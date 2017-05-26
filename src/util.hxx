@@ -17,8 +17,8 @@
 
 #pragma once
 
-template <typename T>
-std::ostream& operator<< (std::ostream& o, const std::vector<T>& vect)
+template <typename T, typename U>
+std::ostream& operator<< (std::ostream& o, const std::vector<T,U>& vect)
 {
   typedef typename std::vector<T>::const_iterator citer_t;
 

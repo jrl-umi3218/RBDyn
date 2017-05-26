@@ -22,12 +22,13 @@
 #include <map>
 
 #include <Eigen/Core>
+#include <Eigen/StdVector>
 
 namespace rbd
 {
   /// \brief Display a vector.
-  template <typename T>
-  std::ostream& operator<< (std::ostream&, const std::vector<T>&);
+  template <typename T, typename U>
+  std::ostream& operator<< (std::ostream&, const std::vector<T,U>&);
 
   /// \brief Display a pair.
   template <typename T1, typename T2>

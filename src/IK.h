@@ -85,6 +85,8 @@ private:
 	int ef_index_;
 	Jacobian jac_;
 	Eigen::JacobiSVD<Eigen::MatrixXd> svd_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 } // namespace rbd

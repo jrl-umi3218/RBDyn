@@ -106,6 +106,8 @@ class RBDYN_DLLAPI InverseStatics
   std::vector<Jacobian> jacW_;
   Eigen::MatrixXd fullJac_;
   bool jacobianSizeHasBeenSet_;
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 }  // namespace rbd
