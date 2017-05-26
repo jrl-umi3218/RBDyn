@@ -114,11 +114,15 @@ randQVA(Joint::Type type)
 		a = randVec(2, -1, 1);
 		break;
 	case Joint::Free:
+	{
 		q = randVec(4, -1, 1, true);
 		auto qt = randVec(3, -1, 1);
 		q.insert(q.end(), qt.begin(), qt.end());
 		v = randVec(6, -1, 1);
 		a = randVec(6, -1, 1);
+		break;
+	}
+	default:
 		break;
 	}
 
@@ -175,7 +179,7 @@ void testConstantAccelerationIntegration(Joint::Type type,
 	eulerIntegration(mb, mbc0, step);
 
 	//integrating with constant velocity on small time step
-	const int N = 5000;
+	const int N = 2000;
 	for (int i = 0; i < N; ++i)
 	{
 		eulerIntegration(mb, mbc, step/N);

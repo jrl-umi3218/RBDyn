@@ -25,7 +25,31 @@
 
 namespace
 {
-	/** Compute the sum of the first terms of the Magnus expansion of \Omega such that
+	namespace detail
+	{
+		double constexpr sqrtNewtonRaphson(double x, double curr, double prev)
+		{
+			return curr == prev
+				? curr
+				: sqrtNewtonRaphson(x, 0.5 * (curr + x / curr), curr);
+		}
+
+		/**
+		* Constexpr version of the square root
+		* Return value:
+		*   - For a finite and non-negative value of "x", returns an approximation for the square root of "x"
+		*   - Otherwise, returns NaN
+		* Copied from https://stackoverflow.com/a/34134071
+		*/
+		double constexpr sqrt(double x)
+		{
+			return x >= 0 && x < std::numeric_limits<double>::infinity()
+				? sqrtNewtonRaphson(x, x, 0)
+				: std::numeric_limits<double>::quiet_NaN();
+		}
+	}
+
+		/** Compute the sum of the first terms of the Magnus expansion of \Omega such that
 		* q' = q*exp(\Omega) is the quaternion obtained after applying a constant acceleration
 		* rotation wD for a duration step, while starting with a velocity w
 		*/
@@ -41,14 +65,14 @@ namespace
 		return O1 + O2 + O3;
 	}
 
-	/** sinus cardinal: sin(x)/x 
+		/** sinus cardinal: sin(x)/x
 		* Code adapted from boost::math::detail::sinc
 		*/
 	double sinc(double x)
 	{
-		const double taylor_0_bound = std::numeric_limits<double>::epsilon();
-		const double taylor_2_bound = sqrt(taylor_0_bound);
-		const double taylor_n_bound = sqrt(taylor_2_bound);
+		constexpr double taylor_0_bound = std::numeric_limits<double>::epsilon();
+		constexpr double taylor_2_bound = detail::sqrt(taylor_0_bound);
+		constexpr double taylor_n_bound = detail::sqrt(taylor_2_bound);
 
 		if (std::abs(x) >= taylor_n_bound)
 		{
