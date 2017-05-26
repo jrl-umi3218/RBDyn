@@ -246,7 +246,7 @@ def build_mb(mb):
                 is_const=True, throw=[out_ex], custom_name='bodyIndexByName')
 
   mb.add_method('sJointIndexByName', retval('int'), [param('const std::string&', 'name')],
-                is_const=True, throw=[out_ex], custom_name='jointIndexById')
+                is_const=True, throw=[out_ex], custom_name='jointIndexByName')
 
 
 
