@@ -49,9 +49,13 @@ if(NOT ${DISABLE_TESTS})
   )
 endif()
 
+SET(PIP_EXTRA_OPTIONS "")
+IF(${PYTHON_BINDING_USER_INSTALL})
+  SET(PIP_EXTRA_OPTIONS "--user")
+ENDIF()
 # Install the bindings
 ADD_CUSTOM_TARGET(install-rbdyn-python-bindings
-  COMMAND pip install .
+  COMMAND pip install . ${PIP_EXTRA_OPTIONS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   COMMENT "Install RBDyn Python bindings"
 )
