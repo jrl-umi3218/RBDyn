@@ -417,8 +417,12 @@ cdef class MultiBody(object):
   def jointPosInDof(self, int i):
     return self.impl.sJointPosInDof(i)
   def bodyIndexByName(self, name):
+    if isinstance(name, unicode):
+      name = name.encode(u'ascii')
     return self.impl.sBodyIndexByName(name)
   def jointIndexByName(self, name):
+    if isinstance(name, unicode):
+      name = name.encode(u'ascii')
     return self.impl.sJointIndexByName(name)
   @staticmethod
   def pickle(mb):
@@ -476,6 +480,12 @@ cdef class MultiBodyGraph(object):
   def addJoint(self, Joint j):
     self.impl.addJoint(j.impl)
   def linkBodies(self, b1Name, sva.PTransformd tB1, b2Name, sva.PTransformd tB2, jointName, cppbool isB1toB2 = True):
+    if isinstance(b1Name, unicode):
+      b1Name = b1Name.encode('ascii')
+    if isinstance(b2Name, unicode):
+      b2Name = b2Name.encode('ascii')
+    if isinstance(jointName, unicode):
+      jointName = jointName.encode('ascii')
     self.impl.linkBodies(b1Name, deref(tB1.impl), b2Name, deref(tB2.impl), jointName, isB1toB2)
   def nrNodes(self):
     return self.impl.nrNodes()
@@ -497,6 +507,8 @@ cdef class MultiBodyGraph(object):
     return MultiBodyFromC(self.impl.makeMultiBody(rBName, tp, ax.impl,
       deref(X_0_j0.impl), deref(X_b0_j0.impl)))
   def makeMultiBody(self, rootBodyName, *args):
+    if isinstance(rootBodyName, unicode):
+      rootBodyName = rootBodyName.encode(u'ascii')
     # Possible calls
     # bool, (PT, (PT))
     # int, V3d, (PT, (PT))
