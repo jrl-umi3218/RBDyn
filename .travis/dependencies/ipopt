@@ -8,7 +8,7 @@
 ${SUDO_CMD} apt-get update -qq
 ${SUDO_CMD} apt-get install -qq libblas-dev liblapack-dev libmumps-seq-dev gfortran
 
-IPOPT_VERSION=3.12.4
+IPOPT_VERSION=3.12.6
 
 build_dir=`mktemp -d`
 trap "rm -rf -- '$build_dir'" EXIT

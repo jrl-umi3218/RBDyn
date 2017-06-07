@@ -15,23 +15,32 @@ build_package()
     echo "--> Building package..."
 
     cd "$build_dir"
-    cmake "$root_dir" -DCMAKE_INSTALL_PREFIX="$install_dir"	\
-      -DCMAKE_CXX_FLAGS="--coverage"				\
-      -DCMAKE_EXE_LINKER_FLAGS="--coverage"			\
-      -DCMAKE_MODULE_LINKER_FLAGS="--coverage"		\
-      ${CMAKE_ADDITIONAL_OPTIONS}
+
+    if [[ ";${DO_COVERAGE_ON_BRANCH};" == *";${CI_BRANCH};"* ]]; then
+      cmake "$root_dir" -DCMAKE_INSTALL_PREFIX="$install_dir"	\
+        -DCMAKE_CXX_FLAGS="--coverage"				\
+        -DCMAKE_EXE_LINKER_FLAGS="--coverage"			\
+        -DCMAKE_MODULE_LINKER_FLAGS="--coverage"		\
+        ${CMAKE_ADDITIONAL_OPTIONS}
+    else
+      cmake "$root_dir" -DCMAKE_INSTALL_PREFIX="$install_dir"	\
+        ${CMAKE_ADDITIONAL_OPTIONS}
+    fi
+
     ${MAKE_PREFIX} make
     make install
 
     ALLOW_TESTSUITE_FAILURE=${ALLOW_TESTSUITE_FAILURE:-false}
     make test || ${ALLOW_TESTSUITE_FAILURE}
 
-    cppcheck --quiet --enable=all \
-      -I $root_dir/src -I $root_dir/tests -I $root_dir/include \
-      -I $root_dir/tests/shared-tests \
-      -I $build_dir/include -I $install_dir/include \
-      -i $build_dir/CMakeFiles \
-      $root_dir || true
+    if [[ ";${DO_CPPCHECK_ON_BRANCH};" == *";${CI_BRANCH};"* ]]; then
+      cppcheck --quiet --enable=all \
+        -I $root_dir/src -I $root_dir/tests -I $root_dir/include \
+        -I $root_dir/tests/shared-tests \
+        -I $build_dir/include -I $install_dir/include \
+        -i $build_dir/CMakeFiles \
+        $root_dir || true
+    fi
 }
 
 # debian_build_package
