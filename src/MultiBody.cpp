@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -16,12 +16,12 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "MultiBody.h"
+#include "RBDyn/MultiBody.h"
 
 // includes
 // RBDyn
-#include "Body.h"
-#include "Joint.h"
+#include "RBDyn/Body.h"
+#include "RBDyn/Joint.h"
 
 namespace rbd
 {

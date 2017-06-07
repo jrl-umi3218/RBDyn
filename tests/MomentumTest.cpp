@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -25,14 +25,14 @@
 #include <boost/math/constants/constants.hpp>
 
 // RBDyn
-#include "CoM.h"
-#include "EulerIntegration.h"
-#include "FK.h"
-#include "FV.h"
-#include "FA.h"
-#include "Momentum.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
+#include "RBDyn/CoM.h"
+#include "RBDyn/EulerIntegration.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/FA.h"
+#include "RBDyn/Momentum.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 // arm
 #include "XYZSarm.h"

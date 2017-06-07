@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -28,7 +28,7 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "Joint.h"
+#include "RBDyn/Joint.h"
 
 const double TOL = 1e-10;
 

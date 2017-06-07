@@ -1,3 +1,8 @@
 *.pyc
 *~
 .clang-format
+binding/python/build/
+binding/python/rbdyn/rbdyn.cpp
+binding/python/rbdyn/rbdyn.so
+binding/python/rbdyn/__init__.py
+binding/python/setup.py

@@ -113,7 +113,10 @@ elif [[ ${CI_OS_NAME} = linux ]]; then
       exit 0
     fi
 
-    generate_coverage_data
+    if [[ ";${DO_COVERAGE_ON_BRANCH};" == *";${CI_BRANCH};"* ]]; then
+      generate_coverage_data
+    fi
+
     # If it's not a fork or a pull request
     if `test x${CI_REPO_SLUG} = x${GH_REPO} -a ${CI_PULL_REQUEST} = false`; then
       set_push_uri

@@ -29,14 +29,14 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "FK.h"
-#include "FV.h"
-#include "Body.h"
-#include "Joint.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "MultiBodyGraph.h"
-#include "EulerIntegration.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/Body.h"
+#include "RBDyn/Joint.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/EulerIntegration.h"
 
 using namespace Eigen;
 using namespace sva;
@@ -59,7 +59,7 @@ makeSingleJointRobot(Joint::Type type, const Vector3d& axis = Vector3d::UnitZ())
 	Body b1(rbi, "b1");
 	mbg.addBody(b0);
 	mbg.addBody(b1);
- 
+
 	Joint j0(type,axis,true,"j0");
 	mbg.addJoint(j0);
 
@@ -129,10 +129,10 @@ randQVA(Joint::Type type)
 	return std::make_tuple(q, v, a);
 }
 
-void testConstantSpeedIntegration(Joint::Type type, 
+void testConstantSpeedIntegration(Joint::Type type,
 																	double step,
 																	const std::vector<double>& q,
-																	const std::vector<double>& v, 
+																	const std::vector<double>& v,
 																	const std::vector<double>& q_expected)
 {
 	MultiBody mb;
@@ -148,13 +148,13 @@ void testConstantSpeedIntegration(Joint::Type type,
 	eulerIntegration(mb, mbc, step);
 
 	for (size_t i=0; i<q.size(); ++i)
-	{ 
+	{
 		BOOST_CHECK_CLOSE_FRACTION(q_expected[i], mbc.q[1][i], 1e-8);
 	}
 }
 
-void testConstantAccelerationIntegration(Joint::Type type, 
-																				 double step, 
+void testConstantAccelerationIntegration(Joint::Type type,
+																				 double step,
 																				 const std::vector<double>& q,
 																				 const std::vector<double>& v,
 																				 const std::vector<double>& a)
@@ -167,7 +167,7 @@ void testConstantAccelerationIntegration(Joint::Type type,
 
 	mbc.q = { {}, q };
 	mbc.alpha = { {}, v };
-	mbc.alphaD = { {}, std::vector<double>(v.size(), 0) }; 
+	mbc.alphaD = { {}, std::vector<double>(v.size(), 0) };
 	mbc0.q = { {}, q };
 	mbc0.alpha = { {}, v };
 	mbc0.alphaD = { {}, a };
@@ -189,7 +189,7 @@ void testConstantAccelerationIntegration(Joint::Type type,
 	}
 
 	for (size_t i=0; i<q.size(); ++i)
-	{ 
+	{
 		BOOST_CHECK_CLOSE_FRACTION(mbc0.q[1][i], mbc.q[1][i], 1e-3);
 	}
 }

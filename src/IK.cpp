@@ -1,6 +1,6 @@
 // This file is part of RBDyn.
 //
-// Copyright (C) 2012 - 2016 CNRS-AIST JRL, CNRS-UM LIRMM
+// Copyright (C) 2012 - 2017 CNRS-AIST JRL, CNRS-UM LIRMM
 //
 // RBDyn is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -16,14 +16,14 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "IK.h"
+#include "RBDyn/IK.h"
 
 // includes
 // RBDyn
-#include "FK.h"
-#include "FV.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 //SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>

@@ -1,4 +1,4 @@
-# Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+# Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 # This file is part of RBDyn.
 #
@@ -19,24 +19,29 @@ sudo: required
 dist: trusty
 language: cpp
 compiler:
-  - gcc
-  - clang
+- gcc
+- clang
 env:
   global:
-  - APT_DEPENDENCIES="doxygen doxygen-latex libboost-all-dev python-numpy"
-  - GIT_DEPENDENCIES="jrl-umi3218/SpaceVecAlg"
+  - APT_DEPENDENCIES="doxygen doxygen-latex libboost-all-dev"
+  - GIT_DEPENDENCIES="jrl-umi3218/Eigen3ToPython jrl-umi3218/SpaceVecAlg"
   - GH_USERNAME=gergondet
   - GH_REPO=jrl-umi3218/RBDyn
-  - secure: "FCe7ktcmBJWgEFsCBnG1QfIhkgNKM3uyRMS9mXiY8hfGQ9KGj/9X4qebUmfZ1ay6Rw2B22FXpRiJk2GmsHxo1RZH3f27b6F1mWz25RgJGX986k2nPChCshf5gORfMI5BKksyXFzp24sXBLcYKGz/xrOioSUY1wPJ3JZ7r7kDEV4="
+  - secure: FCe7ktcmBJWgEFsCBnG1QfIhkgNKM3uyRMS9mXiY8hfGQ9KGj/9X4qebUmfZ1ay6Rw2B22FXpRiJk2GmsHxo1RZH3f27b6F1mWz25RgJGX986k2nPChCshf5gORfMI5BKksyXFzp24sXBLcYKGz/xrOioSUY1wPJ3JZ7r7kDEV4=
+  matrix:
+    - USE_PYTHON34=false
+    - USE_PYTHON34=true
 notifications:
-  email:
-  - pierre.gergondet@gmail.com
+  slack:
+    rooms:
+      secure: N2C/Q9nr/TNjVE1UIRhT7gXN6bfJCe1nH7FIMA0RrANsdGkGsJHhuJsiOs8cUE7ozRFSiZ/ewMSADqItfwwp692pI1wp2y0X8wxRMB3pmo01Owv7on6NgLHXY4Br6peCSwGem3MaywcN8QaBlPxNVXFTfGi39GDvA8szLkCGHGw=
 script: ./.travis/run build
 after_success: ./.travis/run after_success
 after_failure: ./.travis/run after_failure
 before_install:
-  - ./.travis/dependencies/eigen-3.2
-  - ./.travis/run  before_install
+- if [ $USE_PYTHON34 = true ]; then pushd .; pip install virtualenv; mkdir -p /tmp/_ci/virtualenv; virtualenv -p python3.4 3.4; source 3.4/bin/activate; popd; fi
+- ./.travis/dependencies/eigen-3.2
+- ./.travis/run  before_install
 matrix:
   allow_failures:
-    - compiler: clang
+  - compiler: clang

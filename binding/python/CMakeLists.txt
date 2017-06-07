@@ -1,4 +1,4 @@
-# Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+# Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 # This file is part of RBDyn.
 #
@@ -15,36 +15,48 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
-INCLUDE(../../cmake/python.cmake)
+MACRO(GET_RBDYN_PROPERTY PROPERTY)
+  GET_TARGET_PROPERTY(RBDYN_${PROPERTY} RBDyn ${PROPERTY})
+  IF(NOT RBDYN_${PROPERTY})
+    SET(RBDYN_${PROPERTY} "")
+  ENDIF()
+ENDMACRO()
+GET_RBDYN_PROPERTY(COMPILE_FLAGS)
+GET_RBDYN_PROPERTY(INCLUDE_DIRECTORIES)
+GET_RBDYN_PROPERTY(LINK_FLAGS)
+GET_RBDYN_PROPERTY(LINK_LIBRARIES)
+GET_RBDYN_PROPERTY(LOCATION)
+CONFIGURE_FILE(setup.in.py ${CMAKE_CURRENT_SOURCE_DIR}/setup.py)
 
-# Look for Python 2.7
-SET(Python_ADDITIONAL_VERSIONS 2.7)
-FINDPYTHON()
-
-# Create the package in build dir for testing purpose
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/rbdyn)
-CONFIGURE_FILE(__init__.py ${CMAKE_CURRENT_BINARY_DIR}/rbdyn/__init__.py COPYONLY)
-SET(OUTPUT_BINDING ${CMAKE_CURRENT_BINARY_DIR}/rbdyn.cpp)
-
-# Generate Python binding code
-ADD_CUSTOM_COMMAND (
-  OUTPUT ${OUTPUT_BINDING}
-  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.py ${OUTPUT_BINDING}
-  DEPENDS generate.py
+# Build the bindings locally at build time for test purposes
+ADD_CUSTOM_TARGET(rbdyn-python-bindings ALL
+  COMMAND python setup.py build_ext --inplace
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMENT "Generating local RBDyn Python bindings"
+  DEPENDS include/rbdyn_wrapper.hpp rbdyn/c_rbdyn.pxd rbdyn/rbdyn.pxd rbdyn/rbdyn.pyx
 )
 
-# Build the library
-SET(SOURCES ${OUTPUT_BINDING})
+if(NOT ${DISABLE_TESTS})
+  ADD_CUSTOM_TARGET(test-rbdyn-python-bindings
+    COMMAND nosetests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Test RBDyn Python bindings"
+    DEPENDS tests/test_rbdyn_pickle.py
+  )
+  ADD_TEST(NAME PythonBindingsTest
+    COMMAND nosetests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+endif()
 
-INCLUDE_DIRECTORIES(SYSTEM ${PYTHON_INCLUDE_PATH})
-INCLUDE_DIRECTORIES(.)
-INCLUDE_DIRECTORIES(../../src)
-
-ADD_LIBRARY(_rbdyn SHARED ${SOURCES})
-PKG_CONFIG_USE_DEPENDENCY(_rbdyn SpaceVecAlg)
-TARGET_LINK_LIBRARIES(_rbdyn RBDyn ${PYTHON_LIBRARY})
-SET_TARGET_PROPERTIES(_rbdyn PROPERTIES PREFIX "")
-
-# Install rules
-INSTALL(TARGETS _rbdyn DESTINATION "${PYTHON_SITELIB}/rbdyn")
-PYTHON_INSTALL_BUILD(rbdyn __init__.py "${PYTHON_SITELIB}")
+SET(PIP_EXTRA_OPTIONS "")
+IF(${PYTHON_BINDING_USER_INSTALL})
+  SET(PIP_EXTRA_OPTIONS "--user")
+ENDIF()
+# Install the bindings
+ADD_CUSTOM_TARGET(install-rbdyn-python-bindings
+  COMMAND pip install . ${PIP_EXTRA_OPTIONS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMENT "Install RBDyn Python bindings"
+)
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} install-rbdyn-python-bindings)")

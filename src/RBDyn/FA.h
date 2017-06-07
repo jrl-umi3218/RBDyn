@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -17,6 +17,10 @@
 
 #pragma once
 
+// includes
+// SpaceVecAlg
+#include <SpaceVecAlg/SpaceVecAlg>
+
 #include <rbdyn/config.hh>
 
 namespace rbd
@@ -25,18 +29,22 @@ class MultiBody;
 struct MultiBodyConfig;
 
 /**
-	* Compute the forward kinematic of a MultiBody.
+	* Compute the forward acceleration of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use q generalized position vector. Fill bodyPosW, jointConfig
-	* and parentToSon.
+	* @param mbc Use alphaD generalized acceleration vector, jointVelocity,
+	* parentToSon and bodyVelB.
+	* Fill bodyAccB.
+	* @param A_0 initial acceleration in world coordinate.
 	*/
-RBDYN_DLLAPI void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+RBDYN_DLLAPI void forwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
 
 /**
 	* Safe version.
-	* @see forwardKinematics.
+	* @see forwardAcceleration.
 	* @throw std::domain_error If there is a mismatch between mb and mbc.
 	*/
-RBDYN_DLLAPI void sForwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);
+RBDYN_DLLAPI void sForwardAcceleration(const MultiBody& mb, MultiBodyConfig& mbc,
+	const sva::MotionVecd& A_0=sva::MotionVecd(Eigen::Vector6d::Zero()));
 
 } // namespace rbd

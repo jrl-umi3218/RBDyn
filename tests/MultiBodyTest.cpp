@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -28,12 +28,12 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "Body.h"
-#include "FK.h"
-#include "Joint.h"
-#include "MultiBody.h"
-#include "MultiBodyGraph.h"
-#include "MultiBodyConfig.h"
+#include "RBDyn/Body.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/Joint.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 // arm
 #include "XYZSarm.h"

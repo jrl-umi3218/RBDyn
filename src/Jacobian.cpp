@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -16,7 +16,7 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // associated header
-#include "Jacobian.h"
+#include "RBDyn/Jacobian.h"
 
 // includes
 // std
@@ -24,7 +24,7 @@
 #include <stdexcept>
 
 // RBDyn
-#include "MultiBodyConfig.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 namespace rbd
 {

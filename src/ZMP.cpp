@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -17,10 +17,10 @@
 
 // include
 // Associated header
-#include "ZMP.h"
+#include "RBDyn/ZMP.h"
 
 // RBDyn
-#include "MultiBodyConfig.h"
+#include "RBDyn/MultiBodyConfig.h"
 
 namespace rbd
 {

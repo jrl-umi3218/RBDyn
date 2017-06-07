@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -34,13 +34,13 @@
 #include <boost/chrono/chrono.hpp>
 
 // RBDyn
-#include "CoM.h"
-#include "FK.h"
-#include "FV.h"
-#include "Jacobian.h"
-#include "MultiBody.h"
-#include "MultiBodyConfig.h"
-#include "MultiBodyGraph.h"
+#include "RBDyn/CoM.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/Jacobian.h"
+#include "RBDyn/MultiBody.h"
+#include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/MultiBodyGraph.h"
 
 // Arm
 #include "Tree30Dof.h"

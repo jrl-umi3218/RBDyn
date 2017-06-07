@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -17,7 +17,7 @@
 
 // include
 // Associated header
-#include "VisServo.h"
+#include "RBDyn/VisServo.h"
 
 namespace rbd
 {

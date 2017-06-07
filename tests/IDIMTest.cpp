@@ -1,4 +1,4 @@
-// Copyright 2012-2016 CNRS-UM LIRMM, CNRS-AIST JRL
+// Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 //
 // This file is part of RBDyn.
 //
@@ -27,10 +27,10 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include "FK.h"
-#include "FV.h"
-#include "ID.h"
-#include "IDIM.h"
+#include "RBDyn/FK.h"
+#include "RBDyn/FV.h"
+#include "RBDyn/ID.h"
+#include "RBDyn/IDIM.h"
 
 // arm
 #include "Tree30Dof.h"
