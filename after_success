@@ -1,0 +1,134 @@
+#!/bin/bash
+. `dirname $0`/common.sh
+
+# Set debug mode
+set -x
+set -v
+
+##############################
+#  --  Helper functions  --  #
+##############################
+
+upload_to_ppa()
+{
+  if `test x${DIST} = x`; then
+    echo "distribution is not set, skipping this build"
+    exit 0
+  fi
+  echo "Target distribution: ${DIST}"
+
+  export GNUPGHOME="`dirname $0`/.gnupg"
+  # If the build is a success, upload the source package to Launchpad.
+  if `test x${DIST} = xunstable`; then
+    echo "Debian Sid package. Skipping Launchpad upload..."
+  else
+    if `! test ${CI_PULL_REQUEST} = false`; then
+      echo "skipping launchpad upload in pull request"
+    else
+      dput ppa:${PPA_URI} "$build_dir"/export/*_source.changes
+    fi
+  fi
+}
+
+generate_coverage_data()
+{
+  # Upload coveralls data.
+  if [ x${CC} = xgcc ]; then
+    cd $build_dir
+    # If tests failed, coveralls data may not have been written
+    lcov --directory $build_dir --base-directory $root_dir --capture --output-file coverage.info || true
+    # Note: ignore rules are given by a string such as "*test* *foo*"
+    # lcov expects: '*test*' '*foo*'
+    # We use -f to prevent expansion of *
+    set -f
+    lcov --remove coverage.info '/usr*' "$install_dir*" ${LCOV_IGNORE_RULES} -o coverage.info || true
+    set +f
+    cd $root_dir
+    coveralls-lcov "$build_dir/coverage.info" || true
+    cd -
+  else
+    echo "skipping coveralls upload in non-gcc builds"
+  fi
+}
+
+set_push_uri()
+{
+  # If GH_PUSH_URI has already been provided
+  if `test x${GH_PUSH_URI} != x`; then
+    export GH_PUSH_URI=${GH_PUSH_URI}
+  # If encrypted username/tokens were not provided
+  elif `test x${GH_TOKEN} = x -o x${GH_USERNAME} = x`; then
+      echo "missing username and/or token for GitHub push"
+      export GH_PUSH_URI=""
+  else
+    export GH_PUSH_URI=https://${GH_USERNAME}:${GH_TOKEN}@github.com/${GH_REPO}
+  fi
+  if `test x${GH_PUSH_URI} != x`; then
+    cd $root_dir
+    git remote set-url origin "${GH_PUSH_URI}"
+  fi
+  return 0
+}
+
+update_documentation()
+{
+  # If we are on the master branch:
+  if [[ ${CI_BRANCH} = master ]]; then
+    # Update the documentation.
+    # Retrieve last commit of the gh-pages branch.
+    if `git fetch --depth=1 origin gh-pages:gh-pages`; then
+      cd $build_dir/doc && $root_dir/cmake/github/update-doxygen-doc.sh \
+        -r $root_dir -b $build_dir
+    fi
+  fi
+}
+
+push_note()
+{
+  # Push git note indicating success
+  cd $root_dir
+  HEAD=`git rev-parse HEAD`
+  notes_msg="Successful build.\n----\n\nDependencies commit id:"
+  for package in ${GIT_DEPENDENCIES}; do
+    git_dependency_parsing $package
+    cd $build_dir/$git_dep
+    commitid=`git rev-parse HEAD || echo unknown`
+    notes_msg="${notes_msg} $git_dep : $commitid\n"
+  done
+  cd $root_dir
+  git fetch --quiet --force origin refs/notes/jrl-ci:refs/notes/jrl-ci || true
+  git notes --ref=jrl-ci add -f -m "$(echo "${notes_msg}")" $HEAD
+  git push origin refs/notes/jrl-ci --force
+}
+
+#########################
+#  --  Main script  --  #
+#########################
+
+if [ -d debian ]; then
+  upload_to_ppa
+elif [[ ${CI_OS_NAME} = linux ]]; then
+    if [ ! x${DIST} = x ]; then
+      echo "skipping this build"
+      exit 0
+    fi
+
+    if [[ ";${DO_COVERAGE_ON_BRANCH};" == *";${CI_BRANCH};"* ]]; then
+      generate_coverage_data
+    fi
+
+    # If it's not a fork or a pull request
+    if `test x${CI_REPO_SLUG} = x${GH_REPO} -a ${CI_PULL_REQUEST} = false`; then
+      set_push_uri
+      if `test x${GH_PUSH_URI} != x`; then
+        update_documentation
+        push_note
+      fi
+    else
+      echo "skipping doc/build result upload on forks and for pull requests"
+    fi
+fi
+
+# End debug mode
+set +v
+set +x

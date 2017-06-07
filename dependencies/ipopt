@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Setup Ipopt
+#
+. `dirname $0`/../common.sh
+
+# Install dependencies
+${SUDO_CMD} apt-get update -qq
+${SUDO_CMD} apt-get install -qq libblas-dev liblapack-dev libmumps-seq-dev gfortran
+
+IPOPT_VERSION=3.12.6
+
+build_dir=`mktemp -d`
+trap "rm -rf -- '$build_dir'" EXIT
+
+# Setup environment variables.
+export LD_LIBRARY_PATH="$install_dir/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="$install_dir/lib/`dpkg-architecture -qDEB_BUILD_MULTIARCH`/pkgconfig:$PKG_CONFIG_PATH"
+
+# Checkout Ipopt.
+cd "$build_dir"
+wget "https://github.com/coin-or/Ipopt/archive/releases/${IPOPT_VERSION}.tar.gz"
+tar xzvf ${IPOPT_VERSION}.tar.gz
+cd Ipopt-releases-${IPOPT_VERSION}
+
+export CPPFLAGS="$CPPFLAGS -I/usr/include/mumps_seq -DHAVE_CSTDDEF"
+export LDFLAGS="$LDFLAGS -llapack -lblas -ldmumps_seq -ldl"
+
+mkdir -p build
+cd build
+../configure --prefix="$install_dir" \
+  --enable-static \
+  --with-mumps-incdir=/usr/include \
+  --with-mumps-lib='-ldmumps_seq'
+make
+make install

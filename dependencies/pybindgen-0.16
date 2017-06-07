@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Install pybindgen v 0.16.0
+
+. `dirname $0`/../common.sh
+
+if [ $# -ge 1 ]; then
+  PYBINDGEN_INSTALL_PREFIX=$1
+else
+  PYBINDGEN_INSTALL_PREFIX=/usr/local
+fi
+
+# Install dependencies
+${SUDO_CMD} apt-get install -qq gccxml python-pygccxml
+
+# Get pybindgen
+cd "$build_dir"
+wget --quiet https://launchpad.net/pybindgen/trunk/0.16/+download/pybindgen-0.16.0.tar.bz2
+tar xjf pybindgen-0.16.0.tar.bz2
+cd "$build_dir/pybindgen-0.16.0/"
+
+# Configure build and install
+./waf --prefix=$PYBINDGEN_INSTALL_PREFIX configure
+./waf
+${SUDO_CMD} ./waf install

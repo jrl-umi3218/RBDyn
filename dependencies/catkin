@@ -1,0 +1,30 @@
+#!/bin/bash
+. `dirname $0`/../common.sh
+
+# If the ros version is not defined, quit.
+if `test x${ROS_DISTRO} = x`; then
+  exit 0
+fi
+
+${SUDO_CMD} sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -c -s` main" > /etc/apt/sources.list.d/ros-latest.list'
+wget http://packages.ros.org/ros.key -O - | ${SUDO_CMD} apt-key add -
+${SUDO_CMD} apt-get update -qq
+
+if `test x${ROS_DISTRO} = xjade`; then
+  ${SUDO_CMD} apt-get install -qq ros-jade-ros-base ros-jade-rosdoc-lite python-catkin-lint
+elif `test x${ROS_DISTRO} = xindigo`; then
+  ${SUDO_CMD} apt-get install -qq ros-indigo-ros-base ros-indigo-rosdoc-lite python-catkin-lint
+elif `test x${ROS_DISTRO} = xhydro`; then
+  ${SUDO_CMD} apt-get install -qq ros-hydro-ros-base ros-hydro-rosdoc-lite python-catkin-lint
+elif `test x${ROS_DISTRO} = xgroovy`; then
+  ${SUDO_CMD} apt-get install -qq ros-groovy-ros-base ros-groovy-rosdoc-lite python-catkin-lint
+else
+  echo "ROS distribution unkown, exiting" + ${ROS_DISTRO}
+  exit 1
+fi
+. /opt/ros/${ROS_DISTRO}/setup.sh
+
+# Dependencies workspace
+CATKIN_DEP_WORKSPACE=/tmp/_ci/catkin_dep_ws
+mkdir -p $CATKIN_DEP_WORKSPACE/src
+cd $CATKIN_DEP_WORKSPACE/src
