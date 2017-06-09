@@ -453,12 +453,12 @@ cdef class MultiBodyVector(object):
       return MultiBodyFromC(self.v.at(idx), False)
     else:
       raise IndexError
-  @staticmethod
-  cdef MultiBodyVector fromPtr(vector[c_rbdyn.MultiBody]* p):
-    cdef MultiBodyVector ret = MultiBodyVector(skip_alloc = True)
-    ret.__own_impl = False
-    ret.v = p
-    return ret
+
+cdef MultiBodyVector MultiBodyVectorFromPtr(vector[c_rbdyn.MultiBody]* p):
+  cdef MultiBodyVector ret = MultiBodyVector(skip_alloc = True)
+  ret.__own_impl = False
+  ret.v = p
+  return ret
 
 cdef class MultiBodyGraph(object):
   def __dealloc__(self):
@@ -732,12 +732,12 @@ cdef class MultiBodyConfigVector(object):
       c_rbdyn_private.mbcv_set_item(deref(self.v), idx, deref(mbc.impl))
     else:
       raise IndexError
-  @staticmethod
-  cdef MultiBodyConfigVector fromPtr(vector[c_rbdyn.MultiBodyConfig]* p):
-    cdef MultiBodyConfigVector ret = MultiBodyConfigVector(skip_alloc = True)
-    ret.__own_impl = False
-    ret.v = p
-    return ret
+
+cdef MultiBodyConfigVector MultiBodyConfigVectorFromPtr(vector[c_rbdyn.MultiBodyConfig]* p):
+  cdef MultiBodyConfigVector ret = MultiBodyConfigVector(skip_alloc = True)
+  ret.__own_impl = False
+  ret.v = p
+  return ret
 
 cdef class ConfigConverter(object):
   def __copyctor__(self, ConfigConverter other):

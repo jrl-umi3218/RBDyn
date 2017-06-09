@@ -58,8 +58,8 @@ cdef MultiBody MultiBodyFromC(const c_rbdyn.MultiBody&, cppbool copy=?)
 cdef class MultiBodyVector(object):
   cdef vector[c_rbdyn.MultiBody] * v
   cdef cppbool __own_impl
-  @staticmethod
-  cdef MultiBodyVector fromPtr(vector[c_rbdyn.MultiBody]*)
+
+cdef MultiBodyVector MultiBodyVectorFromPtr(vector[c_rbdyn.MultiBody]*)
 
 cdef class MultiBodyGraph(object):
   cdef c_rbdyn.MultiBodyGraph * impl
@@ -76,8 +76,8 @@ cdef MultiBodyConfig MultiBodyConfigFromC(const c_rbdyn.MultiBodyConfig&, cppboo
 cdef class MultiBodyConfigVector(object):
   cdef vector[c_rbdyn.MultiBodyConfig] * v
   cdef cppbool __own_impl
-  @staticmethod
-  cdef MultiBodyConfigVector fromPtr(vector[c_rbdyn.MultiBodyConfig]*)
+
+cdef MultiBodyConfigVector MultiBodyConfigVectorFromPtr(vector[c_rbdyn.MultiBodyConfig]*)
 
 cdef class Jacobian(object):
   cdef c_rbdyn.Jacobian impl
