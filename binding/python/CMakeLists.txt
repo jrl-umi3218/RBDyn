@@ -54,9 +54,17 @@ IF(${PYTHON_BINDING_USER_INSTALL})
   SET(PIP_EXTRA_OPTIONS "--user")
 ENDIF()
 # Install the bindings
-ADD_CUSTOM_TARGET(install-rbdyn-python-bindings
-  COMMAND pip install . ${PIP_EXTRA_OPTIONS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  COMMENT "Install RBDyn Python bindings"
-)
+IF(DEFINED PYTHON_DEB_ROOT)
+  ADD_CUSTOM_TARGET(install-rbdyn-python-bindings
+    COMMAND python setup.py install --root=${PYTHON_DEB_ROOT} --install-layout=deb && python3 setup.py install --root=${PYTHON_DEB_ROOT} --install-layout=deb
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Install SpaceVecAlg Python bindings (Debian package)"
+  )
+ELSE()
+  ADD_CUSTOM_TARGET(install-rbdyn-python-bindings
+    COMMAND pip install . ${PIP_EXTRA_OPTIONS}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Install RBDyn Python bindings"
+  )
+ENDIF()
 INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} install-rbdyn-python-bindings)")
