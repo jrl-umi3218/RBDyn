@@ -27,6 +27,7 @@ GET_RBDYN_PROPERTY(LINK_FLAGS)
 GET_RBDYN_PROPERTY(LINK_LIBRARIES)
 GET_RBDYN_PROPERTY(LOCATION)
 CONFIGURE_FILE(setup.in.py ${CMAKE_CURRENT_SOURCE_DIR}/setup.py)
+GET_FILENAME_COMPONENT(RBDYN_LOCATION_DIRECTORY ${RBDYN_LOCATION} DIRECTORY)
 
 # Build the bindings locally at build time for test purposes
 ADD_CUSTOM_TARGET(rbdyn-python-bindings ALL
@@ -37,16 +38,12 @@ ADD_CUSTOM_TARGET(rbdyn-python-bindings ALL
 )
 
 if(NOT ${DISABLE_TESTS})
-  ADD_CUSTOM_TARGET(test-rbdyn-python-bindings
-    COMMAND nosetests
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Test RBDyn Python bindings"
-    DEPENDS tests/test_rbdyn_pickle.py
-  )
-  ADD_TEST(NAME PythonBindingsTest
-    COMMAND nosetests
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
+  IF(NOT DEFINED PYTHON_DEB_ROOT)
+    ADD_TEST(NAME PythonBindingsTest
+      COMMAND nosetests ${CMAKE_CURRENT_SOURCE_DIR}
+      WORKING_DIRECTORY ${RBDYN_LOCATION_DIRECTORY}
+    )
+  ENDIF()
 endif()
 
 SET(PIP_EXTRA_OPTIONS "")
