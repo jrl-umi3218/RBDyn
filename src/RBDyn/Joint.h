@@ -101,6 +101,12 @@ public:
 	Joint(Type type, bool forward, std::string name);
 
 	/**
+		* Creates a fixed joint
+		* @param name Joint name, must be unique in a multibody.
+		*/
+	Joint(std::string name);
+
+	/**
 	 * Make the joint mimic and specify mimic information.
 	 *
 	 * This change cannot be reversed.
@@ -348,6 +354,15 @@ inline Joint::Joint(Type type,	bool forward, std::string name):
 	name_(name)
 {
 	constructJoint(type, Eigen::Vector3d::UnitZ());
+}
+
+inline Joint::Joint(std::string name):
+	dir_(1),
+	params_(0),
+	dof_(0),
+	name_(name)
+{
+	constructJoint(Joint::Type::Fixed, Eigen::Vector3d::UnitZ());
 }
 
 inline void Joint::makeMimic(const std::string & name, double multiplier, double offset)
