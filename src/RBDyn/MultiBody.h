@@ -179,12 +179,14 @@ public:
 	}
 
 	/// @return Index of the joint corresponding to the parameter index.
+	/// this function takes O(log(nrJoints())) time
 	int jointIndexByParamIndex(int i) const
 	{
 		return (std::upper_bound(jointPosInParam_.begin(), jointPosInParam_.end(), i)-jointPosInParam_.begin())-1;
 	}
 
 	/// @return Index of the joint corresponding to the dof index.
+	/// this function takes O(log(nrJoints())) time
 	int jointIndexByDofIndex(int i) const
 	{
 		return (std::upper_bound(jointPosInDof_.begin(), jointPosInDof_.end(), i)-jointPosInDof_.begin())-1;
