@@ -22,6 +22,7 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
@@ -175,6 +176,18 @@ public:
 	int jointIndexByName(const std::string& name) const
 	{
 		return jointNameToInd_.find(name)->second;
+	}
+
+	/// @return Index of the joint corresponding to the parameter index.
+	int jointIndexByParamIndex(int i) const
+	{
+		return (std::upper_bound(jointPosInParam_.begin(), jointPosInParam_.end(), i)-jointPosInParam_.begin())-1;
+	}
+
+	/// @return Index of the joint corresponding to the dof index.
+	int jointIndexByDofIndex(int i) const
+	{
+		return (std::upper_bound(jointPosInDof_.begin(), jointPosInDof_.end(), i)-jointPosInDof_.begin())-1;
 	}
 
 	/// @return Hash map of body index by name.
