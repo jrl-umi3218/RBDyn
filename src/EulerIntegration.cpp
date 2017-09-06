@@ -185,7 +185,7 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 	}
 }
 
-void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step)
+void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step, double Md)
 {
 	const std::vector<Joint>& joints = mb.joints();
 
@@ -195,7 +195,8 @@ void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step)
 		eulerJointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i]);
 		for(int j = 0; j < joints[i].dof(); ++j)
 		{
-			mbc.alpha[i][j] += mbc.alphaD[i][j]*step;
+			//mbc.alpha[i][j] += mbc.alphaD[i][j]*step;
+                        mbc.alpha[i][j] = (1 - Md) * mbc.alpha[i][j] + mbc.alphaD[i][j]*step;
 		}
 	}
 }

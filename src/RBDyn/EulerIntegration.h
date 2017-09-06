@@ -48,7 +48,7 @@ RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type, const std::vector<doub
 	* @param mbc Use alphaD, alpha and q. Fill alpha and q.
 	* @param step Integration step.
 	*/
-RBDYN_DLLAPI void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step);
+RBDYN_DLLAPI void eulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step, double Md = 0);
 
 /// safe version of @see eulerIntegration.
 RBDYN_DLLAPI void sEulerIntegration(const MultiBody& mb, MultiBodyConfig& mbc, double step);
