@@ -61,7 +61,7 @@ cdef class DoubleVectorWrapper(object):
     else:
       c_rbdyn_private.dv_set_item(deref(self.v), idx, value)
   def __repr__(self):
-    return deref(self.v).__repr__()
+    return repr(deref(self.v))
   def __copy__(self):
     cdef DoubleVectorWrapper ret = DoubleVectorWrapper()
     ret.__own_impl = True
@@ -118,7 +118,7 @@ cdef class DoubleVectorVectorWrapper(object):
     else:
       c_rbdyn_private.dvv_set_item(deref(self.v), idx, value)
   def __repr__(self):
-    return deref(self.v).__repr__()
+    return repr(deref(self.v))
   def __copy__(self):
     cdef DoubleVectorVectorWrapper ret = DoubleVectorVectorWrapper()
     ret.__own_impl = True
