@@ -31,18 +31,26 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
 	C_(mb.nrDof()),
 	I_st_(mb.nrBodies()),
 	F_(mb.nrJoints()),
+        HIr_(mb.nrDof(), mb.nrDof()),
 	acc_(mb.nrBodies()),
 	f_(mb.nrBodies()),
 	tmpFd_(mb.nrDof()),
 	dofPos_(mb.nrJoints()),
 	ldlt_(mb.nrDof())
 {
+        HIr_.setZero();
 	int dofP = 0;
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		F_[i].resize(6, mb.joint(i).dof());
 		dofPos_[i] = dofP;
 		dofP += mb.joint(i).dof();
+
+                if(mb.joint(i).type() == Joint::Rev)
+                {
+                        double gr = mb.joint(i).gearRatio();
+                	HIr_(i, i) = mb.joint(i).rotorInertia() * gr * gr;
+                }
 	}
 }
 
@@ -107,6 +115,8 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 			}
 		}
 	}
+
+        H_.noalias() = H_ + HIr_;
 }
 
 void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)

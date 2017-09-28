@@ -357,6 +357,16 @@ public:
 		return jointNameToInd_.at(name);
 	}
 
+        void setJointRotorInertia(int num, double Ir)
+        {
+                joints_[num].setRotorInertia(Ir);
+        }
+
+        void setJointGearRatio(int num, double gr)
+        {
+                joints_[num].setGearRatio(gr);
+        }
+
 private:
 	std::vector<Body> bodies_;
 	std::vector<Joint> joints_;
