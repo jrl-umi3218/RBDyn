@@ -49,7 +49,7 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
                 if(mb.joint(i).type() == Joint::Rev)
                 {
                         double gr = mb.joint(i).gearRatio();
-                	HIr_(i, i) = mb.joint(i).rotorInertia() * gr * gr;
+                	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
                 }
 	}
 }
