@@ -27,6 +27,8 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
+#include "Jacobian.h"
+
 #include <rbdyn/config.hh>
 
 namespace rbd
@@ -69,6 +71,10 @@ public:
 		*/
 	void computeC(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	/**
+	        * Compute the Coriolis factorization matrix
+		**/
+	void computeCoriolisMat(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
 
 	/// @return The inertia matrix H.
 	const Eigen::MatrixXd& H() const
@@ -80,6 +86,12 @@ public:
 	const Eigen::VectorXd& C() const
 	{
 		return C_;
+	}
+
+	/// @return The Coriolis factorization matrix
+	const Eigen::MatrixXd CoriolisMat() const
+	{
+	        return CoriolisMat_;
 	}
 
 	/// @return Inertia of tho subtree rooted at body i.
@@ -105,9 +117,12 @@ public:
 		*/
 	void sComputeC(const MultiBody& mb, const MultiBodyConfig& mbc);
 
+	Eigen::Matrix3d SkewSymmetric(const Eigen::Vector3d& v);
+
 private:
 	Eigen::MatrixXd H_;
 	Eigen::VectorXd C_;
+	Eigen::MatrixXd CoriolisMat_;
 
 	// H computation
 	std::vector<sva::RBInertiad> I_st_;
@@ -117,6 +132,9 @@ private:
 	// C computation
 	std::vector<sva::MotionVecd> acc_;
 	std::vector<sva::ForceVecd> f_;
+
+	// Coriolis Computation
+	std::vector<rbd::Jacobian> jacs_;
 
 	// torque computation
 	Eigen::VectorXd tmpFd_;

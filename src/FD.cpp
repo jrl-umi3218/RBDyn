@@ -29,6 +29,7 @@ namespace rbd
 ForwardDynamics::ForwardDynamics(const MultiBody& mb):
 	H_(mb.nrDof(), mb.nrDof()),
 	C_(mb.nrDof()),
+	CoriolisMat_(mb.nrDof(), mb.nrDof()),
 	I_st_(mb.nrBodies()),
 	F_(mb.nrJoints()),
         HIr_(mb.nrDof(), mb.nrDof()),
@@ -51,6 +52,13 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
                         double gr = mb.joint(i).gearRatio();
                 	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
                 }
+	}
+
+	CoriolisMat_.setZero();
+
+        for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+	        jacs_.push_back(rbd::Jacobian(mb, mb.body(i).name()));
 	}
 }
 
@@ -160,6 +168,31 @@ void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 
 
 
+void ForwardDynamics::computeCoriolisMat(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc)
+{
+  CoriolisMat_.setZero();
+	
+	for(int i = 0; i < mb.nrBodies(); ++i)
+	{
+	        Eigen::MatrixXd j = jacs_[i].jacobian(mb, mbc);
+		Eigen::MatrixXd jac = Eigen::MatrixXd::Zero(6, mb.nrDof());
+		jacs_[i].fullJacobian(mb, j, jac);
+		
+		Eigen::MatrixXd jd = jacs_[i].jacobianDot(mb, mbc);
+		Eigen::MatrixXd jacDot = Eigen::MatrixXd::Zero(6, mb.nrDof());
+		jacs_[i].fullJacobian(mb, jd, jacDot);
+		
+		Eigen::Matrix3d rot = mbc.bodyPosW[i].rotation();
+		Eigen::Matrix3d rotDot = SkewSymmetric(mbc.bodyVelW[i].angular());
+		
+		CoriolisMat_ += mb.body(i).inertia().mass() * jac.block(3, 0, 3, mb.nrDof()).transpose() * jacDot.block(3, 0, 3, mb.nrDof());
+		CoriolisMat_ += jac.block(0, 0, 3, mb.nrDof()).transpose() * rot * mb.body(i).inertia().inertia() * rot.transpose() * jacDot.block(0, 0, 3, mb.nrDof());
+		CoriolisMat_ += jac.block(0, 0, 3, mb.nrDof()).transpose() * rotDot * mb.body(i).inertia().inertia() * rot.transpose() * jac.block(0, 0, 3, mb.nrDof()); 
+	}
+}
+
+
+
 void ForwardDynamics::sForwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
 	checkMatchParentToSon(mb, mbc);
@@ -197,6 +230,16 @@ void ForwardDynamics::sComputeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 	checkMatchForce(mb, mbc);
 
 	computeC(mb, mbc);
+}
+
+Eigen::Matrix3d ForwardDynamics::SkewSymmetric(const Eigen::Vector3d& v)
+{
+  Eigen::Matrix3d R = Eigen::Matrix3d::Zero();
+  R(0,1) = -(R(1,0) = v[2]);
+  R(2,0) = -(R(0,2) = v[1]);
+  R(1,2) = -(R(2,1) = v[0]);
+  
+  return R;
 }
 
 } // namespace rbd
