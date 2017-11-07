@@ -79,8 +79,8 @@ To compile you need the following tools:
 
 For Python bindings:
 
- * [PyBindGen](https://launchpad.net/pybindgen) = 0.16
- * [Eigen3ToPython](https://github.com/jorisv/Eigen3ToPython) (to use the python binding)
+ * [Cython](cython.readthedocs.io) = 0.20
+ * [Eigen3ToPython](https://github.com/jrl-umi3218/Eigen3ToPython) (to use the python binding)
 
 #### Building
 
