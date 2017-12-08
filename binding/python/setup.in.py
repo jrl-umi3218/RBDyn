@@ -28,10 +28,9 @@ from Cython.Build import cythonize
 import hashlib
 import os
 import subprocess
+import sys
 
 from numpy import get_include as numpy_get_include
-
-win32_build = os.name == 'nt'
 
 this_path  = os.path.dirname(os.path.realpath(__file__))
 with open(this_path + '/rbdyn/__init__.py', 'w') as fd:
@@ -64,7 +63,7 @@ class pkg_config(object):
 python_libs = []
 python_lib_dirs = []
 python_others = []
-if not win32_build:
+if not sys.platform == "win32" and not sys.platform == "darwin":
   tokens = subprocess.check_output(['python-config', '--ldflags']).split()
   tokens = [ token.decode('ascii') for token in tokens ]
   for token in tokens:
@@ -83,7 +82,7 @@ config.compile_args.append('-std=c++11')
 for o in python_others:
   config.compile_args.append(o)
 config.include_dirs.append(os.getcwd() + "/include")
-if not win32_build:
+if not sys.platform == "win32":
   config.library_dirs.extend(python_lib_dirs)
   config.libraries.extend(python_libs)
 else:
