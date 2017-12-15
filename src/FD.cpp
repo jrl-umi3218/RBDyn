@@ -167,7 +167,7 @@ void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
 }
 
 
-
+/*
 void ForwardDynamics::computeCoriolisMat(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc)
 {
   CoriolisMat_.setZero();
@@ -182,15 +182,19 @@ void ForwardDynamics::computeCoriolisMat(const rbd::MultiBody& mb, const rbd::Mu
 		Eigen::MatrixXd jacDot = Eigen::MatrixXd::Zero(6, mb.nrDof());
 		jacs_[i].fullJacobian(mb, jd, jacDot);
 		
-		Eigen::Matrix3d rot = mbc.bodyPosW[i].rotation();
-		Eigen::Matrix3d rotDot = SkewSymmetric(mbc.bodyVelW[i].angular());
+		Eigen::Matrix3d rot = mbc.bodyPosW[i].rotation().transpose();            // Transposed due to Featherstone notation
+		Eigen::Matrix3d rotDot = SkewSymmetric(mbc.bodyVelW[i].angular()) * rot; // Transposed due to Featherstone notation
+
+		// C = \sum m_i J_{v_i}^T \dot{J}_{v_i}
+		//        + J_{w_i}^T R_i I_i R_i^T \dot{J}_{w_i}
+		//        + J_{w_i}^T \dot{R}_i I_i R_i^T J_{w_i}
 		
-		CoriolisMat_ += mb.body(i).inertia().mass() * jac.block(3, 0, 3, mb.nrDof()).transpose() * jacDot.block(3, 0, 3, mb.nrDof());
-		CoriolisMat_ += jac.block(0, 0, 3, mb.nrDof()).transpose() * rot * mb.body(i).inertia().inertia() * rot.transpose() * jacDot.block(0, 0, 3, mb.nrDof());
-		CoriolisMat_ += jac.block(0, 0, 3, mb.nrDof()).transpose() * rotDot * mb.body(i).inertia().inertia() * rot.transpose() * jac.block(0, 0, 3, mb.nrDof()); 
+		CoriolisMat_ += mb.body(i).inertia().mass() * jac.bottomRows<3>().transpose() * jacDot.bottomRows<3>();
+		CoriolisMat_ += jac.topRows<3>().transpose() * rot * mb.body(i).inertia().inertia() * rot.transpose() * jacDot.topRows<3>();
+		CoriolisMat_ += jac.topRows<3>().transpose() * rotDot * mb.body(i).inertia().inertia() * rot.transpose() * jac.topRows<3>();
 	}
 }
-
+*/
 
 
 void ForwardDynamics::sForwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)

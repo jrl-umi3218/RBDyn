@@ -74,7 +74,7 @@ public:
 	/**
 	        * Compute the Coriolis factorization matrix
 		**/
-	void computeCoriolisMat(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
+	// void computeCoriolisMat(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
 
 	/// @return The inertia matrix H.
 	const Eigen::MatrixXd& H() const
@@ -89,10 +89,10 @@ public:
 	}
 
 	/// @return The Coriolis factorization matrix
-	const Eigen::MatrixXd CoriolisMat() const
-	{
-	        return CoriolisMat_;
-	}
+	//const Eigen::MatrixXd CoriolisMat() const
+	//{
+	//        return CoriolisMat_;
+	//}
 
 	/// @return Inertia of tho subtree rooted at body i.
 	const std::vector<sva::RBInertiad>& inertiaSubTree() const
