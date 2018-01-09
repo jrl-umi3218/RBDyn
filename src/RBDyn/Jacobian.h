@@ -232,6 +232,16 @@ public:
 		const Eigen::Ref<const Eigen::MatrixXd>& jac,
 		Eigen::MatrixXd& res) const;
 
+    /**
+        * Project the jacobian in the full robot parameters vector and add to res.
+        * @param mb MuliBody used has model.
+        * @param jac Jacobian to project.
+        * @param res Projected Jacobian (must be allocated).
+        */
+    void addFullJacobian(const MultiBody& mb,
+                         const Eigen::Ref<const Eigen::MatrixXd>& jac,
+                         Eigen::MatrixXd& res) const;
+    
 	/// @return MultiBody that correspond to the path between the root and
 	/// the specified body.
 	MultiBody subMultiBody(const MultiBody& mb) const;
@@ -323,6 +333,13 @@ public:
 	void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 		Eigen::MatrixXd& res) const;
 
+    /** safe version of @see addFullJacobian.
+     * @throw std::domain_error If mb don't match jointPath or res
+     * size missmatch.
+     */
+    void sAddFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+         Eigen::MatrixXd& res) const;
+    
 	/** safe version of @see velocity.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
