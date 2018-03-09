@@ -18,22 +18,23 @@
 #include "RBDyn/IntegralTerm.h"
 
 #include <RBDyn/Coriolis.h>
+#include <iostream>
 
 namespace integral
 {
 
 IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
                            const std::shared_ptr<rbd::ForwardDynamics> fd,
-                           IntegralTermType intTermType, VelocityGainType velGainType,
+                           IntegralTermType intglTermType, VelocityGainType velGainType,
                            double lambda):
   
   nrDof_(mbs[robotIndex].nrDof()),
   fd_(fd),
-  intTermType_(intTermType),
+  intglTermType_(intglTermType),
   velGainType_(velGainType),
   lambda_(lambda),
   P_(Eigen::VectorXd::Zero(nrDof_)),
-  gamma_(Eigen::VectorXd::Zero(nrDof_))
+  gammaD_(Eigen::VectorXd::Zero(nrDof_))
 {
 }
 
@@ -41,10 +42,12 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
                                const rbd::MultiBodyConfig& mbc_real,
                                const rbd::MultiBodyConfig& mbc_calc)
 {
-  if (intTermType_ == Simple || intTermType_ == PassivityBased)
+  if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
     Eigen::MatrixXd K;
-    
+
+    //std::cout << "Rafa, in IntegralTerm::computeTerm, fd_->H() =" << std::endl << fd_->H() << std::endl << std::endl;
+
     if (velGainType_ == MassMatrix)
       {
         K = lambda_ * fd_->H();
@@ -59,7 +62,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
   
-    if (intTermType_ == PassivityBased)
+    if (intglTermType_ == PassivityBased)
       {
         coriolis::Coriolis coriolis(mb);
         Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
@@ -69,8 +72,17 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
       {
         P_ = K * s;
       }
+
+    std::cout << "Rafa, inside of IntglTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
   
-    gamma_ = fd_->H().inverse() * P_;
+    //gammaD_ = fd_->H().inverse() * P_;
+
+    /*
+    gammaD_ = P_;
+    L_.compute(fd_->H());
+    L_.matrixL().solveInPlace(gammaD_);
+    L_.matrixL().transpose().solveInPlace(gammaD_);
+    */
   }
 }
 

@@ -33,20 +33,20 @@ class IntegralTerm
 
   enum IntegralTermType
   {
-    None = 0,
-    Simple = 1,
-    PassivityBased = 2
+    None,
+    Simple,
+    PassivityBased
   };
   
   enum VelocityGainType
   {
-    Diagonal = 0,
-    MassMatrix = 1
+    Diagonal,
+    MassMatrix
   };
 
   IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
                const std::shared_ptr<rbd::ForwardDynamics> fd,
-               IntegralTermType intTermType, VelocityGainType velGainType,
+               IntegralTermType intglTermType, VelocityGainType velGainType,
                double lambda);
   
   void computeTerm(const rbd::MultiBody& mb,
@@ -58,9 +58,9 @@ class IntegralTerm
     return P_;
   }
   
-  const Eigen::VectorXd& gamma() const
+  const Eigen::VectorXd& gammaD() const
   {
-    return gamma_;
+    return gammaD_;
   }
     
  private:
@@ -68,12 +68,14 @@ class IntegralTerm
   int nrDof_;
   std::shared_ptr<rbd::ForwardDynamics> fd_;
     
-  IntegralTermType intTermType_;
+  IntegralTermType intglTermType_;
   VelocityGainType velGainType_;
   double lambda_;
 
   Eigen::VectorXd P_;
-  Eigen::VectorXd gamma_;
+  Eigen::VectorXd gammaD_;
+
+  Eigen::LLT<Eigen::MatrixXd> L_;
 };
 
 
