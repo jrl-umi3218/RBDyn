@@ -73,6 +73,13 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
         P_ = K * s;
       }
 
+    for (int i = 0; i < mb.nrJoints() + 6; i++)
+      {
+	//if ((i == 16 + 6 || i == 17 + 6) || (i >= 27 + 6 && i <= 35 + 6) || (i >= 45 + 6 && i <= 53 + 6))
+	if (i >= 19 + 6)
+	  P_[i] = 0;
+      }
+
     std::cout << "Rafa, inside of IntglTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
   
     //gammaD_ = fd_->H().inverse() * P_;
