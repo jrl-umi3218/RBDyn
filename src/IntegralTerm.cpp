@@ -49,13 +49,13 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     //std::cout << "Rafa, in IntegralTerm::computeTerm, fd_->H() =" << std::endl << fd_->H() << std::endl << std::endl;
 
     if (velGainType_ == MassMatrix)
-      {
+    {
         K = lambda_ * fd_->H();
-      }
+    }
     else
-      {
+    {
         K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
-      }
+    }
 
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
@@ -63,17 +63,17 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
   
     if (intglTermType_ == PassivityBased)
-      {
+    {
         coriolis::Coriolis coriolis(mb);
         Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
         P_ = (C + K) * s;
-      }
+    }
     else
-      {
+    {
         P_ = K * s;
-      }
+    }
 
-    std::cout << "Rafa, inside of IntglTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
+    //std::cout << "Rafa, inside of IntglTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
   
     //gammaD_ = fd_->H().inverse() * P_;
 
