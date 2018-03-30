@@ -70,7 +70,9 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     {
         P_ = K * s;
     }
-  
+
+    std::cout << "Rafa, P_ = " << P_.transpose() << std::endl;    
+    
     // Alternative method to do
     // gammaD_ = fd_->H().inverse() * P_;
 
