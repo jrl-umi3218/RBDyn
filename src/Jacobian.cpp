@@ -433,7 +433,21 @@ void Jacobian::fullJacobian(const MultiBody& mb,
 		jacPos += dof;
 	}
 }
-
+    
+void Jacobian::addFullJacobian(const MultiBody& mb,
+                         const Eigen::Ref<const Eigen::MatrixXd>& jac,
+                         Eigen::MatrixXd& res) const
+{
+    int jacPos = 0;
+    for(std::size_t index = 0; index < jointsPath_.size(); ++index)
+    {
+        int i = jointsPath_[index];
+        int dof = mb.joint(i).dof();
+        res.block(0, mb.jointPosInDof(i), jac.rows(), dof) +=
+            jac.block(0, jacPos, jac.rows(), dof);
+        jacPos += dof;
+    }
+}
 
 
 const Eigen::MatrixXd& Jacobian::sJacobian(
@@ -626,6 +640,37 @@ void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 	fullJacobian(mb, jac, res);
 }
 
+    
+void Jacobian::sAddFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+    Eigen::MatrixXd& res) const
+{
+    int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+    if(m >= static_cast<int>(mb.nrJoints()))
+    {
+        throw std::domain_error("jointsPath mismatch MultiBody");
+    }
+    
+    if(jac.cols() != jac_.cols() || jac.rows() != jac_.rows())
+    {
+        std::ostringstream str;
+        str << "jac matrix size mismatch: expected size ("
+        << jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+        << jac.rows() << " x " << jac.cols() << ")" ;
+        throw std::domain_error(str.str());
+    }
+    
+    if(res.cols() != mb.nrDof() || res.rows() != 6)
+    {
+        std::ostringstream str;
+        str << "res matrix size mismatch: expected size ("
+        << mb.nrDof() << " x " << "6 )" << " gived ("
+        << res.rows() << " x " << res.cols() << ")" ;
+        throw std::domain_error(str.str());
+    }
+    
+    addFullJacobian(mb, jac, res);
+}
+    
 
 sva::MotionVecd
 Jacobian::sVelocity(const MultiBody& mb, const MultiBodyConfig& mbc,
