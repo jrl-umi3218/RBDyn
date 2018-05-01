@@ -14,52 +14,52 @@
 
 BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 {
-  srand(time(NULL));
+	srand(time(NULL));
 
-  rbd::MultiBody mb;
-  rbd::MultiBodyConfig mbc;
-  rbd::MultiBodyGraph mbg;
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
 
-  std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-  const static int ROUNDS = 1000;
+	const static int ROUNDS = 1000;
 
-  rbd::Jacobian jac(mb, mb.body(mb.nrBodies() - 1).name());
+	rbd::Jacobian jac(mb, mb.body(mb.nrBodies() - 1).name());
 
-  for(int i = 0; i < ROUNDS; ++i)
-  {
-    mbc.zero(mb);
+	for(int i = 0; i < ROUNDS; ++i)
+	{
+		mbc.zero(mb);
 
-    Eigen::VectorXd q = Eigen::VectorXd::Random(mb.nrParams());
-    mbc.q = rbd::sVectorToParam(mb, q);
+		Eigen::VectorXd q = Eigen::VectorXd::Random(mb.nrParams());
+		mbc.q = rbd::sVectorToParam(mb, q);
 
-    for(auto& q : mbc.q)
-    {
-      if(q.size() == 7)
-      {
-        Eigen::Vector3d axis = Eigen::Vector3d::Random();
-        Eigen::AngleAxisd aa(0.5, axis/axis.norm());
-        Eigen::Quaterniond qd(aa);
-        q[0] = qd.w();
-        q[1] = qd.x();
-        q[2] = qd.y();
-        q[3] = qd.z();
-      }
-    }
+		for(auto& q : mbc.q)
+		{
+			if(q.size() == 7)
+			{
+				Eigen::Vector3d axis = Eigen::Vector3d::Random();
+				Eigen::AngleAxisd aa(0.5, axis/axis.norm());
+				Eigen::Quaterniond qd(aa);
+				q[0] = qd.w();
+				q[1] = qd.x();
+				q[2] = qd.y();
+				q[3] = qd.z();
+			}
+		}
 
-    rbd::forwardKinematics(mb, mbc);
-    rbd::forwardVelocity(mb, mbc);
+		rbd::forwardKinematics(mb, mbc);
+		rbd::forwardVelocity(mb, mbc);
 
-    Eigen::MatrixXd jacMat = jac.jacobian(mb, mbc);
+		Eigen::MatrixXd jacMat = jac.jacobian(mb, mbc);
 
-    Eigen::MatrixXd fullJacMat(6, mb.nrDof());
-    jac.fullJacobian(mb, jacMat, fullJacMat);
+		Eigen::MatrixXd fullJacMat(6, mb.nrDof());
+		jac.fullJacobian(mb, jacMat, fullJacMat);
 
-    Eigen::MatrixXd res = fullJacMat.transpose()*fullJacMat;
+		Eigen::MatrixXd res = fullJacMat.transpose()*fullJacMat;
 
-    Eigen::MatrixXd product = jacMat.transpose()*jacMat;
-    Eigen::MatrixXd fullProduct = rbd::expand(jac, mb, product);
+		Eigen::MatrixXd product = jacMat.transpose()*jacMat;
+		Eigen::MatrixXd fullProduct = rbd::expand(jac, mb, product);
 
-    BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
-  }
+		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
+	}
 }
