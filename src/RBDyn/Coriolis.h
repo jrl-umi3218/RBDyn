@@ -10,10 +10,6 @@ namespace rbd
 using Block = std::array<int, 3>;
 using Blocks = std::vector<Block>;
 
-Eigen::Matrix3d skewSymmetricFromVelocity(const Eigen::Vector3d& v);
-
-Eigen::Matrix3d rotationMatrixFromVector(const Eigen::Vector3d& angular);
-
 Eigen::MatrixXd expand(const rbd::Jacobian& jac,
 			const rbd::MultiBody& mb,
 			const Eigen::MatrixXd& jacMat);
