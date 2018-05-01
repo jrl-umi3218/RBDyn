@@ -1,8 +1,9 @@
-#include "XXXarm.h"
-#include "XYZarm.h"
 #include "Tree30Dof.h"
-#include <RBDyn/Coriolis.h>
 
+#define BOOST_TEST_MODULE Coriolis
+#include <boost/test/unit_test.hpp>
+
+#include <RBDyn/Coriolis.h>
 #include <RBDyn/FD.h>
 #include <RBDyn/FK.h>
 #include <RBDyn/FV.h>
@@ -10,9 +11,12 @@
 
 #include <iostream>
 
-int main()
+BOOST_AUTO_TEST_CASE(CoriolisTest)
 {
   srand(time(NULL));
+
+  constexpr double TOL = 1e-6;
+  constexpr double BIGTOL = 50*TOL;
 
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
@@ -27,9 +31,6 @@ int main()
   std::tie(mbt, mbtc, mbtg) = makeTree30Dof(false);
 
   const static int ROUNDS = 1000;
-
-  std::vector<double> errors;
-  std::vector<double> diff_errors;
 
   for(int i = 0; i < ROUNDS; ++i)
   {
@@ -77,12 +78,13 @@ int main()
 
     fd.computeC(mbt, mbtc);
     Eigen::MatrixXd N = fd.C();
-    errors.push_back((C*qd + gravity - N).norm());
+
+    BOOST_CHECK_SMALL((C*qd + gravity - N).norm(), TOL);
 
     fd.computeH(mbt, mbtc);
     Eigen::MatrixXd m1 = fd.H();
 
-    double dt = 1e-6;
+    double dt = 1e-8;
 
     rbd::sEulerIntegration(mbt, mbtc, dt);
 
@@ -94,32 +96,7 @@ int main()
 
     Eigen::MatrixXd diff = (m2 - m1)/dt - (C+C.transpose());
 
-    diff_errors.push_back(diff.array().abs().maxCoeff());
+    //Because we are using finite differences, the error is larger on this test
+    BOOST_CHECK_SMALL(diff.norm(), BIGTOL);
   }
-
-  double mean = 0, max = 0;
-
-  for(auto err : errors)
-  {
-    mean += err;
-    max = std::max(max, err);
-  }
-  mean /= ROUNDS;
-
-  std::cout << "Mean error coriolis / RBDyn : " << mean << std::endl;
-  std::cout << "Max error coriolis / RBDyn : " << max << std::endl;
-
-  mean = 0;
-  max = 0;
-  for(auto err : diff_errors)
-  {
-    mean += err;
-    max = std::max(max, err);
-  }
-  mean /= ROUNDS;
-
-  std::cout << "Mean error skew-symmetry : " << mean << std::endl;
-  std::cout << "Max error skew-symmetry : " << max << std::endl;
-
-  return 0;
 }

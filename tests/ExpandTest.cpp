@@ -1,7 +1,9 @@
-#include "XXXarm.h"
-#include "XYZarm.h"
 #include "Tree30Dof.h"
+
 #include <RBDyn/Coriolis.h>
+
+#define BOOST_TEST_MODULE Expand
+#include <boost/test/unit_test.hpp>
 
 #include <RBDyn/FD.h>
 #include <RBDyn/FK.h>
@@ -10,7 +12,7 @@
 
 #include <iostream>
 
-int main()
+BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 {
   srand(time(NULL));
 
@@ -21,8 +23,6 @@ int main()
   std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
   const static int ROUNDS = 1000;
-
-  std::vector<double> errors;
 
   rbd::Jacobian jac(mb, mb.body(mb.nrBodies() - 1).name());
 
@@ -60,28 +60,6 @@ int main()
     Eigen::MatrixXd product = jacMat.transpose()*jacMat;
     Eigen::MatrixXd fullProduct = rbd::expand(jac, mb, product);
 
-    errors.push_back((fullProduct - res).norm());
-
+    BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
   }
-
-  auto res = rbd::compactPath(jac, mb);
-  for(const auto& pair : res)
-  {
-    std::cout << "block " << pair[0] << "," << pair[1] << "," << pair[2] << std::endl;
-  }
-
-  double mean = 0, max = 0;
-
-  for(auto err : errors)
-  {
-    mean += err;
-    max = std::max(max, err);
-  }
-  mean /= ROUNDS;
-
-  std::cout << "Over " << ROUNDS << " rounds " << errors.size() << std::endl;
-  std::cout << "Mean error expand / full : " << mean << std::endl;
-  std::cout << "Max error expand / full : " << max << std::endl;
-
-  return 0;
 }
