@@ -70,6 +70,8 @@ addUnitTest("MomentumTest")
 addUnitTest("IDIMTest")
 addUnitTest("InverseStaticsTest")
 addUnitTest("IntegrationTest")
+addUnitTest("ExpandTest")
+addUnitTest("CoriolisTest")
 
 addBenchmark("JacobianBench")
 addBenchmark("DynamicsBench")
