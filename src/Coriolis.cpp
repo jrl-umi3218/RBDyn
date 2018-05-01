@@ -2,31 +2,6 @@
 
 namespace rbd
 {
-
-Eigen::Matrix3d skewSymmetricFromVelocity(const Eigen::Vector3d& v)
-{
-  Eigen::Matrix3d R = Eigen::Matrix3d::Zero();
-  R(0,1)= -( R(1,0)= v[2] );
-  R(2,0)= -( R(0,2)= v[1] );
-  R(1,2)= -( R(2,1)= v[0] );
-
-  return R;
-}
-
-Eigen::Matrix3d rotationMatrixFromVector(const Eigen::Vector3d& angular)
-{
-  double angle = angular.norm();
-  if(angle > 0)
-  {
-    return Eigen::AngleAxisd(angle, angular/angle).toRotationMatrix();
-  }
-  else
-  {
-    //return Eigen::AngleAxisd(0.0, Eigen::Vector3d::UnitZ()).toRotationMatrix();
-    return Eigen::Matrix3d::Zero();
-  }
-}
-
 Eigen::MatrixXd expand(const rbd::Jacobian& jac,
                        const rbd::MultiBody& mb,
                        const Eigen::MatrixXd& jacMat)
@@ -152,7 +127,7 @@ Eigen::MatrixXd Coriolis::coriolis(const rbd::MultiBody& mb, const rbd::MultiBod
     jacDotMats_[i] = jacs_[i].jacobianDot(mb, mbc);
 
     rot = mbc.bodyPosW[i].rotation().transpose();
-    rDot.noalias() = skewSymmetricFromVelocity(mbc.bodyVelW[i].angular())*rot;
+    rDot.noalias() = sva::vector3ToCrossMatrix(mbc.bodyVelW[i].angular())*rot;
 
     auto jvi = jacMats_[i].bottomRows<3>();
     auto jDvi = jacDotMats_[i].bottomRows<3>();
