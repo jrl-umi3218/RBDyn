@@ -13,7 +13,7 @@
 
 BOOST_AUTO_TEST_CASE(CoriolisTest)
 {
-	srand(time(NULL));
+	std::srand(133757348);
 
 	constexpr double TOL = 1e-6;
 	constexpr double BIGTOL = 50 * TOL;
