@@ -14,7 +14,7 @@
 
 BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 {
-	srand(time(NULL));
+	std::srand(133757348);
 
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
