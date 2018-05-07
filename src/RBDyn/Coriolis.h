@@ -1,6 +1,8 @@
 #ifndef CORIOLIS_H_KED6CAHK
 #define CORIOLIS_H_KED6CAHK
 
+#include <array>
+
 #include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/CoM.h>
 #include <rbdyn/config.hh>
