@@ -25,6 +25,7 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 	const static int ROUNDS = 1000;
 
 	rbd::Jacobian jac(mb, mb.body(mb.nrBodies() - 1).name());
+	rbd::Blocks compact = rbd::compactPath(jac, mb);
 
 	for(int i = 0; i < ROUNDS; ++i)
 	{
@@ -59,6 +60,16 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 
 		Eigen::MatrixXd product = jacMat.transpose()*jacMat;
 		Eigen::MatrixXd fullProduct = rbd::expand(jac, mb, product);
+
+		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
+
+		fullProduct.setZero();
+		rbd::expandAdd(jac, mb, product, fullProduct);
+
+		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
+
+		fullProduct.setZero();
+		rbd::compactExpandAdd(compact, product, fullProduct);
 
 		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
 	}
