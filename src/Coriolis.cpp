@@ -47,7 +47,6 @@ std::vector<std::array<int, 3>> compactPath(const rbd::Jacobian& jac,
 						const rbd::MultiBody& mb)
 {
 	std::vector<std::array<int, 3>> res;
-        std::array<int, 3> block;
 
 	int start_block = mb.jointPosInDof(jac.jointsPath()[0]);
 	int len_block = mb.joint(jac.jointsPath()[0]).dof();
