@@ -7,19 +7,7 @@ Eigen::MatrixXd expand(const rbd::Jacobian& jac,
 			const Eigen::MatrixXd& jacMat)
 {
 	Eigen::MatrixXd res = Eigen::MatrixXd::Zero(mb.nrDof(), mb.nrDof());
-	int rowJac = 0;
-	int colJac = 0;
-	for(int i : jac.jointsPath())
-	{
-		colJac = 0;
-		for(int j : jac.jointsPath())
-		{
-			res.block(mb.jointPosInDof(i), mb.jointPosInDof(j), mb.joint(i).dof(), mb.joint(j).dof())
-				= jacMat.block(rowJac, colJac, mb.joint(i).dof(), mb.joint(j).dof());
-			colJac += mb.joint(j).dof();
-		}
-		rowJac += mb.joint(i).dof();
-	}
+	expandAdd(jac, mb, jacMat, res);
 	return res;
 }
 
