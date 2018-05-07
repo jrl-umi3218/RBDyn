@@ -3,6 +3,7 @@
 
 #include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/CoM.h>
+#include <rbdyn/config.hh>
 
 namespace rbd
 {
@@ -10,23 +11,23 @@ namespace rbd
 using Block = std::array<int, 3>;
 using Blocks = std::vector<Block>;
 
-Eigen::MatrixXd expand(const rbd::Jacobian& jac,
+RBDYN_DLLAPI Eigen::MatrixXd expand(const rbd::Jacobian& jac,
 			const rbd::MultiBody& mb,
 			const Eigen::MatrixXd& jacMat);
 
-void expandAdd(const rbd::Jacobian& jac,
+RBDYN_DLLAPI void expandAdd(const rbd::Jacobian& jac,
 		const rbd::MultiBody& mb,
 		const Eigen::MatrixXd& jacMat,
 		Eigen::MatrixXd& res);
 
-Blocks compactPath(const rbd::Jacobian& jac,
+RBDYN_DLLAPI Blocks compactPath(const rbd::Jacobian& jac,
 		const rbd::MultiBody& mb);
 
-void compactExpandAdd(const Blocks& compactPath,
+RBDYN_DLLAPI void compactExpandAdd(const Blocks& compactPath,
 			const Eigen::MatrixXd& jacMat,
 			Eigen::MatrixXd& res);
 
-class Coriolis
+class RBDYN_DLLAPI Coriolis
 {
 	public:
 		Coriolis(const rbd::MultiBody& mb);
