@@ -76,6 +76,7 @@ void expandAdd(const Blocks& compactPath,
 }
 
 Coriolis::Coriolis(const rbd::MultiBody& mb)
+  : coriolis_(mb.nrDof(), mb.nrDof())
 {
 	Eigen::Vector3d com;
 	double mass;
@@ -91,35 +92,32 @@ Coriolis::Coriolis(const rbd::MultiBody& mb)
 			com.setZero();
 		}
 		jacs_.push_back(rbd::Jacobian(mb, mb.body(i).name(), com));
-		jacMats_.push_back(Eigen::MatrixXd(6, jacs_[i].dof()));
-		jacDotMats_.push_back(Eigen::MatrixXd(6, jacs_[i].dof()));
 		compactPaths_.push_back(compactPath(jacs_[i], mb));
 	}
 }
 
-Eigen::MatrixXd Coriolis::coriolis(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc)
+const Eigen::MatrixXd& Coriolis::coriolis(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc)
 {
-	Eigen::MatrixXd coriolis = Eigen::MatrixXd::Zero(mb.nrDof(), mb.nrDof());
-
 	Eigen::Matrix3d rot;
 	Eigen::Matrix3d rDot;
 
 	Eigen::Matrix3d inertia;
 
+        coriolis_.setZero();
+
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
-		jacMats_[i] = jacs_[i].jacobian(mb, mbc);
-
-		jacDotMats_[i] = jacs_[i].jacobianDot(mb, mbc);
+		const auto & jac = jacs_[i].jacobian(mb, mbc);
+		const auto & jacDot = jacs_[i].jacobianDot(mb, mbc);
 
 		rot = mbc.bodyPosW[i].rotation().transpose();
 		rDot.noalias() = sva::vector3ToCrossMatrix(mbc.bodyVelW[i].angular())*rot;
 
-		auto jvi = jacMats_[i].bottomRows<3>();
-		auto jDvi = jacDotMats_[i].bottomRows<3>();
+		auto jvi = jac.bottomRows<3>();
+		auto jDvi = jacDot.bottomRows<3>();
 
-		auto jwi = jacMats_[i].topRows<3>();
-		auto jDwi = jacDotMats_[i].topRows<3>();
+		auto jwi = jac.topRows<3>();
+		auto jDwi = jacDot.topRows<3>();
 
 		double mass = mb.body(i).inertia().mass();
 		inertia = mb.body(i).inertia().inertia()
@@ -132,13 +130,12 @@ Eigen::MatrixXd Coriolis::coriolis(const rbd::MultiBody& mb, const rbd::MultiBod
 		 *        + J_{w_i}^T \dot{R}_i I_i R_i^T J_{w_i} */
 
 		Eigen::MatrixXd res = mass*jvi.transpose()*jDvi
-				+ jwi.transpose()*((rot*ir)*jDwi
-				+  (rDot*ir)*jwi);
+				+ jwi.transpose()*((rot*ir)*jDwi +  (rDot*ir)*jwi);
 
-		expandAdd(compactPaths_[i], res, coriolis);
+		expandAdd(compactPaths_[i], res, coriolis_);
 	}
 
-	return coriolis;
+	return coriolis_;
 }
 
 } //ns rbd

@@ -85,13 +85,13 @@ public:
 	 * @param mb Multibody system
 	 * @param mbc Multibody configuration associated to mb
 	 */
-	Eigen::MatrixXd coriolis(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
+	const Eigen::MatrixXd& coriolis(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
 
 private:
 	std::vector<rbd::Jacobian> jacs_;
-	std::vector<Eigen::MatrixXd> jacMats_;
-	std::vector<Eigen::MatrixXd> jacDotMats_;
 	std::vector<Blocks> compactPaths_;
+        Eigen::MatrixXd coriolis_;
+
 };
 
 } // ns rbd
