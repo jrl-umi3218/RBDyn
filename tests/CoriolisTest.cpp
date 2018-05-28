@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(CoriolisTest)
 	rbd::ForwardDynamics fd(mb);
 	rbd::Coriolis coriolis(mb);
 
-	const static int ROUNDS = 1000;
+	const static int ROUNDS = 100;
 
 	for (int i = 0; i < ROUNDS; ++i)
 	{
