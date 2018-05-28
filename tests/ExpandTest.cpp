@@ -5,12 +5,21 @@
 #define BOOST_TEST_MODULE Expand
 #include <boost/test/unit_test.hpp>
 
-#include <RBDyn/FD.h>
 #include <RBDyn/FK.h>
 #include <RBDyn/FV.h>
-#include <RBDyn/EulerIntegration.h>
 
-#include <iostream>
+
+void setRandomFreeFlyer(rbd::MultiBodyConfig& mbc)
+{
+	Eigen::Vector3d axis =
+	    Eigen::Vector3d::Random();
+	Eigen::AngleAxisd aa(0.5, axis / axis.norm());
+	Eigen::Quaterniond qd(aa);
+	mbc.q[0][0] = qd.w();
+	mbc.q[0][1] = qd.x();
+	mbc.q[0][2] = qd.y();
+	mbc.q[0][3] = qd.z();
+}
 
 BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 {
@@ -32,21 +41,8 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 		mbc.zero(mb);
 
 		Eigen::VectorXd q = Eigen::VectorXd::Random(mb.nrParams());
-		mbc.q = rbd::sVectorToParam(mb, q);
-
-		for(auto& q : mbc.q)
-		{
-			if(q.size() == 7)
-			{
-				Eigen::Vector3d axis = Eigen::Vector3d::Random();
-				Eigen::AngleAxisd aa(0.5, axis/axis.norm());
-				Eigen::Quaterniond qd(aa);
-				q[0] = qd.w();
-				q[1] = qd.x();
-				q[2] = qd.y();
-				q[3] = qd.z();
-			}
-		}
+		mbc.q = rbd::vectorToParam(mb, q);
+		setRandomFreeFlyer(mbc);
 
 		rbd::forwardKinematics(mb, mbc);
 		rbd::forwardVelocity(mb, mbc);
@@ -69,7 +65,7 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
 
 		fullProduct.setZero();
-		rbd::compactExpandAdd(compact, product, fullProduct);
+		rbd::expandAdd(compact, product, fullProduct);
 
 		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
 	}

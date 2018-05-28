@@ -16,6 +16,7 @@ void expandAdd(const rbd::Jacobian& jac,
 			const Eigen::MatrixXd& jacMat,
 			Eigen::MatrixXd& res)
 {
+	assert(res.cols() == mb.nrDof() && res.rows() == mb.nrDof());
 	int rowJac = 0;
 	int colJac = 0;
 	for(int i : jac.jointsPath())
@@ -31,25 +32,21 @@ void expandAdd(const rbd::Jacobian& jac,
 	}
 }
 
-std::vector<std::array<int, 3>> compactPath(const rbd::Jacobian& jac,
+Blocks compactPath(const rbd::Jacobian& jac,
 						const rbd::MultiBody& mb)
 {
-	std::vector<std::array<int, 3>> res;
+	Blocks res;
 
 	int start_block = mb.jointPosInDof(jac.jointsPath()[0]);
 	int len_block = mb.joint(jac.jointsPath()[0]).dof();
 
-	int start;
 	int startJac = 0;
 
-	for(int i : jac.jointsPath())
+	const auto & jPath = jac.jointsPath();
+	for (std::size_t j = 1;  j < jPath.size(); ++j)
 	{
-		if(i == jac.jointsPath()[0])
-		{
-			continue;
-		}
-
-		start = mb.jointPosInDof(i);
+		int i = jPath[j];
+		int start = mb.jointPosInDof(i);
 
 		if(start != start_block + len_block)
 		{
@@ -64,7 +61,7 @@ std::vector<std::array<int, 3>> compactPath(const rbd::Jacobian& jac,
 	return res;
 }
 
-void compactExpandAdd(const std::vector<std::array<int, 3>>& compactPath,
+void expandAdd(const Blocks& compactPath,
 			const Eigen::MatrixXd& jacMat,
 			Eigen::MatrixXd& res)
 {
@@ -138,7 +135,7 @@ Eigen::MatrixXd Coriolis::coriolis(const rbd::MultiBody& mb, const rbd::MultiBod
 				+ jwi.transpose()*((rot*ir)*jDwi
 				+  (rDot*ir)*jwi);
 
-		compactExpandAdd(compactPaths_[i], res, coriolis);
+		expandAdd(compactPaths_[i], res, coriolis);
 	}
 
 	return coriolis;
