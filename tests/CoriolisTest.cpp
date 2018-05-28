@@ -9,7 +9,18 @@
 #include <RBDyn/FK.h>
 #include <RBDyn/FV.h>
 
-#include <iostream>
+
+void setRandomFreeFlyer(rbd::MultiBodyConfig& mbc)
+{
+	Eigen::Vector3d axis =
+	    Eigen::Vector3d::Random();
+	Eigen::AngleAxisd aa(0.5, axis / axis.norm());
+	Eigen::Quaterniond qd(aa);
+	mbc.q[0][0] = qd.w();
+	mbc.q[0][1] = qd.x();
+	mbc.q[0][2] = qd.y();
+	mbc.q[0][3] = qd.z();
+}
 
 BOOST_AUTO_TEST_CASE(CoriolisTest)
 {
@@ -24,74 +35,47 @@ BOOST_AUTO_TEST_CASE(CoriolisTest)
 
 	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::MultiBody mbt;
-	rbd::MultiBodyConfig mbtc;
-	rbd::MultiBodyGraph mbtg;
-
-	std::tie(mbt, mbtc, mbtg) = makeTree30Dof(false);
+	rbd::ForwardDynamics fd(mb);
+	rbd::Coriolis coriolis(mb);
 
 	const static int ROUNDS = 1000;
 
 	for (int i = 0; i < ROUNDS; ++i)
 	{
 		mbc.zero(mb);
-		mbtc.zero(mbt);
 
 		Eigen::VectorXd q = Eigen::VectorXd::Random(mb.nrParams());
-		mbc.q = rbd::sVectorToParam(mb, q);
-
-		for (auto &q : mbc.q)
-		{
-			if (q.size() == 7)
-			{
-				Eigen::Vector3d axis =
-				    Eigen::Vector3d::Random();
-				Eigen::AngleAxisd aa(0.5, axis / axis.norm());
-				Eigen::Quaterniond qd(aa);
-				q[0] = qd.w();
-				q[1] = qd.x();
-				q[2] = qd.y();
-				q[3] = qd.z();
-			}
-		}
-
-		mbtc.q = mbc.q;
+		mbc.q = rbd::vectorToParam(mb, q);
+		setRandomFreeFlyer(mbc);
 
 		rbd::forwardKinematics(mb, mbc);
 		rbd::forwardVelocity(mb, mbc);
 
-		rbd::forwardKinematics(mbt, mbtc);
-		rbd::forwardVelocity(mbt, mbtc);
-
-		rbd::ForwardDynamics fd(mbt);
-		fd.computeC(mbt, mbtc);
+		fd.computeC(mb, mbc);
 		Eigen::VectorXd gravity = fd.C();
 
 		Eigen::VectorXd qd = Eigen::VectorXd::Random(mb.nrDof());
-		mbc.alpha = rbd::sVectorToDof(mb, qd);
-		mbtc.alpha = mbc.alpha;
+		mbc.alpha = rbd::vectorToDof(mb, qd);
 
 		rbd::forwardVelocity(mb, mbc);
-		rbd::forwardVelocity(mbt, mbtc);
 
-		rbd::Coriolis coriolis(mb);
 		Eigen::MatrixXd C = coriolis.coriolis(mb, mbc);
 
-		fd.computeC(mbt, mbtc);
+		fd.computeC(mb, mbc);
 		Eigen::MatrixXd N = fd.C();
 
 		BOOST_CHECK_SMALL((C * qd + gravity - N).norm(), TOL);
 
-		fd.computeH(mbt, mbtc);
+		fd.computeH(mb, mbc);
 		Eigen::MatrixXd m1 = fd.H();
 
 		double dt = 1e-8;
 
-		rbd::sEulerIntegration(mbt, mbtc, dt);
+		rbd::eulerIntegration(mb, mbc, dt);
 
-		rbd::forwardKinematics(mbt, mbtc);
-		rbd::forwardVelocity(mbt, mbtc);
-		fd.computeH(mbt, mbtc);
+		rbd::forwardKinematics(mb, mbc);
+		rbd::forwardVelocity(mb, mbc);
+		fd.computeH(mb, mbc);
 
 		Eigen::MatrixXd m2 = fd.H();
 
