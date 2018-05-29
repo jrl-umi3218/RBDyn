@@ -261,6 +261,18 @@ public:
 		Eigen::MatrixXd& res) const;
 
 	/**
+		* Accumulate the projection of the jacobian in the full
+		* robot parameters vector using a compact representation
+		* of the DoF.
+		* @param compacPath Blocks representing the compact
+		* @param jac Jacobian to project.
+		* @param res Projected Jacobian (must be allocated).
+		*/
+	void addFullJacobian(const Blocks& compactPath,
+		const Eigen::Ref<const Eigen::MatrixXd>& jac,
+		Eigen::MatrixXd& res) const;
+
+	/**
 	 * Expand a symmetric product of a jacobian by its
 	 * transpose onto every DoF.
 	 * @param mb MultiBody used as model.

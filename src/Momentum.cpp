@@ -136,6 +136,7 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix():
 	cmMat_(),
 	cmMatDot_(),
 	jacVec_(),
+	blocksVec_(),
 	jacWork_(),
 	bodiesWeight_()
 {}
@@ -145,6 +146,7 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb):
 	cmMat_(6, mb.nrDof()),
 	cmMatDot_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
+	blocksVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
 	bodiesWeight_(mb.nrBodies(), 1.),
 	normalAcc_(mb.nrBodies())
@@ -158,6 +160,7 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb,
 	cmMat_(6, mb.nrDof()),
 	cmMatDot_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
+	blocksVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
 	bodiesWeight_(std::move(weight)),
 	normalAcc_(mb.nrBodies())
@@ -189,7 +192,7 @@ void CentroidalMomentumMatrix::computeMatrix(const MultiBody& mb,
 		Matrix6d proj = bodiesWeight_[i]*jacProjector(X_i_com, bodies[i].inertia());
 
 		jacWork_[i] = proj*jac;
-		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMat_);
+		jacVec_[i].addFullJacobian(blocksVec_[i], jacWork_[i], cmMat_);
 	}
 }
 
@@ -215,7 +218,7 @@ void CentroidalMomentumMatrix::computeMatrixDot(const MultiBody& mb,
 			mbc.bodyVelB[i], com_Vel);
 
 		jacWork_[i] = proj*jacDot + projDot*jac;
-		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMatDot_);
+		jacVec_[i].addFullJacobian(blocksVec_[i], jacWork_[i], cmMatDot_);
 	}
 }
 
@@ -242,10 +245,10 @@ void CentroidalMomentumMatrix::computeMatrixAndMatrixDot(const MultiBody& mb,
 			mbc.bodyVelB[i], com_Vel);
 
 		jacWork_[i] = proj*jac;
-		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMat_);
+		jacVec_[i].addFullJacobian(blocksVec_[i], jacWork_[i], cmMat_);
 
 		jacWork_[i] = proj*jacDot + projDot*jac;
-		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMatDot_);
+		jacVec_[i].addFullJacobian(blocksVec_[i], jacWork_[i], cmMatDot_);
 	}
 }
 
@@ -426,6 +429,7 @@ void CentroidalMomentumMatrix::init(const rbd::MultiBody& mb)
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		jacVec_[i] = Jacobian(mb, mb.body(i).name());
+		blocksVec_[i] = jacVec_[i].compactPath(mb);
 		jacWork_[i].resize(6, jacVec_[i].dof());
 	}
 }
