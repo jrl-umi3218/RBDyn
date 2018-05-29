@@ -25,16 +25,19 @@
 namespace rbd
 {
 
+/** Represents a contiguous block of DoFs in a Jacobian */
 struct Block
 {
   Block() = default;
   Block(Eigen::DenseIndex startDof, Eigen::DenseIndex startJac, Eigen::DenseIndex length)
     : startDof(startDof), startJac(startJac), length(length)
   {}
-  /** Represents a contiguous block of DoFs in a Jacobian */
-  Eigen::DenseIndex startDof; /* Start of the block in the full DoF vector */
-  Eigen::DenseIndex startJac; /* Start of the block in the jacobian's reduced DoF*/
-  Eigen::DenseIndex length; /* Length of the block */
+  /** Start of the block in the full DoF vector */
+  Eigen::DenseIndex startDof;
+  /** Start of the block in the jacobian's reduced DoF*/
+  Eigen::DenseIndex startJac;
+  /** Length of the block */
+  Eigen::DenseIndex length;
 };
 
 using Blocks = std::vector<Block>;
