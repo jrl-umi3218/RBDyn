@@ -197,8 +197,6 @@ private:
 	Eigen::MatrixXd cmMat_;
 	Eigen::MatrixXd cmMatDot_;
 
-	Eigen::MatrixXd jacFull_;
-
 	std::vector<Jacobian> jacVec_;
 	std::vector<Eigen::MatrixXd> jacWork_;
 	std::vector<double> bodiesWeight_;
