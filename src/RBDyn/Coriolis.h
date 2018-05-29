@@ -49,7 +49,7 @@ using Blocks = std::vector<Block>;
  */
 RBDYN_DLLAPI Eigen::MatrixXd expand(const rbd::Jacobian& jac,
 			const rbd::MultiBody& mb,
-			const Eigen::MatrixXd& jacMat);
+			const Eigen::Ref<const Eigen::MatrixXd>& jacMat);
 
 /** Expand a symmetric product of a jacobian by its transpose onto every DoF
  * and accumulate the result
@@ -58,7 +58,7 @@ RBDYN_DLLAPI Eigen::MatrixXd expand(const rbd::Jacobian& jac,
  */
 RBDYN_DLLAPI void expandAdd(const rbd::Jacobian& jac,
 		const rbd::MultiBody& mb,
-		const Eigen::MatrixXd& jacMat,
+		const Eigen::Ref<const Eigen::MatrixXd>& jacMat,
 		Eigen::MatrixXd& res);
 
 /** Compute a compact kinematic path, i.e. the sequence of consecutive blocks
@@ -76,7 +76,7 @@ RBDYN_DLLAPI Blocks compactPath(const rbd::Jacobian& jac,
  * @param res The accumulator matrix
  **/
 RBDYN_DLLAPI void expandAdd(const Blocks& compactPath,
-			const Eigen::MatrixXd& jacMat,
+			const Eigen::Ref<const Eigen::MatrixXd>& jacMat,
 			Eigen::MatrixXd& res);
 
 /**
@@ -104,8 +104,8 @@ public:
 private:
 	std::vector<rbd::Jacobian> jacs_;
 	std::vector<Blocks> compactPaths_;
-        Eigen::MatrixXd coriolis_;
-
+	Eigen::MatrixXd coriolis_;
+	Eigen::MatrixXd res_;
 };
 
 } // ns rbd
