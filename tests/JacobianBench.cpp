@@ -16,22 +16,8 @@
 // along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 // includes
-// std
-#include <iostream>
-
-// boost
-#define BOOST_TEST_MODULE JacobianBench
-#include <boost/test/unit_test.hpp>
-#include <boost/math/constants/constants.hpp>
-#include <boost/timer/timer.hpp>
-// The inclusion of boost chrono was commented in timer.hpp for boost >= 1.60.
-// Because of this, the auto-link feature does not incude the chrono library
-// anymore, what causes a link error. 
-// (see also https://svn.boost.org/trac/boost/ticket/11862)
-// We add manually the line.
-// Possible alternative: include only for specific version of boost and 
-// auto-link capable compiler
-#include <boost/chrono/chrono.hpp>
+// benchmark
+#include "benchmark/benchmark.h"
 
 // RBDyn
 #include "RBDyn/CoM.h"
@@ -45,10 +31,8 @@
 // Arm
 #include "Tree30Dof.h"
 
-BOOST_AUTO_TEST_CASE(Jacobian)
+static void BM_Jacobian(benchmark::State & state)
 {
-	const std::size_t nrIteration = 100000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -59,21 +43,15 @@ BOOST_AUTO_TEST_CASE(Jacobian)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "Jacobian::jacobian" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.jacobian(mb, mbc);
-		}
+		jac.jacobian(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_Jacobian);
 
-BOOST_AUTO_TEST_CASE(BodyJacobian)
+static void BM_BodyJacobian(benchmark::State & state)
 {
-	const std::size_t nrIteration = 100000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -84,21 +62,15 @@ BOOST_AUTO_TEST_CASE(BodyJacobian)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "Jacobian::bodyJacobian" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.bodyJacobian(mb, mbc);
-		}
+		jac.bodyJacobian(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_BodyJacobian);
 
-BOOST_AUTO_TEST_CASE(VectorBodyJacobian)
+static void BM_VectorBodyJacobian(benchmark::State & state)
 {
-	const std::size_t nrIteration = 100000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -109,21 +81,15 @@ BOOST_AUTO_TEST_CASE(VectorBodyJacobian)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "Jacobian::vectorBodyJacobian" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.vectorBodyJacobian(mb, mbc, Eigen::Vector3d(1., 0., 0.));
-		}
+		jac.vectorBodyJacobian(mb, mbc, Eigen::Vector3d(1., 0., 0.));
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_VectorBodyJacobian);
 
-BOOST_AUTO_TEST_CASE(JacobianDot)
+static void BM_JacobianDot(benchmark::State & state)
 {
-	const std::size_t nrIteration = 100000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -134,21 +100,15 @@ BOOST_AUTO_TEST_CASE(JacobianDot)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "Jacobian::jacobianDot" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.jacobianDot(mb, mbc);
-		}
+		jac.jacobianDot(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_JacobianDot);
 
-BOOST_AUTO_TEST_CASE(BodyJacobianDot)
+static void BM_BodyJacobianDot(benchmark::State & state)
 {
-	const std::size_t nrIteration = 100000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -159,21 +119,15 @@ BOOST_AUTO_TEST_CASE(BodyJacobianDot)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "Jacobian::bodyJacobianDot" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.bodyJacobianDot(mb, mbc);
-		}
+		jac.bodyJacobianDot(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_BodyJacobianDot);
 
-BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobian)
+static void BM_CoMJacobianDummy_jacobian(benchmark::State & state)
 {
-	const std::size_t nrIteration = 10000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -184,21 +138,15 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobian)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "CoMJacobianDummy::jacobian" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.jacobian(mb, mbc);
-		}
+		jac.jacobian(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_CoMJacobianDummy_jacobian);
 
-BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobianDot)
+static void BM_CoMJacobianDummy_jacobianDot(benchmark::State & state)
 {
-	const std::size_t nrIteration = 10000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -209,21 +157,15 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummy_jacobianDot)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "CoMJacobianDummy::jacobianDot" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.jacobianDot(mb, mbc);
-		}
+		jac.jacobianDot(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_CoMJacobianDummy_jacobianDot);
 
-BOOST_AUTO_TEST_CASE(CoMJacobian_jacobian)
+static void BM_CoMJacobian_jacobian(benchmark::State & state)
 {
-	const std::size_t nrIteration = 10000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -234,21 +176,15 @@ BOOST_AUTO_TEST_CASE(CoMJacobian_jacobian)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "CoMJacobian::jacobian" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.jacobian(mb, mbc);
-		}
+		jac.jacobian(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_CoMJacobian_jacobian);
 
-BOOST_AUTO_TEST_CASE(CoMJacobian_jacobianDot)
+static void BM_CoMJacobian_jacobianDot(benchmark::State & state)
 {
-	const std::size_t nrIteration = 10000;
-
 	rbd::MultiBody mb;
 	rbd::MultiBodyConfig mbc;
 	rbd::MultiBodyGraph mbg;
@@ -259,13 +195,11 @@ BOOST_AUTO_TEST_CASE(CoMJacobian_jacobianDot)
 	rbd::forwardKinematics(mb, mbc);
 	rbd::forwardVelocity(mb, mbc);
 
-	std::cout << "CoMJacobian::jacobianDot" << std::endl;
+	for(auto _ : state)
 	{
-		boost::timer::auto_cpu_timer t;
-		for(std::size_t i = 0; i < nrIteration; ++i)
-		{
-			jac.jacobianDot(mb, mbc);
-		}
+		jac.jacobianDot(mb, mbc);
 	}
-	std::cout << std::endl;
 }
+BENCHMARK(BM_CoMJacobian_jacobianDot);
+
+BENCHMARK_MAIN()
