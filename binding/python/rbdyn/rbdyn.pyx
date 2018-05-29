@@ -957,6 +957,14 @@ cdef class ForwardDynamics(object):
       ret.append(sva.RBInertiadFromC(rbi))
     return ret
 
+cdef class Coriolis(object):
+  def __dealloc__(self):
+    del self.impl
+  def __cinit__(self, MultiBody mb):
+    self.impl = new c_rbdyn.Coriolis(deref(mb.impl))
+  def coriolis(self, MultiBody mb, MultiBodyConfig mbc):
+    return eigen.MatrixXdFromC(self.impl.coriolis(deref(mb.impl), deref(mbc.impl)))
+
 def computeCoM(MultiBody mb, MultiBodyConfig mbc):
   return eigen.Vector3dFromC(c_rbdyn.sComputeCoM(deref(mb.impl), deref(mbc.impl)))
 
