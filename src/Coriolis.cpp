@@ -19,78 +19,6 @@
 
 namespace rbd
 {
-Eigen::MatrixXd expand(const rbd::Jacobian& jac,
-			const rbd::MultiBody& mb,
-			const Eigen::Ref<const Eigen::MatrixXd>& jacMat)
-{
-	Eigen::MatrixXd res = Eigen::MatrixXd::Zero(mb.nrDof(), mb.nrDof());
-	expandAdd(jac, mb, jacMat, res);
-	return res;
-}
-
-void expandAdd(const rbd::Jacobian& jac,
-			const rbd::MultiBody& mb,
-			const Eigen::Ref<const Eigen::MatrixXd>& jacMat,
-			Eigen::MatrixXd& res)
-{
-	assert(res.cols() == mb.nrDof() && res.rows() == mb.nrDof());
-	int rowJac = 0;
-	int colJac = 0;
-	for(int i : jac.jointsPath())
-	{
-		colJac = 0;
-		for(int j : jac.jointsPath())
-		{
-			res.block(mb.jointPosInDof(i), mb.jointPosInDof(j), mb.joint(i).dof(), mb.joint(j).dof()).noalias()
-				+= jacMat.block(rowJac, colJac, mb.joint(i).dof(), mb.joint(j).dof());
-			colJac += mb.joint(j).dof();
-		}
-		rowJac += mb.joint(i).dof();
-	}
-}
-
-Blocks compactPath(const rbd::Jacobian& jac,
-						const rbd::MultiBody& mb)
-{
-	Blocks res;
-
-	int start_block = mb.jointPosInDof(jac.jointsPath()[0]);
-	int len_block = mb.joint(jac.jointsPath()[0]).dof();
-
-	int startJac = 0;
-
-	const auto & jPath = jac.jointsPath();
-	for (std::size_t j = 1;  j < jPath.size(); ++j)
-	{
-		int i = jPath[j];
-		int start = mb.jointPosInDof(i);
-
-		if(start != start_block + len_block)
-		{
-			res.emplace_back(start_block, startJac, len_block);
-			start_block = start;
-			startJac += len_block;
-			len_block = 0;
-		}
-		len_block += mb.joint(i).dof();
-	}
-	res.emplace_back(start_block, startJac, len_block);
-	return res;
-}
-
-void expandAdd(const Blocks& compactPath,
-			const Eigen::Ref<const Eigen::MatrixXd>& jacMat,
-			Eigen::MatrixXd& res)
-{
-	for(const auto& b1 : compactPath)
-	{
-		for(const auto& b2 : compactPath)
-		{
-			res.block(b1.startDof, b2.startDof, b1.length, b2.length).noalias()
-				+= jacMat.block(b1.startJac, b2.startJac, b1.length, b2.length);
-		}
-	}
-}
 
 Coriolis::Coriolis(const rbd::MultiBody& mb)
   : coriolis_(mb.nrDof(), mb.nrDof()),
@@ -110,7 +38,7 @@ Coriolis::Coriolis(const rbd::MultiBody& mb)
 			com.setZero();
 		}
 		jacs_.push_back(rbd::Jacobian(mb, mb.body(i).name(), com));
-		compactPaths_.push_back(compactPath(jacs_[i], mb));
+		compactPaths_.push_back(jacs_.back().compactPath(mb));
 		if(jacs_.back().dof() > res_.rows())
 		{
 			res_.resize(jacs_.back().dof(), jacs_.back().dof());
@@ -155,7 +83,7 @@ const Eigen::MatrixXd& Coriolis::coriolis(const rbd::MultiBody& mb, const rbd::M
 			mass*jvi.transpose()*jDvi
 			+ jwi.transpose()*(rot*ir*jDwi + rDot*ir*jwi);
 
-		expandAdd(compactPaths_[i], res_.topLeftCorner(jacs_[i].dof(), jacs_[i].dof()), coriolis_);
+		jacs_[i].expandAdd(compactPaths_[i], res_.topLeftCorner(jacs_[i].dof(), jacs_[i].dof()), coriolis_);
 	}
 
 	return coriolis_;
