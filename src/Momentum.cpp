@@ -135,7 +135,6 @@ Eigen::Matrix6d jacProjectorDot(const sva::PTransformd& X_i_com,
 CentroidalMomentumMatrix::CentroidalMomentumMatrix():
 	cmMat_(),
 	cmMatDot_(),
-	jacFull_(),
 	jacVec_(),
 	jacWork_(),
 	bodiesWeight_()
@@ -145,7 +144,6 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix():
 CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb):
 	cmMat_(6, mb.nrDof()),
 	cmMatDot_(6, mb.nrDof()),
-	jacFull_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
 	bodiesWeight_(mb.nrBodies(), 1.),
@@ -159,7 +157,6 @@ CentroidalMomentumMatrix::CentroidalMomentumMatrix(const MultiBody& mb,
 	std::vector<double> weight):
 	cmMat_(6, mb.nrDof()),
 	cmMatDot_(6, mb.nrDof()),
-	jacFull_(6, mb.nrDof()),
 	jacVec_(mb.nrBodies()),
 	jacWork_(mb.nrBodies()),
 	bodiesWeight_(std::move(weight)),
@@ -192,8 +189,7 @@ void CentroidalMomentumMatrix::computeMatrix(const MultiBody& mb,
 		Matrix6d proj = bodiesWeight_[i]*jacProjector(X_i_com, bodies[i].inertia());
 
 		jacWork_[i] = proj*jac;
-		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-		cmMat_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMat_);
 	}
 }
 
@@ -218,13 +214,8 @@ void CentroidalMomentumMatrix::computeMatrixDot(const MultiBody& mb,
 		Matrix6d projDot = bodiesWeight_[i]*jacProjectorDot(X_i_com, bodies[i].inertia(),
 			mbc.bodyVelB[i], com_Vel);
 
-		jacWork_[i] = proj*jacDot;
-		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
-
-		jacWork_[i] = projDot*jac;
-		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+		jacWork_[i] = proj*jacDot + projDot*jac;
+		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMatDot_);
 	}
 }
 
@@ -251,16 +242,10 @@ void CentroidalMomentumMatrix::computeMatrixAndMatrixDot(const MultiBody& mb,
 			mbc.bodyVelB[i], com_Vel);
 
 		jacWork_[i] = proj*jac;
-		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-		cmMat_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMat_);
 
-		jacWork_[i] = proj*jacDot;
-		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
-
-		jacWork_[i] = projDot*jac;
-		jacVec_[i].fullJacobian(mb, jacWork_[i], jacFull_);
-		cmMatDot_.block(0, 0, 6, mb.nrDof()) += jacFull_;
+		jacWork_[i] = proj*jacDot + projDot*jac;
+		jacVec_[i].addFullJacobian(mb, jacWork_[i], cmMatDot_);
 	}
 }
 
