@@ -17,7 +17,7 @@
 
 #include "Tree30Dof.h"
 
-#include <RBDyn/Coriolis.h>
+#include <RBDyn/Jacobian.h>
 
 #define BOOST_TEST_MODULE Expand
 #include <boost/test/unit_test.hpp>
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 	const static int ROUNDS = 1000;
 
 	rbd::Jacobian jac(mb, mb.body(mb.nrBodies() - 1).name());
-	rbd::Blocks compact = rbd::compactPath(jac, mb);
+	rbd::Blocks compact = jac.compactPath(mb);
 
 	for(int i = 0; i < ROUNDS; ++i)
 	{
@@ -72,17 +72,17 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
 		Eigen::MatrixXd res = fullJacMat.transpose()*fullJacMat;
 
 		Eigen::MatrixXd product = jacMat.transpose()*jacMat;
-		Eigen::MatrixXd fullProduct = rbd::expand(jac, mb, product);
+		Eigen::MatrixXd fullProduct = jac.expand(mb, product);
 
 		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
 
 		fullProduct.setZero();
-		rbd::expandAdd(jac, mb, product, fullProduct);
+		jac.expandAdd(mb, product, fullProduct);
 
 		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
 
 		fullProduct.setZero();
-		rbd::expandAdd(compact, product, fullProduct);
+		jac.expandAdd(compact, product, fullProduct);
 
 		BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
 	}

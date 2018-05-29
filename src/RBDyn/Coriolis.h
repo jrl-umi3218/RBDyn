@@ -21,63 +21,10 @@
 
 #include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/CoM.h>
+#include <RBDyn/Jacobian.h>
 
 namespace rbd
 {
-
-/** Represents a contiguous block of DoFs in a Jacobian */
-struct Block
-{
-  Block() = default;
-  Block(Eigen::DenseIndex startDof, Eigen::DenseIndex startJac, Eigen::DenseIndex length)
-    : startDof(startDof), startJac(startJac), length(length)
-  {}
-  /** Start of the block in the full DoF vector */
-  Eigen::DenseIndex startDof;
-  /** Start of the block in the jacobian's reduced DoF*/
-  Eigen::DenseIndex startJac;
-  /** Length of the block */
-  Eigen::DenseIndex length;
-};
-
-using Blocks = std::vector<Block>;
-
-/** Expand a symmetric product of a jacobian by its transpose onto every DoF.
- * @param jac Jacobian whose product will be expanded
- * @param mb Multibody system
- * @param jacMat The product of J^T*J that will be expanded
- */
-RBDYN_DLLAPI Eigen::MatrixXd expand(const rbd::Jacobian& jac,
-			const rbd::MultiBody& mb,
-			const Eigen::Ref<const Eigen::MatrixXd>& jacMat);
-
-/** Expand a symmetric product of a jacobian by its transpose onto every DoF
- * and accumulate the result
- * @param res Accumulator matrix
- * @see expand
- */
-RBDYN_DLLAPI void expandAdd(const rbd::Jacobian& jac,
-		const rbd::MultiBody& mb,
-		const Eigen::Ref<const Eigen::MatrixXd>& jacMat,
-		Eigen::MatrixXd& res);
-
-/** Compute a compact kinematic path, i.e. the sequence of consecutive blocks
- * of DoF contained in the original path.
- * @param jac Jacobian to be compacted
- * @param mb Multibody system
- */
-RBDYN_DLLAPI Blocks compactPath(const rbd::Jacobian& jac,
-		const rbd::MultiBody& mb);
-
-/** Expand a symmetric product of a jacobian by its transpose onto every DoF
- * and accumulate the result using a compact representation of the DoF.
- * @param compacPath Blocks representing the compact kinematic path of the Jacobian
- * @param jacMat The matrix containing the product J^T*J to be expanded
- * @param res The accumulator matrix
- **/
-RBDYN_DLLAPI void expandAdd(const Blocks& compactPath,
-			const Eigen::Ref<const Eigen::MatrixXd>& jacMat,
-			Eigen::MatrixXd& res);
 
 /**
  * Computation of the Coriolis effects matrix on a multibody. The Coriolis
