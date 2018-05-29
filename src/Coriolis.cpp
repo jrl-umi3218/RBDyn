@@ -50,14 +50,14 @@ Blocks compactPath(const rbd::Jacobian& jac,
 
 		if(start != start_block + len_block)
 		{
-			res.push_back({{start_block, startJac, len_block}});
+			res.emplace_back(start_block, startJac, len_block);
 			start_block = start;
 			startJac += len_block;
 			len_block = 0;
 		}
 		len_block += mb.joint(i).dof();
 	}
-	res.push_back({{start_block, startJac, len_block}});
+	res.emplace_back(start_block, startJac, len_block);
 	return res;
 }
 
@@ -69,8 +69,8 @@ void expandAdd(const Blocks& compactPath,
 	{
 		for(const auto& b2 : compactPath)
 		{
-			res.block(b1[0], b2[0], b1[2], b2[2])
-				+= jacMat.block(b1[1], b2[1], b1[2], b2[2]);
+			res.block(b1.startDof, b2.startDof, b1.length, b2.length)
+				+= jacMat.block(b1.startJac, b2.startJac, b1.length, b2.length);
 		}
 	}
 }

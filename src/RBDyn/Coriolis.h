@@ -25,7 +25,18 @@
 namespace rbd
 {
 
-using Block = std::array<Eigen::DenseIndex, 3>;
+struct Block
+{
+  Block() = default;
+  Block(Eigen::DenseIndex startDof, Eigen::DenseIndex startJac, Eigen::DenseIndex length)
+    : startDof(startDof), startJac(startJac), length(length)
+  {}
+  /** Represents a contiguous block of DoFs in a Jacobian */
+  Eigen::DenseIndex startDof; /* Start of the block in the full DoF vector */
+  Eigen::DenseIndex startJac; /* Start of the block in the jacobian's reduced DoF*/
+  Eigen::DenseIndex length; /* Length of the block */
+};
+
 using Blocks = std::vector<Block>;
 
 /** Expand a symmetric product of a jacobian by its transpose onto every DoF.
