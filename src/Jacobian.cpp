@@ -440,6 +440,17 @@ void Jacobian::addFullJacobian(const MultiBody& mb,
 	}
 }
 
+void Jacobian::addFullJacobian(const Blocks& compactPath,
+															 const Eigen::Ref<const Eigen::MatrixXd>& jac,
+															 Eigen::MatrixXd& res) const
+{
+	for(const auto & b : compactPath)
+	{
+		res.block(0, b.startDof, jac.rows(), b.length) +=
+			jac.block(0, b.startJac, jac.rows(), b.length);
+	}
+}
+
 Eigen::MatrixXd Jacobian::expand(const MultiBody& mb,
 	const Eigen::Ref<const Eigen::MatrixXd>& jac) const
 {
