@@ -24,6 +24,7 @@
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/Jacobian.h"
+#include "RBDyn/Momentum.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
@@ -201,5 +202,48 @@ static void BM_CoMJacobian_jacobianDot(benchmark::State & state)
 	}
 }
 BENCHMARK(BM_CoMJacobian_jacobianDot);
+
+static void BM_MomentumJacobian_jacobian(benchmark::State & state)
+{
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::CentroidalMomentumMatrix jac(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+
+	for(auto _ : state)
+	{
+		jac.computeMatrix(mb, mbc, com);
+	}
+}
+BENCHMARK(BM_MomentumJacobian_jacobian);
+
+static void BM_MomentumJacobian_jacobianDot(benchmark::State & state)
+{
+	rbd::MultiBody mb;
+	rbd::MultiBodyConfig mbc;
+	rbd::MultiBodyGraph mbg;
+	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+
+	rbd::CentroidalMomentumMatrix jac(mb);
+
+	rbd::forwardKinematics(mb, mbc);
+	rbd::forwardVelocity(mb, mbc);
+
+	Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+	Eigen::Vector3d comDot = rbd::computeCoMVelocity(mb, mbc);
+
+	for(auto _ : state)
+	{
+		jac.computeMatrixDot(mb, mbc, com, comDot);
+	}
+}
+BENCHMARK(BM_MomentumJacobian_jacobianDot);
 
 BENCHMARK_MAIN()
