@@ -226,7 +226,7 @@ cdef extern from "<RBDyn/ID.h>" namespace "rbd":
     InverseDynamics(const InverseDynamics &)
     InverseDynamics(const MultiBody &)
 
-    void sInverseDynamics(const MultiBody&, MultiBodyConfig&) except +
+    void sInverseDynamics(const MultiBody&, MultiBodyConfig&, bool) except +
     vector[ForceVecd] f() const
 
 cdef extern from "<RBDyn/FD.h>" namespace "rbd":
