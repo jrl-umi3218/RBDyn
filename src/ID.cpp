@@ -37,7 +37,7 @@ void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc,
 	const std::vector<Joint>& joints = mb.joints();
 	const std::vector<int>& pred = mb.predecessors();
 
-	doUseInertia ? computeInternalForces(mb, mbc) : computeInternalForcesNoInertia(mb, mbc);
+	doUseInertia ? computeActingForces(mb, mbc) : computeActingForcesNoInertia(mb, mbc);
 
 	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
 	{
