@@ -27,6 +27,23 @@ namespace rbd
 {
 struct MultiBodyConfig;
 
+/** Represents a contiguous block of DoFs in a Jacobian */
+struct Block
+{
+	Block() = default;
+	Block(Eigen::DenseIndex startDof, Eigen::DenseIndex startJac, Eigen::DenseIndex length)
+		: startDof(startDof), startJac(startJac), length(length)
+	{}
+	/** Start of the block in the full DoF vector */
+	Eigen::DenseIndex startDof;
+	/** Start of the block in the jacobian's reduced DoF*/
+	Eigen::DenseIndex startJac;
+	/** Length of the block */
+	Eigen::DenseIndex length;
+};
+
+using Blocks = std::vector<Block>;
+
 /**
 	* Algorithm to compute the jacobian of a specified body.
 	*/
@@ -231,6 +248,69 @@ public:
 	void fullJacobian(const MultiBody& mb,
 		const Eigen::Ref<const Eigen::MatrixXd>& jac,
 		Eigen::MatrixXd& res) const;
+
+	/**
+		* Accumulate the projection of the jacobian in the full
+		* robot parameters vector
+		* @param mb MuliBody used has model.
+		* @param jac Jacobian to project.
+		* @param res Projected Jacobian (must be allocated).
+		*/
+	void addFullJacobian(const MultiBody& mb,
+		const Eigen::Ref<const Eigen::MatrixXd>& jac,
+		Eigen::MatrixXd& res) const;
+
+	/**
+		* Accumulate the projection of the jacobian in the full
+		* robot parameters vector using a compact representation
+		* of the DoF.
+		* @param compacPath Blocks representing the compact
+		* @param jac Jacobian to project.
+		* @param res Projected Jacobian (must be allocated).
+		*/
+	void addFullJacobian(const Blocks& compactPath,
+		const Eigen::Ref<const Eigen::MatrixXd>& jac,
+		Eigen::MatrixXd& res) const;
+
+	/**
+	 * Expand a symmetric product of a jacobian by its
+	 * transpose onto every DoF.
+	 * @param mb MultiBody used as model.
+	 * @param jac Result to expand
+	 */
+	Eigen::MatrixXd expand(const rbd::MultiBody& mb,
+							const Eigen::Ref<const Eigen::MatrixXd>& jac) const;
+
+	/**
+	 * Expand a symmetric product of a jacobian by its
+	 * transpose onto every DoF and accumulate the result.
+	 * @param mb MultiBody used as model.
+	 * @param jac Result to expand and accumulate
+	 * @param res Accumulator matrix
+	 */
+	void expandAdd(const rbd::MultiBody& mb,
+								 const Eigen::Ref<const Eigen::MatrixXd>& jac,
+								 Eigen::MatrixXd& res) const;
+
+	/**
+	 * Compute a compact kinematic path, i.e. the sequence of
+	 * consecutive blocks of DoF contained in the original path.
+	 * @param mb MultiBody used as model.
+	 */
+	Blocks compactPath(const rbd::MultiBody& mb) const;
+
+	/**
+	 * Expand a symmetric product of a jacobian by its
+	 * transpose onto every DoF and accumulate the result
+	 * using a compact representation of the DoF.
+	 * @param compacPath Blocks representing the compact
+	 * kinematic path of the Jacobian
+	 * @param jac Result to expand and accumulate
+	 * @param res Accumulator matrix
+	 */
+	void expandAdd(const Blocks& compactPath,
+								 const Eigen::Ref<const Eigen::MatrixXd>& jac,
+								 Eigen::MatrixXd& res) const;
 
 	/// @return MultiBody that correspond to the path between the root and
 	/// the specified body.

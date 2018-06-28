@@ -16,7 +16,7 @@
 # along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 version: 1.0.{build}
-os: Visual Studio 2015
+image: Visual Studio 2015
 clone_folder: C:/devel-src/RBDyn
 init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -30,10 +30,10 @@ environment:
 # Do not tinker with the variables below unless you know what you are doing
   SOURCE_FOLDER: C:\devel-src
   CMAKE_INSTALL_PREFIX: C:/devel
-  PATH: C:/devel/bin;C:\Libraries\boost_1_59_0\lib64-msvc-14.0;%PATH%
+  PATH: C:/devel/bin;C:\Libraries\boost_1_67_0\lib64-msvc-14.0;%PATH%
   PKG_CONFIG_PATH: C:/devel/lib/pkgconfig
-  BOOST_ROOT: C:\Libraries\boost_1_59_0
-  BOOST_LIBRARYDIR: C:\Libraries\boost_1_59_0\lib64-msvc-14.0
+  BOOST_ROOT: C:\Libraries\boost_1_67_0
+  BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14.0
 build_script:
 - ps: >-
     Set-PSDebug -Trace 2
@@ -52,3 +52,7 @@ test_script:
     cd %PROJECT_SOURCE_DIR%/build
 
     ctest
+notifications:
+  - provider: Slack
+    incoming_webhook:
+      secure: gAze73sSl1vrNGaeUEd841yVJ/rVE10tIWjlt+/8OPn0lT42+nSjNqS3bSNgmS+UwyZNe0vzpBTCl6Lx3JEltYNoad96Ss31BEm/7MNLxgc=

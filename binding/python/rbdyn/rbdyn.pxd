@@ -88,6 +88,9 @@ cdef class InverseDynamics(object):
 cdef class ForwardDynamics(object):
   cdef c_rbdyn.ForwardDynamics impl
 
+cdef class Coriolis(object):
+  cdef c_rbdyn.Coriolis * impl
+
 cdef class CoMJacobianDummy(object):
   cdef c_rbdyn.CoMJacobianDummy impl
 
