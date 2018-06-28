@@ -31,60 +31,7 @@ InverseDynamics::InverseDynamics(const MultiBody& mb):
 {
 }
 
-void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc, bool doUseInertia)
-{
-	const std::vector<Body>& bodies = mb.bodies();
-	const std::vector<Joint>& joints = mb.joints();
-	const std::vector<int>& pred = mb.predecessors();
-
-	doUseInertia ? computeActingForces(mb, mbc) : computeActingForcesNoInertia(mb, mbc);
-
-	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
-	{
-		for(int j = 0; j < joints[i].dof(); ++j)
-		{
-			mbc.jointTorque[i][j] = mbc.motionSubspace[i].col(j).transpose()*
-				f_[i].vector();
-		}
-
-		if(pred[i] != -1)
-		{
-			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
-			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
-		}
-	}
-}
-
-
-
-void InverseDynamics::sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc, bool doUseInertia)
-{
-	checkMatchAlphaD(mb, mbc);
-	checkMatchForce(mb, mbc);
-	checkMatchJointConf(mb, mbc);
-	checkMatchJointVelocity(mb, mbc);
-	checkMatchBodyPos(mb, mbc);
-	checkMatchParentToSon(mb, mbc);
-	checkMatchBodyVel(mb, mbc);
-	checkMatchMotionSubspace(mb, mbc);
-
-	checkMatchBodyAcc(mb, mbc);
-	checkMatchJointTorque(mb, mbc);
-
-	inverseDynamics(mb, mbc, doUseInertia);
-}
-
-
-const std::vector<sva::ForceVecd>& InverseDynamics::f() const
-{
-	return f_;
-}
-
-/*
- * Private functions
- */
-
-void InverseDynamics::computeActingForces(const MultiBody& mb, MultiBodyConfig& mbc)
+void InverseDynamics::inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 {
 	const std::vector<Body>& bodies = mb.bodies();
 	const std::vector<Joint>& joints = mb.joints();
@@ -110,13 +57,82 @@ void InverseDynamics::computeActingForces(const MultiBody& mb, MultiBodyConfig& 
 			vb_i.crossDual(bodies[i].inertia()*vb_i) -
 			mbc.bodyPosW[i].dualMul(mbc.force[i]);
 	}
+
+	computeJointTorques(mb, mbc);
 }
 
-void InverseDynamics::computeActingForcesNoInertia(const MultiBody& mb, const MultiBodyConfig& mbc)
+void InverseDynamics::inverseDynamicsNoInertia(const MultiBody& mb, MultiBodyConfig& mbc)
 {
 	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		f_[i] = mbc.bodyPosW[i].dualMul(mbc.force[i]);
+	}
+
+	computeJointTorques(mb, mbc);
+}
+
+void InverseDynamics::sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	checkMatchAlphaD(mb, mbc);
+	checkMatchForce(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchJointVelocity(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	checkMatchBodyAcc(mb, mbc);
+	checkMatchJointTorque(mb, mbc);
+
+	inverseDynamics(mb, mbc);
+}
+
+void InverseDynamics::sInverseDynamicsNoInertia(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	checkMatchAlphaD(mb, mbc);
+	checkMatchForce(mb, mbc);
+	checkMatchJointConf(mb, mbc);
+	checkMatchJointVelocity(mb, mbc);
+	checkMatchBodyPos(mb, mbc);
+	checkMatchParentToSon(mb, mbc);
+	checkMatchBodyVel(mb, mbc);
+	checkMatchMotionSubspace(mb, mbc);
+
+	checkMatchBodyAcc(mb, mbc);
+	checkMatchJointTorque(mb, mbc);
+
+	inverseDynamicsNoInertia(mb, mbc);
+}
+
+const std::vector<sva::ForceVecd>& InverseDynamics::f() const
+{
+	return f_;
+}
+
+/*
+ * Private functions
+ */
+
+void InverseDynamics::computeJointTorques(const MultiBody& mb, MultiBodyConfig& mbc)
+{
+	const std::vector<Body>& bodies = mb.bodies();
+	const std::vector<Joint>& joints = mb.joints();
+	const std::vector<int>& pred = mb.predecessors();
+
+	for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
+	{
+		for(int j = 0; j < joints[i].dof(); ++j)
+		{
+			mbc.jointTorque[i][j] = mbc.motionSubspace[i].col(j).transpose()*
+				f_[i].vector();
+		}
+
+		if(pred[i] != -1)
+		{
+			const sva::PTransformd& X_p_i = mbc.parentToSon[i];
+			f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
+		}
 	}
 }
 

@@ -47,19 +47,27 @@ public:
 		* @param mb MultiBody used has model.
 		* @param mbc Use alphaD generalized acceleration vector, force, jointConfig,
 		* jointVelocity, bodyPosW, parentToSon, bodyVelV, motionSubspace and gravity.
-		* @param doUseInertia If false, the ID is computed only from external forces.
-		* If true, the ID is also compute from inertial parameters. Fill also bodyAccB.
-		*
+		* Fill bodyAccB and jointTorque.
+		*/
+	void inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
+	/**
+		* Compute the inverse dynamics with the inertia parameters.
+		* @param mb MultiBody used has model.
+		* @param mbc Use force, bodyPosW, parentToSon and motionSubspace.
 		* Fill jointTorque.
 		*/
-	void inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc, bool doUseInertia = true);
+	void inverseDynamicsNoInertia(const MultiBody& mb, MultiBodyConfig& mbc);
 
 	// safe version for python binding
 
 	/** safe version of @see inverseDynamics.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
-	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc, bool doUseInertia = true);
+	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
+	/** safe version of @see inverseDynamicsNoInertia.
+		* @throw std::domain_error If mb don't match mbc.
+		*/
+	void sInverseDynamicsNoInertia(const MultiBody& mb, MultiBodyConfig& mbc);
 
 	/**
 		* @brief Get the internal forces.
@@ -70,19 +78,12 @@ public:
 
 private:
 	/**
-		* @brief Compute acting forces on each body.
+		* @brief Compute joint torques.
 		* @param mb MultiBody used has model.
-		* @param mbc Use alphaD generalized acceleration vector, force, jointConfig,
-		* jointVelocity, bodyPosW, parentToSon, bodyVelV, motionSubspace and gravity.
-		* Fill bodyAccB.
+		* @param mbc Use force, bodyPosW, parentToSon and motionSubspace.
+		* Fill jointTorque.
 		*/
-	void computeActingForces(const MultiBody& mb, MultiBodyConfig& mbc);
-	/**
-		* @brief Compute acting external forces on each body.
-		* @param mb MultiBody used has model.
-		* @param mbc Use force and bodyPosW.
-		*/
-	void computeActingForcesNoInertia(const MultiBody& mb, const MultiBodyConfig& mbc);
+	void computeJointTorques(const MultiBody& mb, MultiBodyConfig& mbc);
 
 private:
 	/// @brief Internal forces.
