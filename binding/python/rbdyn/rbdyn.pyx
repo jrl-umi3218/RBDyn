@@ -910,8 +910,8 @@ cdef class InverseDynamics(object):
         self.__mbctor__(args[0])
     else:
       raise TypeError("Invalid arguments passed to InverseDynamics ctor")
-  def inverseDynamics(self, MultiBody mb, MultiBodyConfig mbc):
-    self.impl.sInverseDynamics(deref(mb.impl), deref(mbc.impl))
+  def inverseDynamics(self, MultiBody mb, MultiBodyConfig mbc, cppbool doUseInertia = true):
+    self.impl.sInverseDynamics(deref(mb.impl), deref(mbc.impl), doUseInertia)
   def f(self):
     cdef vector[c_sva.ForceVecd] fvv = self.impl.f()
     ret = []

@@ -47,16 +47,19 @@ public:
 		* @param mb MultiBody used has model.
 		* @param mbc Use alphaD generalized acceleration vector, force, jointConfig,
 		* jointVelocity, bodyPosW, parentToSon, bodyVelV, motionSubspace and gravity.
-		* Fill bodyAccB and jointTorque.
+		* @param doUseInertia If false, the ID is computed only from external forces.
+		* If true, the ID is also compute from inertial parameters. Fill also bodyAccB.
+		*
+		* Fill jointTorque.
 		*/
-	void inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
+	void inverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc, bool doUseInertia = true);
 
 	// safe version for python binding
 
 	/** safe version of @see inverseDynamics.
 		* @throw std::domain_error If mb don't match mbc.
 		*/
-	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
+	void sInverseDynamics(const MultiBody& mb, MultiBodyConfig& mbc, bool doUseInertia = true);
 
 	/**
 		* @brief Get the internal forces.
@@ -64,6 +67,22 @@ public:
 		* joint i.
 		*/
 	const std::vector<sva::ForceVecd>& f() const;
+
+private:
+	/**
+		* @brief Compute acting forces on each body.
+		* @param mb MultiBody used has model.
+		* @param mbc Use alphaD generalized acceleration vector, force, jointConfig,
+		* jointVelocity, bodyPosW, parentToSon, bodyVelV, motionSubspace and gravity.
+		* Fill bodyAccB.
+		*/
+	void computeActingForces(const MultiBody& mb, MultiBodyConfig& mbc);
+	/**
+		* @brief Compute acting external forces on each body.
+		* @param mb MultiBody used has model.
+		* @param mbc Use force and bodyPosW.
+		*/
+	void computeActingForcesNoInertia(const MultiBody& mb, const MultiBodyConfig& mbc);
 
 private:
 	/// @brief Internal forces.
