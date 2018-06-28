@@ -114,9 +114,7 @@ void InverseDynamics::computeActingForces(const MultiBody& mb, MultiBodyConfig& 
 
 void InverseDynamics::computeActingForcesNoInertia(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
-	const std::vector<Body>& bodies = mb.bodies();
-
-	for(std::size_t i = 0; i < bodies.size(); ++i)
+	for(int i = 0; i < mb.nrBodies(); ++i)
 	{
 		f_[i] = mbc.bodyPosW[i].dualMul(mbc.force[i]);
 	}
