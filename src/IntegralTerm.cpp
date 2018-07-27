@@ -46,6 +46,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   {
     Eigen::MatrixXd K;
 
+    // std::cout << "Rafa, the size of fd_->H() is " << fd_->H().size() << std::endl;
+    
     if (velGainType_ == MassMatrix)
     {
         K = lambda_ * fd_->H();
@@ -71,19 +73,21 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
         P_ = K * s;
     }
 
-    std::cout << "Rafa, P_ = " << P_.transpose() << std::endl;    
+    // std::cout << "Rafa, P_ = " << P_.transpose() << std::endl;    
     
     // Alternative method to do
     // gammaD_ = fd_->H().inverse() * P_;
 
+    /*
     gammaD_ = P_;
     L_.compute(fd_->H());
     L_.matrixL().solveInPlace(gammaD_);
     L_.matrixL().transpose().solveInPlace(gammaD_);
+    */
+    
+    // std::cout << "Rafa, gammaD_ = " << gammaD_.transpose() << std::endl;
 
-    std::cout << "Rafa, gammaD_ = " << gammaD_.transpose() << std::endl;
-
-    std::cout << "Rafa, fd_->H() = " << std::endl << fd_->H() << std::endl;
+    // std::cout << "Rafa, fd_->H() = " << std::endl << fd_->H() << std::endl;
   }
 }
 
