@@ -41,6 +41,7 @@ class IntegralTerm
   enum VelocityGainType
   {
     Diagonal,
+    MassDiagonal,
     MassMatrix
   };
 
