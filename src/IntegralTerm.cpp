@@ -68,6 +68,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
 
+    std::cout << "Rafa, inside of IntegralTerm::computeTerm, mbc_calc.alphaD = " << rbd::dofToVector(mb, mbc_calc.alphaD).transpose() << std::endl << std::endl;
+    
     std::cout << "Rafa, inside of IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl << std::endl;
     std::cout << "Rafa, inside of IntegralTerm::computeTerm, alphaVec_hat = " << alphaVec_hat.transpose() << std::endl << std::endl;
     
@@ -83,6 +85,9 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     {
         P_ = K * s;
     }
+
+    //for (int i = 20; i < 39; i++)
+    //  P_[i] = 0.0;
 
     std::cout << "Rafa, inside of IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
     
