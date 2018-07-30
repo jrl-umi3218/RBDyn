@@ -23,7 +23,7 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 
-#include <iostream>
+// #include <iostream>
 
 namespace rbd
 {
@@ -43,27 +43,15 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
 {
         HIr_.setZero();
 	int dofP = 0;
-
-        std::cout << "Rafa, about to compute HIr_" << std::endl;
         
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		F_[i].resize(6, mb.joint(i).dof());
 		dofPos_[i] = dofP;
 		dofP += mb.joint(i).dof();
-
-                if(mb.joint(i).type() == Joint::Rev)
-                {
-                        double gr = mb.joint(i).gearRatio();
-                	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
-
-                        std::cout << "Rafa, in ForwardDynamics, mb.joint(" << i << ").rotorInertia() = " << mb.joint(i).rotorInertia() << std::endl;
-                }
 	}
 
 	CoriolisMat_.setZero();
-
-        std::cout << "Rafa, in ForwardDynamics, HIr_ = " << std::endl << HIr_ << std::endl << std::endl;
 
         for(int i = 0; i < mb.nrBodies(); ++i)
 	{
@@ -81,6 +69,22 @@ void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	tmpFd_ = ldlt_.solve(tmpFd_ - C_);
 
 	vectorToParam(tmpFd_, mbc.alphaD);
+}
+
+  void ForwardDynamics::computeHIr(const MultiBody& mb)
+{
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+                if(mb.joint(i).type() == Joint::Rev)
+                {
+                        double gr = mb.joint(i).gearRatio();
+                	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
+
+                        // std::cout << "Rafa, in ForwardDynamics, mb.joint(" << i << ").rotorInertia() = " << mb.joint(i).rotorInertia() << std::endl;
+                }
+	}
+
+        // std::cout << "Rafa, in computeHIr, HIr_ = " << std::endl << HIr_ << std::endl << std::endl;
 }
 
 void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
@@ -133,12 +137,12 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 		}
 	}
 
-        std::cout << "Rafa, in computeH, before the rotor inertia, H_ = " << std::endl << H_ << std::endl << std::endl;
-        std::cout << "Rafa, in computeH, HIr_ = " << std::endl << HIr_ << std::endl << std::endl;
+        // std::cout << "Rafa, in computeH, before the rotor inertia, H_ = " << std::endl << H_ << std::endl << std::endl;
+        // std::cout << "Rafa, in computeH, HIr_ = " << std::endl << HIr_ << std::endl << std::endl;
         
         H_.noalias() = H_ + HIr_;
 
-        std::cout << "Rafa, in computeH, after the rotor inertia, H_ = " << std::endl << H_ << std::endl << std::endl;
+        // std::cout << "Rafa, in computeH, after the rotor inertia, H_ = " << std::endl << H_ << std::endl << std::endl;
 }
 
 void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)

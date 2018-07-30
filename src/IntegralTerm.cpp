@@ -56,7 +56,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     {
         K = lambda_ * fd_->H().diagonal().asDiagonal();
 
-	std::cout << "Rafa, MassDiagonal = " << fd_->H().diagonal().transpose() << std::endl << std::endl;
+	// std::cout << "Rafa, MassDiagonal = " << fd_->H().diagonal().transpose() << std::endl << std::endl;
     }
     else
     {
@@ -68,12 +68,12 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
 
-    std::cout << "Rafa, inside of IntegralTerm::computeTerm, mbc_calc.alphaD = " << rbd::dofToVector(mb, mbc_calc.alphaD).transpose() << std::endl << std::endl;
+    // std::cout << "Rafa, inside of IntegralTerm::computeTerm, mbc_calc.alphaD = " << rbd::dofToVector(mb, mbc_calc.alphaD).transpose() << std::endl << std::endl;
     
-    std::cout << "Rafa, inside of IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl << std::endl;
-    std::cout << "Rafa, inside of IntegralTerm::computeTerm, alphaVec_hat = " << alphaVec_hat.transpose() << std::endl << std::endl;
+    // std::cout << "Rafa, inside of IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl << std::endl;
+    // std::cout << "Rafa, inside of IntegralTerm::computeTerm, alphaVec_hat = " << alphaVec_hat.transpose() << std::endl << std::endl;
     
-    std::cout << "Rafa, inside of IntegralTerm::computeTerm, s = " << s.transpose() << std::endl << std::endl;
+    // std::cout << "Rafa, inside of IntegralTerm::computeTerm, s = " << s.transpose() << std::endl << std::endl;
 
     if (intglTermType_ == PassivityBased)
     {
@@ -86,23 +86,18 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
         P_ = K * s;
     }
 
-    //for (int i = 20; i < 39; i++)
-    //  P_[i] = 0.0;
-
-    std::cout << "Rafa, inside of IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
+    // std::cout << "Rafa, inside of IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
     
     // Alternative method to do
     // gammaD_ = fd_->H().inverse() * P_;
 
-    /*
     gammaD_ = P_;
     L_.compute(fd_->H());
     L_.matrixL().solveInPlace(gammaD_);
     L_.matrixL().transpose().solveInPlace(gammaD_);
-    */
     
     // std::cout << "Rafa, gammaD_ = " << gammaD_.transpose() << std::endl;
-
+    
     // std::cout << "Rafa, fd_->H() = " << std::endl << fd_->H() << std::endl;
   }
 }
