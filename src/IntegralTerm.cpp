@@ -90,7 +90,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     
     // Alternative method to do
     // gammaD_ = fd_->H().inverse() * P_;
-
+    
     gammaD_ = P_;
     L_.compute(fd_->H());
     L_.matrixL().solveInPlace(gammaD_);
@@ -99,6 +99,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     // std::cout << "Rafa, gammaD_ = " << gammaD_.transpose() << std::endl;
     
     // std::cout << "Rafa, fd_->H() = " << std::endl << fd_->H() << std::endl;
+
+    // std::cout << "Rafa, fd_->H().inverse() = " << std::endl << fd_->H().inverse() << std::endl << std::endl;
   }
 }
 
