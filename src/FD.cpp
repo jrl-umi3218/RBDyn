@@ -23,6 +23,8 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 
+// #include <iostream>
+
 namespace rbd
 {
 
@@ -41,17 +43,12 @@ ForwardDynamics::ForwardDynamics(const MultiBody& mb):
 {
         HIr_.setZero();
 	int dofP = 0;
+        
 	for(int i = 0; i < mb.nrJoints(); ++i)
 	{
 		F_[i].resize(6, mb.joint(i).dof());
 		dofPos_[i] = dofP;
 		dofP += mb.joint(i).dof();
-
-                if(mb.joint(i).type() == Joint::Rev)
-                {
-                        double gr = mb.joint(i).gearRatio();
-                	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
-                }
 	}
 
 	CoriolisMat_.setZero();
@@ -72,6 +69,18 @@ void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
 	tmpFd_ = ldlt_.solve(tmpFd_ - C_);
 
 	vectorToParam(tmpFd_, mbc.alphaD);
+}
+
+  void ForwardDynamics::computeHIr(const MultiBody& mb)
+{
+	for(int i = 0; i < mb.nrJoints(); ++i)
+	{
+                if(mb.joint(i).type() == Joint::Rev)
+                {
+                        double gr = mb.joint(i).gearRatio();
+                	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
+                }
+	}
 }
 
 void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
@@ -123,7 +132,7 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 			}
 		}
 	}
-
+        
         H_.noalias() = H_ + HIr_;
 }
 

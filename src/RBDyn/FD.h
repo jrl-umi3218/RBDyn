@@ -57,6 +57,12 @@ public:
 	void forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc);
 
 	/**
+		* Compute the diagonal of rotor inertias HIr that is added to the inertia matrix H.
+		* @param mb MultiBody used has model.
+		*/
+	void computeHIr(const MultiBody& mb);
+
+	/**
 		* Compute the inertia matrix H.
 		* @param mb MultiBody used has model.
 		* @param mbc Use parentToSon and motionSubspace.
