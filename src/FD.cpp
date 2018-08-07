@@ -79,12 +79,8 @@ void ForwardDynamics::forwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc)
                 {
                         double gr = mb.joint(i).gearRatio();
                 	HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
-
-                        // std::cout << "Rafa, in ForwardDynamics, mb.joint(" << i << ").rotorInertia() = " << mb.joint(i).rotorInertia() << std::endl;
                 }
 	}
-
-        // std::cout << "Rafa, in computeHIr, HIr_ = " << std::endl << HIr_ << std::endl << std::endl;
 }
 
 void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
@@ -136,13 +132,8 @@ void ForwardDynamics::computeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 			}
 		}
 	}
-
-        // std::cout << "Rafa, in computeH, before the rotor inertia, H_ = " << std::endl << H_ << std::endl << std::endl;
-        // std::cout << "Rafa, in computeH, HIr_ = " << std::endl << HIr_ << std::endl << std::endl;
         
         H_.noalias() = H_ + HIr_;
-
-        // std::cout << "Rafa, in computeH, after the rotor inertia, H_ = " << std::endl << H_ << std::endl << std::endl;
 }
 
 void ForwardDynamics::computeC(const MultiBody& mb, const MultiBodyConfig& mbc)
