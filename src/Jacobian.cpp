@@ -26,6 +26,8 @@
 // RBDyn
 #include "RBDyn/MultiBodyConfig.h"
 
+#include <iostream>
+
 namespace rbd
 {
 
@@ -39,8 +41,8 @@ Jacobian::Jacobian(const MultiBody& mb, const std::string& bodyName,
   jac_(),
   jacDot_()
 {
-  int index = mb.sBodyIndexByName(bodyName);
-
+        int index = mb.sBodyIndexByName(bodyName);
+  
 	int dof = 0;
 	while(index != -1)
 	{
