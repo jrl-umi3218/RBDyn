@@ -35,6 +35,7 @@ SETUP_PROJECT()
 
 option(PYTHON_BINDING "Generate python binding." ON)
 option(PYTHON_BINDING_USER_INSTALL "Install the Python bindings in user space" OFF)
+option(PYTHON_BINDING_FORCE_PYTHON3 "Use pip3/python3 instead of pip/python" OFF)
 option(DISABLE_TESTS "Disable unit tests." OFF)
 option(BENCHMARKS "Generate benchmarks." OFF)
 

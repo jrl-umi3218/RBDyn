@@ -29,22 +29,29 @@ GET_RBDYN_PROPERTY(LOCATION)
 CONFIGURE_FILE(setup.in.py ${CMAKE_CURRENT_SOURCE_DIR}/setup.py)
 GET_FILENAME_COMPONENT(RBDYN_LOCATION_DIRECTORY ${RBDYN_LOCATION} DIRECTORY)
 
+SET(PYTHON "python")
+SET(PIP "pip")
+IF(${PYTHON_BINDING_FORCE_PYTHON3})
+  SET(PYTHON "python3")
+  SET(PIP "pip3")
+ENDIF()
+
 # Build the bindings locally at build time for test purposes
 ADD_CUSTOM_TARGET(rbdyn-python-bindings ALL
-  COMMAND python setup.py build_ext --inplace
+  COMMAND ${PYTHON} setup.py build_ext --inplace
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   COMMENT "Generating local RBDyn Python bindings"
   DEPENDS include/rbdyn_wrapper.hpp rbdyn/c_rbdyn.pxd rbdyn/rbdyn.pxd rbdyn/rbdyn.pyx
 )
 
-if(NOT ${DISABLE_TESTS})
+IF(NOT ${DISABLE_TESTS})
   IF(NOT DEFINED PYTHON_DEB_ROOT)
     ADD_TEST(NAME PythonBindingsTest
       COMMAND nosetests ${CMAKE_CURRENT_SOURCE_DIR}
       WORKING_DIRECTORY ${RBDYN_LOCATION_DIRECTORY}
     )
   ENDIF()
-endif()
+ENDIF()
 
 SET(PIP_EXTRA_OPTIONS "")
 IF(${PYTHON_BINDING_USER_INSTALL})
@@ -59,7 +66,7 @@ IF(DEFINED PYTHON_DEB_ROOT)
   )
 ELSE()
   ADD_CUSTOM_TARGET(install-rbdyn-python-bindings
-    COMMAND pip install . ${PIP_EXTRA_OPTIONS}
+    COMMAND ${PIP} install . ${PIP_EXTRA_OPTIONS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Install RBDyn Python bindings"
   )
