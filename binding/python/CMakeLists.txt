@@ -33,6 +33,7 @@ ADD_CUSTOM_TARGET(rbdyn-python-bindings ALL
   COMMAND ${CMAKE_COMMAND} -E chdir "${SETUP_LOCATION}" ${PYTHON} setup.py build_ext --inplace
   COMMENT "Generating local RBDyn Python bindings"
   DEPENDS "include/rbdyn_wrapper.hpp" "rbdyn/c_rbdyn.pxd" "rbdyn/rbdyn.pxd" "rbdyn/rbdyn.pyx"
+  SOURCES "include/rbdyn_wrapper.hpp" "rbdyn/c_rbdyn.pxd" "rbdyn/rbdyn.pxd" "rbdyn/rbdyn.pyx"
 )
 
 IF(NOT ${DISABLE_TESTS})
