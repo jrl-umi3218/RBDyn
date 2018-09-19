@@ -60,4 +60,5 @@ ELSE()
     COMMENT "Install RBDyn Python bindings"
   )
 ENDIF()
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_MAKE_PROGRAM} install-rbdyn-python-bindings)")
+
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND \"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --config \${CMAKE_INSTALL_CONFIG_NAME} --target install-rbdyn-python-bindings)")
