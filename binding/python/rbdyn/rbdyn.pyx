@@ -171,9 +171,9 @@ cdef class Body(object):
       raise NotImplementedError("This comparison is not supported")
 
   def __str__(self):
-    return c_rbdyn_private.BodyToString(self.impl)
+    return c_rbdyn_private.BodyToString(self.impl).decode('utf-8')
   def __repr__(self):
-    return c_rbdyn_private.BodyToString(self.impl)
+    return self.__str__()
 
   @staticmethod
   def pickle(b):
@@ -274,9 +274,9 @@ cdef class Joint(object):
       raise NotImplementedError("This comparison is not supported")
 
   def __str__(self):
-    return c_rbdyn_private.JointToString(self.impl)
+    return c_rbdyn_private.JointToString(self.impl).decode('utf-8')
   def __repr__(self):
-    return c_rbdyn_private.JointToString(self.impl)
+    return self.__str__()
 
   @staticmethod
   def ZeroParam(int jt):

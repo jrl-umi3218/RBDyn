@@ -32,8 +32,10 @@ env:
   - GH_REPO=jrl-umi3218/RBDyn
   - secure: FCe7ktcmBJWgEFsCBnG1QfIhkgNKM3uyRMS9mXiY8hfGQ9KGj/9X4qebUmfZ1ay6Rw2B22FXpRiJk2GmsHxo1RZH3f27b6F1mWz25RgJGX986k2nPChCshf5gORfMI5BKksyXFzp24sXBLcYKGz/xrOioSUY1wPJ3JZ7r7kDEV4=
   matrix:
-    - USE_PYTHON34=false
-    - USE_PYTHON34=true
+    - USE_PYTHON34=false CMAKE_BUILD_TYPE=RelWithDebInfo
+    - USE_PYTHON34=false CMAKE_BUILD_TYPE=Debug
+    - USE_PYTHON34=true CMAKE_BUILD_TYPE=RelWithDebInfo
+    - USE_PYTHON34=true CMAKE_BUILD_TYPE=Debug
 notifications:
   slack:
     rooms:
@@ -42,10 +44,8 @@ script: ./.travis/run build
 after_success: ./.travis/run after_success
 after_failure: ./.travis/run after_failure
 before_install:
+- export CMAKE_ADDITIONAL_OPTIONS="${CMAKE_ADDITIONAL_OPTIONS} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
 - if [ $USE_PYTHON34 = true ]; then pushd .; pip install virtualenv; mkdir -p /tmp/_ci/virtualenv; virtualenv -p python3.4 3.4; source 3.4/bin/activate; popd; fi
 - if [ $USE_PYTHON34 = false ]; then export CMAKE_ADDITIONAL_OPTIONS="-DPYTHON_BINDING_USER_INSTALL:BOOL=ON"; fi
 - ./.travis/dependencies/eigen-3.2
 - ./.travis/run  before_install
-matrix:
-  allow_failures:
-  - compiler: clang
