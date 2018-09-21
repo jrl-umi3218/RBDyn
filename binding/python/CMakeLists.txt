@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
-SET(SETUP_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/")
+SET(SETUP_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/setup.in.py" "${CMAKE_CURRENT_BINARY_DIR}/setup.in.py")
 FILE(GENERATE
       OUTPUT "${SETUP_LOCATION}/setup.py"

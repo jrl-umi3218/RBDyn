@@ -34,7 +34,7 @@ import subprocess
 from numpy import get_include as numpy_get_include
 
 win32_build = os.name == 'nt'
-debug_build = "$<CONFIG>".lower() == "debug"
+debug_build = "$<CONFIGURATION>".lower() == "debug"
 
 this_path  = os.path.dirname(os.path.realpath(__file__))
 if not os.path.exists(this_path + '/rbdyn/'):
