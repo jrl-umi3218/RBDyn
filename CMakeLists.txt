@@ -53,6 +53,7 @@ endif()
 SEARCH_FOR_EIGEN()
 
 ADD_REQUIRED_DEPENDENCY("SpaceVecAlg")
+find_package(SpaceVecAlg REQUIRED)
 
 #########################
 

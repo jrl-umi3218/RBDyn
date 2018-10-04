@@ -23,7 +23,7 @@ set(HEADERS RBDyn/Body.h RBDyn/Joint.h RBDyn/MultiBodyGraph.h RBDyn/MultiBody.h 
   RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx RBDyn/Coriolis.h)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
-pkg_config_use_dependency(RBDyn SpaceVecAlg)
+target_link_libraries(RBDyn SpaceVecAlg::SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
 set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
 
