@@ -506,7 +506,7 @@ double testEulerInteg(rbd::Joint::Type jType, const Eigen::Vector3d& axis,
 	Vector3d linVel((initPos.rotation()*(endPos.translation() - initPos.translation()))/timeStep);
 	// rotation velocity is also in initPos frame
 	Matrix3d rotErr(endPos.rotation()*initPos.rotation().transpose());
-	Vector3d angVel = sva::rotationVelocity(rotErr, 1e-7)/timeStep;
+	Vector3d angVel = sva::rotationVelocity(rotErr)/timeStep;
 	sva::MotionVecd motionDiff(angVel, linVel);
 
 	return (motionDiff - motion).vector().norm();
