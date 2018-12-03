@@ -91,14 +91,11 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
-
-    // std::cout << "Rafa, in IntegralTerm::computeTerm, s = " << s.transpose() << std::endl << std::endl;
     
     if (intglTermType_ == PassivityBased)
     {
         coriolis::Coriolis coriolis(mb);
         Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
-        // std::cout << "Rafa, in IntegralTerm::computeTerm, C = " << std::endl << C.block(0, 0, 6, 6) << std::endl << std::endl;
         P_ = (C + K) * s;
     }
     else
@@ -106,12 +103,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
         P_ = K * s;
     }
 
-    // std::cout << "Rafa, in IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl;
-    
     computeGammaD();
-
-    // std::cout << "Rafa, in IntegralTerm::computeTerm, gammaD_ = " << gammaD_.transpose() << std::endl;
-    // std::cout << std::endl;
   }
 }
 
@@ -151,16 +143,6 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody& mb,
   Eigen::MatrixXd Kp = mu_ * M + lambda_ * (C + Ka) + L;
   Eigen::MatrixXd Ki = mu_ * (C + Ka) + cis_ * lambda_ * L;
 
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, beta_ = " << beta_ << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, lambda_ = " << lambda_ << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, mu_ = " << mu_ << std::endl << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, M = " << std::endl << M.block(0, 0, 6, 6) << std::endl << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, C = " << std::endl << C.block(0, 0, 6, 6) << std::endl << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, Ka = " << std::endl << Ka.block(0, 0, 6, 6) << std::endl << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, Kv = " << std::endl << Kv.block(0, 0, 6, 6) << std::endl << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, Kp = " << std::endl << Kp.block(0, 0, 6, 6) << std::endl << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, Ki = " << std::endl << Ki.block(0, 0, 6, 6) << std::endl << std::endl;
-  
   Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
   Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
 
@@ -180,26 +162,9 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody& mb,
   Eigen::VectorXd E = EPrev_ + e * dt_;
   EPrev_ = E;
 
-  // Eigen::VectorXd qVec_ref = rbd::paramToVector(mb, mbc_calc.q); // For debugging
-  // Eigen::VectorXd qVec_hat = rbd::paramToVector(mb, mbc_real.q); // For debugging
-  
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, qVec_ref = " << qVec_ref.segment(0, 7).transpose() << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, qVec_hat = " << qVec_hat.segment(0, 7).transpose() << std::endl;
-  // std::cout << std::endl;
-  
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, s = " << s.transpose() << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, e = " << e.segment(0, 6).transpose() << std::endl;
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, E = " << E.transpose() << std::endl;
-  // std::cout << std::endl;
-  
   P_ = Kv * s + Kp * e + Ki * E;
   
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, P_ = " << P_.segment(0, 6).transpose() << std::endl;
-  
   computeGammaD();
-
-  // std::cout << "Rafa, in PassivityPIDTerm::computeTerm, gammaD_ = " << gammaD_.transpose() << std::endl;
-  // std::cout << std::endl;
 }
 
 Eigen::VectorXd PassivityPIDTerm::errorParam(rbd::Joint::Type type,
