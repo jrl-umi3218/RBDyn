@@ -27,7 +27,7 @@ struct MultiBodyConfig;
 /**
 	* Compute the forward kinematic of a MultiBody.
 	* @param mb MultiBody used has model.
-	* @param mbc Use q generalized position vector. Fill bodyPosW, jointConfig
+	* @param mbc Use q generalized position vector. Fill bodyPosW, jointConfig, motionSubspace
 	* and parentToSon.
 	*/
 RBDYN_DLLAPI void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc);

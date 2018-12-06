@@ -38,7 +38,6 @@ void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc)
 		const sva::PTransformd& X_p_i = mbc.parentToSon[i];
 
 		mbc.jointVelocity[i] = joints[i].motion(mbc.alpha[i]);
-		mbc.motionSubspace[i] = joints[i].motionSubspace();
 
 		if(pred[i] != -1)
 			mbc.bodyVelB[succ[i]] = X_p_i*mbc.bodyVelB[pred[i]] + mbc.jointVelocity[i];

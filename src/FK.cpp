@@ -38,6 +38,7 @@ void forwardKinematics(const MultiBody& mb, MultiBodyConfig& mbc)
 	{
 		mbc.jointConfig[i] = joints[i].pose(mbc.q[i]);
 		mbc.parentToSon[i] = mbc.jointConfig[i]*Xt[i];
+		mbc.motionSubspace[i] = joints[i].motionSubspace();
 
 		if(pred[i] != -1)
 			mbc.bodyPosW[succ[i]] = mbc.parentToSon[i]*mbc.bodyPosW[pred[i]];
