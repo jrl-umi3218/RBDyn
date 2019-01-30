@@ -42,6 +42,7 @@ ADD_CUSTOM_TARGET(rbdyn-python-bindings ALL
   DEPENDS "include/rbdyn_wrapper.hpp" "rbdyn/c_rbdyn.pxd" "rbdyn/rbdyn.pxd" "rbdyn/rbdyn.pyx"
   SOURCES "include/rbdyn_wrapper.hpp" "rbdyn/c_rbdyn.pxd" "rbdyn/rbdyn.pxd" "rbdyn/rbdyn.pyx"
 )
+ADD_DEPENDENCIES(rbdyn-python-bindings RBDyn)
 
 IF(NOT ${DISABLE_TESTS})
   IF(NOT DEFINED PYTHON_DEB_ROOT)
