@@ -1,6 +1,6 @@
 #include "RBDyn/Coriolis.h"
 
-namespace coriolis
+namespace rbd
 {
 
 Eigen::Matrix3d skewSymmetricFromVelocity(const Eigen::Vector3d& v)

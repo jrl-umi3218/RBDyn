@@ -3,7 +3,7 @@
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/CoM.h"
 
-namespace coriolis
+namespace rbd
 {
 
 using Block = std::array<int, 3>;
