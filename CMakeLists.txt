@@ -34,7 +34,13 @@ SET(CXX_DISABLE_WERROR True)
 SETUP_PROJECT()
 
 option(PYTHON_BINDING "Generate python binding." ON)
-option(PYTHON_BINDING_USER_INSTALL "Install the Python bindings in user space" OFF)
+if(WIN32)
+  set(PYTHON_BINDING_USER_INSTALL_DEFAULT ON)
+else()
+  set(PYTHON_BINDING_USER_INSTALL_DEFAULT OFF)
+endif()
+option(PYTHON_BINDING_USER_INSTALL "Install the Python bindings in user space" ${PYTHON_BINDING_USER_INSTALL_DEFAULT})
+option(PYTHON_BINDING_FORCE_PYTHON3 "Use pip3/python3 instead of pip/python" OFF)
 option(DISABLE_TESTS "Disable unit tests." OFF)
 option(BENCHMARKS "Generate benchmarks." OFF)
 
@@ -47,6 +53,7 @@ endif()
 SEARCH_FOR_EIGEN()
 
 ADD_REQUIRED_DEPENDENCY("SpaceVecAlg")
+find_package(SpaceVecAlg REQUIRED)
 
 #########################
 

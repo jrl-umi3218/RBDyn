@@ -46,7 +46,7 @@ InverseStatics::InverseStatics(const MultiBody& mb)
   fullJac_.setZero();
   for (size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
-    jacW_[i] = Jacobian(mb, mb.body(i).name());
+    jacW_[i] = Jacobian(mb, mb.body(static_cast<int>(i)).name());
     df_[i] = MatrixXd::Zero(6, mb.nrDof());
   }
 

@@ -29,7 +29,7 @@ struct MultiBodyConfig;
 	* @param mb MultiBody used has model.
 	* @param mbc Use alpha generalized velocity vector, bodyPosW, jointConfig
 	* and parentToSon.
-	* Fill jointVelocity, motionSubspace, bodyVelW and bodyVelB.
+	* Fill jointVelocity, bodyVelW and bodyVelB.
 	*/
 RBDYN_DLLAPI void forwardVelocity(const MultiBody& mb, MultiBodyConfig& mbc);
 

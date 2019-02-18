@@ -227,6 +227,7 @@ cdef extern from "<RBDyn/ID.h>" namespace "rbd":
     InverseDynamics(const MultiBody &)
 
     void sInverseDynamics(const MultiBody&, MultiBodyConfig&) except +
+    void sInverseDynamicsNoInertia(const MultiBody&, MultiBodyConfig&) except +
     vector[ForceVecd] f() const
 
 cdef extern from "<RBDyn/FD.h>" namespace "rbd":
@@ -242,6 +243,12 @@ cdef extern from "<RBDyn/FD.h>" namespace "rbd":
     MatrixXd H() const
     VectorXd C() const
     vector[RBInertiad] inertiaSubTree() const
+
+cdef extern from "<RBDyn/Coriolis.h>" namespace "rbd":
+  cdef cppclass Coriolis:
+    Coriolis(const MultiBody&)
+
+    MatrixXd coriolis(const MultiBody&, const MultiBodyConfig&)
 
 cdef extern from "<RBDyn/CoM.h>" namespace "rbd":
   Vector3d sComputeCoM(const MultiBody&, MultiBodyConfig&) except +
