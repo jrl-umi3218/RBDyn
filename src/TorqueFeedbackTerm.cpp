@@ -137,7 +137,8 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody& mb,
   const Eigen::MatrixXd & C = coriolis.coriolis(mb, mbc_real);
 
   Eigen::MatrixXd Ka = beta_  * M;
-  Eigen::MatrixXd L  = sigma_ * M.diagonal().asDiagonal();
+  //Eigen::MatrixXd L  = sigma_ * M.diagonal().asDiagonal();
+  Eigen::MatrixXd L  = sigma_ * M;
   
   Eigen::MatrixXd Kv = lambda_ * M + C + Ka;
   Eigen::MatrixXd Kp = mu_ * M + lambda_ * (C + Ka) + L;
