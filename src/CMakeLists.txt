@@ -23,6 +23,23 @@ set(HEADERS RBDyn/Body.h RBDyn/Joint.h RBDyn/MultiBodyGraph.h RBDyn/MultiBody.h 
   RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx RBDyn/Coriolis.h)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
+
+if(ENABLE_SIMD)
+  if(MSVC)
+    target_compile_options(RBDyn PUBLIC /arch:SSE2 /arch:AVX /arch:AVX2)
+  elseif(CMAKE_COMPILER_IS_GNUCXX)
+    execute_process(
+      COMMAND ${CMAKE_CXX_COMPILER} -dumpfullversion -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+    set(CXX_COMPILER_VERSION ${GCC_VERSION})
+    target_compile_options(RBDyn PUBLIC -march=native)
+    if(GCC_VERSION VERSION_GREATER 7.0)
+      target_compile_options(RBDyn PUBLIC -faligned-new)
+    endif()
+  elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    target_compile_options(RBDyn PUBLIC -march=native -faligned-new)
+  endif()
+endif()
+
 target_link_libraries(RBDyn SpaceVecAlg::SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
 set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
