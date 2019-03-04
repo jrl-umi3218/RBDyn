@@ -94,7 +94,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
     
     if (intglTermType_ == PassivityBased)
     {
-        coriolis::Coriolis coriolis(mb);
+        rbd::Coriolis coriolis(mb);
         Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
         P_ = (C + K) * s;
     }
@@ -133,7 +133,7 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody& mb,
 {
   const Eigen::MatrixXd & M = fd_->H();
   
-  coriolis::Coriolis coriolis(mb);
+  rbd::Coriolis coriolis(mb);
   const Eigen::MatrixXd & C = coriolis.coriolis(mb, mbc_real);
 
   Eigen::MatrixXd Ka = beta_  * M;
