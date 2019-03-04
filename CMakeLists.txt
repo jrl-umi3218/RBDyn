@@ -25,7 +25,7 @@ INCLUDE(cmake/msvc-specific.cmake)
 
 SET(PROJECT_NAME RBDyn)
 SET(PROJECT_DESCRIPTION "...")
-SET(PROJECT_URL "https://github.com/jorisv/RBDyn")
+SET(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
 SET(PROJECT_DEBUG_POSTFIX "_d")
 
 # Disable -Werror on Unix for now.
