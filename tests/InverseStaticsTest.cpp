@@ -48,6 +48,8 @@ namespace rbd
 using namespace Eigen;
 Eigen::IOFormat cleanFmt(2, 0, ", ", "\n", "[", "]");
 
+static constexpr double PI = boost::math::constants::pi<double>();
+
 void test(boost::shared_ptr<boost::test_tools::output_test_stream> output,
           rbd::MultiBody& mb, rbd::MultiBodyConfig& mbc,
           rbd::InverseStatics& IS, Eigen::Vector3d q)
@@ -84,8 +86,8 @@ BOOST_AUTO_TEST_CASE(XXXArmTorqueJacobian)
   rbd::InverseStatics IS(mb);
 
   test(output, mb, mbc, IS, Vector3d(0, 0, 0));
-  test(output, mb, mbc, IS, Vector3d(M_PI, 0, 0));
-  test(output, mb, mbc, IS, Vector3d(0, M_PI / 2, 0));
+  test(output, mb, mbc, IS, Vector3d(rbd::PI, 0, 0));
+  test(output, mb, mbc, IS, Vector3d(0, rbd::PI / 2, 0));
   test(output, mb, mbc, IS, Vector3d(0.4, 0.1, 0.2));
 
   std::cout << output->str() << std::endl;

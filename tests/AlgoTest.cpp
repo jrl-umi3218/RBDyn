@@ -46,6 +46,11 @@
 #include "XYZSarm.h"
 
 
+namespace rbd
+{
+  static constexpr double PI = boost::math::constants::pi<double>();
+}
+
 const double TOL = 0.0000001;
 
 BOOST_AUTO_TEST_CASE(FKTest)
@@ -731,13 +736,13 @@ BOOST_AUTO_TEST_CASE(FailureIKTest)
 	rbd::forwardVelocity(mb, mbc);
 
 	// This target is outside the reach of the arm
-	sva::PTransformd target(sva::RotX(M_PI/2), Eigen::Vector3d(0., 0.5, 2.5));
+	sva::PTransformd target(sva::RotX(rbd::PI/2), Eigen::Vector3d(0., 0.5, 2.5));
 	BOOST_CHECK(!ik.inverseKinematics(mb, mbc, target));
 
 	Eigen::VectorXd q_target(mb.nrParams());
 	Eigen::VectorXd q(mb.nrParams());
 
-	q_target << M_PI/2, 0, 0;
+	q_target << rbd::PI/2, 0, 0;
 	rbd::paramToVector(mbc.q, q);
 
 	BOOST_CHECK_SMALL((q_target - q).norm(), TOL);
@@ -745,7 +750,7 @@ BOOST_AUTO_TEST_CASE(FailureIKTest)
 	/* This target is reachable, but IK will fail if given
 	 * a too low maximum number of iterations */
 	ik.max_iterations_ = 10;
-	sva::PTransformd reachable_target(sva::RotX(-M_PI/2), Eigen::Vector3d(0., 0.5, -2.));
+	sva::PTransformd reachable_target(sva::RotX(-rbd::PI/2), Eigen::Vector3d(0., 0.5, -2.));
 	BOOST_CHECK(!ik.inverseKinematics(mb, mbc, reachable_target));
 	ik.max_iterations_ = 40;
 	BOOST_CHECK(ik.inverseKinematics(mb, mbc, reachable_target));
