@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include <array>
-
-#include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/CoM.h>
 #include <RBDyn/Jacobian.h>
+#include <RBDyn/MultiBodyConfig.h>
+
+#include <array>
 
 namespace rbd
 {
@@ -23,23 +23,22 @@ namespace rbd
 class RBDYN_DLLAPI Coriolis
 {
 public:
-	/** Initialize the required structures
-	 * @param mb Multibody system
-	 */
-	Coriolis(const rbd::MultiBody& mb);
+  /** Initialize the required structures
+   * @param mb Multibody system
+   */
+  Coriolis(const rbd::MultiBody & mb);
 
-
-	/** Compute the matrix C of Coriolis effects.
-	 * @param mb Multibody system
-	 * @param mbc Multibody configuration associated to mb
-	 */
-	const Eigen::MatrixXd& coriolis(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
+  /** Compute the matrix C of Coriolis effects.
+   * @param mb Multibody system
+   * @param mbc Multibody configuration associated to mb
+   */
+  const Eigen::MatrixXd & coriolis(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc);
 
 private:
-	std::vector<rbd::Jacobian> jacs_;
-	std::vector<Blocks> compactPaths_;
-	Eigen::MatrixXd coriolis_;
-	Eigen::MatrixXd res_;
+  std::vector<rbd::Jacobian> jacs_;
+  std::vector<Blocks> compactPaths_;
+  Eigen::MatrixXd coriolis_;
+  Eigen::MatrixXd res_;
 };
 
-} // ns rbd
+} // namespace rbd

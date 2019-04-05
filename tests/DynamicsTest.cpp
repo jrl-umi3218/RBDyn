@@ -11,18 +11,18 @@
 
 // boost
 #define BOOST_TEST_MODULE Dynamics
-#include <boost/test/unit_test.hpp>
 #include <boost/math/constants/constants.hpp>
+#include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
+#include "RBDyn/Body.h"
+#include "RBDyn/FD.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
-#include "RBDyn/FD.h"
 #include "RBDyn/ID.h"
-#include "RBDyn/Body.h"
 #include "RBDyn/Joint.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
@@ -33,526 +33,480 @@
 
 const double TOL = 0.0000001;
 
-
 BOOST_AUTO_TEST_CASE(OneBody)
 {
-	using namespace Eigen;
-	using namespace sva;
-	using namespace rbd;
-	namespace cst = boost::math::constants;
+  using namespace Eigen;
+  using namespace sva;
+  using namespace rbd;
+  namespace cst = boost::math::constants;
 
-	double mass = 1.;
-	Matrix3d I = Matrix3d::Identity();
-	Vector3d h = Vector3d(0., 0.5, 0.);
+  double mass = 1.;
+  Matrix3d I = Matrix3d::Identity();
+  Vector3d h = Vector3d(0., 0.5, 0.);
 
-	RBInertiad rbi(mass, h, I);
+  RBInertiad rbi(mass, h, I);
 
-	Body b0(rbi, "b0");
-	Body b1(rbi, "b1");
+  Body b0(rbi, "b0");
+  Body b1(rbi, "b1");
 
-	Joint j0(Joint::RevX, true, "j0");
+  Joint j0(Joint::RevX, true, "j0");
 
-	MultiBodyGraph mbg;
+  MultiBodyGraph mbg;
 
-	mbg.addBody(b0);
-	mbg.addBody(b1);
+  mbg.addBody(b0);
+  mbg.addBody(b1);
 
-	mbg.addJoint(j0);
+  mbg.addJoint(j0);
 
-	mbg.linkBodies("b0", PTransformd::Identity(),
-			 "b1", PTransformd::Identity(), "j0");
+  mbg.linkBodies("b0", PTransformd::Identity(), "b1", PTransformd::Identity(), "j0");
 
-	MultiBody mb = mbg.makeMultiBody("b0", true);
+  MultiBody mb = mbg.makeMultiBody("b0", true);
 
-	MultiBodyConfig mbc(mb);
-	mbc.zero(mb);
+  MultiBodyConfig mbc(mb);
+  mbc.zero(mb);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	InverseDynamics id(mb);
-	id.inverseDynamics(mb, mbc);
+  InverseDynamics id(mb);
+  id.inverseDynamics(mb, mbc);
 
-	BOOST_CHECK_EQUAL(int(id.f().size()), mb.nrBodies());
-	BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
+  BOOST_CHECK_EQUAL(int(id.f().size()), mb.nrBodies());
+  BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
 
-	mbc.q = {{}, {cst::pi<double>()}};
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-	id.inverseDynamics(mb, mbc);
+  mbc.q = {{}, {cst::pi<double>()}};
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
+  id.inverseDynamics(mb, mbc);
 
-	std::cout << std::endl;
-	BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
+  std::cout << std::endl;
+  BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
 
-	mbc.q = {{}, {cst::pi<double>()/2.}};
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-	id.inverseDynamics(mb, mbc);
+  mbc.q = {{}, {cst::pi<double>() / 2.}};
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
+  id.inverseDynamics(mb, mbc);
 
-	double torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., 9.81, 0.))(0);
-	BOOST_CHECK_SMALL(std::abs(torque - mbc.jointTorque[1][0]), TOL);
+  double torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., 9.81, 0.))(0);
+  BOOST_CHECK_SMALL(std::abs(torque - mbc.jointTorque[1][0]), TOL);
 
-	MultiBodyConfig mbc2 = mbc;
-	mbc2.gravity = Vector3d::Zero();
-	MotionVecd gravity(Vector3d::Zero(), Vector3d(0., 9.81, 0.));
-	ForceVecd gravityB1 = mb.body(0).inertia()*(mbc2.bodyPosW[0]*gravity);
-	ForceVecd gravityB2 = mb.body(1).inertia()*(mbc2.bodyPosW[1]*gravity);
-	mbc2.force = {gravityB1,
-								gravityB2};
-	id.inverseDynamics(mb, mbc2);
+  MultiBodyConfig mbc2 = mbc;
+  mbc2.gravity = Vector3d::Zero();
+  MotionVecd gravity(Vector3d::Zero(), Vector3d(0., 9.81, 0.));
+  ForceVecd gravityB1 = mb.body(0).inertia() * (mbc2.bodyPosW[0] * gravity);
+  ForceVecd gravityB2 = mb.body(1).inertia() * (mbc2.bodyPosW[1] * gravity);
+  mbc2.force = {gravityB1, gravityB2};
+  id.inverseDynamics(mb, mbc2);
 
-	torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., -9.81, 0.))(0);
-	BOOST_CHECK_SMALL(std::abs(torque - mbc2.jointTorque[1][0]), TOL);
+  torque = Vector3d(0., 0., 0.5).cross(Vector3d(0., -9.81, 0.))(0);
+  BOOST_CHECK_SMALL(std::abs(torque - mbc2.jointTorque[1][0]), TOL);
 }
 
-void makeRandomVecVec(std::vector<std::vector<double>>& vec)
+void makeRandomVecVec(std::vector<std::vector<double>> & vec)
 {
-	typedef Eigen::Matrix<double, 1, 1> EScalar;
-	for(auto& v1: vec)
-		for(auto& v2: v1)
-			v2 = EScalar::Random()(0)*10.;
+  typedef Eigen::Matrix<double, 1, 1> EScalar;
+  for(auto & v1 : vec)
+    for(auto & v2 : v1) v2 = EScalar::Random()(0) * 10.;
 }
 
-void normalizeQuat(std::vector<double>& q)
+void normalizeQuat(std::vector<double> & q)
 {
-	Eigen::Vector4d qv(q[0], q[1], q[2], q[3]);
-	double norm = qv.norm();
-	for(int i = 0; i < 4; ++i)
-		q[i] /= norm;
+  Eigen::Vector4d qv(q[0], q[1], q[2], q[3]);
+  double norm = qv.norm();
+  for(int i = 0; i < 4; ++i) q[i] /= norm;
 }
 
-void makeRandomConfig(rbd::MultiBodyConfig& mbc)
+void makeRandomConfig(rbd::MultiBodyConfig & mbc)
 {
-	makeRandomVecVec(mbc.q);
-	makeRandomVecVec(mbc.alpha);
-	makeRandomVecVec(mbc.alphaD);
-	makeRandomVecVec(mbc.jointTorque);
+  makeRandomVecVec(mbc.q);
+  makeRandomVecVec(mbc.alpha);
+  makeRandomVecVec(mbc.alphaD);
+  makeRandomVecVec(mbc.jointTorque);
 
-	for(std::size_t i = 0; i < mbc.q.size(); ++i)
-	{
-		if(mbc.q[i].size() == 4 || mbc.q[i].size() == 7)
-		{
-			normalizeQuat(mbc.q[i]);
-		}
-	}
+  for(std::size_t i = 0; i < mbc.q.size(); ++i)
+  {
+    if(mbc.q[i].size() == 4 || mbc.q[i].size() == 7)
+    {
+      normalizeQuat(mbc.q[i]);
+    }
+  }
 }
 
-Eigen::MatrixXd makeHFromID(const rbd::MultiBody& mb,
-	const rbd::MultiBodyConfig& mbc,
-	rbd::InverseDynamics& id,
-	const Eigen::VectorXd& C)
+Eigen::MatrixXd makeHFromID(const rbd::MultiBody & mb,
+                            const rbd::MultiBodyConfig & mbc,
+                            rbd::InverseDynamics & id,
+                            const Eigen::VectorXd & C)
 {
-	using namespace Eigen;
-	using namespace sva;
-	using namespace rbd;
+  using namespace Eigen;
+  using namespace sva;
+  using namespace rbd;
 
-	Eigen::MatrixXd H(mb.nrDof(), mb.nrDof());
-	VectorXd Hd(mb.nrDof());
+  Eigen::MatrixXd H(mb.nrDof(), mb.nrDof());
+  VectorXd Hd(mb.nrDof());
 
-	MultiBodyConfig mbcd(mbc);
-	for(auto& v1: mbcd.alphaD)
-	{
-		for(auto& v2: v1)
-		{
-			v2 = 0.;
-		}
-	}
+  MultiBodyConfig mbcd(mbc);
+  for(auto & v1 : mbcd.alphaD)
+  {
+    for(auto & v2 : v1)
+    {
+      v2 = 0.;
+    }
+  }
 
-	int col = 0;
-	for(int i = 0; i < mb.nrJoints(); ++i)
-	{
-		for(int j = 0; j < mb.joint(i).dof(); ++j)
-		{
-			mbcd.alphaD[i][j] = 1.;
+  int col = 0;
+  for(int i = 0; i < mb.nrJoints(); ++i)
+  {
+    for(int j = 0; j < mb.joint(i).dof(); ++j)
+    {
+      mbcd.alphaD[i][j] = 1.;
 
-			id.inverseDynamics(mb, mbcd);
+      id.inverseDynamics(mb, mbcd);
 
-			int dof = 0;
-			for(auto& v1: mbcd.jointTorque)
-			{
-				for(auto& v2: v1)
-				{
-					Hd(dof) = v2;
-					++dof;
-				}
-			}
+      int dof = 0;
+      for(auto & v1 : mbcd.jointTorque)
+      {
+        for(auto & v2 : v1)
+        {
+          Hd(dof) = v2;
+          ++dof;
+        }
+      }
 
-			H.col(col) = Hd - C;
+      H.col(col) = Hd - C;
 
-			mbcd.alphaD[i][j] = 0.;
-			++col;
-		}
-	}
+      mbcd.alphaD[i][j] = 0.;
+      ++col;
+    }
+  }
 
-	return H;
+  return H;
 }
-
-
 
 BOOST_AUTO_TEST_CASE(IDvsFDFixed)
 {
-	using namespace Eigen;
-	using namespace sva;
-	using namespace rbd;
-	namespace cst = boost::math::constants;
+  using namespace Eigen;
+  using namespace sva;
+  using namespace rbd;
+  namespace cst = boost::math::constants;
 
-	typedef Matrix<double, 1, 1> EScalar;
+  typedef Matrix<double, 1, 1> EScalar;
 
-	RBInertiad I0(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
-	RBInertiad I1(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
-	RBInertiad I2(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
-	RBInertiad I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I0(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I1(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I2(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I3(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
 
-	Body b0(I0, "b0");
-	Body b1(I1, "b1");
-	Body b2(I2, "b2");
-	Body b3(I3, "b3");
+  Body b0(I0, "b0");
+  Body b1(I1, "b1");
+  Body b2(I2, "b2");
+  Body b3(I3, "b3");
 
-	Joint j0 = Joint(Joint::Spherical, true, "j0");
-	Joint j1 = Joint(Joint::RevX, true, "j1");
-	Joint j2 = Joint(Joint::RevZ, true, "j2");
+  Joint j0 = Joint(Joint::Spherical, true, "j0");
+  Joint j1 = Joint(Joint::RevX, true, "j1");
+  Joint j2 = Joint(Joint::RevZ, true, "j2");
 
+  MultiBodyGraph mbg;
 
-	MultiBodyGraph mbg;
+  mbg.addBody(b0);
+  mbg.addBody(b1);
+  mbg.addBody(b2);
+  mbg.addBody(b3);
 
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
+  mbg.addJoint(j0);
+  mbg.addJoint(j1);
+  mbg.addJoint(j2);
 
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
+  mbg.linkBodies("b0", PTransformd(Vector3d(0., 0.5, 0.)), "b1", PTransformd(Vector3d(0., -0.5, 0.)), "j0");
+  mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)), "b2", PTransformd(Vector3d(0., 0., 0.)), "j1");
+  mbg.linkBodies("b1", PTransformd(Vector3d(-0.5, 0., 0.)), "b3", PTransformd(Vector3d(0., 0., 0.)), "j2");
 
-	mbg.linkBodies("b0", PTransformd(Vector3d(0., 0.5, 0.)),
-			 "b1", PTransformd(Vector3d(0., -0.5, 0.)), "j0");
-	mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)),
-			 "b2", PTransformd(Vector3d(0., 0., 0.)), "j1");
-	mbg.linkBodies("b1", PTransformd(Vector3d(-0.5, 0., 0.)),
-			 "b3", PTransformd(Vector3d(0., 0., 0.)), "j2");
+  MultiBody mb = mbg.makeMultiBody("b0", true);
 
-	MultiBody mb = mbg.makeMultiBody("b0", true);
+  MultiBodyConfig mbc(mb);
 
-	MultiBodyConfig mbc(mb);
+  mbc.q = {{}, {1., 0., 0., 0.}, {0.}, {0.}};
+  mbc.alpha = {{}, {0., 0., 0.}, {0.}, {0.}};
+  mbc.alphaD = {{}, {0., 0., 0.}, {0.}, {0.}};
+  mbc.force = {ForceVecd(Vector6d::Zero()), ForceVecd(Vector6d::Zero()), ForceVecd(Vector6d::Zero()),
+               ForceVecd(Vector6d::Zero())};
 
-	mbc.q = {{}, {1., 0., 0., 0.}, {0.}, {0.}};
-	mbc.alpha = {{}, {0., 0., 0.}, {0.}, {0.}};
-	mbc.alphaD = {{}, {0., 0., 0.}, {0.}, {0.}};
-	mbc.force = {ForceVecd(Vector6d::Zero()),
-							 ForceVecd(Vector6d::Zero()),
-							 ForceVecd(Vector6d::Zero()),
-							 ForceVecd(Vector6d::Zero())};
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  InverseDynamics id(mb);
+  ForwardDynamics fd(mb);
 
-	InverseDynamics id(mb);
-	ForwardDynamics fd(mb);
+  // check non linear is null
+  mbc.gravity = Vector3d::Zero();
+  fd.computeC(mb, mbc);
 
+  BOOST_CHECK(fd.C().isZero());
 
-	// check non linear is null
-	mbc.gravity = Vector3d::Zero();
-	fd.computeC(mb, mbc);
+  // check FD C against ID C
+  mbc.gravity = Vector3d(0., -9.81, 0.);
+  makeRandomConfig(mbc);
 
-	BOOST_CHECK(fd.C().isZero());
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
+  fd.computeC(mb, mbc);
 
-	// check FD C against ID C
-	mbc.gravity = Vector3d(0., -9.81, 0.);
-	makeRandomConfig(mbc);
+  mbc.alphaD = {{}, {0., 0., 0.}, {0.}, {0.}};
+  id.inverseDynamics(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-
-	fd.computeC(mb, mbc);
-
-	mbc.alphaD = {{}, {0., 0., 0.}, {0.}, {0.}};
-	id.inverseDynamics(mb, mbc);
-
-	VectorXd ID_C(mb.nrDof());
-	int dof = 0;
-	for(auto& v1: mbc.jointTorque)
-	{
-		for(auto& v2: v1)
-		{
-			ID_C(dof) = v2;
-			++dof;
-		}
-	}
+  VectorXd ID_C(mb.nrDof());
+  int dof = 0;
+  for(auto & v1 : mbc.jointTorque)
+  {
+    for(auto & v2 : v1)
+    {
+      ID_C(dof) = v2;
+      ++dof;
+    }
+  }
 
 #ifdef __i386__
-	BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
 #else
-	BOOST_CHECK_EQUAL(fd.C(), ID_C);
+  BOOST_CHECK_EQUAL(fd.C(), ID_C);
 #endif
 
+  // check FD H against ID H
+  makeRandomConfig(mbc);
 
-	// check FD H against ID H
-	makeRandomConfig(mbc);
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  fd.forwardDynamics(mb, mbc);
+  MatrixXd ID_H = makeHFromID(mb, mbc, id, fd.C());
 
-	fd.forwardDynamics(mb, mbc);
-	MatrixXd ID_H = makeHFromID(mb, mbc, id, fd.C());
+  BOOST_CHECK_SMALL((fd.H() - ID_H).norm(), 1e-10);
 
-	BOOST_CHECK_SMALL((fd.H() - ID_H).norm(), 1e-10);
+  // check symmetry
 
+  MatrixXd L = fd.H().triangularView<Lower>();
+  MatrixXd U = fd.H().triangularView<Upper>().transpose();
 
-	// check symmetry
+  BOOST_CHECK_SMALL((L - U).norm(), 1e-10);
 
-	MatrixXd L = fd.H().triangularView<Lower>();
-	MatrixXd U = fd.H().triangularView<Upper>().transpose();
+  // check torque and acceleration output
 
-	BOOST_CHECK_SMALL((L - U).norm(), 1e-10);
+  // torque -> FD -> alphaD -> ID -> torque
+  makeRandomConfig(mbc);
 
+  VectorXd vT1(mb.nrDof()), vT2(mb.nrDof());
 
-	// check torque and acceleration output
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	// torque -> FD -> alphaD -> ID -> torque
-	makeRandomConfig(mbc);
+  paramToVector(mbc.jointTorque, vT1);
 
-	VectorXd vT1(mb.nrDof()), vT2(mb.nrDof());
+  fd.forwardDynamics(mb, mbc);
+  id.inverseDynamics(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  paramToVector(mbc.jointTorque, vT2);
 
-	paramToVector(mbc.jointTorque, vT1);
+  BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-10);
 
-	fd.forwardDynamics(mb, mbc);
-	id.inverseDynamics(mb, mbc);
+  // alphaD -> ID -> torque -> FD -> alphaD
+  makeRandomConfig(mbc);
 
-	paramToVector(mbc.jointTorque, vT2);
+  VectorXd vA1(mb.nrDof()), vA2(mb.nrDof());
 
-	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-10);
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
+  paramToVector(mbc.alphaD, vA1);
 
-	// alphaD -> ID -> torque -> FD -> alphaD
-	makeRandomConfig(mbc);
+  id.inverseDynamics(mb, mbc);
+  fd.forwardDynamics(mb, mbc);
 
-	VectorXd vA1(mb.nrDof()), vA2(mb.nrDof());
+  paramToVector(mbc.alphaD, vA2);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-
-	paramToVector(mbc.alphaD, vA1);
-
-	id.inverseDynamics(mb, mbc);
-	fd.forwardDynamics(mb, mbc);
-
-	paramToVector(mbc.alphaD, vA2);
-
-	BOOST_CHECK_SMALL((vA1 - vA2).norm(), 1e-10);
+  BOOST_CHECK_SMALL((vA1 - vA2).norm(), 1e-10);
 }
-
-
-
 
 BOOST_AUTO_TEST_CASE(IDvsFDFree)
 {
-	using namespace Eigen;
-	using namespace sva;
-	using namespace rbd;
-	namespace cst = boost::math::constants;
+  using namespace Eigen;
+  using namespace sva;
+  using namespace rbd;
+  namespace cst = boost::math::constants;
 
-	typedef Matrix<double, 1, 1> EScalar;
+  typedef Matrix<double, 1, 1> EScalar;
 
-	RBInertiad I0(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
-	RBInertiad I1(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
-	RBInertiad I2(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
-	RBInertiad I3(EScalar::Random()(0)*10., Vector3d::Random()*10.,
-		Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I0(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I1(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I2(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
+  RBInertiad I3(EScalar::Random()(0) * 10., Vector3d::Random() * 10., Matrix3d::Random().triangularView<Lower>());
 
-	Body b0(I0, "b0");
-	Body b1(I1, "b1");
-	Body b2(I2, "b2");
-	Body b3(I3, "b3");
+  Body b0(I0, "b0");
+  Body b1(I1, "b1");
+  Body b2(I2, "b2");
+  Body b3(I3, "b3");
 
-	Joint j0 = Joint(Joint::Spherical, true, "j0");
-	Joint j1 = Joint(Joint::RevX, true, "j1");
-	Joint j2 = Joint(Joint::RevZ, true, "j2");
+  Joint j0 = Joint(Joint::Spherical, true, "j0");
+  Joint j1 = Joint(Joint::RevX, true, "j1");
+  Joint j2 = Joint(Joint::RevZ, true, "j2");
 
+  MultiBodyGraph mbg;
 
-	MultiBodyGraph mbg;
+  mbg.addBody(b0);
+  mbg.addBody(b1);
+  mbg.addBody(b2);
+  mbg.addBody(b3);
 
-	mbg.addBody(b0);
-	mbg.addBody(b1);
-	mbg.addBody(b2);
-	mbg.addBody(b3);
+  mbg.addJoint(j0);
+  mbg.addJoint(j1);
+  mbg.addJoint(j2);
 
-	mbg.addJoint(j0);
-	mbg.addJoint(j1);
-	mbg.addJoint(j2);
+  mbg.linkBodies("b0", PTransformd(Vector3d(0., 0.5, 0.)), "b1", PTransformd(Vector3d(0., -0.5, 0.)), "j0");
+  mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)), "b2", PTransformd(Vector3d(0., 0., 0.)), "j1");
+  mbg.linkBodies("b1", PTransformd(Vector3d(-0.5, 0., 0.)), "b3", PTransformd(Vector3d(0., 0., 0.)), "j2");
 
-	mbg.linkBodies("b0", PTransformd(Vector3d(0., 0.5, 0.)),
-			 "b1", PTransformd(Vector3d(0., -0.5, 0.)), "j0");
-	mbg.linkBodies("b1", PTransformd(Vector3d(0.5, 0., 0.)),
-			 "b2", PTransformd(Vector3d(0., 0., 0.)), "j1");
-	mbg.linkBodies("b1", PTransformd(Vector3d(-0.5, 0., 0.)),
-			"b3", PTransformd(Vector3d(0., 0., 0.)), "j2");
+  MultiBody mb = mbg.makeMultiBody("b0", false);
 
-	MultiBody mb = mbg.makeMultiBody("b0", false);
+  MultiBodyConfig mbc(mb);
 
-	MultiBodyConfig mbc(mb);
+  mbc.q = {{1., 0., 0., 0., 0., 0., 0.}, {1., 0., 0., 0.}, {0.}, {0.}};
+  mbc.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
+  mbc.alphaD = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
+  mbc.force = {ForceVecd(Vector6d::Zero()), ForceVecd(Vector6d::Zero()), ForceVecd(Vector6d::Zero()),
+               ForceVecd(Vector6d::Zero())};
 
-	mbc.q = {{1., 0., 0., 0., 0., 0., 0.}, {1., 0., 0., 0.}, {0.}, {0.}};
-	mbc.alpha = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
-	mbc.alphaD = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
-	mbc.force = {ForceVecd(Vector6d::Zero()),
-							 ForceVecd(Vector6d::Zero()),
-							 ForceVecd(Vector6d::Zero()),
-							 ForceVecd(Vector6d::Zero())};
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  InverseDynamics id(mb);
+  ForwardDynamics fd(mb);
 
-	InverseDynamics id(mb);
-	ForwardDynamics fd(mb);
+  // check non linear is null
+  mbc.gravity = Vector3d::Zero();
+  fd.computeC(mb, mbc);
 
+  BOOST_CHECK(fd.C().isZero());
 
-	// check non linear is null
-	mbc.gravity = Vector3d::Zero();
-	fd.computeC(mb, mbc);
+  // check FD C against ID C
+  mbc.gravity = Vector3d(0., -9.81, 0.);
+  makeRandomConfig(mbc);
 
-	BOOST_CHECK(fd.C().isZero());
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
+  fd.computeC(mb, mbc);
 
-	// check FD C against ID C
-	mbc.gravity = Vector3d(0., -9.81, 0.);
-	makeRandomConfig(mbc);
+  mbc.alphaD = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
+  id.inverseDynamics(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-
-	fd.computeC(mb, mbc);
-
-	mbc.alphaD = {{0., 0., 0., 0., 0., 0.}, {0., 0., 0.}, {0.}, {0.}};
-	id.inverseDynamics(mb, mbc);
-
-	VectorXd ID_C(mb.nrDof());
-	int dof = 0;
-	for(auto& v1: mbc.jointTorque)
-	{
-		for(auto& v2: v1)
-		{
-			ID_C(dof) = v2;
-			++dof;
-		}
-	}
+  VectorXd ID_C(mb.nrDof());
+  int dof = 0;
+  for(auto & v1 : mbc.jointTorque)
+  {
+    for(auto & v2 : v1)
+    {
+      ID_C(dof) = v2;
+      ++dof;
+    }
+  }
 
 #ifdef __i386__
-	BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL((fd.C() - ID_C).array().abs().sum(), TOL);
 #else
-	BOOST_CHECK_EQUAL(fd.C(), ID_C);
+  BOOST_CHECK_EQUAL(fd.C(), ID_C);
 #endif
 
+  // check FD H against ID H
+  makeRandomConfig(mbc);
 
-	// check FD H against ID H
-	makeRandomConfig(mbc);
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  fd.forwardDynamics(mb, mbc);
+  MatrixXd ID_H = makeHFromID(mb, mbc, id, fd.C());
 
-	fd.forwardDynamics(mb, mbc);
-	MatrixXd ID_H = makeHFromID(mb, mbc, id, fd.C());
+  BOOST_CHECK_SMALL((fd.H() - ID_H).norm(), 1e-10);
 
-	BOOST_CHECK_SMALL((fd.H() - ID_H).norm(), 1e-10);
+  // check symmetry
 
+  MatrixXd L = fd.H().triangularView<Lower>();
+  MatrixXd U = fd.H().triangularView<Upper>().transpose();
 
-	// check symmetry
+  BOOST_CHECK_SMALL((L - U).norm(), 1e-10);
 
-	MatrixXd L = fd.H().triangularView<Lower>();
-	MatrixXd U = fd.H().triangularView<Upper>().transpose();
+  // check torque and acceleration output
 
-	BOOST_CHECK_SMALL((L - U).norm(), 1e-10);
+  // torque -> FD -> alphaD -> ID -> torque
+  makeRandomConfig(mbc);
 
+  VectorXd vT1(mb.nrDof()), vT2(mb.nrDof());
 
-	// check torque and acceleration output
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	// torque -> FD -> alphaD -> ID -> torque
-	makeRandomConfig(mbc);
+  paramToVector(mbc.jointTorque, vT1);
 
-	VectorXd vT1(mb.nrDof()), vT2(mb.nrDof());
+  internal::set_is_malloc_allowed(false);
+  fd.forwardDynamics(mb, mbc);
+  id.inverseDynamics(mb, mbc);
+  internal::set_is_malloc_allowed(true);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  paramToVector(mbc.jointTorque, vT2);
 
-	paramToVector(mbc.jointTorque, vT1);
+  BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-9);
 
-	internal::set_is_malloc_allowed(false);
-	fd.forwardDynamics(mb, mbc);
-	id.inverseDynamics(mb, mbc);
-	internal::set_is_malloc_allowed(true);
+  // alphaD -> ID -> torque -> FD -> alphaD
+  makeRandomConfig(mbc);
 
-	paramToVector(mbc.jointTorque, vT2);
+  VectorXd vA1(mb.nrDof()), vA2(mb.nrDof());
 
-	BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-9);
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
+  paramToVector(mbc.alphaD, vA1);
 
-	// alphaD -> ID -> torque -> FD -> alphaD
-	makeRandomConfig(mbc);
+  id.inverseDynamics(mb, mbc);
+  fd.forwardDynamics(mb, mbc);
 
-	VectorXd vA1(mb.nrDof()), vA2(mb.nrDof());
+  paramToVector(mbc.alphaD, vA2);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
-
-	paramToVector(mbc.alphaD, vA1);
-
-	id.inverseDynamics(mb, mbc);
-	fd.forwardDynamics(mb, mbc);
-
-	paramToVector(mbc.alphaD, vA2);
-
-	BOOST_CHECK_SMALL((vA1 - vA2).norm(), 1e-10);
+  BOOST_CHECK_SMALL((vA1 - vA2).norm(), 1e-10);
 }
-
-
-
 
 BOOST_AUTO_TEST_CASE(MultiBodyGraphMerge)
 {
-	rbd::MultiBody mb;
-	rbd::MultiBodyConfig mbc;
-	rbd::MultiBodyGraph mbg;
-	std::tie(mb, mbc, mbg) = makeXYZSarm();
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeXYZSarm();
 
-	BOOST_CHECK_EQUAL(mbg.nrNodes(), 5);
-	BOOST_CHECK_EQUAL(mbg.nrJoints(), 4);
-	BOOST_CHECK_EQUAL(mb.nrBodies(), 5);
-	BOOST_CHECK_EQUAL(mb.nrJoints(), 5);
+  BOOST_CHECK_EQUAL(mbg.nrNodes(), 5);
+  BOOST_CHECK_EQUAL(mbg.nrJoints(), 4);
+  BOOST_CHECK_EQUAL(mb.nrBodies(), 5);
+  BOOST_CHECK_EQUAL(mb.nrJoints(), 5);
 
-	forwardKinematics(mb, mbc);
-	forwardVelocity(mb, mbc);
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
 
-	std::map<std::string, std::vector<double>> configByName;
-	configByName["j0"] = {0.};
-	configByName["j1"] = {0.};
-	configByName["j2"] = {0.};
-	configByName["j3"] = {1., 0., 0., 0.};
+  std::map<std::string, std::vector<double>> configByName;
+  configByName["j0"] = {0.};
+  configByName["j1"] = {0.};
+  configByName["j2"] = {0.};
+  configByName["j3"] = {1., 0., 0., 0.};
 
-	// merge b2, b3 and b4 in b1
-	mbg.mergeSubBodies("b0", "j1", configByName);
-	mbg.mergeSubBodies("b0", "j3", configByName);
+  // merge b2, b3 and b4 in b1
+  mbg.mergeSubBodies("b0", "j1", configByName);
+  mbg.mergeSubBodies("b0", "j3", configByName);
 
-	rbd::MultiBody mbMerged = mbg.makeMultiBody("b0", true);
+  rbd::MultiBody mbMerged = mbg.makeMultiBody("b0", true);
 
-	BOOST_CHECK_EQUAL(mbg.nrNodes(), 2);
-	BOOST_CHECK_EQUAL(mbg.nrJoints(), 1);
-	BOOST_CHECK_EQUAL(mbMerged.nrBodies(), 2);
-	BOOST_CHECK_EQUAL(mbMerged.nrJoints(), 2);
+  BOOST_CHECK_EQUAL(mbg.nrNodes(), 2);
+  BOOST_CHECK_EQUAL(mbg.nrJoints(), 1);
+  BOOST_CHECK_EQUAL(mbMerged.nrBodies(), 2);
+  BOOST_CHECK_EQUAL(mbMerged.nrJoints(), 2);
 
-	rbd::ForwardDynamics fd(mb);
-	fd.forwardDynamics(mb, mbc);
-	double error = (fd.inertiaSubTree()[1].matrix() -
-			mbMerged.body(1).inertia().matrix()).norm();
+  rbd::ForwardDynamics fd(mb);
+  fd.forwardDynamics(mb, mbc);
+  double error = (fd.inertiaSubTree()[1].matrix() - mbMerged.body(1).inertia().matrix()).norm();
 
-	BOOST_CHECK_SMALL(error, TOL);
+  BOOST_CHECK_SMALL(error, TOL);
 }

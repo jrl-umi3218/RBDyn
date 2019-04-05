@@ -21,56 +21,56 @@
 
 static void BM_FD_computeH(benchmark::State & state)
 {
-	rbd::MultiBody mb;
-	rbd::MultiBodyConfig mbc;
-	rbd::MultiBodyGraph mbg;
-	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::ForwardDynamics fd(mb);
+  rbd::ForwardDynamics fd(mb);
 
-	rbd::forwardKinematics(mb, mbc);
-	rbd::forwardVelocity(mb, mbc);
-	for(auto _ : state)
-	{
-		fd.computeH(mb, mbc);
-	}
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
+  for(auto _ : state)
+  {
+    fd.computeH(mb, mbc);
+  }
 }
 BENCHMARK(BM_FD_computeH);
 
 static void BM_FD_computeC(benchmark::State & state)
 {
-	rbd::MultiBody mb;
-	rbd::MultiBodyConfig mbc;
-	rbd::MultiBodyGraph mbg;
-	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::ForwardDynamics fd(mb);
+  rbd::ForwardDynamics fd(mb);
 
-	rbd::forwardKinematics(mb, mbc);
-	rbd::forwardVelocity(mb, mbc);
-	for(auto _ : state)
-	{
-		fd.computeC(mb, mbc);
-	}
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
+  for(auto _ : state)
+  {
+    fd.computeC(mb, mbc);
+  }
 }
 BENCHMARK(BM_FD_computeC);
 
 static void BM_Coriolis(benchmark::State & state)
 {
-	rbd::MultiBody mb;
-	rbd::MultiBodyConfig mbc;
-	rbd::MultiBodyGraph mbg;
-	std::tie(mb, mbc, mbg) = makeTree30Dof(false);
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeTree30Dof(false);
 
-	rbd::forwardKinematics(mb, mbc);
-	rbd::forwardVelocity(mb, mbc);
+  rbd::forwardKinematics(mb, mbc);
+  rbd::forwardVelocity(mb, mbc);
 
-	rbd::Coriolis coriolis(mb);
+  rbd::Coriolis coriolis(mb);
 
-	for(auto _ : state)
-	{
-		coriolis.coriolis(mb, mbc);
-	}
+  for(auto _ : state)
+  {
+    coriolis.coriolis(mb, mbc);
+  }
 }
 BENCHMARK(BM_Coriolis);
 
