@@ -4,6 +4,7 @@ import subprocess
 
 class RBDynTestConan(ConanFile):
     requires = "RBDyn/1.1.0@gergondet/stable"
+    settings = "os", "arch", "compiler", "build_type"
     generators = "cmake"
 
     def build(self):
