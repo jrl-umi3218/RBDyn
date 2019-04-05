@@ -10,9 +10,10 @@ set(HEADERS RBDyn/Body.h RBDyn/Joint.h RBDyn/MultiBodyGraph.h RBDyn/MultiBody.h 
   RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx RBDyn/Coriolis.h)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(RBDyn SpaceVecAlg::SpaceVecAlg)
+target_include_directories(RBDyn PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
+target_link_libraries(RBDyn PUBLIC SpaceVecAlg::SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
-set_target_properties(RBDyn PROPERTIES SOVERSION 0 VERSION 0.9.0)
+set_target_properties(RBDyn PROPERTIES SOVERSION 1 VERSION 1.1.0)
 
 install(
     TARGETS RBDyn
@@ -20,6 +21,5 @@ install(
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib"
     RUNTIME DESTINATION "bin"
-    INCLUDES DESTINATION "${INCLUDE_INSTALL_DIR}"
 )
 install(FILES ${HEADERS} DESTINATION ${INCLUDE_INSTALL_DESTINATION})
