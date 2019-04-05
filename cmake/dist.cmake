@@ -13,37 +13,45 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# _SETUP_PROJECT_DIST
-# -------------------
+#.rst:
+# .. command:: _SETUP_PROJECT_DIST
 #
-# Add a dist target to generate a tarball using git-archive.
+#   .. _target-dist:
 #
-# Linux specific: use git-archive-all.sh to obtain a recursive
-# git-archive on the project's submodule.
-# Please note that git-archive-all.sh is not carefully written
-# and create a temporary file in the source directory
-# (which is then moved to the build directory).
+#   Add a *dist* target to generate a tarball using ``git-archive``.
+#
+#   Linux specific: use ``git-archive-all.sh`` to obtain a recursive
+#   ``git-archive`` on the project's submodule.
+#   Please note that ``git-archive-all.sh`` is not carefully written
+#   and create a temporary file in the source directory
+#   (which is then moved to the build directory).
 MACRO(_SETUP_PROJECT_DIST)
   IF(UNIX)
     FIND_PROGRAM(TAR tar)
     FIND_PROGRAM(GPG gpg)
 
+    IF(APPLE)
+      SET(GIT_ARCHIVE_ALL ${PROJECT_SOURCE_DIR}/cmake/git-archive-all.py)
+    ELSE(APPLE)
+      SET(GIT_ARCHIVE_ALL ${PROJECT_SOURCE_DIR}/cmake/git-archive-all.sh)
+    ENDIF(APPLE)
+
     # Use git-archive-all.sh to generate distributable source code
     ADD_CUSTOM_TARGET(distdir
       COMMAND
       rm -f /tmp/${PROJECT_NAME}.tar
-      && ${PROJECT_SOURCE_DIR}/cmake/git-archive-all.sh
-      --prefix ${PROJECT_NAME}-${PROJECT_VERSION}/  ${PROJECT_NAME}.tar
+      && ${GIT_ARCHIVE_ALL}
+      --prefix ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/  ${PROJECT_NAME}.tar
       && cd ${CMAKE_BINARY_DIR}/
-      && (test -d ${PROJECT_NAME}-${PROJECT_VERSION}
-	&& find ${PROJECT_NAME}-${PROJECT_VERSION}/ -type d -print0
+      && (test -d ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}
+    	&& find ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/ -type d -print0
          | xargs -0 chmod a+w  || true)
-      && rm -rf ${PROJECT_NAME}-${PROJECT_VERSION}/
+      && rm -rf ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/
       && ${TAR} xf ${PROJECT_SOURCE_DIR}/${PROJECT_NAME}.tar
       && echo "${PROJECT_VERSION}" >
-         ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}/.version
+         ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/.version
       && ${PROJECT_SOURCE_DIR}/cmake/gitlog-to-changelog >
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}/ChangeLog
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/ChangeLog
       && rm -f ${PROJECT_SOURCE_DIR}/${PROJECT_NAME}.tar
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       COMMENT "Generating dist directory..."
@@ -52,11 +60,11 @@ MACRO(_SETUP_PROJECT_DIST)
     # Create a tar.gz tarball for the project, and generate the signature
     ADD_CUSTOM_TARGET(dist_targz
       COMMAND
-      ${TAR} -czf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz
-                  ${PROJECT_NAME}-${PROJECT_VERSION}/
+      ${TAR} -czf ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.gz
+                  ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/
       && ${GPG} --detach-sign --armor -o
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz.sig
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz 
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.gz.sig
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.gz 
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Generating tar.gz tarball and its signature..."
       )
@@ -64,11 +72,11 @@ MACRO(_SETUP_PROJECT_DIST)
     # Create a tar.bz2 tarball for the project, and generate the signature
     ADD_CUSTOM_TARGET(dist_tarbz2
       COMMAND
-      ${TAR} -cjf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.bz2
-                  ${PROJECT_NAME}-${PROJECT_VERSION}/
+      ${TAR} -cjf ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.bz2
+                  ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/
       && ${GPG} --detach-sign --armor -o
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.bz2.sig
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.bz2
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.bz2.sig
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.bz2
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Generating tar.bz2 tarball and its signature..."
       )
@@ -76,11 +84,11 @@ MACRO(_SETUP_PROJECT_DIST)
     # Create a tar.xz tarball for the project, and generate the signature
     ADD_CUSTOM_TARGET(dist_tarxz
       COMMAND
-      ${TAR} -cJf ${PROJECT_NAME}-${PROJECT_VERSION}.tar.xz
-                  ${PROJECT_NAME}-${PROJECT_VERSION}/
+      ${TAR} -cJf ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.xz
+                  ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/
       && ${GPG} --detach-sign --armor -o
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.xz.sig
-      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}.tar.xz
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.xz.sig
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.xz
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Generating tar.xz tarball and its signature..."
       )
@@ -91,15 +99,15 @@ MACRO(_SETUP_PROJECT_DIST)
     # TODO: call this during `make clean`
     ADD_CUSTOM_TARGET(distclean
       COMMAND
-      rm -rf ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}/
+      rm -rf ${CMAKE_BINARY_DIR}/${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}/
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Cleaning dist sources..."
       )
 
     ADD_CUSTOM_TARGET(distorig
       COMMAND
-      cmake -E copy ${PROJECT_NAME}-${PROJECT_VERSION}.tar.gz
-              ${PROJECT_NAME}-${PROJECT_VERSION}.orig.tar.gz
+      cmake -E copy ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.tar.gz
+              ${PROJECT_NAME}${PROJECT_SUFFIX}-${PROJECT_VERSION}.orig.tar.gz
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Generating orig tarball..."
       )

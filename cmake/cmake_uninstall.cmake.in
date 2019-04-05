@@ -45,6 +45,23 @@ FOREACH(file ${files})
     IF(NOT ${rm_resval} STREQUAL 0)
       MESSAGE(FATAL_ERROR "Problem when removing \"$ENV{DESTDIR}${file}\"")
     ENDIF(NOT ${rm_resval} STREQUAL 0)
+
+    # remove .pyc if need be
+    IF(file MATCHES ".py$")
+      SET(pycfile "${file}c")
+      IF(EXISTS "$ENV{DESTDIR}${pycfile}")
+        MESSAGE(STATUS "Uninstalling \"$ENV{DESTDIR}${pycfile}\"")
+        EXECUTE_PROCESS(
+          COMMAND @CMAKE_COMMAND@ -E remove "$ENV{DESTDIR}${pycfile}"
+          RESULT_VARIABLE rm_resval
+          OUTPUT_VARIABLE rm_out
+          )
+        IF(NOT ${rm_resval} STREQUAL 0)
+          MESSAGE(FATAL_ERROR "Problem when removing \"$ENV{DESTDIR}${pycfile}\"")
+        ENDIF(NOT ${rm_resval} STREQUAL 0)
+      ENDIF(EXISTS "$ENV{DESTDIR}${pycfile}")
+    ENDIF(file MATCHES ".py$")
+
   ELSE(EXISTS "$ENV{DESTDIR}${file}")
     MESSAGE(STATUS "File \"$ENV{DESTDIR}${file}\" does not exist.")
 
