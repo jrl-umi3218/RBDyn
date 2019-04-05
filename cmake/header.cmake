@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2014 LAAS-CNRS, JRL AIST-CNRS.
+# Copyright (C) 2008-2018 LAAS-CNRS, JRL AIST-CNRS, INRIA.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,44 +13,55 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# _SETUP_PROJECT_HEADER
-# ---------------------
+#.rst:
+# .. ifmode:: user
 #
-# This setup CMake to handle headers properly.
+#   .. variable:: ${PROJECT_NAME}_HEADERS
 #
-# 1. The `include` directory in the build and source trees is added
-#    to the include search path (see INCLUDE_DIRECTORIES).
-#    As always, the build directory has the priority over the source
-#    directory in case of conflict.
+#     List of C++ header filenames. They will be installed automatically
+#     using :command:`HEADER_INSTALL`
 #
-#    However you *should not* have conflicting names
-#    for files which are both in the build and source trees.
-#    Conflicting names are filenames which differ only by a prefix:
+
+#.rst:
+# .. ifmode:: internal
 #
-#    include/a.h vs _build/include/a.h
-#    src/a.h     vs src/foo/a.h
+#   .. command:: _SETUP_PROJECT_HEADER
 #
-#    ...this files makes a project very fragile as the -I ordering
-#    will have a lot of importance and may break easily when using
-#    tools which may reorder the pre-processor flags such as pkg-config.
+#     This setup CMake to handle headers properly.
+#
+#     1. The `include` directory in the build and source trees is added
+#        to the include search path (see INCLUDE_DIRECTORIES).
+#        As always, the build directory has the priority over the source
+#        directory in case of conflict.
+#
+#        However you *should not* have conflicting names
+#        for files which are both in the build and source trees.
+#        Conflicting names are filenames which differ only by a prefix:
+#
+#        include/a.h vs _build/include/a.h
+#        src/a.h     vs src/foo/a.h
+#
+#        ...this files makes a project very fragile as the -I ordering
+#        will have a lot of importance and may break easily when using
+#        tools which may reorder the pre-processor flags such as pkg-config.
 #
 #
-# 2. The headers are installed in the prefix
-#    in a way which preserves the directory structure.
+#     2. The headers are installed in the prefix
+#        in a way which preserves the directory structure.
 #
-#    The directory name for header follows the rule:
-#    each non alpha-numeric character is replaced by a slash (`/`).
-#    In practice, it means that hpp-util will put its header in:
-#    ${CMAKE_INSTALL_PREFIX}/include/hpp/util
+#        The directory name for header follows the rule:
+#        each non alpha-numeric character is replaced by a slash (`/`).
+#        In practice, it means that hpp-util will put its header in:
+#        ${CMAKE_INSTALL_PREFIX}/include/hpp/util
 #
-#    This rule has been decided to homogenize headers location, however
-#    some packages do not follow this rule (dg-middleware for instance).
+#        This rule has been decided to homogenize headers location, however
+#        some packages do not follow this rule (dg-middleware for instance).
 #
-#    In that case, CUSTOM_HEADER_DIR can be set to override this policy.
+#        In that case, CUSTOM_HEADER_DIR can be set to override this policy.
 #
-#    Reminder: breaking the JRL/LAAS policies shoud be done after
-#              discussing the issue. You should at least open a ticket
-#              or send an e-mail to notify this behavior.
+#        Reminder: breaking the JRL/LAAS policies shoud be done after
+#                  discussing the issue. You should at least open a ticket
+#                  or send an e-mail to notify this behavior.
 #
 MACRO(_SETUP_PROJECT_HEADER)
   # Install project headers.
@@ -60,6 +71,10 @@ MACRO(_SETUP_PROJECT_HEADER)
     STRING(REGEX REPLACE "[^a-zA-Z0-9]" "/" HEADER_DIR "${PROJECT_NAME}")
   ENDIF(DEFINED CUSTOM_HEADER_DIR)
 
+  IF(NOT DEFINED PROJECT_CUSTOM_HEADER_EXTENSION)
+    SET(PROJECT_CUSTOM_HEADER_EXTENSION "hh")
+  ENDIF(NOT DEFINED PROJECT_CUSTOM_HEADER_EXTENSION)
+
   STRING(TOLOWER "${HEADER_DIR}" "HEADER_DIR")
 
   # Generate config.hh header.
@@ -68,29 +83,29 @@ MACRO(_SETUP_PROJECT_HEADER)
   STRING(TOLOWER "${PACKAGE_CPPNAME}" "PACKAGE_CPPNAME_LOWER")
   STRING(TOUPPER "${PACKAGE_CPPNAME}" "PACKAGE_CPPNAME")
   GENERATE_CONFIGURATION_HEADER(
-    ${HEADER_DIR} config.hh ${PACKAGE_CPPNAME}
+    ${HEADER_DIR} config.${PROJECT_CUSTOM_HEADER_EXTENSION} ${PACKAGE_CPPNAME}
     ${PACKAGE_CPPNAME_LOWER}_EXPORTS)
 
   # Generate deprecated.hh header.
   CONFIGURE_FILE(
     ${PROJECT_SOURCE_DIR}/cmake/deprecated.hh.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/deprecated.hh
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/deprecated.${PROJECT_CUSTOM_HEADER_EXTENSION}
     @ONLY
     )
   INSTALL(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/deprecated.hh
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/deprecated.${PROJECT_CUSTOM_HEADER_EXTENSION}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${HEADER_DIR}
     PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE
     )
   # Generate warning.hh header.
   CONFIGURE_FILE(
     ${PROJECT_SOURCE_DIR}/cmake/warning.hh.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/warning.hh
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/warning.${PROJECT_CUSTOM_HEADER_EXTENSION}
     @ONLY
     )
 
   INSTALL(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/warning.hh
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_DIR}/warning.${PROJECT_CUSTOM_HEADER_EXTENSION}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${HEADER_DIR}
     PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE
     )
@@ -99,7 +114,7 @@ MACRO(_SETUP_PROJECT_HEADER)
   # Generate config.h header.
   # This header, unlike the previous one is *not* installed and is generated
   # in the top-level directory of the build tree.
-  # Therefore it must not be inluded by any distributed header.
+  # Therefore it must not be included by any distributed header.
   CONFIGURE_FILE(
     ${PROJECT_SOURCE_DIR}/cmake/config.h.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/config.h
@@ -159,10 +174,12 @@ MACRO(_SETUP_PROJECT_HEADER_FINAlIZE)
 ENDMACRO(_SETUP_PROJECT_HEADER_FINAlIZE)
 
 
-# HEADER_INSTALL(FILES)
-# -------------------------------
+#.rst:
+# .. ifmode:: internal
 #
-# Install a list of headers.
+#   .. command:: HEADER_INSTALL (FILES)
+#
+#     Install a list of headers.
 #
 MACRO(HEADER_INSTALL FILES)
   FOREACH(FILE ${FILES})

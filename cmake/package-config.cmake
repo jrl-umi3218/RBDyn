@@ -45,7 +45,21 @@ set(VERSION_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
 set(PROJECT_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
 set(namespace "${PROJECT_NAME}::")
+
+set(_PACKAGE_CONFIG_DEPENDENCIES "" CACHE INTERNAL "")
 ENDMACRO(_SETUP_PROJECT_PACKAGE_INIT)
+
+#.rst:
+# .. command:: ADD_PROJECT_DEPENDENCY(ARGS)
+#
+#   This is a wrapper around find_package to add correct find_dependency calls in
+#   the generated config script. All arguments are passed to find_package
+#
+MACRO(ADD_PROJECT_DEPENDENCY)
+  string(REPLACE ";" " " PACKAGE_ARGS "${ARGN}")
+  list(APPEND _PACKAGE_CONFIG_DEPENDENCIES "find_dependency(${PACKAGE_ARGS})")
+  find_package(${ARGN})
+ENDMACRO()
 
 
 # SETUP_PROJECT_PACKAGE_FINALIZE
@@ -88,6 +102,8 @@ set(namespace "${PROJECT_NAME}::")
 
 # Include module with fuction 'write_basic_package_version_file'
 include(CMakePackageConfigHelpers)
+
+string(REPLACE ";" "\n" PACKAGE_DEPENDENCIES "${_PACKAGE_CONFIG_DEPENDENCIES}")
 
 # Configure '<PROJECT-NAME>ConfigVersion.cmake'
 # Note: PROJECT_VERSION is used as a VERSION

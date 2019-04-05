@@ -13,15 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# SEARCH_FOR_EIGEN
-# -----------------
+#.rst:
+# .. command:: SEARCH_FOR_EIGEN
 #
-# This macro gets eigen include path from pkg-config file, and adds it include directories.
-# If there is no pkg-config for Eigen, we fall back to a manual search.
+#   This macro gets eigen include path from pkg-config file, and adds it include directories.
+#   If there is no pkg-config for Eigen, we fall back to a manual search.
 #
-# If no version requirement argument is passed to the macro, it looks for the 
-# variable Eigen_REQUIRED. If this variable is not defined before calling
-# the method SEARCH_FOR_EIGEN, the minimum version requirement is 3.0.0 by default.
+#   If no version requirement argument is passed to the macro, it looks for the 
+#   variable Eigen_REQUIRED. If this variable is not defined before calling
+#   the method SEARCH_FOR_EIGEN, the minimum version requirement is 3.0.0 by default.
 MACRO(SEARCH_FOR_EIGEN)
   SET(_Eigen_FOUND 0)
   IF(${ARGC} GREATER 0)

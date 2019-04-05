@@ -500,7 +500,7 @@ FILE_VERSION_FILTER    =
 # file name after the option, if omitted DoxygenLayout.xml will be used as the name
 # of the layout file.
 
-LAYOUT_FILE            =
+LAYOUT_FILE            = @PROJECT_DOCUMENTATION_LAYOUT@
 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -562,8 +562,7 @@ WARN_LOGFILE           = doxygen.log
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @PROJECT_SOURCE_DIR@/include \
-                         @PROJECT_SOURCE_DIR@/src
+INPUT                  = @DOXYGEN_INPUT@
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -622,7 +621,7 @@ EXCLUDE_SYMBOLS        =
 # directories that contain example code fragments that are included (see
 # the \include command).
 
-EXAMPLE_PATH           = @PROJECT_SOURCE_DIR@/tests
+EXAMPLE_PATH           = @DOXYGEN_EXAMPLE_PATH@
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
@@ -1262,8 +1261,7 @@ SEARCH_INCLUDES        = YES
 # contain include files that are not input files but should be processed by
 # the preprocessor.
 
-INCLUDE_PATH           = @PROJECT_SOURCE_DIR@/include	\
-			 @CMAKE_BINARY_DIR@/include
+INCLUDE_PATH           = @DOXYGEN_INCLUDE_PATH@
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -1318,7 +1316,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @DOXYTAG_ENTRIES@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
@@ -1340,7 +1338,7 @@ EXTERNAL_GROUPS        = YES
 # The PERL_PATH should be the absolute path and name of the perl script
 # interpreter (i.e. the result of `which perl').
 
-PERL_PATH              = @PERL@
+PERL_PATH              = "@PERL@"
 
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
@@ -1470,7 +1468,7 @@ DOT_IMAGE_FORMAT       = @DOXYGEN_DOT_IMAGE_FORMAT@
 # The tag DOT_PATH can be used to specify the path where the dot tool can be
 # found. If left blank, it is assumed the dot tool can be found in the path.
 
-DOT_PATH               = @DOXYGEN_DOT_PATH@
+DOT_PATH               = "@DOXYGEN_DOT_PATH@"
 
 # The DOTFILE_DIRS tag can be used to specify one or more directories that
 # contain dot files that are included in the documentation (see the

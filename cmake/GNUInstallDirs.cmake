@@ -115,7 +115,8 @@ if(NOT DEFINED CMAKE_INSTALL_LIBDIR OR (_libdir_set
   endif()
   if(CMAKE_SYSTEM_NAME MATCHES "^(Linux|kFreeBSD|GNU)$"
       AND NOT CMAKE_CROSSCOMPILING)
-    if (EXISTS "/etc/debian_version") # is this a debian system ?
+    CHECK_DEBIAN()
+    if (DEBIAN_FOUND)
       if(CMAKE_LIBRARY_ARCHITECTURE)
         if("${CMAKE_INSTALL_PREFIX}" MATCHES "^/usr/?$")
           set(_LIBDIR_DEFAULT "lib/${CMAKE_LIBRARY_ARCHITECTURE}")
