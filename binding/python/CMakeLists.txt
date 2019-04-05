@@ -42,10 +42,27 @@ if(NOT ${DISABLE_TESTS})
   )
 endif()
 
+# Check whether pip install has a --system option
+execute_process(COMMAND pip install --system
+                RESULT_VARIABLE PIP_HAS_SYSTEM_INSTALL
+                OUTPUT_QUIET ERROR_QUIET)
+if(${PIP_HAS_SYSTEM_INSTALL} EQUAL 0)
+  set(PIP_HAS_SYSTEM_INSTALL True)
+else()
+  set(PIP_HAS_SYSTEM_INSTALL False)
+endif()
+
 set(PIP_EXTRA_OPTIONS "")
 if(${PYTHON_BINDING_USER_INSTALL})
   set(PIP_EXTRA_OPTIONS "--user")
 endif()
+if(DEFINED PIP_INSTALL_PREFIX)
+  set(PIP_EXTRA_OPTIONS --prefix ${PIP_INSTALL_PREFIX})
+  if(${PIP_HAS_SYSTEM_INSTALL})
+    set(PIP_EXTRA_OPTIONS --system ${PIP_EXTRA_OPTIONS})
+  endif()
+endif()
+
 # Install the bindings
 if(DEFINED PYTHON_DEB_ROOT)
   add_custom_target(install-rbdyn-python-bindings
