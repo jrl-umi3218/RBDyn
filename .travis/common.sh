@@ -148,6 +148,10 @@ _setup_ros()
   if [ -f /opt/ros/${ROS_DISTRO}/setup.sh ]; then
     . /opt/ros/${ROS_DISTRO}/setup.sh
   fi
+  CATKIN_DEP_WORKSPACE=/tmp/_ci/catkin_dep_ws
+  if [ -e ${CATKIN_DEP_WORKSPACE}/devel/setup.sh ]; then
+    . ${CATKIN_DEP_WORKSPACE}/devel/setup.sh
+  fi
 }
 
 # _setup_env_vars
