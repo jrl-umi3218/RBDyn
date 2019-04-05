@@ -59,6 +59,7 @@ version_hash = sha512.hexdigest()[:7]
 
 class pkg_config(object):
   def __init__(self):
+    self.define_macros = [ (x[0], x[1]) for x in [y.split('=') for y in '$<TARGET_PROPERTY:RBDyn,COMPILE_DEFINITIONS>'.split(';') if len(y)] if len(x) ]
     self.compile_args = []
     self.include_dirs = [ x for x in '$<TARGET_PROPERTY:RBDyn,INCLUDE_DIRECTORIES>'.split(';') if len(x) ]
     self.include_dirs.append("@CMAKE_CURRENT_SOURCE_DIR@/include")
@@ -83,7 +84,7 @@ def GenExtension(name, pkg, ):
   pyx_src = pyx_src + '.pyx'
   ext_src = pyx_src
   if pkg.found:
-    return Extension(name, [ext_src], extra_compile_args = pkg.compile_args, include_dirs = pkg.include_dirs + [numpy_get_include()], library_dirs = pkg.library_dirs, libraries = pkg.libraries)
+    return Extension(name, [ext_src], define_macros = pkg.define_macros, extra_compile_args = pkg.compile_args, include_dirs = pkg.include_dirs + [numpy_get_include()], library_dirs = pkg.library_dirs, libraries = pkg.libraries)
   else:
     print("Failed to find {}".format(pkg.name))
     return None
