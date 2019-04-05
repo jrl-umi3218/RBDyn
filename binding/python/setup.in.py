@@ -100,7 +100,7 @@ extensions = cythonize(extensions)
 
 setup(
     name = 'rbdyn',
-    version='1.0.0-{}'.format(version_hash),
+    version='@PROJECT_VERSION@-{}'.format(version_hash),
     ext_modules = extensions,
     packages = packages,
     package_data = { 'rbdyn': data }
