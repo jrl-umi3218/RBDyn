@@ -4,53 +4,44 @@
 
 #pragma once
 
-# include <iostream>
+#include <boost/filesystem/path.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/test/output_test_stream.hpp>
+#include <boost/test/test_case_template.hpp>
+#include <boost/test/unit_test.hpp>
 
-# include <boost/make_shared.hpp>
-# include <boost/filesystem/path.hpp>
+#include <iostream>
 
-# include <boost/test/output_test_stream.hpp>
-# include <boost/test/test_case_template.hpp>
-# include <boost/test/unit_test.hpp>
-
-# ifdef TESTS_DATA_DIR
+#ifdef TESTS_DATA_DIR
 // See: http://stackoverflow.com/q/26299144/1043187
 #  ifdef __NVCC__
-#   include <boost/preprocessor/stringize.hpp>
-const static boost::filesystem::path
-  tests_data_dir (BOOST_PP_STRINGIZE (TESTS_DATA_DIR));
+#    include <boost/preprocessor/stringize.hpp>
+const static boost::filesystem::path tests_data_dir(BOOST_PP_STRINGIZE(TESTS_DATA_DIR));
 #  else
-const static boost::filesystem::path
-  tests_data_dir (TESTS_DATA_DIR);
+const static boost::filesystem::path tests_data_dir(TESTS_DATA_DIR);
 #  endif //! __NVCC__
-# else
+#else
 const static boost::filesystem::path tests_data_dir;
-# endif //! TESTS_DATA_DIR
+#endif //! TESTS_DATA_DIR
 
 namespace rbd
 {
-  struct TestSuiteConfiguration
-  {
-    TestSuiteConfiguration ()
-    {
-    }
+struct TestSuiteConfiguration
+{
+  TestSuiteConfiguration() {}
 
-    ~TestSuiteConfiguration ()
-    {
-    }
-  };
+  ~TestSuiteConfiguration() {}
+};
 
-  boost::shared_ptr<boost::test_tools::output_test_stream>
-  retrievePattern (const std::string& testName)
-  {
-    std::string patternFilename = TESTS_DATA_DIR;
-    patternFilename += "/";
-    patternFilename += testName;
-    patternFilename += ".stdout";
+boost::shared_ptr<boost::test_tools::output_test_stream> retrievePattern(const std::string & testName)
+{
+  std::string patternFilename = TESTS_DATA_DIR;
+  patternFilename += "/";
+  patternFilename += testName;
+  patternFilename += ".stdout";
 
-    boost::shared_ptr<boost::test_tools::output_test_stream>
-      output = boost::make_shared<boost::test_tools::output_test_stream>
-      (patternFilename, true);
-    return output;
-  }
+  boost::shared_ptr<boost::test_tools::output_test_stream> output =
+      boost::make_shared<boost::test_tools::output_test_stream>(patternFilename, true);
+  return output;
+}
 } // end of namespace rbd

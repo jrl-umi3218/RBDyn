@@ -10,18 +10,18 @@
 
 // boost
 #define BOOST_TEST_MODULE Statics
-#include <boost/test/unit_test.hpp>
 #include <boost/math/constants/constants.hpp>
+#include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
+#include "RBDyn/Body.h"
+#include "RBDyn/FD.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
-#include "RBDyn/FD.h"
 #include "RBDyn/IS.h"
-#include "RBDyn/Body.h"
 #include "RBDyn/Joint.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
@@ -40,11 +40,13 @@ Eigen::IOFormat cleanFmt(2, 0, ", ", "\n", "[", "]");
 static constexpr double PI = boost::math::constants::pi<double>();
 
 void test(boost::shared_ptr<boost::test_tools::output_test_stream> output,
-          rbd::MultiBody& mb, rbd::MultiBodyConfig& mbc,
-          rbd::InverseStatics& IS, Eigen::Vector3d q)
+          rbd::MultiBody & mb,
+          rbd::MultiBodyConfig & mbc,
+          rbd::InverseStatics & IS,
+          Eigen::Vector3d q)
 {
-  Eigen::MatrixXd jacQ(3,3);
-  Eigen::MatrixXd jacF(3,24);
+  Eigen::MatrixXd jacQ(3, 3);
+  Eigen::MatrixXd jacF(3, 24);
   std::vector<Eigen::MatrixXd> jacMomentAndForces(4);
   (*output) << "\n\n\nChange config to " << q.transpose() << std::endl;
   mbc.q[1][0] = q(0);
@@ -58,15 +60,13 @@ void test(boost::shared_ptr<boost::test_tools::output_test_stream> output,
   (*output) << "========================================" << std::endl;
   (*output) << "Results for mbc.q =" << mbc.q << std::endl;
   (*output) << "mbc.jointTorque =\n" << mbc.jointTorque << std::endl;
-  for (auto e : IS.f())
-    (*output) << "IS.f().vector =\n" << e.vector() << std::endl;
+  for(auto e : IS.f()) (*output) << "IS.f().vector =\n" << e.vector() << std::endl;
   (*output) << "IS.jointTorqueDiff =\n" << IS.jointTorqueDiff() << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(XXXArmTorqueJacobian)
 {
-  boost::shared_ptr<boost::test_tools::output_test_stream> output =
-      retrievePattern("InverseStaticsTest");
+  boost::shared_ptr<boost::test_tools::output_test_stream> output = retrievePattern("InverseStaticsTest");
 
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
@@ -83,6 +83,5 @@ BOOST_AUTO_TEST_CASE(XXXArmTorqueJacobian)
 #ifndef __i386__
   BOOST_CHECK(output->match_pattern());
 #endif
-}  // end of namespace rbd
-}
-
+} // end of namespace rbd
+} // namespace rbd

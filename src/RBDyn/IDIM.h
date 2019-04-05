@@ -9,9 +9,9 @@
 #include <vector>
 
 // SpaceVecAlg
-#include <SpaceVecAlg/SpaceVecAlg>
-
 #include <rbdyn/config.hh>
+
+#include <SpaceVecAlg/SpaceVecAlg>
 
 namespace rbd
 {
@@ -19,29 +19,28 @@ class MultiBody;
 struct MultiBodyConfig;
 
 /// Return the IMPhi matrix that compute I*m = IMPhi(m)*phi_i.
-RBDYN_DLLAPI Eigen::Matrix<double, 6, 10> IMPhi(const sva::MotionVecd& mv);
+RBDYN_DLLAPI Eigen::Matrix<double, 6, 10> IMPhi(const sva::MotionVecd & mv);
 
 /** Convert a RBInertiad into a phi vector.
  *  We define the inertial parameters of a body i as the 10d vector
  *  phi_i = [m, h, I] = [m, hx, hy, hz, Ixx, Ixy, Ixz, Iyy, Iyz, Yzz]
  */
 
-RBDYN_DLLAPI Eigen::Matrix<double, 10, 1> inertiaToVector(const sva::RBInertiad& rbi);
-
+RBDYN_DLLAPI Eigen::Matrix<double, 10, 1> inertiaToVector(const sva::RBInertiad & rbi);
 
 /// Convert a phi vector into a RBInertiad.
-RBDYN_DLLAPI sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1>& vec);
+RBDYN_DLLAPI sva::RBInertiad vectorToInertia(const Eigen::Matrix<double, 10, 1> & vec);
 
 /**
  * Safe version of @see vectorToInertia.
  * @throw std::out_of_range if the vector don't have 10 rows.
  */
-RBDYN_DLLAPI sva::RBInertiad sVectorToInertia(const Eigen::VectorXd& vec);
+RBDYN_DLLAPI sva::RBInertiad sVectorToInertia(const Eigen::VectorXd & vec);
 
 /** Apply inertiaToVector to all MultiBody Body and concatenate it into one vector
  * Phi = [phi_0, ..., phi_N]
  */
-RBDYN_DLLAPI Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody& mb);
+RBDYN_DLLAPI Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody & mb);
 
 /**
  * IDIM stand for Inverse Dynamics Identification Model. It is used to
@@ -59,34 +58,33 @@ RBDYN_DLLAPI Eigen::VectorXd multiBodyToInertialVector(const rbd::MultiBody& mb)
 class RBDYN_DLLAPI IDIM
 {
 public:
-	IDIM()
-	{}
-	/// @param mb MultiBody associated with this algorithm.
-	IDIM(const rbd::MultiBody& mb);
+  IDIM() {}
+  /// @param mb MultiBody associated with this algorithm.
+  IDIM(const rbd::MultiBody & mb);
 
-	/**
-		* Compute the Y matrix.
-		* @param mb MultiBody used has model.
-		* @param mbc Use bodyVelB, bodyAccB, parentToSon and motionSubspace.
-		* bodyAccB must been calculated with the gravity.
-		*/
-	void computeY(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
+  /**
+   * Compute the Y matrix.
+   * @param mb MultiBody used has model.
+   * @param mbc Use bodyVelB, bodyAccB, parentToSon and motionSubspace.
+   * bodyAccB must been calculated with the gravity.
+   */
+  void computeY(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc);
 
-	/// Return the Y matrix.
-	const Eigen::MatrixXd& Y() const
-	{
-		return Y_;
-	}
+  /// Return the Y matrix.
+  const Eigen::MatrixXd & Y() const
+  {
+    return Y_;
+  }
 
-	// safe version for python binding
+  // safe version for python binding
 
-	/** safe version of @see inverseDynamics.
-		* @throw std::domain_error If mb don't match mbc.
-		*/
-	void sComputeY(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
+  /** safe version of @see inverseDynamics.
+   * @throw std::domain_error If mb don't match mbc.
+   */
+  void sComputeY(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc);
 
 private:
-	Eigen::MatrixXd Y_;
+  Eigen::MatrixXd Y_;
 };
 
-} // rbd
+} // namespace rbd
