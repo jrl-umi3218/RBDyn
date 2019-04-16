@@ -31,7 +31,8 @@
 namespace rbd
 {
 
-MultiBodyGraph::MultiBodyGraph():
+MultiBodyGraph::MultiBodyGraph(const std::string rootName):
+	rootJointName_(rootName),
 	nodes_(),
 	joints_(),
 	bodyNameToNode_(),
@@ -169,7 +170,7 @@ MultiBody MultiBodyGraph::makeMultiBody(const std::string& rootBodyName,
 	std::vector<sva::PTransformd> Xt;
 
 	std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
-	Joint rootJoint(rootJointType, axis, true, "Root");
+	Joint rootJoint(rootJointType, axis, true, rootJointName_);
 
 	std::function<void(const std::shared_ptr<Node> curNode,
 			const std::shared_ptr<Node> fromNode,
@@ -229,7 +230,7 @@ void MultiBodyGraph::removeJoint(const std::string& rootBodyName,
 	// only destroy the joint if it exists
 	if(jointNameToJoint_.find(jointName) != jointNameToJoint_.end())
 	{
-		rmArc(*rootNode, "Root", jointName);
+		rmArc(*rootNode, rootJointName_, jointName);
 	}
 }
 
@@ -253,7 +254,7 @@ void MultiBodyGraph::mergeSubBodies(const std::string& rootBodyName,
 	const std::map<std::string, std::vector<double>>& jointPosByName)
 {
 	std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
-	findMergeSubNodes(*rootNode, "Root", jointName, jointPosByName);
+	findMergeSubNodes(*rootNode, rootJointName_, jointName, jointPosByName);
 }
 
 std::map<std::string, sva::PTransformd>
@@ -347,7 +348,7 @@ MultiBodyGraph::predecessorJoint(const std::string& rootBodyName)
 	};
 
 	std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
-	computePredecessor(rootNode, nullptr, "Root");
+	computePredecessor(rootNode, nullptr, rootJointName_);
 	return std::move(predJoint);
 }
 
@@ -552,6 +553,8 @@ sva::RBInertiad MultiBodyGraph::mergeInertia(const sva::RBInertiad& parentInerti
 
 void MultiBodyGraph::copy(const rbd::MultiBodyGraph& mbg)
 {
+	rootJointName_ = mbg.rootJointName_;
+
 	// copy nodes (whitout Arc) en fill bodyId2Node
 	for(const std::shared_ptr<Node>& node: mbg.nodes_)
 	{
