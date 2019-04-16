@@ -417,6 +417,7 @@ void Jacobian::translateBodyJacobian(const Eigen::Ref<const Eigen::MatrixXd>& ja
 	}
 }
 
+
 void Jacobian::fullJacobian(const MultiBody& mb,
 	const Eigen::Ref<const Eigen::MatrixXd>& jac,
 	Eigen::MatrixXd& res) const
@@ -424,6 +425,23 @@ void Jacobian::fullJacobian(const MultiBody& mb,
 	res.block(0, 0, jac.rows(), mb.nrDof()).setZero();
 	addFullJacobian(mb, jac, res);
 }
+
+
+void Jacobian::fullJacobian(const MultiBody& mb,
+	const Eigen::Ref<const Eigen::MatrixXd>& jac,
+	Eigen::SparseMatrix<double>& res) const
+{
+	if (res.data().size() > 0)
+	{
+		addFullJacobian(jac, res);
+	}
+	else
+	{
+		res.reserve(jac.size());
+		setFullJacobian(mb, jac, res);
+	}
+}
+
 
 void Jacobian::addFullJacobian(const MultiBody& mb,
 	const Eigen::Ref<const Eigen::MatrixXd>& jac,
@@ -440,6 +458,7 @@ void Jacobian::addFullJacobian(const MultiBody& mb,
 	}
 }
 
+
 void Jacobian::addFullJacobian(const Blocks& compactPath,
 															 const Eigen::Ref<const Eigen::MatrixXd>& jac,
 															 Eigen::MatrixXd& res) const
@@ -450,6 +469,81 @@ void Jacobian::addFullJacobian(const Blocks& compactPath,
 			jac.block(0, b.startJac, jac.rows(), b.length);
 	}
 }
+
+
+void Jacobian::addFullJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
+	Eigen::SparseMatrix<double>& res) const
+{
+	// It is suppose the sparse matrix has the correct layout.
+	double* vPtr = res.valuePtr();
+	const double* data = jac.data();
+	for (Eigen::Index i = 0; i < jac.size(); ++i)
+		*(vPtr++) += *(data++);
+}
+
+
+void Jacobian::setFullJacobian(const MultiBody& mb,
+	const Eigen::Ref<const Eigen::MatrixXd>& jac,
+	Eigen::SparseMatrix<double>& res) const
+{
+	int trackPos = 0; // Help us to catch column of zeros
+	int jacPos = 0;
+	for (int jInd : jointsPath_)
+	{
+		int col =  mb.jointPosInDof(jInd);
+		int dof = mb.joint(jInd).dof();
+		while(trackPos != col)
+		{
+			// Make Eigen outer index to catch up with current column
+			res.startVec(trackPos++); // Add a new column
+		}
+
+		for (int j = col; j < col + dof; ++j)
+		{
+			res.startVec(j);
+			for (int i = 0; i < jac.rows(); ++i)
+			{
+				res.insertBack(i, j) = jac(i, jacPos);
+			}
+
+			jacPos++;
+		}
+
+		trackPos += dof;
+	}
+
+	res.finalize(); // Add remaining empty columns
+}
+
+
+void Jacobian::setFullJacobian(const Blocks& compactPath,
+	const Eigen::Ref<const Eigen::MatrixXd>& jac,
+	Eigen::SparseMatrix<double>& res) const
+{
+	Eigen::DenseIndex trackPos = 0; // Help us to catch column of zeros
+	for(const auto & b : compactPath)
+	{
+		while (trackPos != b.startDof)
+		{
+			// Make Eigen outer index to catch up with current column
+			res.startVec(trackPos++); // Add a new column
+		}
+
+		for (int j = 0; j < b.length; ++j)
+		{
+			res.startVec(b.startDof + j);
+			for (Eigen::Index i = 0; i < jac.rows(); ++i)
+			{
+				res.insertBack(i, b.startDof + j) = jac(i, b.startJac + j);
+			}
+		}
+
+		trackPos += b.length;
+	}
+
+	res.finalize(); // Add remaining empty columns
+}
+
 
 Eigen::MatrixXd Jacobian::expand(const MultiBody& mb,
 	const Eigen::Ref<const Eigen::MatrixXd>& jac) const
@@ -706,6 +800,90 @@ void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
 				<< mb.nrDof() << " x " << "6 )" << " gived ("
 				<< res.rows() << " x " << res.cols() << ")" ;
 		throw std::domain_error(str.str());
+	}
+
+	fullJacobian(mb, jac, res);
+}
+
+
+void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac,
+		Eigen::SparseMatrix<double>& res) const
+{
+	int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
+	if(m >= static_cast<int>(mb.nrJoints()))
+	{
+		throw std::domain_error("jointsPath mismatch MultiBody");
+	}
+
+	if(jac.cols() != jac_.cols() || jac.rows() != jac_.rows())
+	{
+		std::ostringstream str;
+		str << "jac matrix size mismatch: expected size ("
+				<< jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+				<< jac.rows() << " x " << jac.cols() << ")" ;
+		throw std::domain_error(str.str());
+	}
+
+	if(res.cols() != mb.nrDof() || res.rows() != 6)
+	{
+		std::ostringstream str;
+		str << "res matrix size mismatch: expected size ("
+				<< mb.nrDof() << " x " << "6 )" << " gived ("
+				<< res.rows() << " x " << res.cols() << ")" ;
+		throw std::domain_error(str.str());
+	}
+
+	if (res.data().size() > 0)
+	{
+		if (res.outerSize() != mb.nrDof() || res.data().size() != jac.size())
+		{
+			std::ostringstream str;
+			str << "res matrix inner layout mismatch: expected data size "
+				<< jac.size() << " gived "
+				<< res.data().size() << ", expected outer size "
+				<< mb.nrDof() << " gived " << res.outerSize();
+			throw std::domain_error(str.str());
+		}
+
+		// Check sparse matrix layout
+		int outerPos = 0;
+		int sparseJacPos = 0;
+		const int* outerIndexptr = res.outerIndexPtr();
+		const int* innerIndexptr = res.innerIndexPtr();
+		for (int jInd : jointsPath_)
+		{
+			int col =  mb.jointPosInDof(jInd);
+			int dof = mb.joint(jInd).dof();
+			if (dof == 0)
+			{
+				continue;
+			}
+			for (int j = col; j < col + dof; ++j)
+			{
+				while(j > outerPos++) {}
+				if (outerIndexptr[outerPos - 1] != 6 * (sparseJacPos++))
+				{
+					auto v = outerIndexptr[outerPos - 1];
+					std::ostringstream str;
+					str << "res matrix outer layout mismatch at col "
+						<< j << ", expected outer id "
+						<< 6 * j << " gived " << v;
+					throw std::domain_error(str.str());
+				}
+
+				for (int i = 0; i < jac.rows(); ++i)
+				{
+					if (*(innerIndexptr++) != i)
+					{
+						std::ostringstream str;
+						str << "res matrix inner layout mismatch: expected row "
+							<< i << " gived "
+							<< *(innerIndexptr - 1);
+						throw std::domain_error(str.str());
+					}
+				}
+			}
+		}
 	}
 
 	fullJacobian(mb, jac, res);
