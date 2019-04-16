@@ -477,7 +477,7 @@ void Jacobian::addFullJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
 	// It is suppose the sparse matrix has the correct layout.
 	double* vPtr = res.valuePtr();
 	const double* data = jac.data();
-	for (Eigen::Index i = 0; i < jac.size(); ++i)
+	for (long i = 0; i < jac.size(); ++i)
 		*(vPtr++) += *(data++);
 }
 
@@ -532,7 +532,7 @@ void Jacobian::setFullJacobian(const Blocks& compactPath,
 		for (int j = 0; j < b.length; ++j)
 		{
 			res.startVec(b.startDof + j);
-			for (Eigen::Index i = 0; i < jac.rows(); ++i)
+			for (int i = 0; i < jac.rows(); ++i)
 			{
 				res.insertBack(i, b.startDof + j) = jac(i, b.startJac + j);
 			}
