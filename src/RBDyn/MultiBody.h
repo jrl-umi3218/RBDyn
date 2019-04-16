@@ -357,7 +357,7 @@ public:
 		return jointNameToInd_.at(name);
 	}
 
-private:
+protected:
 	std::vector<Body> bodies_;
 	std::vector<Joint> joints_;
 

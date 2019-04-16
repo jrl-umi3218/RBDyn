@@ -83,7 +83,7 @@ public:
 	};
 
 public:
-	MultiBodyGraph();
+	MultiBodyGraph(const std::string rootName = "Root");
 	MultiBodyGraph(const MultiBodyGraph& mbg);
 	~MultiBodyGraph();
 
@@ -300,7 +300,8 @@ private:
 	void copy(const rbd::MultiBodyGraph& mbg);
 
 
-private:
+protected:
+	std::string rootJointName_;
 	std::vector<std::shared_ptr<Node>> nodes_;
 	std::vector<std::shared_ptr<Joint>> joints_;
 
