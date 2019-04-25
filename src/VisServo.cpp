@@ -56,21 +56,13 @@ void poseJacobian(const Eigen::Matrix3d& rotation, Eigen::Matrix<double, 6, 6>& 
 	// create the rotation jacobian
 	Eigen::Matrix3d L_theta_u;
 
-	if(fabs(rot_angle) < rot_angle_threshold)
-	{
-		// Jacobian simplifies to Identity if the angle is zero, avoids division by zero in sinc
-		L_theta_u = i3;
-	}
-	else
-	{
-		double sinc_part;
-		sinc_part = ((std::sin(rot_angle))/rot_angle)/(std::pow(((std::sin(rot_angle/2.))/(rot_angle/2.)),2));
+	double sinc_part;
+	sinc_part = sva::sinc(rot_angle)/std::pow(sva::sinc(rot_angle/2.), 2);
 
-		Eigen::Matrix3d axis_antisym;
-		getSkewSym(rot_axis, axis_antisym);
+	Eigen::Matrix3d axis_antisym;
+	getSkewSym(rot_axis, axis_antisym);
 
-		L_theta_u = i3 - rot_angle*0.5*axis_antisym + (1-(sinc_part))*axis_antisym*axis_antisym;
-	}
+	L_theta_u = i3 - rot_angle*0.5*axis_antisym + (1-(sinc_part))*axis_antisym*axis_antisym;
 	jac << L_theta_u, Eigen::Matrix3d::Zero(),
 				 Eigen::Matrix3d::Zero(), rotation.transpose();
 }

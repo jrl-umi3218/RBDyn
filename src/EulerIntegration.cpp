@@ -25,30 +25,6 @@
 
 namespace
 {
-	namespace detail
-	{
-		double constexpr sqrtNewtonRaphson(double x, double curr, double prev)
-		{
-			return curr == prev
-				? curr
-				: sqrtNewtonRaphson(x, 0.5 * (curr + x / curr), curr);
-		}
-
-		/**
-		* Constexpr version of the square root
-		* Return value:
-		*   - For a finite and non-negative value of "x", returns an approximation for the square root of "x"
-		*   - Otherwise, returns NaN
-		* Copied from https://stackoverflow.com/a/34134071
-		*/
-		double constexpr sqrt(double x)
-		{
-			return x >= 0 && x < std::numeric_limits<double>::infinity()
-				? sqrtNewtonRaphson(x, x, 0)
-				: std::numeric_limits<double>::quiet_NaN();
-		}
-	}
-
 		/** Compute the sum of the first terms of the Magnus expansion of \Omega such that
 		* q' = q*exp(\Omega) is the quaternion obtained after applying a constant acceleration
 		* rotation wD for a duration step, while starting with a velocity w
@@ -63,42 +39,6 @@ namespace
 		Eigen::Vector3d O3 = wD.cross(O2) * step2 / 20;
 
 		return O1 + O2 + O3;
-	}
-
-		/** sinus cardinal: sin(x)/x
-		* Code adapted from boost::math::detail::sinc
-		*/
-	double sinc(double x)
-	{
-		constexpr double taylor_0_bound = std::numeric_limits<double>::epsilon();
-		constexpr double taylor_2_bound = detail::sqrt(taylor_0_bound);
-		constexpr double taylor_n_bound = detail::sqrt(taylor_2_bound);
-
-		if (std::abs(x) >= taylor_n_bound)
-		{
-			return(std::sin(x) / x);
-		}
-		else
-		{
-			// approximation by taylor series in x at 0 up to order 0
-			double result = 1;
-
-			if (std::abs(x) >= taylor_0_bound)
-			{
-				double x2 = x*x;
-
-				// approximation by taylor series in x at 0 up to order 2
-				result -= x2 / 6;
-
-				if (std::abs(x) >= taylor_2_bound)
-				{
-					// approximation by taylor series in x at 0 up to order 4
-					result += (x2*x2) / 120;
-				}
-			}
-
-			return(result);
-		}
 	}
 }
 
@@ -163,10 +103,11 @@ void eulerJointIntegration(Joint::Type type, const std::vector<double>& alpha,
 		Eigen::Vector3d w(alpha[0], alpha[1], alpha[2]);
 		Eigen::Vector3d wD(alphaD[0], alphaD[1], alphaD[2]);
 
+		// See https://cwzx.wordpress.com/2013/12/16/numerical-integration-for-rotational-dynamics/
 		//the division by 2 is because we want to compute exp(O/2);
 		Eigen::Vector3d O = magnusExpansion(w, wD, step) / 2;
 		double n = O.norm();
-		double s = sinc(n);
+		double s = sva::sinc(n);
 		Eigen::Quaterniond qexp(std::cos(n), s*O.x(), s*O.y(), s*O.z());
 
 		qi *= qexp;
