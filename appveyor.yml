@@ -3,42 +3,45 @@
 #
 
 version: 1.0.{build}
-image: Visual Studio 2015
+image: Visual Studio 2017
 clone_folder: C:/devel-src/RBDyn
+configuration:
+  - RelWithDebInfo
+  - Debug
 init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 environment:
   CI_OS_NAME: win32
   CI_TOOL: appveyor
-  CHOCO_DEPENDENCIES: "doxygen.portable"
-  GIT_DEPENDENCIES: "jrl-umi3218/SpaceVecAlg"
+  CHOCO_DEPENDENCIES: "doxygen.install"
+  GIT_DEPENDENCIES: "jrl-umi3218/Eigen3ToPython jrl-umi3218/SpaceVecAlg"
 # Should be the same as clone_folder
   PROJECT_SOURCE_DIR: C:/devel-src/RBDyn
 # Do not tinker with the variables below unless you know what you are doing
   SOURCE_FOLDER: C:\devel-src
   CMAKE_INSTALL_PREFIX: C:/devel
-  PATH: C:/devel/bin;C:\Libraries\boost_1_67_0\lib64-msvc-14.0;%PATH%
+  PATH: C:\Python36-x64;C:\Python36-x64\Scripts;C:/devel/bin;C:\Libraries\boost_1_67_0\lib64-msvc-14.1;%PATH%
   PKG_CONFIG_PATH: C:/devel/lib/pkgconfig
   BOOST_ROOT: C:\Libraries\boost_1_67_0
-  BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14.0
+  BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14.1
 build_script:
 - ps: >-
-    Set-PSDebug -Trace 2
+    git submodule -q update --init
+
+    pip install cython numpy coverage nose
 
     . ./.travis/functions.ps1
 
     setup_build
 
-    ./.travis/dependencies/eigen-3.2.ps1
+    ./.travis/dependencies/eigen-3.3.ps1
 
     install_dependencies
 
     build_project
 test_script:
-- cmd: >-
-    cd %PROJECT_SOURCE_DIR%/build
-
-    ctest
+- ps: >-
+    test_project
 notifications:
   - provider: Slack
     incoming_webhook:
