@@ -4,14 +4,14 @@
 
 enable_testing()
 
-find_package(Boost REQUIRED COMPONENTS unit_test_framework system)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework system filesystem)
 
 set(HEADERS XXXarm.h XYZarm.h XYZSarm.h Tree30Dof.h SSSarm.h)
 
 macro(addUnitTest name)
   if(NOT ${DISABLE_TESTS})
     add_executable(${name} ${name}.cpp ${HEADERS})
-    target_link_libraries(${name} PRIVATE RBDyn Boost::unit_test_framework Boost::system)
+    target_link_libraries(${name} PRIVATE RBDyn Boost::unit_test_framework Boost::system Boost::filesystem Boost::disable_autolinking)
     target_compile_definitions(${name} PRIVATE -DBOOST_TEST_DYN_LINK -DTESTS_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
     add_test(${name}Unit ${name})
     # Adding a project configuration file (for MSVC only)
