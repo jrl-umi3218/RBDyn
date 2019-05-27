@@ -452,7 +452,11 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
 
   paramToVector(mbc.jointTorque, vT2);
 
+#ifndef WIN32
   BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-9);
+#else
+  BOOST_CHECK_SMALL((vT1 - vT2).norm(), 1e-8);
+#endif
 
   // alphaD -> ID -> torque -> FD -> alphaD
   makeRandomConfig(mbc);
