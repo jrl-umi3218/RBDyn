@@ -8,6 +8,7 @@ import os
 
 base = python_requires("Eigen3ToPython/1.0.0@gergondet/stable")
 
+get_python_version = base.get_python_version
 
 class RBDynConan(base.Eigen3ToPythonConan):
     name = "RBDyn"
@@ -23,7 +24,7 @@ class RBDynConan(base.Eigen3ToPythonConan):
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
     options = { "python_version": ["2.7", "3.3", "3.4", "3.5", "3.6", "3.7"] }
-    default_options = { "python_version": base.get_python_version() }
+    default_options = { "python_version": get_python_version() }
 
     requires = (
         "SpaceVecAlg/1.1.0@gergondet/stable"
