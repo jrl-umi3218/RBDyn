@@ -25,13 +25,18 @@ cdef class DoubleVectorWrapper(object):
     self.__own_impl = False
     self.__owner = owner
     pass
+  def __len__(self):
+    return self.v.size()
   def __getitem__(self, idx):
     if isinstance(idx, slice):
       return self.v[idx]
     else:
       if idx == -1:
         idx = self.v.size() - 1
-      return self.v.at(idx)
+      if idx < self.v.size():
+        return self.v.at(idx)
+      else:
+        raise IndexError
   def __setitem__(self, idx, value):
     if isinstance(idx, slice):
       [start, stop, step] = idx.start, idx.stop, idx.step
@@ -72,6 +77,8 @@ cdef class DoubleVectorVectorWrapper(object):
     self.__own_impl = False
     self.__owner = owner
     pass
+  def __len__(self):
+    return self.v.size()
   def __getitem__(self, idx):
     if isinstance(idx, slice):
       [start, stop, step] = idx.start, idx.stop, idx.step
@@ -88,7 +95,10 @@ cdef class DoubleVectorVectorWrapper(object):
     else:
       if idx == -1:
         idx = self.v.size() - 1
-      return DoubleVectorWrapperFromC(self.v.at(idx), self)
+      if idx < self.v.size():
+        return DoubleVectorWrapperFromC(self.v.at(idx), self)
+      else:
+        raise IndexError
   def __setitem__(self, idx, value):
     if isinstance(idx, slice):
       [start, stop, step] = idx.start, idx.stop, idx.step
