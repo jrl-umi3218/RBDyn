@@ -66,47 +66,92 @@ IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotInde
 {
 }
 
+void IntegralTerm::computeGain(const rbd::MultiBody& mb,
+			       const rbd::MultiBodyConfig& mbc_real)
+{
+  Eigen::MatrixXd K;
+  
+  if (velGainType_ == MassMatrix)
+  {
+    K = lambda_ * fd_->H();
+  }
+  else if (velGainType_ == MassDiagonal)
+  {
+    K = lambda_ * fd_->H().diagonal().asDiagonal();
+  }
+  else
+  {
+    K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
+  }
+
+  if (intglTermType_ == PassivityBased)
+  {
+    rbd::Coriolis coriolis(mb);
+    Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
+    L_ = (C + K);
+  }
+  else
+  {
+    L_ = K;
+  }
+}
+
 void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
                                const rbd::MultiBodyConfig& mbc_real,
                                const rbd::MultiBodyConfig& mbc_calc)
 {
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
-    Eigen::MatrixXd K;
+    computeGain(mb, mbc_real);
     
-    if (velGainType_ == MassMatrix)
-    {
-        K = lambda_ * fd_->H();
-    }
-    else if (velGainType_ == MassDiagonal)
-    {
-        K = lambda_ * fd_->H().diagonal().asDiagonal();
-    }
-    else
-    {
-        K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
-    }
-
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
-    
-    if (intglTermType_ == PassivityBased)
-    {
-        rbd::Coriolis coriolis(mb);
-        Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
-        P_ = (C + K) * s;
-    }
-    else
-    {
-        P_ = K * s;
-    }
+    P_ = L_ * s;
 
     computeGammaD();
   }
 }
 
+
+  /**
+   *    IntegralTermAntiWindup
+   */
+
+IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+					       const std::shared_ptr<rbd::ForwardDynamics> fd,
+					       IntegralTermType intglTermType, VelocityGainType velGainType,
+					       double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
+					       double max_float, double perc):
+  
+  IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, lambda),
+  torqueL_(torqueL), torqueU_(torqueU),
+  max_float_(max_float), perc_(perc)
+{}
+
+void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
+					 const rbd::MultiBodyConfig& mbc_real,
+					 const rbd::MultiBodyConfig& mbc_calc)
+{
+  if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
+  {
+    computeGain(mb, mbc_real);
+    
+    Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
+    Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
+  
+    Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
+    Eigen::VectorXd P_prel = L_ * s;
+
+    // Eigen::VectorXd torqueU_prime = torqueU_.unaryExpr( [](double lim) { return lim < 1E-6?  max_float_ : lim; } );
+    // Eigen::VectorXd torqueL_prime = torqueL_.unaryExpr( [](double lim) { return abs(lim) < 1E-6? -max_float_ : lim; } );
+    // Pending to implement
+
+    computeGammaD();
+  }
+}
+  
   
   /**
    *    PassivityPIDTerm

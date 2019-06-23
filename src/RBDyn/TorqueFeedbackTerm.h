@@ -92,16 +92,42 @@ class IntegralTerm : public TorqueFeedbackTerm
                const std::shared_ptr<rbd::ForwardDynamics> fd,
                IntegralTermType intglTermType, VelocityGainType velGainType,
                double lambda);
-  
+
+  void computeGain(const rbd::MultiBody& mb,
+		   const rbd::MultiBodyConfig& mbc_real);
+
   void computeTerm(const rbd::MultiBody& mb,
                    const rbd::MultiBodyConfig& mbc_real,
                    const rbd::MultiBodyConfig& mbc_calc) override;
     
- private:
+ protected:
     
   IntegralTermType intglTermType_;
   VelocityGainType velGainType_;
   double lambda_;
+
+  Eigen::MatrixXd L_;
+};
+
+ 
+class IntegralTermAntiWindup : public IntegralTerm
+{
+ public:
+   
+  IntegralTermAntiWindup(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+			 const std::shared_ptr<rbd::ForwardDynamics> fd,
+			 IntegralTermType intglTermType, VelocityGainType velGainType,
+			 double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
+			 double max_float = 1E3, double perc = 0.1);
+
+  void computeTerm(const rbd::MultiBody& mb,
+                   const rbd::MultiBodyConfig& mbc_real,
+                   const rbd::MultiBodyConfig& mbc_calc) override;
+
+ private:
+
+  Eigen::VectorXd torqueL_, torqueU_;
+  double max_float_, perc_;
 };
 
 
