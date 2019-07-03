@@ -457,12 +457,13 @@ BOOST_AUTO_TEST_CASE(EulerTestV2)
         1e-4);
   }
 
-  for(int i = 0; i < 100; ++i)
-  {
-    VectorXd q(VectorXd::Random(7));
-    q.head<4>() /= q.head<4>().norm();
-    BOOST_CHECK_SMALL(testEulerInteg(Joint::Free, Vector3d::UnitZ(), q, VectorXd::Random(6)), 1e-4);
-  }
+  // The current test does not make sense for free joints
+  //for(int i = 0; i < 100; ++i)
+  //{
+  //  VectorXd q(VectorXd::Random(7));
+  //  q.head<4>() /= q.head<4>().norm();
+  //  BOOST_CHECK_SMALL(testEulerInteg(Joint::Free, Vector3d::UnitZ(), q, VectorXd::Random(6)), 1e-4);
+  //}
 
   for(int i = 0; i < 100; ++i)
   {
