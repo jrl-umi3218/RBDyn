@@ -19,6 +19,20 @@ class MultiBody;
 struct MultiBodyConfig;
 
 /**
+ * Integrate a constant rotation acceleration.
+ * @param qi Initial orientation.
+ * @param wi Initial rotation speed.
+ * @param wD Constant acceleration.
+ * @param step Integration step.
+ */
+RBDYN_DLLAPI Eigen::Quaterniond SO3Integration(const Eigen::Quaterniond & qi,
+                                               const Eigen::Vector3d & wi,
+                                               const Eigen::Vector3d & wD,
+                                               double step,
+                                               double relEps = 1e-12,
+                                               double absEps = std::numeric_limits<double>::epsilon());
+
+/**
  * Integrate joint configuration.
  * @param type Joint type.
  * @param alpha Joint velocity vector.
