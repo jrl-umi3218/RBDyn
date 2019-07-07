@@ -399,6 +399,45 @@ MultiBodyGraph MultiBodyGraph::fixJoints(const MultiBodyGraph& other,
   return mbg;
 }
 
+MultiBodyGraph MultiBodyGraph::fixRevJoints(const MultiBodyGraph& other, 
+        const std::vector<std::string>& revJointsToFix)
+{
+  MultiBodyGraph mbg(other);
+
+  for (const std::string& jointName : revJointsToFix)
+  {
+    auto jointPtr = mbg.jointNameToJoint_.at(jointName);
+
+    if (jointPtr->type() == Joint::Type::Rev)
+    {
+      Eigen::Vector3d axis = jointPtr->motionSubspace().block<3, 1>(0, 0) / jointPtr->direction();
+      jointPtr.reset(new Joint(Joint::Type::Rev_Fixed, axis, jointPtr->forward(), jointPtr->name()));
+    }
+  }
+
+  for (auto& node : mbg.nodes_)
+  {
+    if (node == nullptr)
+    {
+      continue;
+    }
+    for (auto& arc : node->arcs)
+    {
+      const auto & jName = arc.joint.name();
+      for (const auto & n : revJointsToFix)
+      {
+        if (n == jName && arc.joint.type() == Joint::Type::Rev)
+        {
+	  Eigen::Vector3d axis = arc.joint.motionSubspace().block<3, 1>(0, 0) / arc.joint.direction();
+          arc.joint = Joint(Joint::Type::Rev_Fixed, axis, arc.joint.forward(), arc.joint.name());
+          break;
+        }
+      }
+    }
+  }
+  return mbg;
+}
+
 bool MultiBodyGraph::rmArc(Node& node, const std::string& parentJointName,
 		const std::string& jointName)
 {

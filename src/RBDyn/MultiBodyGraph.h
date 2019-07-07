@@ -250,6 +250,15 @@ public:
   static MultiBodyGraph fixJoints(const MultiBodyGraph& other, 
       const std::vector<std::string>& jointsToFix, bool fixAllJoints=false);
 
+  /**
+    * Return a copy of a graph with the specified revolute joints fixed.
+    * @param other Graph to be copied.
+    * @param jointsToFix Names of the joints to be fixed.
+    * @return a copy of other with some joints fixed according to parameters.
+    */
+  static MultiBodyGraph fixRevJoints(const MultiBodyGraph& other, 
+      const std::vector<std::string>& revJointsToFix);
+  
 private:
 	/**
 		* Find the arc jointId and remove it from the graph with his sub node.

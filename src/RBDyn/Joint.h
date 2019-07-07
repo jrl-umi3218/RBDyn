@@ -59,7 +59,8 @@ public:
 		Planar, ///< Planar joint (2 prismatic(X, Y) and 1 revolute(Z)).
 		Cylindrical, ///< Cylindrical joint (Z prismatic, Z revolute).
 		Free, ///< Free joint, represented by a quaternion.
-		Fixed ///< Fixed joint.
+		Fixed, ///< General Fixed joint.
+		Rev_Fixed ///< Revolute joint that was fixed with a value different of zero.
 	};
 
 	/// Old joint type for Api compatibility
@@ -406,6 +407,7 @@ inline sva::PTransform<T> Joint::pose(const std::vector<T>& q) const
 	switch(type_)
 	{
 		case Rev:
+	        case Rev_Fixed:
 			// minus S because rotation is anti trigonometric
 			return PTransform<T>(AngleAxis<T>(-q[0], S_.block<3, 1>(0, 0).cast<T>()).matrix());
 		case Prism:
@@ -466,6 +468,7 @@ inline sva::MotionVecd Joint::motion(const std::vector<double>& alpha) const
 			return MotionVecd(S_*(Vector6d() << alpha[0], alpha[1], alpha[2],
 								alpha[3], alpha[4], alpha[5]).finished());
 		case Fixed:
+	        case Rev_Fixed:
 		default:
 			return MotionVecd(Vector6d::Zero());
 	}
@@ -494,6 +497,7 @@ inline sva::MotionVecd Joint::tanAccel(const std::vector<double>& alphaD) const
 			return MotionVecd(S_*(Vector6d() << alphaD[0], alphaD[1], alphaD[2],
 								alphaD[3], alphaD[4], alphaD[5]).finished());
 		case Fixed:
+	        case Rev_Fixed:
 		default:
 			return MotionVecd(Vector6d::Zero());
 	}
@@ -565,6 +569,7 @@ inline std::vector<double> Joint::ZeroParam(Type type)
 	{
 		case Rev:
 		case Prism:
+	        case Rev_Fixed:
 			return {0.};
 		case Spherical:
 			return {1., 0., 0., 0.};
@@ -597,6 +602,7 @@ inline std::vector<double> Joint::ZeroDof(Type type)
 		case Free:
 			return {0., 0., 0., 0., 0., 0.};
 		case Fixed:
+	        case Rev_Fixed:
 		default:
 			return {};
 	}
@@ -614,6 +620,11 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d& a)
 			S_ = dir_*(Vector6d() << a, Vector3d::Zero()).finished();
 			params_ = 1;
 			dof_ = 1;
+			break;
+	        case Rev_Fixed:
+			S_ = dir_*(Vector6d() << a, Vector3d::Zero()).finished();
+			params_ = 1;
+			dof_ = 0;
 			break;
 		case Prism:
 			S_ = dir_*(Vector6d() << Vector3d::Zero(), a).finished();
