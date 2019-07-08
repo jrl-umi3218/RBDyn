@@ -34,7 +34,9 @@ namespace constants = boost::math::constants;
 /** Timesteps used in the tests*/
 const std::vector<double> dt = {0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1};
 /** Joints tested*/
-const std::vector<Joint::Type> types = {Joint::Rev, Joint::Prism, Joint::Spherical, Joint::Cylindrical, Joint::Free};
+const std::vector<Joint::Type> types = {Joint::Rev,    Joint::Prism,       Joint::Spherical,
+                                       /*Joint::Planar,*/ Joint::Cylindrical, Joint::Free};
+//const std::vector<Joint::Type> types = {Joint::Planar};
 
 /// @return A robot with a single joint specified by the user
 std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph> makeSingleJointRobot(
@@ -61,7 +63,7 @@ std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph> makeSingle
   PTransformd from(Vector3d(0., 0., 0.));
   mbg.linkBodies("b0", to, "b1", from, "j0");
 
-  if (!endEffector.isZero())
+  if(!endEffector.isZero())
   {
     Body ee(rbi, "ee");
     mbg.addBody(ee);
@@ -130,10 +132,9 @@ std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> randQV
   return std::make_tuple(q, v, a);
 }
 
-
 /** Exact integration of a constant velocity \a vel over a time interval of size \a step
-  * starting from position \a q.
-  */
+ * starting from position \a q.
+ */
 std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
                                                        double step,
                                                        const std::vector<double> & q,
@@ -150,13 +151,45 @@ std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
       Vector3d w(vel[0], vel[1], vel[2]);
       w *= step;
       double n = w.norm();
-      double s = sva::sinc(n/2)/2;
-      Quaterniond qexp(std::cos(n/2), s * w.x(), s * w.y(), s * w.z());
+      double s = sva::sinc(n / 2) / 2;
+      Quaterniond qexp(std::cos(n / 2), s * w.x(), s * w.y(), s * w.z());
       Quaterniond qf = qi * qexp;
       return {qf.w(), qf.x(), qf.y(), qf.z()};
     }
     case Joint::Planar:
-      break;
+    {
+      double tw = step * vel[0];
+       double c = std::cos(tw);
+       double s = std::sin(tw);
+       double sc = sva::sinc(tw);
+       double cc;
+       if(std::abs(tw) > 1e-4)
+        cc = (1 - c) / tw;
+       else
+        cc = tw / 2 * (1 - tw * tw / 12);
+       double q1step = sc * vel[1] + cc * vel[2];
+       double q2step = -cc * vel[1] + sc * vel[2];
+       return { q[0] + tw,
+               c * q[1] + s * q[2] + q1step * step,
+              -s * q[1] + c * q[2] + q2step * step };
+      //double c0 = std::cos(q[0]);
+      //double s0 = std::sin(q[0]);
+      //double ct = std::cos(q[0] + tw);
+      //double st = std::sin(q[0] + tw);
+      //Matrix2d R0;
+      //R0 << c0, -s0, s0, c0;
+      //Matrix2d Rt;
+      //Rt << ct, -st, st, ct;
+      //Map<const Vector2d> p0(&q[1]);
+      //Map<const Vector2d> v(&vel[1]);
+      //Vector2d pt = Rt * (R0.transpose() * p0 + v * step);
+      //return {q[0] + tw, pt.x(), pt.y()};
+      // Vector2d p(c0 * q[1] + s0 * q[2] + vel[1] * step, -s0 * q[1] + c0 * q[2] + vel[2] * step);
+      // return {q[0] + tw, ct * p.x() - st * p.y(), st * p.x() + ct * p.y()};
+      // return {q[0] + tw,
+      //        q[1] + (-vel[0] * q[2] + c0 * vel[1] - s0 * vel[2]) * step,
+      //        q[2] + (vel[0] * q[1] + s0 * q[1] + c0 * q[2]) * step};
+    }
     case Joint::Cylindrical:
       return {q[0] + vel[0] * step, q[1] + vel[1] * step};
     case Joint::Free:
@@ -164,7 +197,7 @@ std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
       // integration of the orientation part
       Quaterniond qi(q[0], q[1], q[2], q[3]);
       Vector3d w(vel[0], vel[1], vel[2]);
-      Vector3d tw = step*w;
+      Vector3d tw = step * w;
       double n = w.norm();
       double tn = step * n;
       double s = sva::sinc(tn / 2) / 2;
@@ -181,7 +214,7 @@ std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
       Vector3d w2v = w.cross(wv);
       double a, b;
       if(tn > 1e-4)
-        a = (1- std::cos(tn)) / (n * n);
+        a = (1 - std::cos(tn)) / (n * n);
       else
         a = tn * tn / 2;
       b = step * (1 - sva::sinc(tn)) / (n * n);
@@ -278,7 +311,6 @@ void testIntegrationConsistency(Joint::Type type,
   }
 }
 
-
 void testConstantAccelerationIntegration(Joint::Type type,
                                          double step,
                                          const std::vector<double> & q,
@@ -305,8 +337,8 @@ void testConstantAccelerationIntegration(Joint::Type type,
   // integrating with constant velocity on small time step
   const int N = 10000;
   double dt = step / N;
-  //we take the speed at the middle of the interval
-  for(size_t i = 0; i < vc.size(); ++i) vc[i] = vc[i] + a[i] * dt/2;
+  // we take the speed at the middle of the interval
+  for(size_t i = 0; i < vc.size(); ++i) vc[i] = vc[i] + a[i] * dt / 2;
   for(int i = 0; i < N; ++i)
   {
     qc = explicitIntegrationAtConstantSpeed(type, dt, qc, vc);
@@ -329,11 +361,9 @@ void testConstantAccelerationIntegration(Joint::Type type,
   }
 }
 
-void testConsistencyWithJacobian(Joint::Type type,
-                                  const std::vector<double> & q,
-                                  const std::vector<double> & v)
+void testConsistencyWithJacobian(Joint::Type type, const std::vector<double> & q, const std::vector<double> & v)
 {
-  double dt = 0.1;
+  double dt = 1;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -349,21 +379,21 @@ void testConsistencyWithJacobian(Joint::Type type,
 
   // Compute via Simpson's rule an approximate integration of J(q)v over dt
   // and add it to the initial pose of the end effector
-  const int N = 10;
+  const int N = 100;
   std::vector<double> q1;
   std::vector<double> q2;
   // Initial position of the end effector
   Vector3d pi = mbc.bodyPosW[2].translation();
   Vector3d vi = J.velocity(mb, mbc).linear();
   double delta = dt / N;
-  for(int i = 0; i < N/2; ++i)
+  for(int i = 0; i < N / 2; ++i)
   {
-    q1 = explicitIntegrationAtConstantSpeed(type, (2*i+1)*delta, q, v);
+    q1 = explicitIntegrationAtConstantSpeed(type, (2 * i + 1) * delta, q, v);
     mbc.q = {{}, q1, {}};
     forwardKinematics(mb, mbc);
     forwardVelocity(mb, mbc);
     Vector3d v1 = J.velocity(mb, mbc).linear();
-    q2 = explicitIntegrationAtConstantSpeed(type, (2*i + 2)*delta, q, v);
+    q2 = explicitIntegrationAtConstantSpeed(type, (2 * i + 2) * delta, q, v);
     mbc.q = {{}, q2, {}};
     forwardKinematics(mb, mbc);
     forwardVelocity(mb, mbc);
@@ -405,10 +435,10 @@ BOOST_AUTO_TEST_CASE(ConstantSpeedJointIntegrationTest)
 BOOST_AUTO_TEST_CASE(IntegrationConsistencyTest)
 {
   std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n" << std::endl;
-  
-  for (auto step : dt)
+
+  for(auto step : dt)
   {
-    for (auto type : types)
+    for(auto type : types)
     {
       std::vector<double> q, v, a;
       std::tie(q, v, a) = randQVA(type);
@@ -444,36 +474,44 @@ BOOST_AUTO_TEST_CASE(JacobianConsistencyTest)
   }
 }
 
-BOOST_AUTO_TEST_CASE(JointIntegrationTest)
+void test(std::vector<double> q)
 {
-  const double pi = constants::pi<double>();
-  const double c2 = std::sqrt(2) / 2;
+  MultiBody mb;
+  MultiBodyConfig mbc;
+  MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeSingleJointRobot(Joint::Planar, Vector3d::UnitZ(), Eigen::Vector3d(1, 0, 0));
 
-  //testConstantSpeedIntegration(Joint::Rev, 1, {1}, {0.5}/*, {1.5}*/);
-  //testConstantSpeedIntegration(Joint::Prism, 1, {1}, {0.5}/*, {1.5}*/);
-  //testConstantSpeedIntegration(Joint::Spherical, 1, {1, 0, 0, 0}, {pi / 2, 0, 0} /*, {c2, c2, 0, 0}*/);
-  //testConstantSpeedIntegration(Joint::Spherical, 1, {c2, 0, c2, 0}, {pi / 2, 0, 0}/*, {0.5, 0.5, 0.5, -0.5}*/);
-  //// testConstantSpeedIntegration(Joint::Planar, 1, { 1 }, { 0.5 }/*, { 1.5 }*/);
-  ////testConstantSpeedIntegration(Joint::Cylindrical, 1, {1, 2}, {0.5, 0.25}/*, {1.5, 2.25})*/;
-  //testConstantSpeedIntegration(Joint::Free, 1, {1, 0, 0, 0, 0, 0, 0}, {pi / 2, 0, 0, 1, 0, 0}/*, {c2, c2, 0, 0, 1, 0, 0}*/);
-  //testConstantSpeedIntegration(Joint::Free, 1, {1, 0, 0, 0, 0, 0, 0}, {0, pi / 2, 0, 0, 1, 0}/*, {c2, c2, 0, 0, 0, 1, 0}*/);
-  //testConstantSpeedIntegration(Joint::Free, 1, {1, 0, 0, 0, 0, 0, 0}, {0, 0, pi / 2, 0, 0, 1}/*, {c2, c2, 0, 0, 0, 0, 1}*/);
-  //testConstantSpeedIntegration(Joint::Free, .1, {1, 0, 0, 0, 1, 2, 3}, {pi / 2, 0, 0, 0.5, 0.25, -0.5}/*,
-  //                             {c2, c2, 0, 0, 1.5, 2.25, 2.5}*/);
-  //testConstantSpeedIntegration(Joint::Free, .1, {c2, 0, c2, 0, 1, 2, 3}, {pi / 2, 0, 0, 0.5, 0.25, -0.5}/*,
-  //                             {0.5, 0.5, 0.5, -0.5, 0.5, 2.25, 2.5}*/);
+  mbc.q = {{}, q, {}};
+  forwardKinematics(mb, mbc);
+  std::cout << "(" << q[0] << " ," << q[1] << ", " << q[2] << "): " << mbc.bodyPosW[2].translation().transpose()
+            << std::endl;
+}
 
-  std::vector<double> q, v, a;
-  //std::tie(q, v, a) = randQVA(Joint::Rev);
-  //testConstantAccelerationIntegration(Joint::Rev, 1, q, v, a);
-  //std::tie(q, v, a) = randQVA(Joint::Prism);
-  //testConstantAccelerationIntegration(Joint::Prism, 1, q, v, a);
-  //std::tie(q, v, a) = randQVA(Joint::Spherical);
-  //testConstantAccelerationIntegration(Joint::Spherical, 0.1, q, v, a);
-  //// std::tie(q, v, a) = randQVA(Joint::Planar);
-  //// testConstantAccelerationIntegration(Joint::Planar, 1, q, v, a);
-  //std::tie(q, v, a) = randQVA(Joint::Cylindrical);
-  //testConstantAccelerationIntegration(Joint::Cylindrical, 1, q, v, a);
-  //std::tie(q, v, a) = randQVA(Joint::Free);
-  //testConstantAccelerationIntegration(Joint::Free, 0.01, q, v, a);
+void planarTest(std::vector<double> q, std::vector<double> v, double step)
+{
+  const int N = 100000;
+  for (int i = 0; i < N; ++i)
+  {
+    double c = std::cos(q[0]);
+    double s = std::sin(q[0]);
+    double q1Step = -q[2] * v[0] + c * v[1] - s * v[2];
+    double q2Step = q[1] * v[0] + s * v[1] + c * v[2];
+    q[0] += v[0] * step/N;
+    q[1] += q1Step * step/N;
+    q[2] += q2Step * step/N;
+  }
+  std::cout << "(" << q[0] << " ," << q[1] << ", " << q[2] << "): " << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(Temp)
+{
+  double pi = 3.141592653589793238;
+
+  //test({0, 0, 0});
+  //test({0, 1, 0});
+  //test({0, 0, 1});
+  //test({pi / 2, 0, 0});
+  //test({pi / 2, 1, 0});
+
+  //planarTest({pi / 2, 0, 0}, {pi / 2, 1, 0}, 1);
 }

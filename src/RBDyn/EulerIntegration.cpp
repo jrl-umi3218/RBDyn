@@ -12,6 +12,8 @@
 
 #include <iostream>
 
+using namespace Eigen;
+
 namespace
 {
 
@@ -22,14 +24,14 @@ namespace
  * ||O_i+1|| < relEps * ||O1||. It stops at the 5th term even if the conditions where not
  * met, in which case the return bool is set to true as a warning.
  */
-std::pair<Eigen::Vector3d, bool> magnusExpansion(const Eigen::Vector3d & w, const Eigen::Vector3d & wD, double step,
-                                                 double relEps, double absEps)
+std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & wD, double step,
+                                          double relEps, double absEps)
 {
   double step2 = step * step;
 
-  Eigen::Vector3d w1 = w + wD * step;
-  Eigen::Vector3d O1 = (w + w1) * step / 2;
-  Eigen::Vector3d O2 = w.cross(w1) * step2 / 12;
+  Vector3d w1 = w + wD * step;
+  Vector3d O1 = (w + w1) * step / 2;
+  Vector3d O2 = w.cross(w1) * step2 / 12;
 
   double sqn1 = O1.squaredNorm();           // ||O1||^2
   double sqn2 = O2.squaredNorm();           // ||O2||^2
@@ -44,8 +46,8 @@ std::pair<Eigen::Vector3d, bool> magnusExpansion(const Eigen::Vector3d & w, cons
     return {O1+O2, false};
   }
 
-  Eigen::Vector3d O3 = wD.cross(O2) * step2 / 20;
-  Eigen::Vector3d O4 = (28 * sqn1 - 3 * sqndt4) / 1680 * O2;
+  Vector3d O3 = wD.cross(O2) * step2 / 20;
+  Vector3d O4 = (28 * sqn1 - 3 * sqndt4) / 1680 * O2;
 
   double sqn5 = (sqndt4 * sqn1 + 8 * std::sqrt(sqndt4 * sqn1 * sqn2) + 16 * sqn2) / (840 * 840);
 
@@ -54,7 +56,7 @@ std::pair<Eigen::Vector3d, bool> magnusExpansion(const Eigen::Vector3d & w, cons
     return {O1 + O2 + O3 + O4, false};
   }
 
-  Eigen::Vector3d O5 = ((120 * sqn1 - 5 * sqndt4) * O3 - 24 * sqn2 * O1) / 5040;
+  Vector3d O5 = ((120 * sqn1 - 5 * sqndt4) * O3 - 24 * sqn2 * O1) / 5040;
   return {O1 + O2 + O3 + O4 + O5, true};
 }
 
@@ -65,10 +67,10 @@ std::pair<Eigen::Vector3d, bool> magnusExpansion(const Eigen::Vector3d & w, cons
  *  + (3 dw.v + 8 w.dv) dw + (5 w.dw v + 4||w||^2 dv) x w + (2 w.v w + ||w||^2 v) x dw)
  * Note that norm is independent of R, because R^T R = I;
  */
-double fourthDerivativeSquaredNorm(const Eigen::Vector3d & v,
-                                   const Eigen::Vector3d & w,
-                                   const Eigen::Vector3d & dv,
-                                   const Eigen::Vector3d & dw)
+double fourthDerivativeSquaredNorm(const Vector3d & v,
+                                   const Vector3d & w,
+                                   const Vector3d & dv,
+                                   const Vector3d & dw)
 {
   double nw2 = w.squaredNorm();
   double nw4 = nw2 * nw2;
@@ -79,7 +81,7 @@ double fourthDerivativeSquaredNorm(const Eigen::Vector3d & v,
   double wdv = w.dot(dv);
   double dwdv = dw.dot(dv);
 
-  Eigen::Vector3d u = (nw4 - 3 * ndw2) * v - 12 * wdw * dv + (4 * dwdv - nw2 * wv) * w + (3 * dwv + 8 * wdv) * dw
+  Vector3d u = (nw4 - 3 * ndw2) * v - 12 * wdw * dv + (4 * dwdv - nw2 * wv) * w + (3 * dwv + 8 * wdv) * dw
                       - w.cross(5 * wdw * v + 4 * nw2 * dv) - dw.cross(2 * wv * w + nw2 * v);
 
   return u.squaredNorm();
@@ -90,13 +92,13 @@ double fourthDerivativeSquaredNorm(const Eigen::Vector3d & v,
 namespace rbd
 {
 
-std::pair<Eigen::Quaterniond, bool> SO3Integration(const Eigen::Quaterniond & qi,
-                                                   const Eigen::Vector3d & wi,
-                                                   const Eigen::Vector3d & wD,
-                                                   double step,
-                                                   double relEps,
-                                                   double absEps,
-                                                   bool breakOnWarning)
+std::pair<Quaterniond, bool> SO3Integration(const Quaterniond & qi,
+                                            const Vector3d & wi,
+                                            const Vector3d & wD,
+                                            double step,
+                                            double relEps,
+                                            double absEps,
+                                            bool breakOnWarning)
 {
   // See https://cwzx.wordpress.com/2013/12/16/numerical-integration-for-rotational-dynamics/
   // the division by 2 is because we want to compute exp(O) = (cos(||O||/2), sin(||O||/2)*O/||O||)
@@ -106,10 +108,10 @@ std::pair<Eigen::Quaterniond, bool> SO3Integration(const Eigen::Quaterniond & qi
   {
     return {qi, true};
   }
-  Eigen::Vector3d O = mag.first / 2;
+  Vector3d O = mag.first / 2;
   double n = O.norm();
   double s = sva::sinc(n);
-  Eigen::Quaterniond qexp(std::cos(n), s * O.x(), s * O.y(), s * O.z());
+  Quaterniond qexp(std::cos(n), s * O.x(), s * O.y(), s * O.z());
 
   return {qi * qexp, mag.second};
 }
@@ -124,11 +126,11 @@ void eulerJointIntegration(Joint::Type type,
 
   // Compute the rotation qf attained after the duration step, starting from qi with speed
   // w0 and constant acceleration wD. The result is also stored in q.
-  auto commonSphereFree = [&](Eigen::Quaterniond & qi, Eigen::Quaterniond & qf, Eigen::Vector3d & w0,
-                              Eigen::Vector3d & wD) {
-    qi = Eigen::Quaterniond(q[0], q[1], q[2], q[3]);
-    w0 = Eigen::Vector3d(alpha[0], alpha[1], alpha[2]);
-    wD = Eigen::Vector3d(alphaD[0], alphaD[1], alphaD[2]);
+  auto commonSphereFree = [&](Quaterniond & qi, Quaterniond & qf, Vector3d & w0,
+                              Vector3d & wD) {
+    qi = Quaterniond(q[0], q[1], q[2], q[3]);
+    w0 = Vector3d(alpha[0], alpha[1], alpha[2]);
+    wD = Vector3d(alphaD[0], alphaD[1], alphaD[2]);
 
     qf = SO3Integration(qi, w0, wD, step).first;
     qf.normalize(); // This step should not be necessary but we keep it for robustness
@@ -173,8 +175,8 @@ void eulerJointIntegration(Joint::Type type,
     case Joint::Free:
     {
       // Rotation part
-      Eigen::Quaterniond qi, qf;
-      Eigen::Vector3d wi, wD;
+      Quaterniond qi, qf;
+      Vector3d wi, wD;
       commonSphereFree(qi, qf, wi, wD);
 
       // For the translation part x, we have that \dot{x} = R*v, where v is the translation velocity
@@ -182,18 +184,18 @@ void eulerJointIntegration(Joint::Type type,
       // and acceleration are in FS coordinate while the position in FP coordinate.
       // We integrate x with Simpson's rule (i.e. RK4 for a case where the function to integrate does
       // not depend on x)
-      Eigen::Vector3d vi(alpha[3], alpha[4], alpha[5]);
-      Eigen::Vector3d a(alphaD[3], alphaD[4], alphaD[5]);
-      Eigen::Vector3d vh = vi + a * step / 2;
-      Eigen::Vector3d vf = vi + a * step;
+      Vector3d vi(alpha[3], alpha[4], alpha[5]);
+      Vector3d a(alphaD[3], alphaD[4], alphaD[5]);
+      Vector3d vh = vi + a * step / 2;
+      Vector3d vf = vi + a * step;
 
-      Eigen::Quaterniond qh = rbd::SO3Integration(qi, wi, wD, step / 2).first;
+      Quaterniond qh = rbd::SO3Integration(qi, wi, wD, step / 2).first;
 
-      Eigen::Vector3d k1 = step * (qi * vi);
-      Eigen::Vector3d k2 = step * (qh * vh);
-      Eigen::Vector3d k4 = step * (qf * vf);
+      Vector3d k1 = step * (qi * vi);
+      Vector3d k2 = step * (qh * vh);
+      Vector3d k4 = step * (qf * vf);
 
-      Eigen::Map<Eigen::Vector3d> x(&q[4]);
+      Map<Vector3d> x(&q[4]);
       x += (k1 + 4 * k2 + k4) / 6;
 
       //std::cout << (step*step*step*step*step)/2880*fourthDerivativeSquaredNorm(vi, wi, a, wD) << std::endl;
@@ -204,8 +206,8 @@ void eulerJointIntegration(Joint::Type type,
     /* fallthrough */
     case Joint::Spherical:
     {
-      Eigen::Quaterniond qi, qf;
-      Eigen::Vector3d w0, wD;
+      Quaterniond qi, qf;
+      Vector3d w0, wD;
       commonSphereFree(qi, qf, w0, wD);
       break;
     }
