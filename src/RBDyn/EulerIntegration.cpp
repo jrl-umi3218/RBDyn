@@ -91,10 +91,8 @@ std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, co
                                                        const Quaterniond& qf,
                                                        Vector3d wi, Vector3d vi, 
                                                        const Vector3d& wD, const Vector3d& vD,
-                                                       double step)
+                                                       double step, double prec = 1e-10)
 {
-  const double prec = 1e-12;
-
   double erri = fourthDerivativeSquaredNorm(vi, wi, vD, wD);
   double errf = fourthDerivativeSquaredNorm(vi+step*vD, wi+step*wD, vD, wD);
   double errMax = std::max(erri, errf);
@@ -132,25 +130,25 @@ std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, co
 std::pair<Quaterniond, Vector3d> freeJointIntegration(const Quaterniond& qi, const Vector3d& xi, 
                                                        const Vector3d& wi, const Vector3d& vi, 
                                                        const Vector3d& wD, const Vector3d& vD,
-                                                       double step)
+                                                       double step, double prec = 1e-10)
 {
-  auto qf = rbd::SO3Integration(qi, wi, wD, step, 1e-10, 1e-12);
+  auto qf = rbd::SO3Integration(qi, wi, wD, step, prec, prec);
   if (!qf.second)
   {
-    return freeJointIntegration_(qi, xi, qf.first, wi, vi, wD, vD, step);
+    return freeJointIntegration_(qi, xi, qf.first, wi, vi, wD, vD, step, prec);
   }
   else
   {
     double halfStep = step / 2;
-    auto H = freeJointIntegration(qi, xi, wi, vi, wD, vD, halfStep);
-    return freeJointIntegration(H.first, H.second, wi + halfStep * wD, vi + halfStep * vD, wD, vD, halfStep);
+    auto H = freeJointIntegration(qi, xi, wi, vi, wD, vD, halfStep, prec);
+    return freeJointIntegration(H.first, H.second, wi + halfStep * wD, vi + halfStep * vD, wD, vD, halfStep, prec);
   }
 }
 
 Quaterniond sphericalJointIntegration(const Quaterniond& qi, const Vector3d& wi,
-                                      const Vector3d& wD, double step)
+                                      const Vector3d& wD, double step, double prec = 1e-10)
 {
-  auto qf = rbd::SO3Integration(qi, wi, wD, step, 1e-10, 1e-12);
+  auto qf = rbd::SO3Integration(qi, wi, wD, step, prec, prec);
   if (!qf.second)
   {
     return qf.first;
@@ -158,8 +156,8 @@ Quaterniond sphericalJointIntegration(const Quaterniond& qi, const Vector3d& wi,
   else
   {
     double halfStep = step / 2;
-    auto q = sphericalJointIntegration(qi, wi, wD, halfStep);
-    return sphericalJointIntegration(q, wi + halfStep * wD, wD, halfStep);
+    auto q = sphericalJointIntegration(qi, wi, wD, halfStep, prec);
+    return sphericalJointIntegration(q, wi + halfStep * wD, wD, halfStep, prec);
   }
 }
 
@@ -196,15 +194,15 @@ void eulerJointIntegration(Joint::Type type,
                            const std::vector<double> & alpha,
                            const std::vector<double> & alphaD,
                            double step,
-                           std::vector<double> & q)
+                           std::vector<double> & q,
+                           double prec)
 {
-  double step2 = step * step;
-
   switch(type)
   {
     case Joint::Rev:
     case Joint::Prism:
     {
+      double step2 = step * step;
       q[0] += alpha[0] * step + alphaD[0] * step2 / 2;
       break;
     }
@@ -225,6 +223,7 @@ void eulerJointIntegration(Joint::Type type,
 
     case Joint::Cylindrical:
     {
+      double step2 = step * step;
       q[0] += alpha[0] * step + alphaD[0] * step2 / 2;
       q[1] += alpha[1] * step + alphaD[1] * step2 / 2;
       break;
@@ -240,7 +239,7 @@ void eulerJointIntegration(Joint::Type type,
       Vector3d vi(alpha[3], alpha[4], alpha[5]);
       Vector3d vD(alphaD[3], alphaD[4], alphaD[5]);
 
-      auto H = freeJointIntegration(qi, xi, wi, vi, wD, vD, step);
+      auto H = freeJointIntegration(qi, xi, wi, vi, wD, vD, step, prec);
       double nq = H.first.norm();
 
       // Normalization should not be necessary but we keep it for robustness
@@ -260,13 +259,14 @@ void eulerJointIntegration(Joint::Type type,
       Vector3d wi(alpha[0], alpha[1], alpha[2]);
       Vector3d wD(alphaD[0], alphaD[1], alphaD[2]);
 
-      auto qf = sphericalJointIntegration(qi, wi, wD, step);
+      auto qf = sphericalJointIntegration(qi, wi, wD, step, prec);
       qf.normalize(); // This step should not be necessary but we keep it for robustness
 
       q[0] = qf.w();
       q[1] = qf.x();
       q[2] = qf.y();
       q[3] = qf.z();
+      break;
     }
 
     case Joint::Fixed:
@@ -274,14 +274,14 @@ void eulerJointIntegration(Joint::Type type,
   }
 }
 
-void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step)
+void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec)
 {
   const std::vector<Joint> & joints = mb.joints();
 
   // integrate
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
-    eulerJointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i]);
+    eulerJointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i], prec);
     for(size_t j = 0; j < static_cast<size_t>(joints[i].dof()); ++j)
     {
       mbc.alpha[i][j] += mbc.alphaD[i][j] * step;
@@ -289,13 +289,13 @@ void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step)
   }
 }
 
-void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step)
+void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec)
 {
   checkMatchQ(mb, mbc);
   checkMatchAlpha(mb, mbc);
   checkMatchAlphaD(mb, mbc);
 
-  eulerIntegration(mb, mbc, step);
+  eulerIntegration(mb, mbc, step, prec);
 }
 
 } // namespace rbd

@@ -41,22 +41,25 @@ RBDYN_DLLAPI std::pair < Eigen::Quaterniond, bool> SO3Integration(
  * @param alphaD Joint acceleration vector.
  * @param step Integration step.
  * @param q Joint configuration vector.
+ * @param prec absolute precision used by numerical integrators.
  */
 RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type,
                                         const std::vector<double> & alpha,
                                         const std::vector<double> & alphaD,
                                         double step,
-                                        std::vector<double> & q);
+                                        std::vector<double> & q,
+                                        double prec = 1e-10);
 
 /**
  * Use the euler method to integrate.
  * @param mb MultiBody used has model.
  * @param mbc Use alphaD, alpha and q. Fill alpha and q.
  * @param step Integration step.
+ * @param prec absolute precision used by numerical integrators.
  */
-RBDYN_DLLAPI void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
+RBDYN_DLLAPI void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10);
 
 /// safe version of @see eulerIntegration.
-RBDYN_DLLAPI void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
+RBDYN_DLLAPI void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10);
 
 } // namespace rbd
