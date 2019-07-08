@@ -20,10 +20,10 @@ namespace
  * rotation wD for a duration step, while starting with a velocity w
  * The function computes the i first terms of the sum, such that ||O_i+1|| < absEps and
  * ||O_i+1|| < relEps * ||O1||. It stops at the 5th term even if the conditions where not
- * met.
+ * met, in which case the return bool is set to true as a warning.
  */
-Eigen::Vector3d magnusExpansion(const Eigen::Vector3d & w, const Eigen::Vector3d & wD, double step,
-                                double relEps, double absEps)
+std::pair<Eigen::Vector3d, bool> magnusExpansion(const Eigen::Vector3d & w, const Eigen::Vector3d & wD, double step,
+                                                 double relEps, double absEps)
 {
   double step2 = step * step;
 
@@ -41,7 +41,7 @@ Eigen::Vector3d magnusExpansion(const Eigen::Vector3d & w, const Eigen::Vector3d
   
   if (sqn3 < eps2 && sqn4 < eps2)
   {
-    return O1+O2;
+    return {O1+O2, false};
   }
 
   Eigen::Vector3d O3 = wD.cross(O2) * step2 / 20;
@@ -51,11 +51,11 @@ Eigen::Vector3d magnusExpansion(const Eigen::Vector3d & w, const Eigen::Vector3d
 
   if (sqn5 < eps2)
   {
-    return O1 + O2 + O3 + O4;
+    return {O1 + O2 + O3 + O4, false};
   }
 
   Eigen::Vector3d O5 = ((120 * sqn1 - 5 * sqndt4) * O3 - 24 * sqn2 * O1) / 5040;
-  return O1 + O2 + O3 + O4 + O5;
+  return {O1 + O2 + O3 + O4 + O5, true};
 }
 
 /** Compute the squared norm of the 4th derivative of f = R(t)v(t), where R is a rotation with
@@ -90,22 +90,28 @@ double fourthDerivativeSquaredNorm(const Eigen::Vector3d & v,
 namespace rbd
 {
 
-Eigen::Quaterniond SO3Integration(const Eigen::Quaterniond & qi,
-                                  const Eigen::Vector3d & wi,
-                                  const Eigen::Vector3d & wD,
-                                  double step,
-                                  double relEps,
-                                  double absEps)
+std::pair<Eigen::Quaterniond, bool> SO3Integration(const Eigen::Quaterniond & qi,
+                                                   const Eigen::Vector3d & wi,
+                                                   const Eigen::Vector3d & wD,
+                                                   double step,
+                                                   double relEps,
+                                                   double absEps,
+                                                   bool breakOnWarning)
 {
   // See https://cwzx.wordpress.com/2013/12/16/numerical-integration-for-rotational-dynamics/
-  // the division by 2 is because we want to compute exp(O) = (cos(||O||/2), sin(||O||)/2*O/||O||)
+  // the division by 2 is because we want to compute exp(O) = (cos(||O||/2), sin(||O||/2)*O/||O||)
   // in quaternion form.
-  Eigen::Vector3d O = magnusExpansion(wi, wD, step, relEps, absEps) / 2;
+  auto mag = magnusExpansion(wi, wD, step, relEps, absEps);
+  if (breakOnWarning && mag.second)
+  {
+    return {qi, true};
+  }
+  Eigen::Vector3d O = mag.first / 2;
   double n = O.norm();
   double s = sva::sinc(n);
   Eigen::Quaterniond qexp(std::cos(n), s * O.x(), s * O.y(), s * O.z());
 
-  return qi * qexp;
+  return {qi * qexp, mag.second};
 }
 
 void eulerJointIntegration(Joint::Type type,
@@ -124,7 +130,7 @@ void eulerJointIntegration(Joint::Type type,
     w0 = Eigen::Vector3d(alpha[0], alpha[1], alpha[2]);
     wD = Eigen::Vector3d(alphaD[0], alphaD[1], alphaD[2]);
 
-    qf = SO3Integration(qi, w0, wD, step);
+    qf = SO3Integration(qi, w0, wD, step).first;
     qf.normalize(); // This step should not be necessary but we keep it for robustness
 
     q[0] = qf.w();
@@ -181,7 +187,7 @@ void eulerJointIntegration(Joint::Type type,
       Eigen::Vector3d vh = vi + a * step / 2;
       Eigen::Vector3d vf = vi + a * step;
 
-      Eigen::Quaterniond qh = rbd::SO3Integration(qi, wi, wD, step / 2);
+      Eigen::Quaterniond qh = rbd::SO3Integration(qi, wi, wD, step / 2).first;
 
       Eigen::Vector3d k1 = step * (qi * vi);
       Eigen::Vector3d k2 = step * (qh * vh);

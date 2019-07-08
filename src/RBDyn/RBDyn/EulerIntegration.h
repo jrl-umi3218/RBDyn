@@ -25,12 +25,14 @@ struct MultiBodyConfig;
  * @param wD Constant acceleration.
  * @param step Integration step.
  */
-RBDYN_DLLAPI Eigen::Quaterniond SO3Integration(const Eigen::Quaterniond & qi,
-                                               const Eigen::Vector3d & wi,
-                                               const Eigen::Vector3d & wD,
-                                               double step,
-                                               double relEps = 1e-12,
-                                               double absEps = std::numeric_limits<double>::epsilon());
+RBDYN_DLLAPI std::pair < Eigen::Quaterniond, bool> SO3Integration(
+                                                      const Eigen::Quaterniond & qi,
+                                                      const Eigen::Vector3d & wi,
+                                                      const Eigen::Vector3d & wD,
+                                                      double step,
+                                                      double relEps = 1e-12,
+                                                      double absEps = std::numeric_limits<double>::epsilon(),
+                                                      bool breakOnWarning = false);
 
 /**
  * Integrate joint configuration.
