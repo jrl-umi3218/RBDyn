@@ -87,6 +87,82 @@ double fourthDerivativeSquaredNorm(const Vector3d & v,
   return u.squaredNorm();
 }
 
+std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, const Vector3d& xi, 
+                                                       const Quaterniond& qf,
+                                                       Vector3d wi, Vector3d vi, 
+                                                       const Vector3d& wD, const Vector3d& vD,
+                                                       double step)
+{
+  const double prec = 1e-12;
+
+  double erri = fourthDerivativeSquaredNorm(vi, wi, vD, wD);
+  double errf = fourthDerivativeSquaredNorm(vi+step*vD, wi+step*wD, vD, wD);
+  double errMax = std::max(erri, errf);
+  int n = static_cast<int>(std::ceil(step / 2 * std::sqrt(std::sqrt(errMax * step / (180 * prec)))));
+
+  double nthStep = step / n;
+  double halfNthStep = nthStep / 2;
+
+  std::pair<Quaterniond, Vector3d> H = {qi, 6 * xi + nthStep * (qi * vi)};
+  for(int i = 0; i < n - 1; ++i)
+  {
+    Vector3d vh = vi + vD * halfNthStep;
+    Vector3d ve = vi + vD * nthStep;
+    Quaterniond qh = rbd::SO3Integration(H.first, wi, wD, halfNthStep).first;
+    Quaterniond qe = rbd::SO3Integration(H.first, wi, wD, nthStep).first;
+    H.second += nthStep * (4 * (qh * vh) + 2 * (qe * ve));
+    H.first = qe;
+    vi = ve;
+    wi += nthStep * wD;
+  }
+  Vector3d vh = vi + vD * halfNthStep;
+  Vector3d vf = vi + vD * nthStep;
+  Quaterniond qh = rbd::SO3Integration(H.first, wi, wD, halfNthStep).first;
+
+  //std::cout << qh.coeffs().transpose() << std::endl;
+  //std::cout << rbd::SO3Integration(H.first, wi, wD, nthStep).first.coeffs().transpose() << std::endl;
+
+  H.second += nthStep * (4 * (qh * vh) + qf * vf);
+  H.first = qf;
+  H.second /= 6;
+
+  return H;
+}
+
+std::pair<Quaterniond, Vector3d> freeJointIntegration(const Quaterniond& qi, const Vector3d& xi, 
+                                                       const Vector3d& wi, const Vector3d& vi, 
+                                                       const Vector3d& wD, const Vector3d& vD,
+                                                       double step)
+{
+  auto qf = rbd::SO3Integration(qi, wi, wD, step, 1e-10, 1e-12);
+  if (!qf.second)
+  {
+    return freeJointIntegration_(qi, xi, qf.first, wi, vi, wD, vD, step);
+  }
+  else
+  {
+    double halfStep = step / 2;
+    auto H = freeJointIntegration(qi, xi, wi, vi, wD, vD, halfStep);
+    return freeJointIntegration(H.first, H.second, wi + halfStep * wD, vi + halfStep * vD, wD, vD, halfStep);
+  }
+}
+
+Quaterniond sphericalJointIntegration(const Quaterniond& qi, const Vector3d& wi,
+                                      const Vector3d& wD, double step)
+{
+  auto qf = rbd::SO3Integration(qi, wi, wD, step, 1e-10, 1e-12);
+  if (!qf.second)
+  {
+    return qf.first;
+  }
+  else
+  {
+    double halfStep = step / 2;
+    auto q = sphericalJointIntegration(qi, wi, wD, halfStep);
+    return sphericalJointIntegration(q, wi + halfStep * wD, wD, halfStep);
+  }
+}
+
 } // namespace
 
 namespace rbd
@@ -124,23 +200,6 @@ void eulerJointIntegration(Joint::Type type,
 {
   double step2 = step * step;
 
-  // Compute the rotation qf attained after the duration step, starting from qi with speed
-  // w0 and constant acceleration wD. The result is also stored in q.
-  auto commonSphereFree = [&](Quaterniond & qi, Quaterniond & qf, Vector3d & w0,
-                              Vector3d & wD) {
-    qi = Quaterniond(q[0], q[1], q[2], q[3]);
-    w0 = Vector3d(alpha[0], alpha[1], alpha[2]);
-    wD = Vector3d(alphaD[0], alphaD[1], alphaD[2]);
-
-    qf = SO3Integration(qi, w0, wD, step).first;
-    qf.normalize(); // This step should not be necessary but we keep it for robustness
-
-    q[0] = qf.w();
-    q[1] = qf.x();
-    q[2] = qf.y();
-    q[3] = qf.z();
-  };
-
   switch(type)
   {
     case Joint::Rev:
@@ -174,42 +233,40 @@ void eulerJointIntegration(Joint::Type type,
     /// @todo manage reverse joint
     case Joint::Free:
     {
-      // Rotation part
-      Quaterniond qi, qf;
-      Vector3d wi, wD;
-      commonSphereFree(qi, qf, wi, wD);
-
-      // For the translation part x, we have that \dot{x} = R*v, where v is the translation velocity
-      // and R is the orientation part. This is because, due to Featherstone's choices, the velocity
-      // and acceleration are in FS coordinate while the position in FP coordinate.
-      // We integrate x with Simpson's rule (i.e. RK4 for a case where the function to integrate does
-      // not depend on x)
+      Quaterniond qi(q[0], q[1], q[2], q[3]);
+      Map<Vector3d> xi(&q[4]);
+      Vector3d wi(alpha[0], alpha[1], alpha[2]);
+      Vector3d wD(alphaD[0], alphaD[1], alphaD[2]);
       Vector3d vi(alpha[3], alpha[4], alpha[5]);
-      Vector3d a(alphaD[3], alphaD[4], alphaD[5]);
-      Vector3d vh = vi + a * step / 2;
-      Vector3d vf = vi + a * step;
+      Vector3d vD(alphaD[3], alphaD[4], alphaD[5]);
 
-      Quaterniond qh = rbd::SO3Integration(qi, wi, wD, step / 2).first;
+      auto H = freeJointIntegration(qi, xi, wi, vi, wD, vD, step);
+      double nq = H.first.norm();
 
-      Vector3d k1 = step * (qi * vi);
-      Vector3d k2 = step * (qh * vh);
-      Vector3d k4 = step * (qf * vf);
+      // Normalization should not be necessary but we keep it for robustness
+      q[0] = H.first.w() / nq;
+      q[1] = H.first.x() / nq;
+      q[2] = H.first.y() / nq;
+      q[3] = H.first.z() / nq;
 
-      Map<Vector3d> x(&q[4]);
-      x += (k1 + 4 * k2 + k4) / 6;
-
-      //std::cout << (step*step*step*step*step)/2880*fourthDerivativeSquaredNorm(vi, wi, a, wD) << std::endl;
-
+      xi = H.second;
       break;
     }
     /// @todo manage reverse joint
     /* fallthrough */
     case Joint::Spherical:
     {
-      Quaterniond qi, qf;
-      Vector3d w0, wD;
-      commonSphereFree(qi, qf, w0, wD);
-      break;
+      Quaterniond qi(q[0], q[1], q[2], q[3]);
+      Vector3d wi(alpha[0], alpha[1], alpha[2]);
+      Vector3d wD(alphaD[0], alphaD[1], alphaD[2]);
+
+      auto qf = sphericalJointIntegration(qi, wi, wD, step);
+      qf.normalize(); // This step should not be necessary but we keep it for robustness
+
+      q[0] = qf.w();
+      q[1] = qf.x();
+      q[2] = qf.y();
+      q[3] = qf.z();
     }
 
     case Joint::Fixed:

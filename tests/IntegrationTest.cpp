@@ -36,7 +36,8 @@ const std::vector<double> dt = {0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1};
 /** Joints tested*/
 const std::vector<Joint::Type> types = {Joint::Rev,    Joint::Prism,       Joint::Spherical,
                                        /*Joint::Planar,*/ Joint::Cylindrical, Joint::Free};
-//const std::vector<Joint::Type> types = {Joint::Planar};
+// const std::vector<Joint::Type> types = {Joint::Planar};
+// const std::vector<Joint::Type> types = {Joint::Free};
 
 /// @return A robot with a single joint specified by the user
 std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph> makeSingleJointRobot(
@@ -158,7 +159,7 @@ std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
     }
     case Joint::Planar:
     {
-      double tw = step * vel[0];
+       double tw = step * vel[0];
        double c = std::cos(tw);
        double s = std::sin(tw);
        double sc = sva::sinc(tw);
@@ -414,7 +415,7 @@ void testConsistencyWithJacobian(Joint::Type type, const std::vector<double> & q
   std::cout << "computed = " << pe.transpose() << std::endl;
   std::cout << "error    = " << (pi - pe).cwiseAbs().transpose() << std::endl;
 
-  BOOST_CHECK_SMALL((pi - pe).norm(), 1e-10);
+  BOOST_CHECK_SMALL((pi - pe).norm(), 1e-8);
 }
 
 BOOST_AUTO_TEST_CASE(ConstantSpeedJointIntegrationTest)
