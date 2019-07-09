@@ -384,9 +384,22 @@ BOOST_AUTO_TEST_CASE(EulerTest)
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
   // planar
+
+  //static
   q = {0., 0., 0.};
-  goalQ = {1., 1., 1.};
-  eulerJointIntegration(Joint::Planar, {1., 1., 1.}, {0., 0., 0.}, 1., q);
+  goalQ = {0, 0., 0.};
+  eulerJointIntegration(Joint::Planar, {0, 0., 0.}, {0., 0., 0.}, 1., q);
+  BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
+
+  // rotation only
+  goalQ = {pi / 2, 0., 0.};
+  eulerJointIntegration(Joint::Planar, {pi / 2, 0., 0.}, {0., 0., 0.}, 1., q);
+  BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
+
+  // X unit move
+  q = {0., 0., 0.};
+  goalQ = {0., 1., 0.};
+  eulerJointIntegration(Joint::Planar, {0., 1., 0.}, {0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 }
 
