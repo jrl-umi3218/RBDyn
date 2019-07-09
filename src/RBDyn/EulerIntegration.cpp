@@ -39,7 +39,8 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
   double sqndt4 = sqnd * step2 * step2;     // ||wD||^2 t^4
   double sqn3 = sqndt4 / 400;               // ||O3||^2
   double sqn4 = sqn1 * sqn1 * sqn2 / 3600;  // upper bound for // ||O4||^2
-  double eps2 = std::min(relEps * relEps * sqn1, absEps * absEps); // squared absolute error
+  double rel2 = (sqn1 > 0) ? relEps * relEps * sqn1 : 1;
+  double eps2 = std::min(rel2, absEps * absEps); // squared absolute error
   
   if (sqn3 < eps2 && sqn4 < eps2)
   {
@@ -60,17 +61,17 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
   return {O1 + O2 + O3 + O4 + O5, true};
 }
 
-/** Compute the squared norm of the 4th derivative of f = R(t)v(t), where R is a rotation with
+/** Compute the squared norm of the 4th derivative of f = R(t)v(t), where R is a 3d rotation with
  * speed w and constant acceleration dw and v is a linear velocity with constant accleration dv.
  * Noting u.v the dot product of u and v, and uxv the cross product, we have
  * f^(4) = R((||w||^4 - 3||dw||^2) v - 12 w.dw dv + (4 dw.dv - ||w||^2 w.v) w
  *  + (3 dw.v + 8 w.dv) dw + (5 w.dw v + 4||w||^2 dv) x w + (2 w.v w + ||w||^2 v) x dw)
  * Note that norm is independent of R, because R^T R = I;
  */
-double fourthDerivativeSquaredNorm(const Vector3d & v,
-                                   const Vector3d & w,
-                                   const Vector3d & dv,
-                                   const Vector3d & dw)
+double fourthDerivativeSquaredNormFree(const Vector3d & v,
+                                       const Vector3d & w,
+                                       const Vector3d & dv,
+                                       const Vector3d & dw)
 {
   double nw2 = w.squaredNorm();
   double nw4 = nw2 * nw2;
@@ -87,16 +88,38 @@ double fourthDerivativeSquaredNorm(const Vector3d & v,
   return u.squaredNorm();
 }
 
+/** Compute the squared norm of the 4th derivative of f = R(t)v(t), where R is a 2d rotation with
+ * speed w and constant acceleration dw and v is a 2d linear velocity with constant accleration dv.
+ * Noting c and s the number such that R = [c -s; s c], we define U = [-s -c; c s]. Then
+ * f^(4) = (w^4 - 3 dw^2) R v - 6 dw w^2 U v - 12 dw w R dv - 4 w^3 U dv
+ * ||f^(4)|| = ||(w^4 - 3 dw^2) v - 6 dw w^2 M v - 12 dw w dv - 4 w^3 M dv|| where M = [0 -1; 1 0].
+ * Note that norm is independent of R and U because R^T R = I, U^T U = I and R^T U = M.
+ */
+double fourthDerivativeSquaredNormPlanar(const Vector2d& v, 
+                                         double w, 
+                                         const Vector2d &dv, 
+                                         double dw)
+{
+  double w2 = w * w;
+  Vector2d Mv(-v.y(), v.x());
+  Vector2d Mdv(-dv.y(), dv.x());
+
+  Vector2d u = (w2 * w2 - 3 * dw * dw) * v - 6 * dw * w2 * Mv - 12 * dw * w * dv - 4 * w * w2 * Mdv;
+
+  return u.squaredNorm();
+}
+
 std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, const Vector3d& xi, 
                                                        const Quaterniond& qf,
                                                        Vector3d wi, Vector3d vi, 
                                                        const Vector3d& wD, const Vector3d& vD,
                                                        double step, double prec = 1e-10)
 {
-  double erri = fourthDerivativeSquaredNorm(vi, wi, vD, wD);
-  double errf = fourthDerivativeSquaredNorm(vi+step*vD, wi+step*wD, vD, wD);
-  double errMax = std::max(erri, errf);
+  double erri = fourthDerivativeSquaredNormFree(vi, wi, vD, wD);
+  double errf = fourthDerivativeSquaredNormFree(vi+step*vD, wi+step*wD, vD, wD);
+  double errMax = std::sqrt(std::max(erri, errf));
   int n = static_cast<int>(std::ceil(step / 2 * std::sqrt(std::sqrt(errMax * step / (180 * prec)))));
+  if(n == 0) n = 1;
 
   double nthStep = step / n;
   double halfNthStep = nthStep / 2;
@@ -116,9 +139,6 @@ std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, co
   Vector3d vh = vi + vD * halfNthStep;
   Vector3d vf = vi + vD * nthStep;
   Quaterniond qh = rbd::SO3Integration(H.first, wi, wD, halfNthStep).first;
-
-  //std::cout << qh.coeffs().transpose() << std::endl;
-  //std::cout << rbd::SO3Integration(H.first, wi, wD, nthStep).first.coeffs().transpose() << std::endl;
 
   H.second += nthStep * (4 * (qh * vh) + qf * vf);
   H.first = qf;
@@ -159,6 +179,54 @@ Quaterniond sphericalJointIntegration(const Quaterniond& qi, const Vector3d& wi,
     auto q = sphericalJointIntegration(qi, wi, wD, halfStep, prec);
     return sphericalJointIntegration(q, wi + halfStep * wD, wD, halfStep, prec);
   }
+}
+
+Matrix2d R(double q)
+{
+  double c = std::cos(q);
+  double s = std::sin(q);
+  return (Matrix2d() << c, -s, s, c).finished();
+}
+
+std::pair<double, Vector2d> planarJointIntegration(double qi, const Vector2d& xi,
+                                                   double wi, Vector2d vi,
+                                                   double wD, const Vector2d& vD,
+                                                   double step, double prec = 1e-10)
+{
+  double erri = fourthDerivativeSquaredNormPlanar(vi, wi, vD, wD);
+  double errf = fourthDerivativeSquaredNormPlanar(vi + step * vD, wi + step * wD, vD, wD);
+  double errMax = std::sqrt(std::max(erri, errf));
+  int n = static_cast<int>(std::ceil(step / 2 * std::sqrt(std::sqrt(errMax * step / (180 * prec)))));
+  if(n == 0) n = 1;
+
+  double nthStep = step / n;
+  double halfNthStep = nthStep / 2;
+  double nthStep2 = nthStep * halfNthStep;
+  double halfNthStep2 = halfNthStep * halfNthStep / 2;
+
+  std::pair<double, Vector2d> H = {qi, R(qi) * (6 * xi + nthStep * vi)};
+  for(int i = 0; i < n - 1; ++i)
+  {
+    Vector2d vh = vi + vD * halfNthStep;
+    Vector2d ve = vi + vD * nthStep;
+    double qh = H.first + wi * halfNthStep + wD * halfNthStep2;
+    double qe = H.first + wi * nthStep + wD * nthStep2;
+    H.second += nthStep * (4 * R(qh) * vh + 2 * R(qe) * ve);
+    H.first = qe;
+    vi = ve;
+    wi += nthStep * wD;
+  }
+  Vector2d vh = vi + vD * halfNthStep;
+  Vector2d vf = vi + vD * nthStep;
+  double qh = H.first + wi * halfNthStep + wD * halfNthStep2;
+
+  H.first += wi * nthStep + wD * nthStep2;
+  H.second += nthStep * (4 * R(qh) * vh + R(H.first) * vf);
+
+  H.second = R(H.first).transpose()*(H.second / 6);
+  //H.second /= 6;
+
+  return H;
 }
 
 } // namespace
@@ -210,14 +278,12 @@ void eulerJointIntegration(Joint::Type type,
     /// @todo manage reverse joint
     case Joint::Planar:
     {
-      // This is the old implementation akin to x' = x + v*step
-      // (i.e. we don't take the acceleration into account)
-      /// @todo us the acceleration
-      double q1Step = q[2] * alpha[0] + alpha[1];
-      double q2Step = -q[1] * alpha[0] + alpha[2];
-      q[0] += alpha[0] * step;
-      q[1] += q1Step * step;
-      q[2] += q2Step * step;
+      Map<Vector2d> xi(&q[1]);
+      Vector2d vi(alpha[1], alpha[2]);
+      Vector2d vD(alphaD[1], alphaD[2]);
+      auto H = planarJointIntegration(q[0], xi, alpha[0], vi, alphaD[0], vD, step, prec);
+      q[0] = H.first;
+      xi = H.second;
       break;
     }
 
