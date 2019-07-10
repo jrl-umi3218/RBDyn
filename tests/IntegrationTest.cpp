@@ -4,7 +4,6 @@
 
 // includes
 // std
-#include <iostream>
 #include <vector>
 
 // boost
@@ -30,6 +29,9 @@ using namespace Eigen;
 using namespace sva;
 using namespace rbd;
 namespace constants = boost::math::constants;
+
+/** Number of test repetition */
+const int nbTest = 10;
 
 /** Timesteps used in the tests*/
 const std::vector<double> dt = {0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1};
@@ -157,20 +159,18 @@ std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
     }
     case Joint::Planar:
     {
-       double tw = step * vel[0];
-       double c = std::cos(tw);
-       double s = std::sin(tw);
-       double sc = sva::sinc(tw);
-       double cc;
-       if(std::abs(tw) > 1e-4)
+      double tw = step * vel[0];
+      double c = std::cos(tw);
+      double s = std::sin(tw);
+      double sc = sva::sinc(tw);
+      double cc;
+      if(std::abs(tw) > 1e-4)
         cc = (1 - c) / tw;
-       else
+      else
         cc = tw / 2 * (1 - tw * tw / 12);
-       double q1step = sc * vel[1] + cc * vel[2];
-       double q2step = -cc * vel[1] + sc * vel[2];
-       return { q[0] + tw,
-               c * q[1] + s * q[2] + q1step * step,
-              -s * q[1] + c * q[2] + q2step * step };
+      double q1step = sc * vel[1] + cc * vel[2];
+      double q2step = -cc * vel[1] + sc * vel[2];
+      return {q[0] + tw, c * q[1] + s * q[2] + q1step * step, -s * q[1] + c * q[2] + q2step * step};
     }
     case Joint::Cylindrical:
       return {q[0] + vel[0] * step, q[1] + vel[1] * step};
@@ -204,6 +204,8 @@ std::vector<double> explicitIntegrationAtConstantSpeed(Joint::Type type,
       Vector3d xf = x + qi * dx;
       return {qf.w(), qf.x(), qf.y(), qf.z(), xf.x(), xf.y(), xf.z()};
     }
+    default:
+      return {};
   }
 }
 
@@ -225,20 +227,10 @@ void testConstantSpeedIntegration(Joint::Type type,
   eulerIntegration(mb, mbc, step);
 
   auto q_expected2 = explicitIntegrationAtConstantSpeed(type, step, q, v);
-  std::cout << "for type = " << type << ", with dt=" << step << std::endl;
-  std::cout << "expected = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << q_expected2[i] << " ";
-  std::cout << std::endl;
-  std::cout << "computed = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << mbc.q[1][i] << " ";
-  std::cout << std::endl;
-  std::cout << "error    = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << std::abs(mbc.q[1][i] - q_expected2[i]) << " ";
-  std::cout << std::endl;
 
   for(size_t i = 0; i < q.size(); ++i)
   {
-    BOOST_CHECK_CLOSE_FRACTION(q_expected2[i], mbc.q[1][i], 1e-8);
+    BOOST_CHECK_CLOSE_FRACTION(q_expected2[i], mbc.q[1][i], 5e-8);
   }
 }
 
@@ -277,19 +269,9 @@ void testIntegrationConsistency(Joint::Type type,
     forwardKinematics(mb, mbc);
   }
 
-  std::cout << "for type = " << type << ", with dt=" << step << std::endl;
-  std::cout << "whole step  = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << mbc0.q[1][i] << " ";
-  std::cout << std::endl;
-  std::cout << "fractionned = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << mbc.q[1][i] << " ";
-  std::cout << std::endl;
-  std::cout << "error       = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << std::abs(mbc.q[1][i] - mbc0.q[1][i]) << " ";
-  std::cout << std::endl;
   for(size_t i = 0; i < q.size(); ++i)
   {
-    BOOST_CHECK_CLOSE_FRACTION(mbc0.q[1][i], mbc.q[1][i], 1e-8);
+    BOOST_CHECK_CLOSE_FRACTION(mbc0.q[1][i], mbc.q[1][i], 5e-6);
   }
 }
 
@@ -327,19 +309,9 @@ void testConstantAccelerationIntegration(Joint::Type type,
     for(size_t i = 0; i < vc.size(); ++i) vc[i] = vc[i] + a[i] * dt;
   }
 
-  std::cout << "for type = " << type << ", with dt=" << step << std::endl;
-  std::cout << "computed     = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << mbc.q[1][i] << " ";
-  std::cout << std::endl;
-  std::cout << "approximated = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << qc[i] << " ";
-  std::cout << std::endl;
-  std::cout << "error        = ";
-  for(size_t i = 0; i < q.size(); ++i) std::cout << std::abs(mbc.q[1][i] - qc[i]) << " ";
-  std::cout << std::endl;
   for(size_t i = 0; i < q.size(); ++i)
   {
-    BOOST_CHECK_CLOSE_FRACTION(qc[i], mbc.q[1][i], 1e-5);
+    BOOST_CHECK_CLOSE_FRACTION(qc[i], mbc.q[1][i], 5e-5);
   }
 }
 
@@ -391,84 +363,66 @@ void testConsistencyWithJacobian(Joint::Type type, const std::vector<double> & q
   // Compute the position of the end effector at this configuration
   Vector3d pe = mbc.bodyPosW[2].translation();
 
-  std::cout << "For type = " << type << std::endl;
-  std::cout << "expected = " << pi.transpose() << std::endl;
-  std::cout << "computed = " << pe.transpose() << std::endl;
-  std::cout << "error    = " << (pi - pe).cwiseAbs().transpose() << std::endl;
-
   BOOST_CHECK_SMALL((pi - pe).norm(), 1e-8);
 }
 
 BOOST_AUTO_TEST_CASE(ConstantSpeedJointIntegrationTest)
 {
-  std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n" << std::endl;
-  std::cout << "*-* Constant speed" << std::endl;
-
   for(auto step : dt)
   {
     for(auto type : types)
     {
-      std::vector<double> q, v, a;
-      std::tie(q, v, a) = randQVA(type);
-      testConstantSpeedIntegration(type, step, q, v);
+      for (int i = 0; i < nbTest; ++i)
+      {
+        std::vector<double> q, v, a;
+        std::tie(q, v, a) = randQVA(type);
+        testConstantSpeedIntegration(type, step, q, v);
+      }
     }
   }
 }
 
 BOOST_AUTO_TEST_CASE(IntegrationConsistencyTest)
 {
-  std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n" << std::endl;
-  std::cout << "*-* Consistency" << std::endl;
-
   for(auto step : dt)
   {
     for(auto type : types)
     {
-      std::vector<double> q, v, a;
-      std::tie(q, v, a) = randQVA(type);
-      testIntegrationConsistency(type, step, q, v, a);
+      for(int i = 0; i < nbTest; ++i)
+      {
+        std::vector<double> q, v, a;
+        std::tie(q, v, a) = randQVA(type);
+        testIntegrationConsistency(type, step, q, v, a);
+      }
     }
   }
 }
 
 BOOST_AUTO_TEST_CASE(ConstantAccelerationJointIntegrationTest)
 {
-  std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n" << std::endl;
-  std::cout << "*-* Constant acceleration" << std::endl;
-
   for(auto step : dt)
   {
     for(auto type : types)
     {
-      std::vector<double> q, v, a;
-      std::tie(q, v, a) = randQVA(type);
-      testConstantAccelerationIntegration(type, step, q, v, a);
+      for(int i = 0; i < nbTest; ++i)
+      {
+        std::vector<double> q, v, a;
+        std::tie(q, v, a) = randQVA(type);
+        testConstantAccelerationIntegration(type, step, q, v, a);
+      }
     }
   }
 }
 
 BOOST_AUTO_TEST_CASE(JacobianConsistencyTest)
 {
-  std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n" << std::endl;
-  std::cout << "*-* Jacobian" << std::endl;
-
   for(auto type : types)
   {
-    std::vector<double> q, v, a;
-    std::tie(q, v, a) = randQVA(type);
-    testConsistencyWithJacobian(type, q, v);
+    for(int i = 0; i < nbTest; ++i)
+    {
+      std::vector<double> q, v, a;
+      std::tie(q, v, a) = randQVA(type);
+      testConsistencyWithJacobian(type, q, v);
+    }
   }
-}
-
-void test(std::vector<double> q)
-{
-  MultiBody mb;
-  MultiBodyConfig mbc;
-  MultiBodyGraph mbg;
-  std::tie(mb, mbc, mbg) = makeSingleJointRobot(Joint::Planar, Vector3d::UnitZ(), Eigen::Vector3d(1, 0, 0));
-
-  mbc.q = {{}, q, {}};
-  forwardKinematics(mb, mbc);
-  std::cout << "(" << q[0] << " ," << q[1] << ", " << q[2] << "): " << mbc.bodyPosW[2].translation().transpose()
-            << std::endl;
 }

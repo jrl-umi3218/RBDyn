@@ -10,8 +10,6 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 
-#include <iostream>
-
 using namespace Eigen;
 
 namespace
@@ -28,17 +26,19 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
                                           double relEps, double absEps)
 {
   double step2 = step * step;
+  double sqnd = wD.squaredNorm();           // ||wD||^2
 
   Vector3d w1 = w + wD * step;
   Vector3d O1 = (w + w1) * step / 2;
+  if(sqnd < absEps) return {O1, false};
+
   Vector3d O2 = w.cross(w1) * step2 / 12;
 
   double sqn1 = O1.squaredNorm();           // ||O1||^2
   double sqn2 = O2.squaredNorm();           // ||O2||^2
-  double sqnd = wD.squaredNorm();           // ||wD||^2
   double sqndt4 = sqnd * step2 * step2;     // ||wD||^2 t^4
-  double sqn3 = sqndt4 / 400;               // ||O3||^2
-  double sqn4 = sqn1 * sqn1 * sqn2 / 3600;  // upper bound for // ||O4||^2
+  double sqn3 = sqndt4 * sqn2 / 400;        // ||O3||^2
+  double sqn4 = sqn1 * sqn1 * sqn2 / 3600;  // upper bound for ||O4||^2
   double rel2 = (sqn1 > 0) ? relEps * relEps * sqn1 : 1;
   double eps2 = std::min(rel2, absEps * absEps); // squared absolute error
   
@@ -50,7 +50,8 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
   Vector3d O3 = wD.cross(O2) * step2 / 20;
   Vector3d O4 = (28 * sqn1 - 3 * sqndt4) / 1680 * O2;
 
-  double sqn5 = (sqndt4 * sqn1 + 8 * std::sqrt(sqndt4 * sqn1 * sqn2) + 16 * sqn2) / (840 * 840);
+  // upper bound for ||O5||^2
+  double sqn5 = (sqndt4 * sqn1 + 8 * std::sqrt(sqndt4 * sqn1 * sqn2) + 16 * sqn2) * sqn1 * sqn2 / (840 * 840);
 
   if (sqn5 < eps2)
   {
