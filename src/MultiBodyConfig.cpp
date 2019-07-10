@@ -471,7 +471,7 @@ void checkMatchJointTorque(const MultiBody& mb, const MultiBodyConfig& mbc)
 			std::ostringstream str;
 			str << "Bad number of torque variable for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected size "
-					<< mb.joint(i).dof() << " gived " << mbc.jointTorque[i].size();
+					<< mb.joint(i).dof() << " gave " << mbc.jointTorque[i].size();
 			throw std::domain_error(str.str());
 		}
 	}
@@ -489,7 +489,7 @@ void checkMatchMotionSubspace(const MultiBody& mb, const MultiBodyConfig& mbc)
 			std::ostringstream str;
 			str << "Bad motionSubspace matrix size for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected column number "
-					<< mb.joint(i).dof() << " gived " << mbc.motionSubspace[i].cols();
+					<< mb.joint(i).dof() << " gave " << mbc.motionSubspace[i].cols();
 			throw std::domain_error(str.str());
 		}
 	}
@@ -508,7 +508,7 @@ void checkMatchQ(const MultiBody& mb, const MultiBodyConfig& mbc)
 			std::ostringstream str;
 			str << "Bad number of generalized position variable for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected size "
-					<< mb.joint(i).params() << " gived " << mbc.q[i].size();
+					<< mb.joint(i).params() << " gave " << mbc.q[i].size();
 			throw std::domain_error(str.str());
 		}
 	}
@@ -527,7 +527,7 @@ void checkMatchAlpha(const MultiBody& mb, const MultiBodyConfig& mbc)
 			std::ostringstream str;
 			str << "Bad number of generalized velocity variable for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected size "
-					<< mb.joint(i).dof() << " gived " << mbc.alpha[i].size();
+					<< mb.joint(i).dof() << " gave " << mbc.alpha[i].size();
 			throw std::domain_error(str.str());
 		}
 	}
@@ -546,7 +546,7 @@ void checkMatchAlphaD(const MultiBody& mb, const MultiBodyConfig& mbc)
 			std::ostringstream str;
 			str << "Bad number of generalized acceleration variable for Joint "
 					<< mb.joint(i) << " at position " << i << ": expected size "
-					<< mb.joint(i).dof() << " gived " << mbc.alphaD[i].size();
+					<< mb.joint(i).dof() << " gave " << mbc.alphaD[i].size();
 			throw std::domain_error(str.str());
 		}
 	}

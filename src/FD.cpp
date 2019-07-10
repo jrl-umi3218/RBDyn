@@ -226,7 +226,7 @@ void ForwardDynamics::sForwardDynamics(const MultiBody& mb, MultiBodyConfig& mbc
 void ForwardDynamics::sComputeH(const MultiBody& mb, const MultiBodyConfig& mbc)
 {
 	checkMatchParentToSon(mb, mbc);
-	checkMatchMotionSubspace(mb, mbc);
+	// checkMatchMotionSubspace(mb, mbc);  // Commented out by Rafa as a test
 
 	computeH(mb, mbc);
 }
