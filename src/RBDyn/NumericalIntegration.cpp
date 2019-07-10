@@ -169,7 +169,7 @@ std::pair<Quaterniond, Vector3d> freeJointIntegration(const Quaterniond& qi, con
 Quaterniond sphericalJointIntegration(const Quaterniond& qi, const Vector3d& wi,
                                       const Vector3d& wD, double step, double prec = 1e-10)
 {
-  auto qf = rbd::SO3Integration(qi, wi, wD, step, prec, prec);
+  auto qf = rbd::SO3Integration(qi, wi, wD, step, prec, prec, true);
   if (!qf.second)
   {
     return qf.first;
