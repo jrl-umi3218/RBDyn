@@ -73,6 +73,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
     Eigen::MatrixXd K;
+
+    // std::cout << "Rafa, in IntegralTerm::computeTerm, fd_->H().rows() = " << fd_->H().rows() << std::endl;
     
     if (velGainType_ == MassMatrix)
     {
