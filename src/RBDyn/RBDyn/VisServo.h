@@ -61,6 +61,7 @@ RBDYN_DLLAPI void poseJacobian(const Eigen::Matrix3d & rotation, Eigen::Matrix<d
  *
  * @param imagePointSpeed is the normalized 2D coordinate speed
  * @param depthEstimate is the estimate of the current depth
+ * @param jac is the output Jacobian
  */
 RBDYN_DLLAPI void depthDotJacobian(const Eigen::Vector2d & imagePointSpeed,
                                    const double depthEstimate,

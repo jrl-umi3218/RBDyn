@@ -164,7 +164,7 @@ RBDYN_DLLAPI Eigen::VectorXd sDofToVector(const MultiBody & mb, const std::vecto
 /**
  * Convert parameter vector to Eigen Vector.
  * @param e Eigen vector.
- * @param e Output Parameter vector (must be of the good size).
+ * @param v Output parameter vector (must be of the good size).
  */
 RBDYN_DLLAPI void vectorToParam(const Eigen::Ref<const Eigen::VectorXd> & e, std::vector<std::vector<double>> & v);
 
