@@ -4,62 +4,46 @@
 
 #pragma once
 
-// includes
-// std
-#include <vector>
+#ifdef __GNUC__
+#  define DO_PRAGMA(x) _Pragma(#x)
+#  define PRAGMA_WARNING(x) DO_PRAGMA(GCC warning #x)
+#endif //__GNUC__
+#ifdef _MSC_VER
+#  define __STRINGIFY__(x) #x
+#  define __TOSTRING__(x) __STRINGIFY__(x)
+#  define PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __TOSTRING__(__LINE__) ") : warning: " #x))
+#endif
 
-// RBDyn
-#include <rbdyn/config.hh>
+PRAGMA_WARNING(EulerIntegration.h is a deprecated header. Please consider using NumericalIntegration.h instead.)
 
-#include "Joint.h"
+#include <rbdyn/deprecated.hh>
+
+#include "NumericalIntegration.h"
 
 namespace rbd
 {
-class MultiBody;
-struct MultiBodyConfig;
 
-/**
- * Integrate a constant rotation acceleration.
- * @param qi Initial orientation.
- * @param wi Initial rotation speed.
- * @param wD Constant acceleration.
- * @param step Integration step.
- */
-RBDYN_DLLAPI std::pair < Eigen::Quaterniond, bool> SO3Integration(
-                                                      const Eigen::Quaterniond & qi,
-                                                      const Eigen::Vector3d & wi,
-                                                      const Eigen::Vector3d & wD,
-                                                      double step,
-                                                      double relEps = 1e-12,
-                                                      double absEps = std::numeric_limits<double>::epsilon(),
-                                                      bool breakOnWarning = false);
+/// Old name for @see jointIntegration
+RBDYN_DEPRECATED void eulerJointIntegration(Joint::Type type,
+                                            const std::vector<double> & alpha,
+                                            const std::vector<double> & alphaD,
+                                            double step,
+                                            std::vector<double> & q,
+                                            double prec = 1e-10)
+{
+  jointIntegration(type, alpha, alphaD, step, q, prec);
+}
 
-/**
- * Integrate joint configuration.
- * @param type Joint type.
- * @param alpha Joint velocity vector.
- * @param alphaD Joint acceleration vector.
- * @param step Integration step.
- * @param q Joint configuration vector.
- * @param prec absolute precision used by numerical integrators.
- */
-RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type,
-                                        const std::vector<double> & alpha,
-                                        const std::vector<double> & alphaD,
-                                        double step,
-                                        std::vector<double> & q,
-                                        double prec = 1e-10);
+/// Old name for @see integration
+RBDYN_DEPRECATED void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10)
+{
+  integration(mb, mbc, step, prec);
+}
 
-/**
- * Use the euler method to integrate.
- * @param mb MultiBody used has model.
- * @param mbc Use alphaD, alpha and q. Fill alpha and q.
- * @param step Integration step.
- * @param prec absolute precision used by numerical integrators.
- */
-RBDYN_DLLAPI void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10);
-
-/// safe version of @see eulerIntegration.
-RBDYN_DLLAPI void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10);
+/// Old name for @see sIntegration
+RBDYN_DEPRECATED void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10)
+{
+  sIntegration(mb, mbc, step, prec);
+}
 
 } // namespace rbd

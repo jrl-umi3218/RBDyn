@@ -16,7 +16,6 @@
 
 // RBDyn
 #include "RBDyn/Body.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
@@ -27,6 +26,7 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // arm
 #include "XYZSarm.h"
@@ -354,12 +354,12 @@ BOOST_AUTO_TEST_CASE(EulerTest)
   // static
   vector<double> q = {0.};
 
-  eulerJointIntegration(Joint::Rev, {0.}, {0.}, 1., q);
+  jointIntegration(Joint::Rev, {0.}, {0.}, 1., q);
 
   BOOST_CHECK_EQUAL(q[0], 0.);
 
   // moving
-  eulerJointIntegration(Joint::Rev, {1.}, {0.}, 1., q);
+  jointIntegration(Joint::Rev, {1.}, {0.}, 1., q);
 
   BOOST_CHECK_EQUAL(q[0], 1.);
 
@@ -368,19 +368,19 @@ BOOST_AUTO_TEST_CASE(EulerTest)
   // static
   q = {1., 0., 0., 0., 0., 0., 0.};
   vector<double> goalQ = q;
-  eulerJointIntegration(Joint::Spherical, {0., 0., 0., 0., 0., 0.}, {0., 0., 0., 0., 0., 0.}, 1., q);
+  jointIntegration(Joint::Spherical, {0., 0., 0., 0., 0., 0.}, {0., 0., 0., 0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
   // X unit move
   goalQ = {1., 0., 0., 0., 1., 0., 0.},
-  eulerJointIntegration(Joint::Free, {0., 0., 0., 1., 0., 0.}, {0., 0., 0., 0., 0., 0.}, 1., q);
+  jointIntegration(Joint::Free, {0., 0., 0., 1., 0., 0.}, {0., 0., 0., 0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
   // X unit rot
   const double pi = cst::pi<double>();
   q = {1., 0., 0., 0., 0., 0., 0.};
   goalQ = {std::cos(pi / 4), std::sin(pi / 4), 0., 0., 0., 0., 0.},
-  eulerJointIntegration(Joint::Free, {pi / 2., 0., 0., 0., 0., 0.}, {0., 0., 0., 0., 0., 0.}, 1., q);
+  jointIntegration(Joint::Free, {pi / 2., 0., 0., 0., 0., 0.}, {0., 0., 0., 0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
   // planar
@@ -388,18 +388,18 @@ BOOST_AUTO_TEST_CASE(EulerTest)
   //static
   q = {0., 0., 0.};
   goalQ = {0, 0., 0.};
-  eulerJointIntegration(Joint::Planar, {0, 0., 0.}, {0., 0., 0.}, 1., q);
+  jointIntegration(Joint::Planar, {0, 0., 0.}, {0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
   // rotation only
   goalQ = {pi / 2, 0., 0.};
-  eulerJointIntegration(Joint::Planar, {pi / 2, 0., 0.}, {0., 0., 0.}, 1., q);
+  jointIntegration(Joint::Planar, {pi / 2, 0., 0.}, {0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 
   // X unit move
   q = {0., 0., 0.};
   goalQ = {0., 1., 0.};
-  eulerJointIntegration(Joint::Planar, {0., 1., 0.}, {0., 0., 0.}, 1., q);
+  jointIntegration(Joint::Planar, {0., 1., 0.}, {0., 0., 0.}, 1., q);
   BOOST_CHECK_EQUAL_COLLECTIONS(q.begin(), q.end(), goalQ.begin(), goalQ.end());
 }
 
@@ -433,7 +433,7 @@ double testEulerInteg(rbd::Joint::Type jType,
   sva::PTransformd initPos(j.pose(qVec));
   sva::MotionVecd motion(j.motion(alphaVec));
 
-  eulerJointIntegration(jType, alphaVec, alphaDVec, timeStep, qVec);
+  jointIntegration(jType, alphaVec, alphaDVec, timeStep, qVec);
   sva::PTransformd endPos(j.pose(qVec));
 
   // linear velocity is set in initPos frame

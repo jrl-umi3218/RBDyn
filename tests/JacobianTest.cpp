@@ -16,7 +16,6 @@
 
 // RBDyn
 #include "RBDyn/Body.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
@@ -25,6 +24,7 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // Arm
 #include "SSSarm.h"
@@ -473,7 +473,7 @@ Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody & mb,
   MultiBodyConfig mbcTmp(mbc);
 
   MatrixXd oJ = jacComp(mb, mbcTmp);
-  eulerIntegration(mb, mbcTmp, step);
+  integration(mb, mbcTmp, step);
   forwardKinematics(mb, mbcTmp);
   forwardVelocity(mb, mbcTmp);
   MatrixXd nJ = jacComp(mb, mbcTmp);

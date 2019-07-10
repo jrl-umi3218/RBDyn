@@ -16,7 +16,6 @@
 
 // RBDyn
 #include "RBDyn/Body.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/Jacobian.h"
@@ -24,6 +23,7 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/NumericalIntegration.h"
 
 using namespace Eigen;
 using namespace sva;
@@ -224,7 +224,7 @@ void testConstantSpeedIntegration(Joint::Type type,
   mbc.alphaD = {{}, std::vector<double>(v.size(), 0)};
   forwardKinematics(mb, mbc);
 
-  eulerIntegration(mb, mbc, step);
+  integration(mb, mbc, step);
 
   auto q_expected2 = explicitIntegrationAtConstantSpeed(type, step, q, v);
 
@@ -259,13 +259,13 @@ void testIntegrationConsistency(Joint::Type type,
   forwardKinematics(mb, mbc0);
 
   // integrating on the whole time step
-  eulerIntegration(mb, mbc0, step);
+  integration(mb, mbc0, step);
 
   // integrating with on small time step
   const int N = 2000;
   for(int i = 0; i < N; ++i)
   {
-    eulerIntegration(mb, mbc, step / N);
+    integration(mb, mbc, step / N);
     forwardKinematics(mb, mbc);
   }
 
@@ -296,7 +296,7 @@ void testConstantAccelerationIntegration(Joint::Type type,
   forwardKinematics(mb, mbc);
 
   // integrating on the whole time step
-  eulerIntegration(mb, mbc, step);
+  integration(mb, mbc, step);
 
   // integrating with constant velocity on small time step
   const int N = 100000;

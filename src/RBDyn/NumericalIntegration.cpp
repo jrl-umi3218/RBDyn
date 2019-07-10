@@ -3,7 +3,7 @@
  */
 
 // associated header
-#include "RBDyn/EulerIntegration.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // includes
 // RBDyn
@@ -259,12 +259,12 @@ std::pair<Quaterniond, bool> SO3Integration(const Quaterniond & qi,
   return {qi * qexp, mag.second};
 }
 
-void eulerJointIntegration(Joint::Type type,
-                           const std::vector<double> & alpha,
-                           const std::vector<double> & alphaD,
-                           double step,
-                           std::vector<double> & q,
-                           double prec)
+void jointIntegration(Joint::Type type,
+                      const std::vector<double> & alpha,
+                      const std::vector<double> & alphaD,
+                      double step,
+                      std::vector<double> & q,
+                      double prec)
 {
   switch(type)
   {
@@ -341,28 +341,33 @@ void eulerJointIntegration(Joint::Type type,
   }
 }
 
-void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec)
+void integration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec)
 {
   const std::vector<Joint> & joints = mb.joints();
 
   // integrate
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
+<<<<<<<< HEAD:src/RBDyn/EulerIntegration.cpp
     eulerJointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i], prec);
     for(size_t j = 0; j < static_cast<size_t>(joints[i].dof()); ++j)
+========
+    jointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i], prec);
+    for(int j = 0; j < joints[i].dof(); ++j)
+>>>>>>>> 85f5532 (Changing eulerIntegration to integration, and keeping eulerIntegration as deprecated):src/NumericalIntegration.cpp
     {
       mbc.alpha[i][j] += mbc.alphaD[i][j] * step;
     }
   }
 }
 
-void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec)
+void sIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec)
 {
   checkMatchQ(mb, mbc);
   checkMatchAlpha(mb, mbc);
   checkMatchAlphaD(mb, mbc);
 
-  eulerIntegration(mb, mbc, step, prec);
+  integration(mb, mbc, step, prec);
 }
 
 } // namespace rbd
