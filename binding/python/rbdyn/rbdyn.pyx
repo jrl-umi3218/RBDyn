@@ -1,21 +1,8 @@
 # distutils: language = c++
 
-# Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
-# This file is part of RBDyn.
+# Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
-# RBDyn is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# RBDyn is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
 cimport rbdyn.c_rbdyn as c_rbdyn
 cimport rbdyn.c_rbdyn_private as c_rbdyn_private
@@ -38,13 +25,18 @@ cdef class DoubleVectorWrapper(object):
     self.__own_impl = False
     self.__owner = owner
     pass
+  def __len__(self):
+    return self.v.size()
   def __getitem__(self, idx):
     if isinstance(idx, slice):
       return self.v[idx]
     else:
       if idx == -1:
         idx = self.v.size() - 1
-      return self.v.at(idx)
+      if idx < self.v.size():
+        return self.v.at(idx)
+      else:
+        raise IndexError
   def __setitem__(self, idx, value):
     if isinstance(idx, slice):
       [start, stop, step] = idx.start, idx.stop, idx.step
@@ -85,6 +77,8 @@ cdef class DoubleVectorVectorWrapper(object):
     self.__own_impl = False
     self.__owner = owner
     pass
+  def __len__(self):
+    return self.v.size()
   def __getitem__(self, idx):
     if isinstance(idx, slice):
       [start, stop, step] = idx.start, idx.stop, idx.step
@@ -101,7 +95,10 @@ cdef class DoubleVectorVectorWrapper(object):
     else:
       if idx == -1:
         idx = self.v.size() - 1
-      return DoubleVectorWrapperFromC(self.v.at(idx), self)
+      if idx < self.v.size():
+        return DoubleVectorWrapperFromC(self.v.at(idx), self)
+      else:
+        raise IndexError
   def __setitem__(self, idx, value):
     if isinstance(idx, slice):
       [start, stop, step] = idx.start, idx.stop, idx.step

@@ -1,27 +1,14 @@
-// Copyright 2012-2018 CNRS-UM LIRMM, CNRS-AIST JRL
-//
-// This file is part of RBDyn.
-//
-// RBDyn is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// RBDyn is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+ */
 
 #pragma once
 
-#include <array>
-
-#include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/CoM.h>
 #include <RBDyn/Jacobian.h>
+#include <RBDyn/MultiBodyConfig.h>
+
+#include <array>
 
 namespace rbd
 {
@@ -36,23 +23,22 @@ namespace rbd
 class RBDYN_DLLAPI Coriolis
 {
 public:
-	/** Initialize the required structures
-	 * @param mb Multibody system
-	 */
-	Coriolis(const rbd::MultiBody& mb);
+  /** Initialize the required structures
+   * @param mb Multibody system
+   */
+  Coriolis(const rbd::MultiBody & mb);
 
-
-	/** Compute the matrix C of Coriolis effects.
-	 * @param mb Multibody system
-	 * @param mbc Multibody configuration associated to mb
-	 */
-	const Eigen::MatrixXd& coriolis(const rbd::MultiBody& mb, const rbd::MultiBodyConfig& mbc);
+  /** Compute the matrix C of Coriolis effects.
+   * @param mb Multibody system
+   * @param mbc Multibody configuration associated to mb
+   */
+  const Eigen::MatrixXd & coriolis(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc);
 
 private:
-	std::vector<rbd::Jacobian> jacs_;
-	std::vector<Blocks> compactPaths_;
-	Eigen::MatrixXd coriolis_;
-	Eigen::MatrixXd res_;
+  std::vector<rbd::Jacobian> jacs_;
+  std::vector<Blocks> compactPaths_;
+  Eigen::MatrixXd coriolis_;
+  Eigen::MatrixXd res_;
 };
 
-} // ns rbd
+} // namespace rbd

@@ -1,69 +1,37 @@
-# Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
-# This file is part of RBDyn.
+# Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
-# RBDyn is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# RBDyn is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1.3)
 
-INCLUDE(cmake/base.cmake)
-INCLUDE(cmake/boost.cmake)
-INCLUDE(cmake/cpack.cmake)
-INCLUDE(cmake/eigen.cmake)
-INCLUDE(cmake/msvc-specific.cmake)
+set(CMAKE_CXX_STANDARD 11)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-SET(PROJECT_NAME RBDyn)
-SET(PROJECT_DESCRIPTION "...")
-SET(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
-SET(PROJECT_DEBUG_POSTFIX "_d")
+include(cmake/base.cmake)
+include(cmake/cython/cython.cmake)
+include(cmake/msvc-specific.cmake)
+
+set(PROJECT_NAME RBDyn)
+set(PROJECT_DESCRIPTION "...")
+set(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
+set(PROJECT_DEBUG_POSTFIX "_d")
 
 # Disable -Werror on Unix for now.
-SET(CXX_DISABLE_WERROR True)
+set(CXX_DISABLE_WERROR True)
 
-SETUP_PROJECT()
+setup_project()
+set(PROJECT_VERSION 1.1.0)
 
-option(PYTHON_BINDING "Generate python binding." ON)
-if(WIN32)
-  set(PYTHON_BINDING_USER_INSTALL_DEFAULT ON)
-else()
-  set(PYTHON_BINDING_USER_INSTALL_DEFAULT OFF)
-endif()
-option(PYTHON_BINDING_USER_INSTALL "Install the Python bindings in user space" ${PYTHON_BINDING_USER_INSTALL_DEFAULT})
-option(PYTHON_BINDING_FORCE_PYTHON3 "Use pip3/python3 instead of pip/python" OFF)
 option(DISABLE_TESTS "Disable unit tests." OFF)
 option(BENCHMARKS "Generate benchmarks." OFF)
 
-if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-sign-conversion -std=c++0x -pedantic")
-endif()
-
-#########################
-# External dependencies
-SEARCH_FOR_EIGEN()
-
-ADD_REQUIRED_DEPENDENCY("SpaceVecAlg")
-find_package(SpaceVecAlg REQUIRED)
-
-#########################
+add_project_dependency(SpaceVecAlg REQUIRED)
 
 # For MSVC, set local environment variable to enable finding the built dll
 # of the main library when launching ctest with RUN_TESTS
-IF(MSVC)
-  SET(CMAKE_MSVCIDE_RUN_PATH "\$(SolutionDir)/src/\$(Configuration)")
-ENDIF(MSVC)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+if(MSVC)
+  set(CMAKE_MSVCIDE_RUN_PATH "\$(SolutionDir)/src/\$(Configuration)")
+endif()
 
 add_subdirectory(src)
 
@@ -75,9 +43,5 @@ if(${PYTHON_BINDING})
   add_subdirectory(binding/python)
 endif()
 
-# Add dependency towards the library in the pkg-config file.
-PKG_CONFIG_APPEND_LIBS(RBDyn)
-
-SETUP_PROJECT_FINALIZE()
-SETUP_PROJECT_CPACK()
-SETUP_PROJECT_PACKAGE_FINALIZE()
+setup_project_finalize()
+setup_project_package_finalize()

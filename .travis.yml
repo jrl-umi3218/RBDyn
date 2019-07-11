@@ -1,22 +1,26 @@
-# Copyright 2012-2017 CNRS-UM LIRMM, CNRS-AIST JRL
 #
-# This file is part of RBDyn.
+# Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
-# RBDyn is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# RBDyn is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with RBDyn.  If not, see <http://www.gnu.org/licenses/>.
 
-sudo: required
-dist: trusty
+dist: xenial
+addons:
+  apt:
+    packages:
+    - doxygen
+    - doxygen-latex
+    - libboost-all-dev
+    - libeigen3-dev
+    - python-pip
+    - python3-pip
+    - cython
+    - python-nose
+    - python-numpy
+    - python-coverage
+    - cython3
+    - python3-nose
+    - python3-numpy
+    - python3-coverage
+    - python3-setuptools
 branches:
   except:
     - debian
@@ -26,16 +30,15 @@ compiler:
 - clang
 env:
   global:
-  - APT_DEPENDENCIES="doxygen doxygen-latex libboost-all-dev"
+  - APT_DEPENDENCIES=""
   - GIT_DEPENDENCIES="jrl-umi3218/Eigen3ToPython jrl-umi3218/SpaceVecAlg"
   - GH_USERNAME=gergondet
   - GH_REPO=jrl-umi3218/RBDyn
   - secure: FCe7ktcmBJWgEFsCBnG1QfIhkgNKM3uyRMS9mXiY8hfGQ9KGj/9X4qebUmfZ1ay6Rw2B22FXpRiJk2GmsHxo1RZH3f27b6F1mWz25RgJGX986k2nPChCshf5gORfMI5BKksyXFzp24sXBLcYKGz/xrOioSUY1wPJ3JZ7r7kDEV4=
+  - CMAKE_ADDITIONAL_OPTIONS="-DPYTHON_BINDING_BUILD_PYTHON2_AND_PYTHON3:BOOL=ON -DPYTHON_BINDING_USER_INSTALL:BOOL=ON"
   matrix:
-    - USE_PYTHON34=false CMAKE_BUILD_TYPE=RelWithDebInfo
-    - USE_PYTHON34=false CMAKE_BUILD_TYPE=Debug
-    - USE_PYTHON34=true CMAKE_BUILD_TYPE=RelWithDebInfo
-    - USE_PYTHON34=true CMAKE_BUILD_TYPE=Debug
+    - CMAKE_BUILD_TYPE=RelWithDebInfo
+    - CMAKE_BUILD_TYPE=Debug
 notifications:
   slack:
     rooms:
@@ -45,7 +48,4 @@ after_success: ./.travis/run after_success
 after_failure: ./.travis/run after_failure
 before_install:
 - export CMAKE_ADDITIONAL_OPTIONS="${CMAKE_ADDITIONAL_OPTIONS} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
-- if [ $USE_PYTHON34 = true ]; then pushd .; pip install virtualenv; mkdir -p /tmp/_ci/virtualenv; virtualenv -p python3.4 3.4; source 3.4/bin/activate; popd; fi
-- if [ $USE_PYTHON34 = false ]; then export CMAKE_ADDITIONAL_OPTIONS="-DPYTHON_BINDING_USER_INSTALL:BOOL=ON"; fi
-- ./.travis/dependencies/eigen-3.2
 - ./.travis/run  before_install
