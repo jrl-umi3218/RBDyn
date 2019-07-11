@@ -80,6 +80,7 @@ std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph> makeSingle
   return std::make_tuple(mb, mbc, mbg);
 }
 
+/// @return A random vector of prescribed size with all components between rmin and rmax, normalized if normed = true.
 std::vector<double> randVec(int size, double rmin, double rmax, bool normed = false)
 {
   std::vector<double> v(static_cast<size_t>(size), 0);
@@ -91,6 +92,7 @@ std::vector<double> randVec(int size, double rmin, double rmax, bool normed = fa
   return v;
 }
 
+/// @return random joint configuration, velocity and acceleration for the given joint type 
 std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> randQVA(Joint::Type type)
 {
   std::vector<double> q, v, a;
@@ -230,7 +232,7 @@ void testConstantSpeedIntegration(Joint::Type type,
 
   for(size_t i = 0; i < q.size(); ++i)
   {
-    BOOST_CHECK_CLOSE_FRACTION(q_expected2[i], mbc.q[1][i], 5e-8);
+    BOOST_CHECK_SMALL(q_expected2[i] - mbc.q[1][i], 1e-9);
   }
 }
 
@@ -271,10 +273,13 @@ void testIntegrationConsistency(Joint::Type type,
 
   for(size_t i = 0; i < q.size(); ++i)
   {
-    BOOST_CHECK_CLOSE_FRACTION(mbc0.q[1][i], mbc.q[1][i], 5e-6);
+    BOOST_CHECK_SMALL(mbc0.q[1][i] - mbc.q[1][i], 1e-6);
   }
 }
 
+// This test compares the integration of a constant acceleration over duration step
+// with N constant velocity integrations with duration step/N, integrating the velocity
+// inbetween.
 void testConstantAccelerationIntegration(Joint::Type type,
                                          double step,
                                          const std::vector<double> & q,
@@ -311,7 +316,7 @@ void testConstantAccelerationIntegration(Joint::Type type,
 
   for(size_t i = 0; i < q.size(); ++i)
   {
-    BOOST_CHECK_CLOSE_FRACTION(qc[i], mbc.q[1][i], 5e-5);
+    BOOST_CHECK_SMALL(qc[i] - mbc.q[1][i], 5e-5);
   }
 }
 
