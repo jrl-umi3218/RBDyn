@@ -66,49 +66,108 @@ IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotInde
 {
 }
 
+void IntegralTerm::computeGain(const rbd::MultiBody& mb,
+			       const rbd::MultiBodyConfig& mbc_real)
+{
+  Eigen::MatrixXd K;
+
+  // std::cout << "Rafa, in IntegralTerm::computeTerm, fd_->H().rows() = " << fd_->H().rows() << std::endl;
+  
+  if (velGainType_ == MassMatrix)
+  {
+    K = lambda_ * fd_->H();
+  }
+  else if (velGainType_ == MassDiagonal)
+  {
+    K = lambda_ * fd_->H().diagonal().asDiagonal();
+  }
+  else
+  {
+    K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
+  }
+
+  if (intglTermType_ == PassivityBased)
+  {
+    rbd::Coriolis coriolis(mb);
+    Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
+    L_ = (C + K);
+  }
+  else
+  {
+    L_ = K;
+  }
+}
+
 void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
                                const rbd::MultiBodyConfig& mbc_real,
                                const rbd::MultiBodyConfig& mbc_calc)
 {
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
-    Eigen::MatrixXd K;
-
-    // std::cout << "Rafa, in IntegralTerm::computeTerm, fd_->H().rows() = " << fd_->H().rows() << std::endl;
-    
-    if (velGainType_ == MassMatrix)
-    {
-        K = lambda_ * fd_->H();
-    }
-    else if (velGainType_ == MassDiagonal)
-    {
-        K = lambda_ * fd_->H().diagonal().asDiagonal();
-    }
-    else
-    {
-        K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
-    }
+    computeGain(mb, mbc_real);
 
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
-    
-    if (intglTermType_ == PassivityBased)
-    {
-        rbd::Coriolis coriolis(mb);
-        Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
-        P_ = (C + K) * s;
-    }
-    else
-    {
-        P_ = K * s;
-    }
+    P_ = L_ * s;
 
     computeGammaD();
   }
 }
 
+
+  /**
+   *    IntegralTermAntiWindup
+   */
+
+IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+					       const std::shared_ptr<rbd::ForwardDynamics> fd,
+					       IntegralTermType intglTermType, VelocityGainType velGainType,
+					       double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
+					       double max_float, double perc):
+  
+  IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, lambda),
+  torqueL_(torqueL), torqueU_(torqueU),
+  max_float_(max_float), perc_(perc)
+{}
+
+void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
+					 const rbd::MultiBodyConfig& mbc_real,
+					 const rbd::MultiBodyConfig& mbc_calc)
+{
+  if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
+  {
+    computeGain(mb, mbc_real);
+    
+    Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
+    Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
+  
+    Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
+    P_ = L_ * s;
+
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_ = " << torqueU_.transpose() << std::endl;
+    
+    Eigen::VectorXd torqueU_prime = (abs(torqueU_.array()) < 1E-6).select( max_float_, torqueU_);
+    Eigen::VectorXd torqueL_prime = (abs(torqueL_.array()) < 1E-6).select(-max_float_, torqueL_);
+
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_prime = " << torqueU_prime.transpose() << std::endl;
+    
+    double epsilonU = (abs(P_.array() / torqueU_prime.array())).maxCoeff();
+    double epsilonL = (abs(P_.array() / torqueL_prime.array())).maxCoeff();
+    double epsilon  = std::max(epsilonU, epsilonL);
+
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, epsilonU = " << epsilonU << ", epsilonL = " << epsilonL << ", epsilon = " << epsilon << std::endl << std::endl;
+    
+    if (epsilon > perc_) {
+      P_ *= perc_ / epsilon;
+      std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, the AntiWindup is activated with gain = " << perc_/epsilon << std::endl;
+    }
+    
+    computeGammaD();
+  }
+}
+  
   
   /**
    *    PassivityPIDTerm
