@@ -21,6 +21,8 @@
 #include <unsupported/Eigen/MatrixFunctions>
 #include <iostream>
 
+#include <time.h>
+
 namespace torque_control
 {
 
@@ -86,10 +88,15 @@ void IntegralTerm::computeGain(const rbd::MultiBody& mb,
     K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
   }
 
+  clock_t time;
+
   if (intglTermType_ == PassivityBased)
   {
+    time = clock();
     rbd::Coriolis coriolis(mb);
     Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
+    time = clock() - time;
+    std::cout << "Rafa, in IntegralTerm::computeGain, the time spent for computing the Coriolis matrix is " << time << std::endl;
     L_ = (C + K);
   }
   else
@@ -102,17 +109,25 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
                                const rbd::MultiBodyConfig& mbc_real,
                                const rbd::MultiBodyConfig& mbc_calc)
 {
+  clock_t time;
+  
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
+    time = clock();
     computeGain(mb, mbc_real);
-
+    time = clock() - time;
+    std::cout << "Rafa, in IntegralTerm::computeTerm, the time spent for computeGain is " << time << std::endl;
+    
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
     P_ = L_ * s;
 
+    time = clock();
     computeGammaD();
+    time = clock() - time;
+    std::cout << "Rafa, in IntegralTerm::computeTerm, the time spent for computeGammaD is " << time << std::endl;
   }
 }
 
