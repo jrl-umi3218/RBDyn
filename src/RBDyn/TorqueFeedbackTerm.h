@@ -18,6 +18,7 @@
 #pragma once
 
 #include <memory>
+#include <map>
 #include <Eigen/Core>
 
 #include <RBDyn/FD.h>
@@ -28,6 +29,8 @@
 namespace torque_control
 {
 
+typedef std::map<std::string, int> ElapsedTimeMap;
+  
 class TorqueFeedbackTerm
 {
  public:
@@ -56,6 +59,8 @@ class TorqueFeedbackTerm
                            const rbd::MultiBodyConfig& mbc_real,
                            const rbd::MultiBodyConfig& mbc_calc) = 0;
 
+  ElapsedTimeMap & getElapsedTimes();
+
  protected:
 
   int nrDof_;
@@ -65,6 +70,8 @@ class TorqueFeedbackTerm
   Eigen::VectorXd gammaD_;
   
   Eigen::LLT<Eigen::MatrixXd> LLT_;
+
+  ElapsedTimeMap elapsed_;
 
   void computeGammaD();
 };

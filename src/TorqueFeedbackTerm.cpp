@@ -38,6 +38,9 @@ TorqueFeedbackTerm::TorqueFeedbackTerm(const std::vector<rbd::MultiBody>& mbs, i
   P_(Eigen::VectorXd::Zero(nrDof_)),
   gammaD_(Eigen::VectorXd::Zero(nrDof_))
 {
+  elapsed_ = {{"computeFbTerm-Gain", 0},
+              {"computeFbTerm-Gain-Coriolis", 0},
+              {"computeFbTerm-GammaD", 0}};
 }
 
 void TorqueFeedbackTerm::computeGammaD()
@@ -51,7 +54,12 @@ void TorqueFeedbackTerm::computeGammaD()
   LLT_.matrixL().transpose().solveInPlace(gammaD_);
 }
 
+ElapsedTimeMap & TorqueFeedbackTerm::getElapsedTimes()
+{
+  return elapsed_;
+}
 
+  
   /**
    *    IntegralTerm
    */
@@ -95,8 +103,7 @@ void IntegralTerm::computeGain(const rbd::MultiBody& mb,
     time = clock();
     rbd::Coriolis coriolis(mb);
     Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
-    time = clock() - time;
-    std::cout << "Rafa, in IntegralTerm::computeGain, the time spent for computing the Coriolis matrix is " << time << std::endl;
+    elapsed_.at("computeFbTerm-Gain-Coriolis") = (int) (clock() - time);
     L_ = (C + K);
   }
   else
@@ -115,8 +122,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   {
     time = clock();
     computeGain(mb, mbc_real);
-    time = clock() - time;
-    std::cout << "Rafa, in IntegralTerm::computeTerm, the time spent for computeGain is " << time << std::endl;
+    elapsed_.at("computeFbTerm-Gain") = (int) (clock() - time);
     
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
@@ -126,8 +132,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
 
     time = clock();
     computeGammaD();
-    time = clock() - time;
-    std::cout << "Rafa, in IntegralTerm::computeTerm, the time spent for computeGammaD is " << time << std::endl;
+    elapsed_.at("computeFbTerm-GammaD") = (int) (clock() - time);
   }
 }
 
