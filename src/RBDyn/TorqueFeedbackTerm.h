@@ -125,7 +125,8 @@ class IntegralTermAntiWindup : public IntegralTerm
 			 const std::shared_ptr<rbd::ForwardDynamics> fd,
 			 IntegralTermType intglTermType, VelocityGainType velGainType,
 			 double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
-			 double max_float = 1E3, double perc = 0.1);
+                         double perc = 0.1, double max_linacc = 0.5,
+                         double max_angacc = 5 * M_PI/180);
 
   void computeTerm(const rbd::MultiBody& mb,
                    const rbd::MultiBodyConfig& mbc_real,
@@ -134,7 +135,7 @@ class IntegralTermAntiWindup : public IntegralTerm
  private:
 
   Eigen::VectorXd torqueL_, torqueU_;
-  double max_float_, perc_;
+  double perc_, max_linacc_, max_angacc_;
 };
 
 
