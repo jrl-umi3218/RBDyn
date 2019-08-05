@@ -39,6 +39,7 @@ class TorqueFeedbackTerm
   {
     None,
     IntegralTerm,
+    IntegralTermAntiWindup,
     PassivityPIDTerm
   };
   
