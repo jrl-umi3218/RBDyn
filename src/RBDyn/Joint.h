@@ -196,6 +196,46 @@ public:
     return gr_;
   }
 
+  void setStaticFriction(double Fs)
+  {
+    Fs_ = Fs;
+  }
+
+  double staticFriction() const
+  {
+    return Fs_;
+  }
+
+  void setKineticFriction(double Fc)
+  {
+    Fc_ = Fc;
+  }
+
+  double kineticFriction() const
+  {
+    return Fc_;
+  }
+
+  void setBreakawayVelocity(double omega_s)
+  {
+    omega_s_ = omega_s;
+  }
+
+  double breakawayVelocity() const
+  {
+    return omega_s_;
+  }
+
+  void setViscousFrictionCoeff(double Fv)
+  {
+    Fv_ = Fv;
+  }
+
+  double viscousFrictionCoeff() const
+  {
+    return Fv_;
+  }
+
   /// @return Joint motion subspace in successor frame coordinate.
   const Eigen::Matrix<double, 6, Eigen::Dynamic> & motionSubspace() const
   {
@@ -296,8 +336,14 @@ private:
   std::string mimicName_ = "";
   double mimicMultiplier_ = 1.0;
   double mimicOffset_ = 0.0;
+  
   double Ir_ = 0.0;
   double gr_ = 0.0;
+
+  double Fc_ = 0.0;
+  double Fs_ = 0.0;
+  double omega_s_ = 0.1;
+  double Fv_ = 0.0;
 };
 
 inline std::ostream & operator<<(std::ostream & out, const Joint & b)
