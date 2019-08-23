@@ -25,6 +25,7 @@
 #include <RBDyn/MultiBody.h>
 #include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/Joint.h>
+#include <RBDyn/Coriolis.h>
 
 namespace torque_control
 {
@@ -114,6 +115,7 @@ class IntegralTerm : public TorqueFeedbackTerm
   VelocityGainType velGainType_;
   double lambda_;
 
+  rbd::Coriolis coriolis_;
   Eigen::MatrixXd L_;
 };
 

@@ -17,7 +17,6 @@
 
 #include "RBDyn/TorqueFeedbackTerm.h"
 
-#include <RBDyn/Coriolis.h>
 #include <unsupported/Eigen/MatrixFunctions>
 #include <iostream>
 
@@ -31,12 +30,11 @@ namespace torque_control
    */
 
 TorqueFeedbackTerm::TorqueFeedbackTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
-                                       const std::shared_ptr<rbd::ForwardDynamics> fd):
-  
-  nrDof_(mbs[robotIndex].nrDof()),
-  fd_(fd),
-  P_(Eigen::VectorXd::Zero(nrDof_)),
-  gammaD_(Eigen::VectorXd::Zero(nrDof_))
+                                       const std::shared_ptr<rbd::ForwardDynamics> fd)
+  : nrDof_(mbs[robotIndex].nrDof()),
+    fd_(fd),
+    P_(Eigen::VectorXd::Zero(nrDof_)),
+    gammaD_(Eigen::VectorXd::Zero(nrDof_))
 {
   elapsed_ = {{"computeFbTerm-Gain", 0},
               {"computeFbTerm-Gain-Coriolis", 0},
@@ -67,12 +65,12 @@ ElapsedTimeMap & TorqueFeedbackTerm::getElapsedTimes()
 IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
                            const std::shared_ptr<rbd::ForwardDynamics> fd,
                            IntegralTermType intglTermType, VelocityGainType velGainType,
-                           double lambda):
-
-  TorqueFeedbackTerm(mbs, robotIndex, fd),
-  intglTermType_(intglTermType),
-  velGainType_(velGainType),
-  lambda_(lambda)
+                           double lambda)
+  : TorqueFeedbackTerm(mbs, robotIndex, fd),
+    intglTermType_(intglTermType),
+    velGainType_(velGainType),
+    lambda_(lambda),
+    coriolis_(mbs[robotIndex])
 {
 }
 
@@ -101,8 +99,7 @@ void IntegralTerm::computeGain(const rbd::MultiBody& mb,
   if (intglTermType_ == PassivityBased)
   {
     time = clock();
-    rbd::Coriolis coriolis(mb);
-    Eigen::MatrixXd C = coriolis.coriolis(mb, mbc_real);
+    Eigen::MatrixXd C = coriolis_.coriolis(mb, mbc_real);
     elapsed_.at("computeFbTerm-Gain-Coriolis") = (int) (clock() - time);
     L_ = (C + K);
   }
@@ -145,11 +142,10 @@ IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>
 					       const std::shared_ptr<rbd::ForwardDynamics> fd,
 					       IntegralTermType intglTermType, VelocityGainType velGainType,
 					       double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
-					       double perc, double max_linacc, double max_angacc):
-  
-  IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, lambda),
-  torqueL_(torqueL), torqueU_(torqueU), perc_(perc),
-  max_linacc_(max_linacc), max_angacc_(max_angacc)
+					       double perc, double max_linacc, double max_angacc)
+  : IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, lambda),
+    torqueL_(torqueL), torqueU_(torqueU), perc_(perc),
+    max_linacc_(max_linacc), max_angacc_(max_angacc)
 {}
 
 void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
@@ -185,7 +181,8 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
     // Eigen::VectorXd torqueU_prime = (abs(torqueU_.array()) < 1E-6).select( max_float_, torqueU_);
     // Eigen::VectorXd torqueL_prime = (abs(torqueL_.array()) < 1E-6).select(-max_float_, torqueL_);
 
-    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_prime = " << torqueU_prime.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, P_ = " << P_.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_prime = " << torqueU_prime.transpose() << std::endl;
     
     double epsilonU = (abs(P_.array() / torqueU_prime.array())).maxCoeff();
     double epsilonL = (abs(P_.array() / torqueL_prime.array())).maxCoeff();
@@ -209,16 +206,15 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
 
 PassivityPIDTerm::PassivityPIDTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
                                    const std::shared_ptr<rbd::ForwardDynamics> fd, double timeStep,
-                                   double beta, double lambda, double mu, double sigma, double cis):
-
-  TorqueFeedbackTerm(mbs, robotIndex, fd),
-  dt_(timeStep),
-  beta_(beta),
-  lambda_(lambda),
-  mu_(mu),
-  sigma_(sigma),
-  cis_(cis),
-  EPrev_(Eigen::VectorXd::Zero(nrDof_))
+                                   double beta, double lambda, double mu, double sigma, double cis)
+  : TorqueFeedbackTerm(mbs, robotIndex, fd),
+    dt_(timeStep),
+    beta_(beta),
+    lambda_(lambda),
+    mu_(mu),
+    sigma_(sigma),
+    cis_(cis),
+    EPrev_(Eigen::VectorXd::Zero(nrDof_))
 {
 }
   
