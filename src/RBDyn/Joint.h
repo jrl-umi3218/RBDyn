@@ -196,44 +196,44 @@ public:
     return gr_;
   }
 
-  void setStaticFriction(double Fs)
+  void setStaticFriction(double Ts)
   {
-    Fs_ = Fs;
+    Ts_ = Ts;
   }
 
   double staticFriction() const
   {
-    return Fs_;
+    return Ts_;
   }
 
-  void setKineticFriction(double Fc)
+  void setKineticFriction(double Tc)
   {
-    Fc_ = Fc;
+    Tc_ = Tc;
   }
 
   double kineticFriction() const
   {
-    return Fc_;
+    return Tc_;
   }
 
-  void setBreakawayVelocity(double omega_s)
+  void setViscousFrictionCoeff(double Tv)
   {
-    omega_s_ = omega_s;
-  }
-
-  double breakawayVelocity() const
-  {
-    return omega_s_;
-  }
-
-  void setViscousFrictionCoeff(double Fv)
-  {
-    Fv_ = Fv;
+    Tv_ = Tv;
   }
 
   double viscousFrictionCoeff() const
   {
-    return Fv_;
+    return Tv_;
+  }
+  
+  void setBreakawayVelocity(double wbrk)
+  {
+    wbrk_ = wbrk;
+  }
+
+  double breakawayVelocity() const
+  {
+    return wbrk_;
   }
 
   /// @return Joint motion subspace in successor frame coordinate.
@@ -340,10 +340,10 @@ private:
   double Ir_ = 0.0;
   double gr_ = 0.0;
 
-  double Fc_ = 0.0;
-  double Fs_ = 0.0;
-  double omega_s_ = 0.1;
-  double Fv_ = 0.0;
+  double Ts_ = 0.0;
+  double Tc_ = 0.0;
+  double Tv_ = 0.0;
+  double wbrk_ = 0.01;
 };
 
 inline std::ostream & operator<<(std::ostream & out, const Joint & b)
