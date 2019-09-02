@@ -44,7 +44,7 @@ class TorqueFeedbackTerm
     PassivityPIDTerm
   };
   
-  TorqueFeedbackTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+  TorqueFeedbackTerm(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
                      const std::shared_ptr<rbd::ForwardDynamics> fd);
   
   const Eigen::VectorXd& P() const
@@ -57,9 +57,9 @@ class TorqueFeedbackTerm
     return gammaD_;
   }
 
-  virtual void computeTerm(const rbd::MultiBody& mb,
-                           const rbd::MultiBodyConfig& mbc_real,
-                           const rbd::MultiBodyConfig& mbc_calc) = 0;
+  virtual void computeTerm(const rbd::MultiBody & mb,
+                           const rbd::MultiBodyConfig & mbc_real,
+                           const rbd::MultiBodyConfig & mbc_calc) = 0;
 
   ElapsedTimeMap & getElapsedTimes();
 
@@ -97,17 +97,17 @@ class IntegralTerm : public TorqueFeedbackTerm
     MassMatrix
   };
 
-  IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+  IntegralTerm(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
                const std::shared_ptr<rbd::ForwardDynamics> fd,
                IntegralTermType intglTermType, VelocityGainType velGainType,
                double lambda);
 
-  void computeGain(const rbd::MultiBody& mb,
-		   const rbd::MultiBodyConfig& mbc_real);
+  void computeGain(const rbd::MultiBody & mb,
+		   const rbd::MultiBodyConfig & mbc_real);
 
-  void computeTerm(const rbd::MultiBody& mb,
-                   const rbd::MultiBodyConfig& mbc_real,
-                   const rbd::MultiBodyConfig& mbc_calc) override;
+  void computeTerm(const rbd::MultiBody & mb,
+                   const rbd::MultiBodyConfig & mbc_real,
+                   const rbd::MultiBodyConfig & mbc_calc) override;
     
  protected:
     
@@ -123,22 +123,25 @@ class IntegralTerm : public TorqueFeedbackTerm
 class IntegralTermAntiWindup : public IntegralTerm
 {
  public:
-   
-  IntegralTermAntiWindup(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+
+  IntegralTermAntiWindup(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
 			 const std::shared_ptr<rbd::ForwardDynamics> fd,
 			 IntegralTermType intglTermType, VelocityGainType velGainType,
-			 double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
-                         double perc = 0.1, double max_linacc = 0.5,
-                         double max_angacc = 5 * M_PI/180);
-
-  void computeTerm(const rbd::MultiBody& mb,
-                   const rbd::MultiBodyConfig& mbc_real,
-                   const rbd::MultiBodyConfig& mbc_calc) override;
+			 double lambda, double perc,
+			 const Eigen::Vector3d & maxLinAcc,
+			 const Eigen::Vector3d & maxAngAcc,
+			 const Eigen::VectorXd & torqueL,
+			 const Eigen::VectorXd & torqueU);
+  
+  void computeTerm(const rbd::MultiBody & mb,
+                   const rbd::MultiBodyConfig & mbc_real,
+                   const rbd::MultiBodyConfig & mbc_calc) override;
 
  private:
 
+  Eigen::Vector3d maxLinAcc_, maxAngAcc_;
   Eigen::VectorXd torqueL_, torqueU_;
-  double perc_, max_linacc_, max_angacc_;
+  double perc_;
 };
 
 
@@ -146,13 +149,13 @@ class PassivityPIDTerm : public TorqueFeedbackTerm
 {
  public:
 
-  PassivityPIDTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+  PassivityPIDTerm(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
                    const std::shared_ptr<rbd::ForwardDynamics> fd, double timeStep,
                    double beta, double lambda, double mu, double sigma, double cis);
   
-  void computeTerm(const rbd::MultiBody& mb,
-                   const rbd::MultiBodyConfig& mbc_real,
-                   const rbd::MultiBodyConfig& mbc_calc) override;
+  void computeTerm(const rbd::MultiBody & mb,
+                   const rbd::MultiBodyConfig & mbc_real,
+                   const rbd::MultiBodyConfig & mbc_calc) override;
   
  private:
 
@@ -162,8 +165,8 @@ class PassivityPIDTerm : public TorqueFeedbackTerm
   Eigen::VectorXd EPrev_;
 
   Eigen::VectorXd errorParam(rbd::Joint::Type type,
-                             std::vector<double> q_ref,
-                             std::vector<double> q_hat);
+                             const std::vector<double> & q_ref,
+                             const std::vector<double> & q_hat);
 };
 
  

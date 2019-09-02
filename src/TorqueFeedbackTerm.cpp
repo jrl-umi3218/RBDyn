@@ -25,10 +25,10 @@
 namespace torque_control
 {
 
-  /**
-   *    TorqueFeedbackTerm
-   */
-
+/**
+ *    TorqueFeedbackTerm
+ */
+  
 TorqueFeedbackTerm::TorqueFeedbackTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
                                        const std::shared_ptr<rbd::ForwardDynamics> fd)
   : nrDof_(mbs[robotIndex].nrDof()),
@@ -56,13 +56,12 @@ ElapsedTimeMap & TorqueFeedbackTerm::getElapsedTimes()
 {
   return elapsed_;
 }
-
   
-  /**
-   *    IntegralTerm
-   */
+/**
+ *    IntegralTerm
+ */
 
-IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
                            const std::shared_ptr<rbd::ForwardDynamics> fd,
                            IntegralTermType intglTermType, VelocityGainType velGainType,
                            double lambda)
@@ -74,8 +73,8 @@ IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody>& mbs, int robotInde
 {
 }
 
-void IntegralTerm::computeGain(const rbd::MultiBody& mb,
-			       const rbd::MultiBodyConfig& mbc_real)
+void IntegralTerm::computeGain(const rbd::MultiBody & mb,
+			       const rbd::MultiBodyConfig & mbc_real)
 {
   Eigen::MatrixXd K;
 
@@ -109,9 +108,9 @@ void IntegralTerm::computeGain(const rbd::MultiBody& mb,
   }
 }
 
-void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
-                               const rbd::MultiBodyConfig& mbc_real,
-                               const rbd::MultiBodyConfig& mbc_calc)
+void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
+                               const rbd::MultiBodyConfig & mbc_real,
+                               const rbd::MultiBodyConfig & mbc_calc)
 {
   clock_t time;
   
@@ -133,24 +132,27 @@ void IntegralTerm::computeTerm(const rbd::MultiBody& mb,
   }
 }
 
+/**
+ *    IntegralTermAntiWindup
+ */
 
-  /**
-   *    IntegralTermAntiWindup
-   */
-
-IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
 					       const std::shared_ptr<rbd::ForwardDynamics> fd,
-					       IntegralTermType intglTermType, VelocityGainType velGainType,
-					       double lambda, Eigen::VectorXd torqueL, Eigen::VectorXd torqueU,
-					       double perc, double max_linacc, double max_angacc)
+					       IntegralTermType intglTermType,
+					       VelocityGainType velGainType,
+					       double lambda, double perc,
+					       const Eigen::Vector3d & maxLinAcc,
+					       const Eigen::Vector3d & maxAngAcc,
+					       const Eigen::VectorXd & torqueL,
+					       const Eigen::VectorXd & torqueU)
   : IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, lambda),
-    torqueL_(torqueL), torqueU_(torqueU), perc_(perc),
-    max_linacc_(max_linacc), max_angacc_(max_angacc)
+    perc_(perc), maxLinAcc_(maxLinAcc), maxAngAcc_(maxAngAcc),
+    torqueL_(torqueL), torqueU_(torqueU)
 {}
 
-void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
-					 const rbd::MultiBodyConfig& mbc_real,
-					 const rbd::MultiBodyConfig& mbc_calc)
+void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
+					 const rbd::MultiBodyConfig & mbc_real,
+					 const rbd::MultiBodyConfig & mbc_calc)
 {
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
@@ -172,7 +174,7 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
       {
         int j = mb.jointPosInDof(j);
         Eigen::Vector6d acc;
-        acc << max_angacc_, max_angacc_, max_angacc_, max_linacc_, max_linacc_, max_linacc_;
+	acc << maxAngAcc_, maxLinAcc_;
         torqueU_prime.segment<6>(j) = fd_->H().block<6, 6>(j, j).diagonal().asDiagonal() * acc;
         torqueL_prime.segment<6>(j) = -torqueU_prime.segment<6>(j);
         break;
@@ -199,12 +201,11 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody& mb,
   }
 }
   
-  
-  /**
-   *    PassivityPIDTerm
-   */
+/**
+  *    PassivityPIDTerm
+  */
 
-PassivityPIDTerm::PassivityPIDTerm(const std::vector<rbd::MultiBody>& mbs, int robotIndex,
+PassivityPIDTerm::PassivityPIDTerm(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
                                    const std::shared_ptr<rbd::ForwardDynamics> fd, double timeStep,
                                    double beta, double lambda, double mu, double sigma, double cis)
   : TorqueFeedbackTerm(mbs, robotIndex, fd),
@@ -218,9 +219,9 @@ PassivityPIDTerm::PassivityPIDTerm(const std::vector<rbd::MultiBody>& mbs, int r
 {
 }
   
-void PassivityPIDTerm::computeTerm(const rbd::MultiBody& mb,
-                                   const rbd::MultiBodyConfig& mbc_real,
-                                   const rbd::MultiBodyConfig& mbc_calc)
+void PassivityPIDTerm::computeTerm(const rbd::MultiBody & mb,
+                                   const rbd::MultiBodyConfig & mbc_real,
+                                   const rbd::MultiBodyConfig & mbc_calc)
 {
   const Eigen::MatrixXd & M = fd_->H();
   
@@ -260,8 +261,8 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody& mb,
 }
 
 Eigen::VectorXd PassivityPIDTerm::errorParam(rbd::Joint::Type type,
-                                             std::vector<double> q_ref,
-                                             std::vector<double> q_hat)
+                                             const std::vector<double> & q_ref,
+                                             const std::vector<double> & q_hat)
 {
   Eigen::VectorXd e;
   
@@ -296,6 +297,5 @@ Eigen::VectorXd PassivityPIDTerm::errorParam(rbd::Joint::Type type,
 
   return e;
 }
-  
 
 } // namespace torque_control
