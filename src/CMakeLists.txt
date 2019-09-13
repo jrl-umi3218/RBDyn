@@ -7,7 +7,8 @@ set(SOURCES MultiBodyGraph.cpp MultiBody.cpp MultiBodyConfig.cpp
   CoM.cpp Momentum.cpp ZMP.cpp IDIM.cpp VisServo.cpp Coriolis.cpp Friction.cpp TorqueFeedbackTerm.cpp)
 set(HEADERS RBDyn/Body.h RBDyn/Joint.h RBDyn/MultiBodyGraph.h RBDyn/MultiBody.h RBDyn/MultiBodyConfig.h
   RBDyn/FK.h RBDyn/FV.h RBDyn/FA.h RBDyn/Jacobian.h RBDyn/ID.h RBDyn/IK.h RBDyn/IS.h RBDyn/FD.h RBDyn/EulerIntegration.h RBDyn/CoM.h
-  RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx RBDyn/Coriolis.h RBDyn/Friction.h RBDyn/TorqueFeedbackTerm.h)
+  RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx RBDyn/Coriolis.h RBDyn/Friction.h RBDyn/TorqueFeedbackTerm.h
+  RBDyn/LambertW/LambertW.h RBDyn/LambertW/LambertW.hxx RBDyn/LambertW/Horner.h)
 
 add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
 target_include_directories(RBDyn PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include> $<INSTALL_INTERFACE:include>)
