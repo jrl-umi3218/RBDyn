@@ -61,8 +61,7 @@ public:
 class RBDYN_DLLAPI ImplEulerIntModelFriction : public Friction
 {
 public:
-  ImplEulerIntModelFriction(const MultiBody & mb,
-                            double Kf, double Bf, double dt = 0.005);
+  ImplEulerIntModelFriction(const MultiBody & mb, double Kf, double dt = 0.005);
 
   void setTimeStep(double dt)
   {
@@ -78,39 +77,34 @@ public:
   {
     return Kf_;
   }
-  
-  void setStaticFrictionDamping(double Bf)
-  {
-    Bf_ = Bf;
-  }
-
-  double staticFrictionDamping() const
-  {
-    return Bf_;
-  }
 
 protected:
-  double Kf_, Bf_;
-  double dt_;
+  double Kf_, dt_;
   Eigen::VectorXd e_;
 };
 
 class RBDYN_DLLAPI ImplEulerIntModelCoulombFriction : public ImplEulerIntModelFriction
 {
  public:
-  ImplEulerIntModelCoulombFriction(const MultiBody & mb,
-                                   double Kf, double Bf, double dt = 0.005);
+  ImplEulerIntModelCoulombFriction(const MultiBody & mb, double Kf, double dt = 0.005);
 
   void computeFriction(const MultiBody & mb, const MultiBodyConfig & mbc) override;
 };
 
-class RBDYN_DLLAPI ImplEulerIntModelStictionFriction : public ImplEulerIntModelFriction
+class RBDYN_DLLAPI ImplEulerIntModelExpStictionFriction : public ImplEulerIntModelFriction
 {
  public:
-  ImplEulerIntModelStictionFriction(const MultiBody & mb,
-                                    double Kf, double Bf, double dt = 0.005);
+  ImplEulerIntModelExpStictionFriction(const MultiBody & mb, double Kf, double dt = 0.005);
 
   void computeFriction(const MultiBody & mb, const MultiBodyConfig & mbc) override;
 };
-  
+
+class RBDYN_DLLAPI ImplEulerIntModelRatStictionFriction : public ImplEulerIntModelFriction
+{
+ public:
+  ImplEulerIntModelRatStictionFriction(const MultiBody & mb, double Kf, double dt = 0.005);
+
+  void computeFriction(const MultiBody & mb, const MultiBodyConfig & mbc) override;
+};
+ 
 }
