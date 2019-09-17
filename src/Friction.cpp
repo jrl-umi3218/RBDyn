@@ -186,17 +186,20 @@ void ImplEulerIntModelRatStictionFriction::computeFriction(const MultiBody & mb,
       double wbrk = mb.joint(i).breakawayVelocity();
       
       double Tsc = Ts - Tc;
-      double r   = Ts / wbrk;
+      double r   = Tsc / wbrk - Tv;
       
       double w = mbc.alpha[i][0];
-      
+
       double Bf = Ts / wbrk - Kf_ * dt_;
+      if (r >= Kf_ * dt_ + Bf)
+	Bf = r - Kf_ * dt_ + EPSILON;
+      
       double Z = 1 / (Kf_ * dt_ + Bf);
       
       double w_ast = w + Z * Kf_ * e_(dofPos_[i]);
       double T_ast = w_ast / Z;
       
-      double delta = Tsc / (r + Tv);
+      double delta = abs(r + Tv) > EPSILON ? Tsc / (r + Tv) : 0.0;
       double alpha = Tv * delta + Tc;
       double beta  = Ts * delta;
       double a = Tv * pow(Z, 2) + Z;
