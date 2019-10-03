@@ -14,6 +14,8 @@ set(PROJECT_DEBUG_POSTFIX "_d")
 set(PROJECT_VERSION 1.1.0)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 
+option(BUILD_PARSERS "Build URDF and YAML parsers" ON)
+
 include(cmake/base.cmake)
 include(cmake/cython/cython.cmake)
 include(cmake/msvc-specific.cmake)
