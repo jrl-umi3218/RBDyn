@@ -108,6 +108,11 @@ class IntegralTerm : public TorqueFeedbackTerm
   void computeTerm(const rbd::MultiBody & mb,
                    const rbd::MultiBodyConfig & mbc_real,
                    const rbd::MultiBodyConfig & mbc_calc) override;
+
+  const Eigen::MatrixXd & CoriolisFactorization() const
+  {
+    return C_;
+  }
     
  protected:
     
@@ -116,6 +121,7 @@ class IntegralTerm : public TorqueFeedbackTerm
   double lambda_;
 
   rbd::Coriolis coriolis_;
+  Eigen::MatrixXd C_;
   Eigen::MatrixXd L_;
 };
 

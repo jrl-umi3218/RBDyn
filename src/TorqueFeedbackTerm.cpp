@@ -69,7 +69,9 @@ IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody> & mbs, int robotInd
     intglTermType_(intglTermType),
     velGainType_(velGainType),
     lambda_(lambda),
-    coriolis_(mbs[robotIndex])
+    coriolis_(mbs[robotIndex]),
+    C_(Eigen::MatrixXd::Zero(nrDof_, nrDof_)),
+    L_(Eigen::MatrixXd::Zero(nrDof_, nrDof_))
 {
 }
 
@@ -98,9 +100,9 @@ void IntegralTerm::computeGain(const rbd::MultiBody & mb,
   if (intglTermType_ == PassivityBased)
   {
     time = clock();
-    Eigen::MatrixXd C = coriolis_.coriolis(mb, mbc_real);
+    C_ = coriolis_.coriolis(mb, mbc_real);
     elapsed_.at("computeFbTerm-Gain-Coriolis") = (int) (clock() - time);
-    L_ = (C + K);
+    L_ = (C_ + K);
   }
   else
   {
