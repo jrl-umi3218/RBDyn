@@ -163,12 +163,20 @@ class PassivityPIDTerm : public TorqueFeedbackTerm
                    const rbd::MultiBodyConfig & mbc_real,
                    const rbd::MultiBodyConfig & mbc_calc) override;
   
+  const Eigen::MatrixXd & CoriolisFactorization() const
+  {
+    return C_;
+  }
+  
  private:
 
   double dt_;
   double beta_, lambda_, mu_, sigma_, cis_;
 
   Eigen::VectorXd EPrev_;
+
+  rbd::Coriolis coriolis_;
+  Eigen::MatrixXd C_;
 
   Eigen::VectorXd errorParam(rbd::Joint::Type type,
                              const std::vector<double> & q_ref,

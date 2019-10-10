@@ -217,7 +217,9 @@ PassivityPIDTerm::PassivityPIDTerm(const std::vector<rbd::MultiBody> & mbs, int 
     mu_(mu),
     sigma_(sigma),
     cis_(cis),
-    EPrev_(Eigen::VectorXd::Zero(nrDof_))
+    EPrev_(Eigen::VectorXd::Zero(nrDof_)),
+    coriolis_(mbs[robotIndex]),
+    C_(Eigen::MatrixXd::Zero(nrDof_, nrDof_))
 {
 }
   
@@ -227,16 +229,15 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody & mb,
 {
   const Eigen::MatrixXd & M = fd_->H();
   
-  rbd::Coriolis coriolis(mb);
-  const Eigen::MatrixXd & C = coriolis.coriolis(mb, mbc_real);
+  C_ = coriolis_.coriolis(mb, mbc_real);
 
   Eigen::MatrixXd Ka = beta_  * M;
   //Eigen::MatrixXd L  = sigma_ * M.diagonal().asDiagonal();
   Eigen::MatrixXd L  = sigma_ * M;
   
-  Eigen::MatrixXd Kv = lambda_ * M + C + Ka;
-  Eigen::MatrixXd Kp = mu_ * M + lambda_ * (C + Ka) + L;
-  Eigen::MatrixXd Ki = mu_ * (C + Ka) + cis_ * lambda_ * L;
+  Eigen::MatrixXd Kv = lambda_ * M + C_ + Ka;
+  Eigen::MatrixXd Kp = mu_ * M + lambda_ * (C_ + Ka) + L;
+  Eigen::MatrixXd Ki = mu_ * (C_ + Ka) + cis_ * lambda_ * L;
 
   Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
   Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
