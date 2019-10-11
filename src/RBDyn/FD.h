@@ -12,9 +12,9 @@
 #include <Eigen/Core>
 
 // SpaceVecAlg
-#include <rbdyn/config.hh>
-
 #include <SpaceVecAlg/SpaceVecAlg>
+
+#include <rbdyn/config.hh>
 
 namespace rbd
 {
@@ -39,6 +39,12 @@ public:
    * Fill alphaD generalized acceleration vector.
    */
   void forwardDynamics(const MultiBody & mb, MultiBodyConfig & mbc);
+
+  /**
+   * Compute the diagonal of rotor inertias HIr that is added to the inertia matrix H.
+   * @param mb MultiBody used has model.
+   */
+  void computeHIr(const MultiBody& mb);
 
   /**
    * Compute the inertia matrix H.
@@ -90,6 +96,8 @@ public:
    */
   void sComputeC(const MultiBody & mb, const MultiBodyConfig & mbc);
 
+  // Eigen::Matrix3d SkewSymmetric(const Eigen::Vector3d& v);
+
 private:
   Eigen::MatrixXd H_;
   Eigen::VectorXd C_;
@@ -97,6 +105,7 @@ private:
   // H computation
   std::vector<sva::RBInertiad> I_st_;
   std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> F_;
+  Eigen::MatrixXd HIr_;
 
   // C computation
   std::vector<sva::MotionVecd> acc_;
