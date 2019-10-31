@@ -122,7 +122,7 @@ public:
   /// @param forward Put the joint in forward direction if true.
   void forward(bool forward)
   {
-    if(forward != this->forward()) S_ *= -1; 
+    if(forward != this->forward()) S_ *= -1;
     dir_ = forward ? 1. : -1;
   }
 

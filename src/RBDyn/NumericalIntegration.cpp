@@ -22,11 +22,14 @@ namespace
  * ||O_i+1|| < relEps * ||O1||. It stops at the 5th term even if the conditions where not
  * met, in which case the return bool is set to true as a warning.
  */
-std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & wD, double step,
-                                          double relEps, double absEps)
+std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w,
+                                          const Vector3d & wD,
+                                          double step,
+                                          double relEps,
+                                          double absEps)
 {
   double step2 = step * step;
-  double sqnd = wD.squaredNorm();           // ||wD||^2
+  double sqnd = wD.squaredNorm(); // ||wD||^2
 
   Vector3d w1 = w + wD * step;
   Vector3d O1 = (w + w1) * step / 2;
@@ -34,17 +37,17 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
 
   Vector3d O2 = w.cross(w1) * step2 / 12;
 
-  double sqn1 = O1.squaredNorm();           // ||O1||^2
-  double sqn2 = O2.squaredNorm();           // ||O2||^2
-  double sqndt4 = sqnd * step2 * step2;     // ||wD||^2 t^4
-  double sqn3 = sqndt4 * sqn2 / 400;        // ||O3||^2
-  double sqn4 = sqn1 * sqn1 * sqn2 / 3600;  // upper bound for ||O4||^2
+  double sqn1 = O1.squaredNorm(); // ||O1||^2
+  double sqn2 = O2.squaredNorm(); // ||O2||^2
+  double sqndt4 = sqnd * step2 * step2; // ||wD||^2 t^4
+  double sqn3 = sqndt4 * sqn2 / 400; // ||O3||^2
+  double sqn4 = sqn1 * sqn1 * sqn2 / 3600; // upper bound for ||O4||^2
   double rel2 = (sqn1 > 0) ? relEps * relEps * sqn1 : 1;
   double eps2 = std::min(rel2, absEps * absEps); // squared absolute error
-  
-  if (sqn3 < eps2 && sqn4 < eps2)
+
+  if(sqn3 < eps2 && sqn4 < eps2)
   {
-    return {O1+O2, false};
+    return {O1 + O2, false};
   }
 
   Vector3d O3 = wD.cross(O2) * step2 / 20;
@@ -53,7 +56,7 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
   // upper bound for ||O5||^2
   double sqn5 = (sqndt4 * sqn1 + 8 * std::sqrt(sqndt4 * sqn1 * sqn2) + 16 * sqn2) * sqn1 * sqn2 / (840 * 840);
 
-  if (sqn5 < eps2)
+  if(sqn5 < eps2)
   {
     return {O1 + O2 + O3 + O4, false};
   }
@@ -69,10 +72,7 @@ std::pair<Vector3d, bool> magnusExpansion(const Vector3d & w, const Vector3d & w
  *  + (3 dw.v + 8 w.dv) dw + (5 w.dw v + 4||w||^2 dv) x w + (2 w.v w + ||w||^2 v) x dw)
  * Note that norm is independent of R, because R^T R = I;
  */
-double fourthDerivativeSquaredNormFree(const Vector3d & v,
-                                       const Vector3d & w,
-                                       const Vector3d & dv,
-                                       const Vector3d & dw)
+double fourthDerivativeSquaredNormFree(const Vector3d & v, const Vector3d & w, const Vector3d & dv, const Vector3d & dw)
 {
   double nw2 = w.squaredNorm();
   double nw4 = nw2 * nw2;
@@ -84,7 +84,7 @@ double fourthDerivativeSquaredNormFree(const Vector3d & v,
   double dwdv = dw.dot(dv);
 
   Vector3d u = (nw4 - 3 * ndw2) * v - 12 * wdw * dv + (4 * dwdv - nw2 * wv) * w + (3 * dwv + 8 * wdv) * dw
-                      - w.cross(5 * wdw * v + 4 * nw2 * dv) - dw.cross(2 * wv * w + nw2 * v);
+               - w.cross(5 * wdw * v + 4 * nw2 * dv) - dw.cross(2 * wv * w + nw2 * v);
 
   return u.squaredNorm();
 }
@@ -96,10 +96,7 @@ double fourthDerivativeSquaredNormFree(const Vector3d & v,
  * ||f^(4)|| = ||(w^4 - 3 dw^2) v - 6 dw w^2 M v - 12 dw w dv - 4 w^3 M dv|| where M = [0 -1; 1 0].
  * Note that norm is independent of R and U because R^T R = I, U^T U = I and R^T U = M.
  */
-double fourthDerivativeSquaredNormPlanar(const Vector2d& v, 
-                                         double w, 
-                                         const Vector2d &dv, 
-                                         double dw)
+double fourthDerivativeSquaredNormPlanar(const Vector2d & v, double w, const Vector2d & dv, double dw)
 {
   double w2 = w * w;
   Vector2d Mv(-v.y(), v.x());
@@ -110,14 +107,18 @@ double fourthDerivativeSquaredNormPlanar(const Vector2d& v,
   return u.squaredNorm();
 }
 
-std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, const Vector3d& xi, 
-                                                       const Quaterniond& qf,
-                                                       Vector3d wi, Vector3d vi, 
-                                                       const Vector3d& wD, const Vector3d& vD,
-                                                       double step, double prec = 1e-10)
+std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond & qi,
+                                                       const Vector3d & xi,
+                                                       const Quaterniond & qf,
+                                                       Vector3d wi,
+                                                       Vector3d vi,
+                                                       const Vector3d & wD,
+                                                       const Vector3d & vD,
+                                                       double step,
+                                                       double prec = 1e-10)
 {
   double erri = fourthDerivativeSquaredNormFree(vi, wi, vD, wD);
-  double errf = fourthDerivativeSquaredNormFree(vi+step*vD, wi+step*wD, vD, wD);
+  double errf = fourthDerivativeSquaredNormFree(vi + step * vD, wi + step * wD, vD, wD);
   double errMax = std::sqrt(std::max(erri, errf));
   int n = static_cast<int>(std::ceil(step / 2 * std::sqrt(std::sqrt(errMax * step / (180 * prec)))));
   if(n == 0) n = 1;
@@ -148,13 +149,17 @@ std::pair<Quaterniond, Vector3d> freeJointIntegration_(const Quaterniond& qi, co
   return H;
 }
 
-std::pair<Quaterniond, Vector3d> freeJointIntegration(const Quaterniond& qi, const Vector3d& xi, 
-                                                       const Vector3d& wi, const Vector3d& vi, 
-                                                       const Vector3d& wD, const Vector3d& vD,
-                                                       double step, double prec = 1e-10)
+std::pair<Quaterniond, Vector3d> freeJointIntegration(const Quaterniond & qi,
+                                                      const Vector3d & xi,
+                                                      const Vector3d & wi,
+                                                      const Vector3d & vi,
+                                                      const Vector3d & wD,
+                                                      const Vector3d & vD,
+                                                      double step,
+                                                      double prec = 1e-10)
 {
   auto qf = rbd::SO3Integration(qi, wi, wD, step, prec, prec);
-  if (!qf.second)
+  if(!qf.second)
   {
     return freeJointIntegration_(qi, xi, qf.first, wi, vi, wD, vD, step, prec);
   }
@@ -166,11 +171,14 @@ std::pair<Quaterniond, Vector3d> freeJointIntegration(const Quaterniond& qi, con
   }
 }
 
-Quaterniond sphericalJointIntegration(const Quaterniond& qi, const Vector3d& wi,
-                                      const Vector3d& wD, double step, double prec = 1e-10)
+Quaterniond sphericalJointIntegration(const Quaterniond & qi,
+                                      const Vector3d & wi,
+                                      const Vector3d & wD,
+                                      double step,
+                                      double prec = 1e-10)
 {
   auto qf = rbd::SO3Integration(qi, wi, wD, step, prec, prec, true);
-  if (!qf.second)
+  if(!qf.second)
   {
     return qf.first;
   }
@@ -189,10 +197,14 @@ Matrix2d R(double q)
   return (Matrix2d() << c, -s, s, c).finished();
 }
 
-std::pair<double, Vector2d> planarJointIntegration(double qi, const Vector2d& xi,
-                                                   double wi, Vector2d vi,
-                                                   double wD, const Vector2d& vD,
-                                                   double step, double prec = 1e-10)
+std::pair<double, Vector2d> planarJointIntegration(double qi,
+                                                   const Vector2d & xi,
+                                                   double wi,
+                                                   Vector2d vi,
+                                                   double wD,
+                                                   const Vector2d & vD,
+                                                   double step,
+                                                   double prec = 1e-10)
 {
   double erri = fourthDerivativeSquaredNormPlanar(vi, wi, vD, wD);
   double errf = fourthDerivativeSquaredNormPlanar(vi + step * vD, wi + step * wD, vD, wD);
@@ -224,8 +236,8 @@ std::pair<double, Vector2d> planarJointIntegration(double qi, const Vector2d& xi
   H.first += wi * nthStep + wD * nthStep2;
   H.second += nthStep * (4 * R(qh) * vh + R(H.first) * vf);
 
-  H.second = R(H.first).transpose()*(H.second / 6);
-  //H.second /= 6;
+  H.second = R(H.first).transpose() * (H.second / 6);
+  // H.second /= 6;
 
   return H;
 }
@@ -247,7 +259,7 @@ std::pair<Quaterniond, bool> SO3Integration(const Quaterniond & qi,
   // the division by 2 is because we want to compute exp(O) = (cos(||O||/2), sin(||O||/2)*O/||O||)
   // in quaternion form.
   auto mag = magnusExpansion(wi, wD, step, relEps, absEps);
-  if (breakOnWarning && mag.second)
+  if(breakOnWarning && mag.second)
   {
     return {qi, true};
   }

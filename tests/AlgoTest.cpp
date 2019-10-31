@@ -385,7 +385,7 @@ BOOST_AUTO_TEST_CASE(EulerTest)
 
   // planar
 
-  //static
+  // static
   q = {0., 0., 0.};
   goalQ = {0, 0., 0.};
   jointIntegration(Joint::Planar, {0, 0., 0.}, {0., 0., 0.}, 1., q);
@@ -471,7 +471,7 @@ BOOST_AUTO_TEST_CASE(EulerTestV2)
   }
 
   // The current test does not make sense for free joints
-  //for(int i = 0; i < 100; ++i)
+  // for(int i = 0; i < 100; ++i)
   //{
   //  VectorXd q(VectorXd::Random(7));
   //  q.head<4>() /= q.head<4>().norm();

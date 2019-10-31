@@ -92,7 +92,7 @@ std::vector<double> randVec(int size, double rmin, double rmax, bool normed = fa
   return v;
 }
 
-/// @return random joint configuration, velocity and acceleration for the given joint type 
+/// @return random joint configuration, velocity and acceleration for the given joint type
 std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> randQVA(Joint::Type type)
 {
   std::vector<double> q, v, a;
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE(ConstantSpeedJointIntegrationTest)
   {
     for(auto type : types)
     {
-      for (int i = 0; i < nbTest; ++i)
+      for(int i = 0; i < nbTest; ++i)
       {
         std::vector<double> q, v, a;
         std::tie(q, v, a) = randQVA(type);

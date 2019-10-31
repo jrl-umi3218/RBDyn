@@ -30,14 +30,13 @@ struct MultiBodyConfig;
  * @param breakOnWarning If true, computation is stopped right after the underlying Magnus expansion when it returns
  * a warning, and qi is returned, otherwise perform the full computation.
  */
-RBDYN_DLLAPI std::pair<Eigen::Quaterniond, bool> SO3Integration(
-                                                      const Eigen::Quaterniond & qi,
-                                                      const Eigen::Vector3d & wi,
-                                                      const Eigen::Vector3d & wD,
-                                                      double step,
-                                                      double relEps = 1e-12,
-                                                      double absEps = std::numeric_limits<double>::epsilon(),
-                                                      bool breakOnWarning = false);
+RBDYN_DLLAPI std::pair<Eigen::Quaterniond, bool> SO3Integration(const Eigen::Quaterniond & qi,
+                                                                const Eigen::Vector3d & wi,
+                                                                const Eigen::Vector3d & wD,
+                                                                double step,
+                                                                double relEps = 1e-12,
+                                                                double absEps = std::numeric_limits<double>::epsilon(),
+                                                                bool breakOnWarning = false);
 
 /**
  * Integrate joint configuration.
@@ -56,7 +55,7 @@ RBDYN_DLLAPI void jointIntegration(Joint::Type type,
                                    double prec = 1e-10);
 
 /**
- * Use numerical or Euler methods (depending on joints) to compute the joint 
+ * Use numerical or Euler methods (depending on joints) to compute the joint
  * configurations and velocities after a step with constant joint accelerations.
  * @param mb MultiBody used has model.
  * @param mbc Use alphaD, alpha and q. Fill alpha and q.
