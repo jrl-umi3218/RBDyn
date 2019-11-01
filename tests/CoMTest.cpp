@@ -16,13 +16,13 @@
 
 // RBDyn
 #include "RBDyn/CoM.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // arm
 #include "XYZarm.h"
@@ -196,7 +196,7 @@ Eigen::Vector3d makeCoMDotFromStep(const rbd::MultiBody & mb, const rbd::MultiBo
   MultiBodyConfig mbcTmp(mbc);
 
   Vector3d oC = computeCoM(mb, mbcTmp);
-  eulerIntegration(mb, mbcTmp, step);
+  integration(mb, mbcTmp, step);
   forwardKinematics(mb, mbcTmp);
   forwardVelocity(mb, mbcTmp);
   Vector3d nC = computeCoM(mb, mbcTmp);
@@ -217,7 +217,7 @@ Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody & mb,
   MultiBodyConfig mbcTmp(mbc);
 
   MatrixXd oJ = jac.jacobian(mb, mbcTmp);
-  eulerIntegration(mb, mbcTmp, step);
+  integration(mb, mbcTmp, step);
   forwardKinematics(mb, mbcTmp);
   forwardVelocity(mb, mbcTmp);
   MatrixXd nJ = jac.jacobian(mb, mbcTmp);

@@ -18,7 +18,7 @@ struct MultiBodyConfig;
  * as in Kajita's book on humanoid robots chap. 3 p.38
  * @param mbc Use gravity
  * @param com CoM position in world frame
- * @oaram comA CoM acceleration in world frame, this must be computed without
+ * @param comA CoM acceleration in world frame, this must be computed without
  *	the gravity term
  * @param altitude Double representing the surface's altitude in world frame
  * @return ZMP

@@ -54,7 +54,7 @@ void InverseStatics::setJacobianSize(const MultiBody & mb,
   {
     if(jacMomentsAndForces[i].cols() > nColsWanted)
     {
-      nColsWanted = jacMomentsAndForces[i].cols();
+      nColsWanted = static_cast<long>(jacMomentsAndForces[i].cols());
     }
   }
   for(std::size_t i = 0; i < bodies.size(); ++i)

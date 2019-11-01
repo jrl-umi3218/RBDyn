@@ -39,7 +39,7 @@ public:
   enum Type
   {
     Rev, ///< Revolute joint about an user specified axis.
-    Prism, ///< Prismatique joint about an user specified axis.
+    Prism, ///< Prismatic joint about an user specified axis.
     Spherical, ///< Spherical joint, represented by a quaternion.
     Planar, ///< Planar joint (2 prismatic(X, Y) and 1 revolute(Z)).
     Cylindrical, ///< Cylindrical joint (Z prismatic, Z revolute).
@@ -122,8 +122,8 @@ public:
   /// @param forward Put the joint in forward direction if true.
   void forward(bool forward)
   {
+    if(forward != this->forward()) S_ *= -1;
     dir_ = forward ? 1. : -1;
-    S_ *= dir_;
   }
 
   /**

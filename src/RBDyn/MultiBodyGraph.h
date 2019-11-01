@@ -156,7 +156,7 @@ public:
    * Create a MultiBody from the graph.
    * @param rootBodyName Name of the root body.
    * @param rootJointType MultiBody root joint type.
-   * @param rootJointAxid MultiBody root joint axis.
+   * @param axis MultiBody root joint axis.
    * @param X_0_j0 Transformation to the root joint.
    * @param X_b0_j0 Transformation from the root body to the root joint.
    * @throw std::out_of_range If rootBodyId don't exist.
@@ -210,7 +210,6 @@ public:
   /**
    * Return the dictionary of successor joints name by body name.
    * @param rootBodyName Name of graph root.
-   * @param jointName Merge all node after jointName in jointName parent node.
    * @return dictionary of successor joints id by body id.
    * @throw std::out_of_range.
    */
@@ -218,7 +217,6 @@ public:
 
   /**
    * Return the dictionary of predecessor joint name by body name.
-   * @param jointName Merge all node after jointName in jointName parent node.
    * @param rootBodyName Name of graph root.
    * @return dictionary of predecessor joint name by body name.
    * @throw std::out_of_range.
