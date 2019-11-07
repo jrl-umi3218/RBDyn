@@ -1,6 +1,6 @@
 var a00020 =
 [
-    [ "eulerIntegration", "a00020.html#af1d5e428f8fea58734485e214420ad45", null ],
-    [ "eulerJointIntegration", "a00020.html#a3bd2d0d6d7e28cb91bf1d4595c170eed", null ],
-    [ "sEulerIntegration", "a00020.html#abd0e7a890bf8ed1ba9790c65f2b172c2", null ]
+    [ "Node", "a00020.html#ade9757164a88994b4fedf2af4c33e089", null ],
+    [ "arcs", "a00020.html#aacec197bdf6de9edf6de089253ffb583", null ],
+    [ "body", "a00020.html#aea931fe8a425c0795911395cd09071b6", null ]
 ];

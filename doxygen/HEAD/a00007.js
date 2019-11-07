@@ -1,14 +1,11 @@
 var a00007 =
 [
-    [ "ForwardDynamics", "a00007.html#ae259468b4893dec148ecc09b9e4a1b6b", null ],
-    [ "ForwardDynamics", "a00007.html#aa22bfb5dd27b0397ae8346562e4c24f8", null ],
-    [ "C", "a00007.html#acd290758d08eaf35cabcc78b5d2a20ab", null ],
-    [ "computeC", "a00007.html#a6a5e452fdaf1b01afacccc972bc86190", null ],
-    [ "computeH", "a00007.html#a19956574f9a161a0aa99d686f5b0894b", null ],
-    [ "forwardDynamics", "a00007.html#aa530cfcbe7f084f80cba29a038e080f1", null ],
-    [ "H", "a00007.html#a45a3535c97d54ce0179fdfcac1d3febe", null ],
-    [ "inertiaSubTree", "a00007.html#ad83ae9dbf531799c3f0dce5587310ef4", null ],
-    [ "sComputeC", "a00007.html#af635bf7af87c786733b52f809aa71ce4", null ],
-    [ "sComputeH", "a00007.html#a0d768ea2d4bfcb0350fe1a51aa7fc333", null ],
-    [ "sForwardDynamics", "a00007.html#ac193710e027bab0b48628722f1e7f3c6", null ]
+    [ "CoMJacobianDummy", "a00007.html#ababbc4a3f04802ad1d0287a8e2d47b39", null ],
+    [ "CoMJacobianDummy", "a00007.html#a554c25fd879b9e58e177a705df4a9755", null ],
+    [ "CoMJacobianDummy", "a00007.html#aa4d5197c3891864b65833d93b089f38b", null ],
+    [ "~CoMJacobianDummy", "a00007.html#a3037b95f71681a718f6d00e504e5bf80", null ],
+    [ "jacobian", "a00007.html#a25c51ef15038a476e629d51c2a7fbff1", null ],
+    [ "jacobianDot", "a00007.html#a4707fb88d4a83ea98107e8fee0e3ce34", null ],
+    [ "sJacobian", "a00007.html#ac3ce8eac765164e19b299ce0035a2991", null ],
+    [ "sJacobianDot", "a00007.html#a0c7ed35a07cbeae6048181a6f594c881", null ]
 ];
