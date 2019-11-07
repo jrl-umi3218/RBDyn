@@ -5,6 +5,7 @@ RBDyn
 [![Build Status](https://travis-ci.org/jrl-umi3218/RBDyn.svg?branch=master)](https://travis-ci.org/jrl-umi3218/RBDyn)
 [![AppVeyor status](https://ci.appveyor.com/api/projects/status/k2l715sc47t9u411/branch/master?svg=true)](https://ci.appveyor.com/project/gergondet/rbdyn/branch/master)
 [ ![Download](https://api.bintray.com/packages/gergondet/multi-contact/SpaceVecAlg%3Agergondet/images/download.svg) ](https://bintray.com/gergondet/multi-contact/RBDyn%3Agergondet/_latestVersion)
+[![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](http://jrl-umi3218.github.io/RBDyn/doxygen/HEAD/index.html)
 
 RBDyn provide a set of class and function to model the dynamics of rigid body systems.
 
