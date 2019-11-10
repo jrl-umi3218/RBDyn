@@ -185,8 +185,8 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
     // Eigen::VectorXd torqueU_prime = (abs(torqueU_.array()) < 1E-6).select( max_float_, torqueU_);
     // Eigen::VectorXd torqueL_prime = (abs(torqueL_.array()) < 1E-6).select(-max_float_, torqueL_);
 
-    std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, P_ = " << P_.transpose() << std::endl;
-    std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_prime = " << torqueU_prime.transpose() << std::endl;
+    //std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, P_ = " << P_.transpose() << std::endl;
+    //std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_prime = " << torqueU_prime.transpose() << std::endl;
     
     double epsilonU = (abs(P_.array() / torqueU_prime.array())).maxCoeff();
     double epsilonL = (abs(P_.array() / torqueL_prime.array())).maxCoeff();
@@ -196,7 +196,7 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
     
     if (epsilon > 1) {
       P_ /= epsilon;
-      std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, the AntiWindup is activated with gain = " << 1/epsilon << std::endl;
+      //std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, the AntiWindup is activated with gain = " << 1/epsilon << std::endl;
     }
     
     computeGammaD();
