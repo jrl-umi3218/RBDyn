@@ -47,5 +47,6 @@ script: ./.travis/run build
 after_success: ./.travis/run after_success
 after_failure: ./.travis/run after_failure
 before_install:
+- if [ $CC = gcc -a $CMAKE_BUILD_TYPE = RelWithDebInfo ]; then export DO_DOC_UPDATE=true; else export DO_DOC_UPDATE=false; fi
 - export CMAKE_ADDITIONAL_OPTIONS="${CMAKE_ADDITIONAL_OPTIONS} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
 - ./.travis/run  before_install
