@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['depthdotjacobian',['depthDotJacobian',['../a00042.html#a731b8c0b3d37872f0a22fd46d008e970',1,'rbd']]],
-  ['direction',['direction',['../a00016.html#afdca9b1edf014edfc39447079bb1706c',1,'rbd::Joint']]],
-  ['dof',['dof',['../a00015.html#ab5871ae582b0d6802816646e64b38cff',1,'rbd::Jacobian::dof()'],['../a00016.html#a2c33de3bbc848266662b506028810f83',1,'rbd::Joint::dof()']]],
-  ['doftovector',['dofToVector',['../a00042.html#a35ba4e7bcaf28864ee5b873aa2f7ad98',1,'rbd']]],
-  ['dot',['dot',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00006.html#a846f0ac67ef5ba97f1c84928b99f2ea2',1,'sva::MotionVec']]],
-  ['dualmatrix',['dualMatrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00007.html#afa7630aebda72170cb723e245d3d733f',1,'sva::PTransform']]],
-  ['dualmul',['dualMul',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00007.html#a343813be8a4a1cc3e042cba95334da8e',1,'sva::PTransform::dualMul(const ForceVec&lt; T &gt; &amp;fv) const '],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00007.html#a66fdedea351ae8db4980b31c2df45663',1,'sva::PTransform::dualMul(const Eigen::MatrixBase&lt; Derived &gt; &amp;fv, Eigen::MatrixBase&lt; Derived &gt; &amp;result) const '],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00007.html#ac2020d451e4115a6b528d73948720cc0',1,'sva::PTransform::dualMul(const RBInertia&lt; T &gt; &amp;rbI) const '],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00007.html#a51394f448963b0009970a14db044afe1',1,'sva::PTransform::dualMul(const ABInertia&lt; T &gt; &amp;rbI) const ']]]
+  ['depthdotjacobian',['depthDotJacobian',['../a00381.html#a731b8c0b3d37872f0a22fd46d008e970',1,'rbd']]],
+  ['direction',['direction',['../a00995.html#a4d6fc0169734d58a5dd6c5aa48b9ab6b',1,'rbd::Joint']]],
+  ['dof',['dof',['../a00991.html#aad4fa59f43ace5ebeb0b2227e5cb86d6',1,'rbd::Jacobian::dof()'],['../a00995.html#a43cdf3d3ef2f3d8a7c88a90d0c5ba2ff',1,'rbd::Joint::dof()']]],
+  ['doftovector',['dofToVector',['../a00381.html#a35ba4e7bcaf28864ee5b873aa2f7ad98',1,'rbd']]],
+  ['dot',['dot',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00635.html#ac6f537daade96c05ad329b2e5690d8eb',1,'sva::MotionVec']]],
+  ['dualmatrix',['dualMatrix',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a62557fb6c098245e624b81512b95de6d',1,'sva::PTransform']]],
+  ['dualmul',['dualMul',['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a3e1349fae3b09375d5ec49c8f88c9a5e',1,'sva::PTransform::dualMul(const ForceVec&lt; T &gt; &amp;fv) const'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#abee09629bcbeeec92ab4936396de9bda',1,'sva::PTransform::dualMul(const Eigen::MatrixBase&lt; Derived &gt; &amp;fv, Eigen::MatrixBase&lt; Derived &gt; &amp;result) const'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a2e84ad55dd642decbadf979c073ba609',1,'sva::PTransform::dualMul(const RBInertia&lt; T &gt; &amp;rbI) const'],['https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a5a729e6e0acc888df06a01dc7faaa906',1,'sva::PTransform::dualMul(const ABInertia&lt; T &gt; &amp;rbI) const']]]
 ];
