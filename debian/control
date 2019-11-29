@@ -39,7 +39,7 @@ Depends: pkg-config,
          ${misc:Depends}
 Suggests: librbdyn-doc
 Description: RBDyn - development files
- RBDyn provide a set of class and function to model the
+ RBDyn provides a set of classes and functions to model the
  dynamics of rigid body systems.
  .
  This package contains development files (headers and shared library
@@ -51,7 +51,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Description: RBDyn: dynamics of rigid body systems
- RBDyn provide a set of class and function to model the
+ RBDyn provides a set of classes and functions to model the
  dynamics of rigid body systems.
  .
  This implementation is based on [Roy Featherstone Rigid
@@ -66,7 +66,7 @@ Depends: ${misc:Depends}
 Multi-Arch: foreign
 Suggests: librbdyn-dev
 Description: RBDyn API documentation
- RBDyn provide a set of class and function to model the
+ RBDyn provides a set of classes and functions to model the
  dynamics of rigid body systems.
  .
  This package provides the complete API documentation in HTML format.

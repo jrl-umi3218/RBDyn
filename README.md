@@ -6,7 +6,7 @@ RBDyn
 [![CI](https://github.com/jrl-umi3218/RBDyn/workflows/CI%20of%20RBDyn/badge.svg?branch=master)](https://github.com/jrl-umi3218/RBDyn/actions?query=workflow%3A%22CI+of+RBDyn%22)
 [![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](http://jrl-umi3218.github.io/RBDyn/doxygen/HEAD/index.html)
 
-RBDyn provide a set of class and function to model the dynamics of rigid body systems.
+RBDyn provides a set of classes and functions to model the dynamics of rigid body systems.
 
 This implementation is based on [Roy Featherstone Rigid Body Dynamics Algorithms book](http://www.springer.com/fr/book/9780387743141) and other state of the art publications.
 
