@@ -61,6 +61,7 @@ jobs:
               ref: 3.3.7
         github: |
           - path: jrl-umi3218/Eigen3ToPython
+          - path: jrl-umi3218/SpaceVecAlg
     - name: Build and test
       uses: jrl-umi3218/github-actions/build-cmake-project@master
       with:
