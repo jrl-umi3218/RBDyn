@@ -1,0 +1,148 @@
+name: Package RBDyn
+
+# This workflow only runs when pushing to master or pushing a tag
+#
+# On master, it will:
+# - Build packages for selected Debian/Ubuntu distro
+# - Upload the packages to https://dl.bintray.com/gergondet/multi-contact-head
+#
+# On tagged versions it will:
+# - Create a GitHub release draft
+# - Attach the sources to the release
+# - Build packages for selected Debian/Ubuntu distro
+# - Upload the packages to https://dl.bintray.com/gergondet/multi-contact
+# - Finalize the release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
+jobs:
+  # For a given tag vX.Y.Z, this checks:
+  # - set(PROJECT_VERSION X.Y.Z) in CMakeLists.txt
+  # - version X.Y.Z in debian/changelog
+  # If these checks fail, the tag is automatically deleted
+  #
+  # This job does not run on the master branch
+  check-tag:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+      if: github.ref != 'refs/heads/master'
+    - name: Check version coherency
+      run: |
+        set -x
+        export VERSION=`echo ${{ github.ref }} | sed -e 's@refs/tags/v@@'`
+        echo "::set-env name=REJECTION::PROJECT_VERSION in CMakeLists.txt does not match tag"
+        grep -q "set(PROJECT_VERSION ${VERSION})" CMakeLists.txt
+        echo "::set-env name=REJECTION::Upstream version in debian/changelog does not match tag"
+        head -n 1 debian/changelog | grep -q "rbdyn (${VERSION}"
+        echo "::set-env name=REJECTION::"
+        export TAG=`echo ${{ github.ref }} | sed -e 's@refs/tags/@@'`
+        echo "::set-env name=RELEASE_TAG::${TAG}"
+      if: github.ref != 'refs/heads/master'
+    - name: Delete tag
+      run: |
+        set -x
+        curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -X DELETE https://api.github.com/repos/${{ github.repository }}/git/${{ github.ref }}
+      if: failure()
+    - name: Notify tag deletion
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
+        slack-channel: '#ci'
+        slack-text: >
+          Tag *${{ github.ref }}* in *${{ github.repository }}* was deleted:
+            ${{ env.REJECTION}}
+      if: failure()
+    - name: Create release
+      uses: jrl-umi3218/github-actions/create-release@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ env.RELEASE_TAG }}
+      if: github.ref != 'refs/heads/master'
+  # This job build binary packages for Ubuntu
+  build-packages:
+    needs: check-tag
+    strategy:
+      fail-fast: false
+      matrix:
+        dist: [xenial, bionic, focal]
+        arch: [i386, amd64]
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Prepare recipe
+      run: |
+        set -x
+        cp .github/workflows/RBDyn.recipe /tmp/RBDyn.recipe
+        export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+        sed -i "s#@REF@#${REF}#" /tmp/RBDyn.recipe
+        if [ $REF == "master" ]
+        then
+          echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-head"
+        else
+          echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
+        fi
+        echo "Prepared recipe"
+        echo "###############"
+        cat /tmp/RBDyn.recipe
+    - name: Build package
+      uses: jrl-umi3218/github-actions/build-package@master
+      with:
+        dist: ${{ matrix.dist }}
+        arch: ${{ matrix.arch }}
+        recipe: /tmp/RBDyn.recipe
+        other-mirrors: ${{ env.EXTRA_MIRROR }}
+        other-gpg-keys: "0x892EA6EE273707C6495A6FB6220D644C64666806"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: packages-${{ matrix.dist }}-${{ matrix.arch }}
+        path: /tmp/packages-${{ matrix.dist }}-${{ matrix.arch }}/
+  # This job upload binary packages for Ubuntu
+  upload-packages:
+    needs: build-packages
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        dist: [xenial, bionic, focal]
+        arch: [i386, amd64]
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Set upload parameters
+      run: |
+        export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+        if [ $REF == "master" ]
+        then
+          echo "::set-env name=BINTRAY_REPO::multi-contact-head"
+          echo "::set-env name=BINTRAY_VERSION::HEAD"
+        else
+          echo "::set-env name=BINTRAY_REPO::multi-contact-release"
+          echo "::set-env name=BINTRAY_VERSION::${REF}"
+        fi
+    - name: Download packages
+      uses: actions/download-artifact@v1
+      with:
+        name: packages-${{ matrix.dist }}-${{ matrix.arch }}
+    - name: Upload
+      uses: jrl-umi3218/github-actions/upload-package@master
+      with:
+        dist: ${{ matrix.dist }}
+        arch: ${{ matrix.arch }}
+        subject: gergondet
+        repo: ${{ env.BINTRAY_REPO }}
+        package: |
+          name: RBDyn
+          desc: "RBDyn provides a set of classes and functions to model the dynamics of rigid body systems"
+          licenses: [BSD 2-Clause]
+          vcs_url: https://github.com/jrl-umi3218/RBDyn
+        version: ${{ env.BINTRAY_VERSION }}
+        path: packages-${{ matrix.dist }}-${{ matrix.arch }}
+        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

@@ -1,0 +1,84 @@
+name: CI of RBDyn
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+
+  clang-format:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install clang-format-6.0
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get -qq remove clang-6.0 libclang1-6.0 libclang-common-6.0-dev libllvm6.0
+        sudo apt-get -qq install clang-format-6.0 clang-format
+    - name: Run clang-format-check
+      run: |
+        ./.clang-format-check.sh
+
+  build:
+    needs: clang-format
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04, macos-latest, windows-latest]
+        build-type: [Debug, RelWithDebInfo]
+        compiler: [gcc, clang]
+        exclude:
+          # Only default compiler on macos-latest and windows-latest
+          - os: macos-latest
+            compiler: clang
+          - os: windows-latest
+            compiler: clang
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+    - name: Install dependencies
+      uses: jrl-umi3218/github-actions/install-dependencies@master
+      with:
+        compiler: ${{ matrix.compiler }}
+        build-type: ${{ matrix.build-type }}
+        ubuntu: |
+          apt: cython cython3 python-nose python3-nose python-numpy python3-numpy python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev
+        macos: |
+          cask: gfortran
+          brew: eigen boost
+          pip: Cython coverage nose numpy
+        windows: |
+          pip: Cython coverage nose numpy
+          github:
+            - path: eigenteam/eigen-git-mirror
+              ref: 3.3.7
+        github: |
+          - path: jrl-umi3218/Eigen3ToPython
+          - path: jrl-umi3218/SpaceVecAlg
+    - name: Build and test
+      uses: jrl-umi3218/github-actions/build-cmake-project@master
+      with:
+        compiler: ${{ matrix.compiler }}
+        build-type: ${{ matrix.build-type }}
+    - name: Upload documentation
+      # Only run on master branch and for one configuration
+      if: matrix.os == 'ubuntu-18.04' && matrix.build-type == 'RelWithDebInfo' && matrix.compiler == 'gcc' && github.ref == 'refs/heads/master'
+      uses: jrl-umi3218/github-actions/upload-documentation@master
+      with:
+        GH_USER: gergondet
+        GH_PAGES_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+    - name: Slack Notification
+      if: failure()
+      uses: archive/github-actions-slack@master
+      with:
+        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
+        slack-channel: '#ci'
+        slack-text: >
+          [RBDyn] Build *${{ matrix.os }}/${{ matrix.build-type }}* failed on ${{ github.ref }}

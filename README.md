@@ -2,25 +2,32 @@ RBDyn
 =====
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)](https://opensource.org/licenses/BSD-2-Clause)
-[![Build Status](https://travis-ci.org/jrl-umi3218/RBDyn.svg?branch=master)](https://travis-ci.org/jrl-umi3218/RBDyn)
-[![AppVeyor status](https://ci.appveyor.com/api/projects/status/k2l715sc47t9u411/branch/master?svg=true)](https://ci.appveyor.com/project/gergondet/rbdyn/branch/master)
 [ ![Download](https://api.bintray.com/packages/gergondet/multi-contact/SpaceVecAlg%3Agergondet/images/download.svg) ](https://bintray.com/gergondet/multi-contact/RBDyn%3Agergondet/_latestVersion)
+[![CI](https://github.com/jrl-umi3218/RBDyn/workflows/CI%20of%20RBDyn/badge.svg?branch=master)](https://github.com/jrl-umi3218/RBDyn/actions?query=workflow%3A%22CI+of+RBDyn%22)
 [![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](http://jrl-umi3218.github.io/RBDyn/doxygen/HEAD/index.html)
 
-RBDyn provide a set of class and function to model the dynamics of rigid body systems.
+RBDyn provides a set of classes and functions to model the dynamics of rigid body systems.
 
 This implementation is based on [Roy Featherstone Rigid Body Dynamics Algorithms book](http://www.springer.com/fr/book/9780387743141) and other state of the art publications.
 
 Installing
 ------
 
-## Ubuntu LTS (14.04, 16.04, 18.04): PPA
+## Ubuntu LTS (16.04, 18.04, 20.04)
 
-Use the [multi-contact-unstable](https://launchpad.net/~pierre-gergondet+ppa/+archive/ubuntu/multi-contact-unstable) ppa:
 ```bash
-sudo add-apt-repository ppa:pierre-gergondet+ppa/multi-contact-unstable
-sudo apt-get update
-sudo apt-get install librbdyn-dev librbdyn-doc python-rbdyn python3-rbdyn
+# Make sure you have required tools
+sudo apt install apt-transport-https lsb-release
+# Add our key
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key 892EA6EE273707C6495A6FB6220D644C64666806
+# Add our repository (stable versions)
+sudo sh -c 'echo "deb https://dl.bintray.com/gergondet/multi-contact-release $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/multi-contact.list'
+# Use this to setup the HEAD version
+# sudo sh -c 'echo "deb https://dl.bintray.com/gergondet/multi-contact-release $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/multi-contact.list'
+# Update packages list
+sudo apt update
+# Install eigen-qld packages
+sudo apt install librbdyn-dev python-rbdyn python3-rbdyn
 ```
 
 ## Homebrew OS X install
