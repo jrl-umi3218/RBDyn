@@ -1,0 +1,4 @@
+usr/include/*
+usr/lib/libRBDyn.so
+usr/lib/*/pkgconfig/*
+usr/lib/cmake/*
