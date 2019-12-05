@@ -64,14 +64,22 @@ ElapsedTimeMap & TorqueFeedbackTerm::getElapsedTimes()
 IntegralTerm::IntegralTerm(const std::vector<rbd::MultiBody> & mbs, int robotIndex,
                            const std::shared_ptr<rbd::ForwardDynamics> fd,
                            IntegralTermType intglTermType, VelocityGainType velGainType,
-                           double lambda)
+                           double lambda, double phiSlow, double phiFast, double fastFilterWeight, 
+                           double timeStep)
   : TorqueFeedbackTerm(mbs, robotIndex, fd),
     intglTermType_(intglTermType),
     velGainType_(velGainType),
     lambda_(lambda),
     coriolis_(mbs[robotIndex]),
     C_(Eigen::MatrixXd::Zero(nrDof_, nrDof_)),
-    L_(Eigen::MatrixXd::Zero(nrDof_, nrDof_))
+    L_(Eigen::MatrixXd::Zero(nrDof_, nrDof_)),
+    previousS_(Eigen::VectorXd::Zero(nrDof_)),
+    fastFilteredS_(Eigen::VectorXd::Zero(nrDof_)),
+    slowFilteredS_(Eigen::VectorXd::Zero(nrDof_)),
+    phiSlow_(phiSlow),
+    phiFast_(phiFast),
+    fastFilterWeight_(fastFilterWeight),
+    timeStep_(timeStep)    
 {
 }
 
@@ -126,7 +134,13 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
   
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
-    P_ = L_ * s;
+    
+    slowFilteredS_ = exp(-timeStep_*phiSlow_) * slowFilteredS_ + s- previousS_;
+    fastFilteredS_ = exp(-timeStep_*phiFast_) * fastFilteredS_ + s- previousS_;
+
+    previousS_ = s;
+    
+    P_ = L_ * fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
 
     time = clock();
     computeGammaD();
@@ -146,8 +160,13 @@ IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>
 					       const Eigen::Vector3d & maxLinAcc,
 					       const Eigen::Vector3d & maxAngAcc,
 					       const Eigen::VectorXd & torqueL,
-					       const Eigen::VectorXd & torqueU)
-  : IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, lambda),
+					       const Eigen::VectorXd & torqueU,
+                 double phiSlow,
+                 double phiFast, 
+                 double fastFilterWeight, 
+                 double timeStep )
+  : IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, 
+                lambda, phiSlow, phiFast, fastFilterWeight, timeStep),
     perc_(perc), maxLinAcc_(maxLinAcc), maxAngAcc_(maxAngAcc),
     torqueL_(torqueL), torqueU_(torqueU)
 {}
