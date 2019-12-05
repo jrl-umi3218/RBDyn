@@ -139,8 +139,10 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     fastFilteredS_ = exp(-timeStep_*phiFast_) * fastFilteredS_ + s- previousS_;
 
     previousS_ = s;
+
+    Eigen::VectorXd filteredS = fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
     
-    P_ = L_ * fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
+    P_ = L_ * filteredS;
 
     time = clock();
     computeGammaD();
