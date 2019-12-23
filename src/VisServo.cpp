@@ -25,8 +25,8 @@ void imagePointJacobian(const Eigen::Vector3d & point3d, Eigen::Matrix<double, 2
   imagePointJacobian(point2d, point3d[2], jac);
 }
 
-void imagePointJacobianDot(const Eigen::Vector2d imagePoint,
-                           const Eigen::Vector2d imagePointSpeed,
+void imagePointJacobianDot(const Eigen::Vector2d & imagePoint,
+                           const Eigen::Vector2d & imagePointSpeed,
                            const double depth,
                            const double depthDot,
                            Eigen::Matrix<double, 2, 6> & jac)
@@ -61,7 +61,7 @@ void poseJacobian(const Eigen::Matrix3d & rotation, Eigen::Matrix<double, 6, 6> 
   jac << L_theta_u, Eigen::Matrix3d::Zero(), Eigen::Matrix3d::Zero(), rotation.transpose();
 }
 
-void depthDotJacobian(const Eigen::Vector2d imagePointSpeed,
+void depthDotJacobian(const Eigen::Vector2d & imagePointSpeed,
                       const double depthEstimate,
                       Eigen::Matrix<double, 1, 6> & jac)
 {
