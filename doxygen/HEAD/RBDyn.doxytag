@@ -575,8 +575,8 @@
       <type>RBDYN_DLLAPI void</type>
       <name>imagePointJacobianDot</name>
       <anchorfile>a00381.html</anchorfile>
-      <anchor>af911cb4aaa8f45c453f0eb8af449e402</anchor>
-      <arglist>(const Eigen::Vector2d imagePoint, const Eigen::Vector2d imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
+      <anchor>a387fb33722a5c4a574a9aefcac1f80e5</anchor>
+      <arglist>(const Eigen::Vector2d &amp;imagePoint, const Eigen::Vector2d &amp;imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -589,8 +589,8 @@
       <type>RBDYN_DLLAPI void</type>
       <name>depthDotJacobian</name>
       <anchorfile>a00381.html</anchorfile>
-      <anchor>a731b8c0b3d37872f0a22fd46d008e970</anchor>
-      <arglist>(const Eigen::Vector2d imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</arglist>
+      <anchor>aef704a4c74be13842752ab1232da6b52</anchor>
+      <arglist>(const Eigen::Vector2d &amp;imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -3357,8 +3357,8 @@
       <type>RBDYN_DLLAPI void</type>
       <name>imagePointJacobianDot</name>
       <anchorfile>a00381.html</anchorfile>
-      <anchor>af911cb4aaa8f45c453f0eb8af449e402</anchor>
-      <arglist>(const Eigen::Vector2d imagePoint, const Eigen::Vector2d imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
+      <anchor>a387fb33722a5c4a574a9aefcac1f80e5</anchor>
+      <arglist>(const Eigen::Vector2d &amp;imagePoint, const Eigen::Vector2d &amp;imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -3371,8 +3371,8 @@
       <type>RBDYN_DLLAPI void</type>
       <name>depthDotJacobian</name>
       <anchorfile>a00381.html</anchorfile>
-      <anchor>a731b8c0b3d37872f0a22fd46d008e970</anchor>
-      <arglist>(const Eigen::Vector2d imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</arglist>
+      <anchor>aef704a4c74be13842752ab1232da6b52</anchor>
+      <arglist>(const Eigen::Vector2d &amp;imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>

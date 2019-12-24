@@ -294,15 +294,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a3f883d5b2cb2d74f03f930d7097aa91e">imagePointJacobian</a> (const Eigen::Vector3d &amp;point3d, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
 <tr class="memdesc:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="#a3f883d5b2cb2d74f03f930d7097aa91e">More...</a><br /></td></tr>
 <tr class="separator:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af911cb4aaa8f45c453f0eb8af449e402"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#af911cb4aaa8f45c453f0eb8af449e402">imagePointJacobianDot</a> (const Eigen::Vector2d imagePoint, const Eigen::Vector2d imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
-<tr class="memdesc:af911cb4aaa8f45c453f0eb8af449e402"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix derivative of an image point.  <a href="#af911cb4aaa8f45c453f0eb8af449e402">More...</a><br /></td></tr>
-<tr class="separator:af911cb4aaa8f45c453f0eb8af449e402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a387fb33722a5c4a574a9aefcac1f80e5"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a387fb33722a5c4a574a9aefcac1f80e5">imagePointJacobianDot</a> (const Eigen::Vector2d &amp;imagePoint, const Eigen::Vector2d &amp;imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
+<tr class="memdesc:a387fb33722a5c4a574a9aefcac1f80e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix derivative of an image point.  <a href="#a387fb33722a5c4a574a9aefcac1f80e5">More...</a><br /></td></tr>
+<tr class="separator:a387fb33722a5c4a574a9aefcac1f80e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aa7c485df3cfdbc0819e75bbea7cb2632">poseJacobian</a> (const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac, const double rot_angle_threshold=1.0e-8)</td></tr>
 <tr class="memdesc:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of a pose.  <a href="#aa7c485df3cfdbc0819e75bbea7cb2632">More...</a><br /></td></tr>
 <tr class="separator:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a731b8c0b3d37872f0a22fd46d008e970"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a731b8c0b3d37872f0a22fd46d008e970">depthDotJacobian</a> (const Eigen::Vector2d imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</td></tr>
-<tr class="memdesc:a731b8c0b3d37872f0a22fd46d008e970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of the depth derivative.  <a href="#a731b8c0b3d37872f0a22fd46d008e970">More...</a><br /></td></tr>
-<tr class="separator:a731b8c0b3d37872f0a22fd46d008e970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef704a4c74be13842752ab1232da6b52"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aef704a4c74be13842752ab1232da6b52">depthDotJacobian</a> (const Eigen::Vector2d &amp;imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</td></tr>
+<tr class="memdesc:aef704a4c74be13842752ab1232da6b52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of the depth derivative.  <a href="#aef704a4c74be13842752ab1232da6b52">More...</a><br /></td></tr>
+<tr class="separator:aef704a4c74be13842752ab1232da6b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a42e2c6560ae5a3978c5d999e5dfb9375">getAngleAxis</a> (const Eigen::Matrix3d &amp;rotation, double &amp;rot_angle, Eigen::Vector3d &amp;rot_axis)</td></tr>
 <tr class="memdesc:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the angle and axis of an angle-axis rotation representation given a rotation matrix.  <a href="#a42e2c6560ae5a3978c5d999e5dfb9375">More...</a><br /></td></tr>
 <tr class="separator:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1204,8 +1204,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a731b8c0b3d37872f0a22fd46d008e970"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a731b8c0b3d37872f0a22fd46d008e970">&#9670;&nbsp;</a></span>depthDotJacobian()</h2>
+<a id="aef704a4c74be13842752ab1232da6b52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef704a4c74be13842752ab1232da6b52">&#9670;&nbsp;</a></span>depthDotJacobian()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1213,7 +1213,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">RBDYN_DLLAPI void rbd::depthDotJacobian </td>
           <td>(</td>
-          <td class="paramtype">const Eigen::Vector2d&#160;</td>
+          <td class="paramtype">const Eigen::Vector2d &amp;&#160;</td>
           <td class="paramname"><em>imagePointSpeed</em>, </td>
         </tr>
         <tr>
@@ -1667,8 +1667,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="af911cb4aaa8f45c453f0eb8af449e402"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af911cb4aaa8f45c453f0eb8af449e402">&#9670;&nbsp;</a></span>imagePointJacobianDot()</h2>
+<a id="a387fb33722a5c4a574a9aefcac1f80e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a387fb33722a5c4a574a9aefcac1f80e5">&#9670;&nbsp;</a></span>imagePointJacobianDot()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1676,13 +1676,13 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">RBDYN_DLLAPI void rbd::imagePointJacobianDot </td>
           <td>(</td>
-          <td class="paramtype">const Eigen::Vector2d&#160;</td>
+          <td class="paramtype">const Eigen::Vector2d &amp;&#160;</td>
           <td class="paramname"><em>imagePoint</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Eigen::Vector2d&#160;</td>
+          <td class="paramtype">const Eigen::Vector2d &amp;&#160;</td>
           <td class="paramname"><em>imagePointSpeed</em>, </td>
         </tr>
         <tr>
@@ -2766,7 +2766,7 @@ template&lt;typename T &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="a00381.html">rbd</a></li>
-    <li class="footer">Generated on Fri Nov 29 2019 06:55:08 for RBDyn by
+    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>
