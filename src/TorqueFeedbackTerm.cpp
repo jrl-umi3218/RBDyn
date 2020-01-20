@@ -150,6 +150,15 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
   }
 }
 
+void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
+                               const rbd::MultiBodyConfig & mbc_real,
+                               const rbd::MultiBodyConfig & mbc_calc,
+                               const Eigen::VectorXd & diff_torques)
+{
+  slowFilteredS_ = diff_torques;
+  computeTerm(mb, mbc_real, mbc_calc);
+}
+
 /**
  *    IntegralTermAntiWindup
  */

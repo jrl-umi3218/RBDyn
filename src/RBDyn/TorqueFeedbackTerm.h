@@ -110,6 +110,11 @@ class IntegralTerm : public TorqueFeedbackTerm
                    const rbd::MultiBodyConfig & mbc_real,
                    const rbd::MultiBodyConfig & mbc_calc) override;
 
+  void computeTerm(const rbd::MultiBody & mb,
+                   const rbd::MultiBodyConfig & mbc_real,
+                   const rbd::MultiBodyConfig & mbc_calc,
+                   const Eigen::VectorXd & diff_torques);
+
   const Eigen::MatrixXd & CoriolisFactorization() const
   {
     return C_;
