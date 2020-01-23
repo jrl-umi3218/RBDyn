@@ -141,6 +141,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     previousS_ = s;
 
     Eigen::VectorXd filteredS = fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
+
+    // std::cout << "Rafa, in computeTerm, filteredS = " << filteredS.transpose() << std::endl;
     
     P_ = L_ * filteredS;
 
@@ -155,8 +157,25 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
                                const rbd::MultiBodyConfig & mbc_calc,
                                const Eigen::VectorXd & diff_torques)
 {
-  slowFilteredS_ = diff_torques;
   computeTerm(mb, mbc_real, mbc_calc);
+
+  if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
+  {
+  
+    if (fastFilterWeight_ < 1) {
+      slowFilteredS_ = L_.inverse() * diff_torques / (1 - fastFilterWeight_);
+      fastFilteredS_.setZero();
+    }
+    else {
+      slowFilteredS_.setZero();
+      fastFilteredS_ = L_.inverse() * diff_torques / fastFilterWeight_;
+    }
+    
+    Eigen::VectorXd filteredS = fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
+    P_ = L_ * filteredS;
+    
+    std::cout << "Rafa, computeTerm, P_ = " << P_.transpose() << std::endl;
+  }
 }
 
 /**
