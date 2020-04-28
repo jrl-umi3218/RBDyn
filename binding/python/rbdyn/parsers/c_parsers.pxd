@@ -65,6 +65,8 @@ cdef extern from "<RBDyn/parsers/common.h>" namespace "rbd":
     cppmap[string, PTransformd] collision_tf
     string name
 
+  ParserResult from_file(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
+
 cdef extern from "<RBDyn/parsers/urdf.h>" namespace "rbd":
   ParserResult from_urdf(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
   ParserResult from_urdf_file(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)

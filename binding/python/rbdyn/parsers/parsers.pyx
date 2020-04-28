@@ -416,3 +416,11 @@ def from_yaml_file(content, fixed = True, filteredLinks = [], transformInertia =
     baseLink = baseLink.encode(u'ascii')
   filteredLinks = [ fL.encode(u'ascii') if isinstance(fL, unicode) else fL for fL in filteredLinks ]
   return ParserResultFromC(c_parsers.from_yaml_file(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
+
+def from_file(fname, fixed = True, filteredLinks = [], transformInertia = True, baseLink = "", withVirtualLinks = True):
+  if isinstance(fname, unicode):
+    fname = fname.encode(u'ascii')
+  if isinstance(baseLink, unicode):
+    baseLink = baseLink.encode(u'ascii')
+  filteredLinks = [ fL.encode(u'ascii') if isinstance(fL, unicode) else fL for fL in filteredLinks ]
+  return ParserResultFromC(c_parsers.from_file(fname, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
