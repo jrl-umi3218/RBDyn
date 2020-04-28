@@ -23,6 +23,9 @@
 namespace rbd
 {
 
+namespace parsers
+{
+
 namespace
 {
 
@@ -39,14 +42,14 @@ static inline std::string demangle(const char * name)
 
 } // namespace
 
-rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
-                                  ParserInput input_type,
-                                  bool fixed,
-                                  const std::vector<std::string> & filtered_links,
-                                  bool transform_inertia,
-                                  const std::string & base_link,
-                                  bool with_virtual_links,
-                                  const std::string & spherical_suffix)
+RBDynFromYAML::RBDynFromYAML(const std::string & input,
+                             ParserInput input_type,
+                             bool fixed,
+                             const std::vector<std::string> & filtered_links,
+                             bool transform_inertia,
+                             const std::string & base_link,
+                             bool with_virtual_links,
+                             const std::string & spherical_suffix)
 : verbose_(false), transform_inertia_(transform_inertia), link_idx_(1), joint_idx_(1), filtered_links_(filtered_links),
   with_virtual_links_(with_virtual_links), spherical_suffix_(spherical_suffix)
 {
@@ -126,14 +129,14 @@ rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
   rbd::forwardVelocity(res.mb, res.mbc);
 }
 
-Eigen::Matrix3d rbd::RBDynFromYAML::makeInertia(double ixx, double iyy, double izz, double iyz, double ixz, double ixy)
+Eigen::Matrix3d RBDynFromYAML::makeInertia(double ixx, double iyy, double izz, double iyz, double ixz, double ixy)
 {
   Eigen::Matrix3d inertia;
   inertia << ixx, ixy, ixz, ixy, iyy, iyz, ixz, iyz, izz;
   return inertia;
 }
 
-Eigen::Matrix3d rbd::RBDynFromYAML::MatrixFromRPY(double r, double p, double y)
+Eigen::Matrix3d RBDynFromYAML::MatrixFromRPY(double r, double p, double y)
 {
   Eigen::Quaterniond q = Eigen::AngleAxisd(r, Eigen::Vector3d::UnitX()) * Eigen::AngleAxisd(p, Eigen::Vector3d::UnitY())
                          * Eigen::AngleAxisd(y, Eigen::Vector3d::UnitZ());
@@ -142,10 +145,10 @@ Eigen::Matrix3d rbd::RBDynFromYAML::MatrixFromRPY(double r, double p, double y)
   return m.transpose().eval();
 }
 
-void rbd::RBDynFromYAML::parseFrame(const YAML::Node & frame,
-                                    const std::string & name,
-                                    Eigen::Vector3d & xyz,
-                                    Eigen::Vector3d & rpy)
+void RBDynFromYAML::parseFrame(const YAML::Node & frame,
+                               const std::string & name,
+                               Eigen::Vector3d & xyz,
+                               Eigen::Vector3d & rpy)
 {
   xyz.setZero();
   rpy.setZero();
@@ -184,7 +187,7 @@ void rbd::RBDynFromYAML::parseFrame(const YAML::Node & frame,
   }
 }
 
-void rbd::RBDynFromYAML::parseInertia(const YAML::Node & inertia, Eigen::Matrix3d & inertia_mat)
+void RBDynFromYAML::parseInertia(const YAML::Node & inertia, Eigen::Matrix3d & inertia_mat)
 {
   inertia_mat.setIdentity();
   if(inertia)
@@ -195,12 +198,12 @@ void rbd::RBDynFromYAML::parseInertia(const YAML::Node & inertia, Eigen::Matrix3
   }
 }
 
-void rbd::RBDynFromYAML::parseInertial(const YAML::Node & inertial,
-                                       const std::string & name,
-                                       double & mass,
-                                       Eigen::Vector3d & xyz,
-                                       Eigen::Vector3d & rpy,
-                                       Eigen::Matrix3d & inertia)
+void RBDynFromYAML::parseInertial(const YAML::Node & inertial,
+                                  const std::string & name,
+                                  double & mass,
+                                  Eigen::Vector3d & xyz,
+                                  Eigen::Vector3d & rpy,
+                                  Eigen::Matrix3d & inertia)
 {
   mass = 1.;
   xyz.setZero();
@@ -220,10 +223,10 @@ void rbd::RBDynFromYAML::parseInertial(const YAML::Node & inertial,
   }
 }
 
-bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometry & data)
+bool RBDynFromYAML::parseGeometry(const YAML::Node & geometry, Geometry & data)
 {
   bool has_geometry = false;
-  data = rbd::Geometry();
+  data = Geometry();
   if(geometry)
   {
     for(YAML::const_iterator geometry_type = geometry.begin(); geometry_type != geometry.end(); ++geometry_type)
@@ -234,7 +237,7 @@ bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometr
         data.type = Geometry::Type::MESH;
 
         const auto & mesh = geometry_type->second;
-        auto mesh_data = rbd::Geometry::Mesh();
+        auto mesh_data = Geometry::Mesh();
         try
         {
           mesh_data.filename = mesh["filename"].as<std::string>();
@@ -252,7 +255,7 @@ bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometr
         data.type = Geometry::Type::BOX;
 
         const auto & box = geometry_type->second;
-        auto box_data = rbd::Geometry::Box();
+        auto box_data = Geometry::Box();
         try
         {
           box_data.size = Eigen::Vector3d(box["size"].as<std::vector<double>>().data());
@@ -273,7 +276,7 @@ bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometr
         data.type = Geometry::Type::CYLINDER;
 
         const auto & cylinder = geometry_type->second;
-        auto cylinder_data = rbd::Geometry::Cylinder();
+        auto cylinder_data = Geometry::Cylinder();
         try
         {
           cylinder_data.radius = cylinder["radius"].as<double>();
@@ -291,7 +294,7 @@ bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometr
         data.type = Geometry::Type::SPHERE;
 
         const auto & sphere = geometry_type->second;
-        auto sphere_data = rbd::Geometry::Sphere();
+        auto sphere_data = Geometry::Sphere();
         try
         {
           sphere_data.radius = sphere["radius"].as<double>();
@@ -308,7 +311,7 @@ bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometr
         data.type = Geometry::Type::SUPERELLIPSOID;
 
         const auto & superellipsoid = geometry_type->second;
-        auto superellipsoid_data = rbd::Geometry::Superellipsoid();
+        auto superellipsoid_data = Geometry::Superellipsoid();
         try
         {
           superellipsoid_data.size = Eigen::Vector3d(superellipsoid["size"].as<std::vector<double>>().data());
@@ -336,15 +339,15 @@ bool rbd::RBDynFromYAML::parseGeometry(const YAML::Node & geometry, rbd::Geometr
   return has_geometry;
 }
 
-void rbd::RBDynFromYAML::parseVisuals(const YAML::Node & visuals,
-                                      std::map<std::string, std::vector<rbd::Visual>> & data,
-                                      const std::string & name)
+void RBDynFromYAML::parseVisuals(const YAML::Node & visuals,
+                                 std::map<std::string, std::vector<Visual>> & data,
+                                 const std::string & name)
 {
   Eigen::Vector3d xyz;
   Eigen::Vector3d rpy;
   for(const auto & visual : visuals)
   {
-    rbd::Visual v;
+    Visual v;
     v.name = visual["name"].as<std::string>("");
 
     parseFrame(visual["frame"], v.name, xyz, rpy);
@@ -358,7 +361,7 @@ void rbd::RBDynFromYAML::parseVisuals(const YAML::Node & visuals,
   }
 }
 
-void rbd::RBDynFromYAML::parseLink(const YAML::Node & link)
+void RBDynFromYAML::parseLink(const YAML::Node & link)
 {
   std::string name = link["name"].as<std::string>("link" + std::to_string(link_idx_));
 
@@ -425,10 +428,10 @@ void rbd::RBDynFromYAML::parseLink(const YAML::Node & link)
   ++link_idx_;
 }
 
-bool rbd::RBDynFromYAML::parseJointType(const YAML::Node & type,
-                                        const std::string & name,
-                                        rbd::Joint::Type & joint_type,
-                                        std::string & type_name)
+bool RBDynFromYAML::parseJointType(const YAML::Node & type,
+                                   const std::string & name,
+                                   rbd::Joint::Type & joint_type,
+                                   std::string & type_name)
 {
   if(type)
   {
@@ -480,7 +483,7 @@ bool rbd::RBDynFromYAML::parseJointType(const YAML::Node & type,
   }
 }
 
-void rbd::RBDynFromYAML::parseJointAxis(const YAML::Node & axis, const std::string & name, Eigen::Vector3d & joint_axis)
+void RBDynFromYAML::parseJointAxis(const YAML::Node & axis, const std::string & name, Eigen::Vector3d & joint_axis)
 {
   if(axis)
   {
@@ -500,10 +503,10 @@ void rbd::RBDynFromYAML::parseJointAxis(const YAML::Node & axis, const std::stri
   }
 }
 
-void rbd::RBDynFromYAML::parseJointLimits(const YAML::Node & limits,
-                                          const std::string & name,
-                                          const rbd::Joint & joint,
-                                          bool is_continuous)
+void RBDynFromYAML::parseJointLimits(const YAML::Node & limits,
+                                     const std::string & name,
+                                     const rbd::Joint & joint,
+                                     bool is_continuous)
 {
   auto dof_count = static_cast<size_t>(joint.dof());
   auto infinity = std::numeric_limits<double>::infinity();
@@ -563,7 +566,7 @@ void rbd::RBDynFromYAML::parseJointLimits(const YAML::Node & limits,
   res.limits.velocity[name] = velocity;
 }
 
-void rbd::RBDynFromYAML::parseJoint(const YAML::Node & joint)
+void RBDynFromYAML::parseJoint(const YAML::Node & joint)
 {
   std::string name = joint["name"].as<std::string>("joint" + std::to_string(joint_idx_));
   if(verbose_)
@@ -650,5 +653,7 @@ ParserResult from_yaml_file(const std::string & file_path,
                        withVirtualLinks, sphericalSuffix)
       .result();
 }
+
+} // namespace parsers
 
 } // namespace rbd

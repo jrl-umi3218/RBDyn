@@ -17,6 +17,9 @@ class Node;
 namespace rbd
 {
 
+namespace parsers
+{
+
 class RBDYN_PARSERS_DLLAPI RBDynFromYAML
 {
 public:
@@ -67,10 +70,10 @@ private:
                      Eigen::Vector3d & rpy,
                      Eigen::Matrix3d & inertia);
 
-  bool parseGeometry(const YAML::Node & geometry, rbd::Geometry & data);
+  bool parseGeometry(const YAML::Node & geometry, Geometry & data);
 
   void parseVisuals(const YAML::Node & visuals,
-                    std::map<std::string, std::vector<rbd::Visual>> & data,
+                    std::map<std::string, std::vector<Visual>> & data,
                     const std::string & name);
 
   void parseLink(const YAML::Node & link);
@@ -105,5 +108,7 @@ RBDYN_PARSERS_DLLAPI ParserResult from_yaml_file(const std::string & file_path,
                                                  const std::string & baseLinkIn = "",
                                                  bool withVirtualLinks = true,
                                                  const std::string & sphericalSuffix = "_spherical");
+
+} // namespace parsers
 
 } // namespace rbd

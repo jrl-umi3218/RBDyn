@@ -19,6 +19,9 @@
 namespace rbd
 {
 
+namespace parsers
+{
+
 double attrToDouble(const tinyxml2::XMLElement & dom, const std::string & attr, double def = 0.0)
 {
   const char * attrTxt = dom.Attribute(attr.c_str());
@@ -168,7 +171,7 @@ sva::PTransformd originFromTag(const tinyxml2::XMLElement & root, const std::str
   return originFromTag(root.FirstChildElement(tagName.c_str()));
 }
 
-rbd::Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
+Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
 {
   Geometry::Mesh mesh;
   mesh.filename = meshDom.Attribute("filename");
@@ -176,14 +179,14 @@ rbd::Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
   return mesh;
 }
 
-rbd::Geometry::Data geometryFromBox(const tinyxml2::XMLElement & boxDom)
+Geometry::Data geometryFromBox(const tinyxml2::XMLElement & boxDom)
 {
   Geometry::Box box;
   box.size = attrToVector(boxDom, "size", Eigen::Vector3d::Zero());
   return box;
 }
 
-rbd::Geometry::Data geometryFromCylinder(const tinyxml2::XMLElement & cylinderDom)
+Geometry::Data geometryFromCylinder(const tinyxml2::XMLElement & cylinderDom)
 {
   Geometry::Cylinder cylinder;
   cylinder.radius = attrToDouble(cylinderDom, "radius");
@@ -191,14 +194,14 @@ rbd::Geometry::Data geometryFromCylinder(const tinyxml2::XMLElement & cylinderDo
   return cylinder;
 }
 
-rbd::Geometry::Data geometryFromSphere(const tinyxml2::XMLElement & sphereDom)
+Geometry::Data geometryFromSphere(const tinyxml2::XMLElement & sphereDom)
 {
   Geometry::Sphere sphere;
   sphere.radius = attrToDouble(sphereDom, "radius");
   return sphere;
 }
 
-rbd::Geometry::Data geometryFromSuperEllipsoid(const tinyxml2::XMLElement & seDom)
+Geometry::Data geometryFromSuperEllipsoid(const tinyxml2::XMLElement & seDom)
 {
   Geometry::Superellipsoid se;
   se.size = attrToVector(seDom, "size", Eigen::Vector3d::Zero());
@@ -207,7 +210,7 @@ rbd::Geometry::Data geometryFromSuperEllipsoid(const tinyxml2::XMLElement & seDo
   return se;
 }
 
-bool visualFromTag(const tinyxml2::XMLElement & dom, rbd::Visual & out)
+bool visualFromTag(const tinyxml2::XMLElement & dom, Visual & out)
 {
   const tinyxml2::XMLElement * geometryDomPtr = dom.FirstChildElement("geometry");
   if(!geometryDomPtr)
@@ -215,7 +218,7 @@ bool visualFromTag(const tinyxml2::XMLElement & dom, rbd::Visual & out)
     return false;
   }
   const auto & geometryDom = *geometryDomPtr;
-  using geometry_fn = rbd::Geometry::Data (*)(const tinyxml2::XMLElement & mesh);
+  using geometry_fn = Geometry::Data (*)(const tinyxml2::XMLElement & mesh);
   auto handleGeometry = [&out, &geometryDom](const char * name, Geometry::Type type, geometry_fn get_geom) {
     auto geom = geometryDom.FirstChildElement(name);
     if(!geom)
@@ -499,5 +502,7 @@ ParserResult from_urdf_file(const std::string & file_path,
   std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   return from_urdf(content, fixed, filteredLinksIn, transformInertia, baseLinkIn, withVirtualLinks, sphericalSuffix);
 }
+
+} // namespace parsers
 
 } // namespace rbd

@@ -12,39 +12,39 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool as cppbool
 
-cdef extern from "<RBDyn/parsers/common.h>" namespace "rbd":
+cdef extern from "<RBDyn/parsers/common.h>" namespace "rbd::parsers":
   cdef cppclass Limits:
     cppmap[string, vector[double]] lower
     cppmap[string, vector[double]] upper
     cppmap[string, vector[double]] velocity
     cppmap[string, vector[double]] torque
 
-  cdef cppclass GeometryMesh "rbd::Geometry::Mesh":
+  cdef cppclass GeometryMesh "rbd::parsers::Geometry::Mesh":
     string filename
     double scale
 
-  cdef cppclass GeometryBox "rbd::Geometry::Box":
+  cdef cppclass GeometryBox "rbd::parsers::Geometry::Box":
     Vector3d size
 
-  cdef cppclass GeometryCylinder "rbd::Geometry::Cylinder":
+  cdef cppclass GeometryCylinder "rbd::parsers::Geometry::Cylinder":
     double radius
     double length
 
-  cdef cppclass GeometrySphere "rbd::Geometry::Sphere":
+  cdef cppclass GeometrySphere "rbd::parsers::Geometry::Sphere":
     double radius
 
-  cdef cppclass GeometrySuperellipsoid "rbd::Geometry::Superellipsoid":
+  cdef cppclass GeometrySuperellipsoid "rbd::parsers::Geometry::Superellipsoid":
     Vector3d size
     double epsilon1
     double epsilon2
 
-  ctypedef enum GeometryType "rbd::Geometry::Type":
-    GeometryBOX "rbd::Geometry::BOX"
-    GeometryCYLINDER "rbd::Geometry::CYLINDER"
-    GeometrySPHERE "rbd::Geometry::SPHERE"
-    GeometrySUPERELLIPSOID "rbd::Geometry::SUPERELLIPSOID"
-    GeometryMESH "rbd::Geometry::MESH"
-    GeometryUNKNOWN "rbd::Geometry::UNKNOWN"
+  ctypedef enum GeometryType "rbd::parsers::Geometry::Type":
+    GeometryBOX "rbd::parsers::Geometry::BOX"
+    GeometryCYLINDER "rbd::parsers::Geometry::CYLINDER"
+    GeometrySPHERE "rbd::parsers::Geometry::SPHERE"
+    GeometrySUPERELLIPSOID "rbd::parsers::Geometry::SUPERELLIPSOID"
+    GeometryMESH "rbd::parsers::Geometry::MESH"
+    GeometryUNKNOWN "rbd::parsers::Geometry::UNKNOWN"
 
   cdef cppclass Geometry:
     GeometryType _type "type"
@@ -66,10 +66,10 @@ cdef extern from "<RBDyn/parsers/common.h>" namespace "rbd":
 
   ParserResult from_file(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
 
-cdef extern from "<RBDyn/parsers/urdf.h>" namespace "rbd":
+cdef extern from "<RBDyn/parsers/urdf.h>" namespace "rbd::parsers":
   ParserResult from_urdf(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
   ParserResult from_urdf_file(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
 
-cdef extern from "<RBDyn/parsers/yaml.h>" namespace "rbd":
+cdef extern from "<RBDyn/parsers/yaml.h>" namespace "rbd::parsers":
   ParserResult from_yaml(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
   ParserResult from_yaml_file(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)

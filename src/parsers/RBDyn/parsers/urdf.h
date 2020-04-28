@@ -25,6 +25,9 @@ class XMLElement;
 namespace rbd
 {
 
+namespace parsers
+{
+
 RBDYN_PARSERS_DLLAPI std::vector<double> attrToList(const tinyxml2::XMLElement & dom,
                                                     const std::string & attr,
                                                     const std::vector<double> & def = {});
@@ -63,5 +66,7 @@ RBDYN_PARSERS_DLLAPI ParserResult from_urdf_file(const std::string & file_path,
                                                  const std::string & baseLinkIn = "",
                                                  bool withVirtualLinks = true,
                                                  const std::string & sphericalSuffix = "_spherical");
+
+} // namespace parsers
 
 } // namespace rbd

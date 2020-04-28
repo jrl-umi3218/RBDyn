@@ -159,6 +159,10 @@ std::string XYZSarmYaml(
 
 namespace rbd
 {
+
+namespace parsers
+{
+
 bool operator==(const Geometry::Mesh & m1, const Geometry::Mesh & m2)
 {
   return m1.scale == m2.scale && m1.filename == m2.filename;
@@ -192,11 +196,14 @@ bool operator==(const Geometry::Superellipsoid & se1, const Geometry::Superellip
 {
   return (se1.size == se2.size && se1.epsilon1 == se2.epsilon1 && se1.epsilon2 == se2.epsilon2);
 }
+
+} // namespace parsers
+
 } // namespace rbd
 
-rbd::ParserResult createRobot()
+rbd::parsers::ParserResult createRobot()
 {
-  rbd::ParserResult res;
+  rbd::parsers::ParserResult res;
 
   Eigen::Matrix3d I0, I1, I2, I3, I4;
 
@@ -248,16 +255,16 @@ rbd::ParserResult createRobot()
   res.limits.velocity = {{"j0", {10.}}, {"j1", {10.}}, {"j2", {10.}}};
   res.limits.torque = {{"j0", {50.}}, {"j1", {50.}}, {"j2", {50.}}};
 
-  rbd::Visual v1, v2;
-  rbd::Geometry::Mesh mesh;
+  rbd::parsers::Visual v1, v2;
+  rbd::parsers::Geometry::Mesh mesh;
   v1.origin = sva::PTransformd(T0.rotation(), T0.translation());
   mesh.filename = "test_mesh1.dae";
-  v1.geometry.type = rbd::Geometry::Type::MESH;
+  v1.geometry.type = rbd::parsers::Geometry::Type::MESH;
   v1.geometry.data = mesh;
 
   v2.origin = sva::PTransformd(T1.rotation(), T1.translation());
   mesh.filename = "test_mesh2.dae";
-  v2.geometry.type = rbd::Geometry::Type::MESH;
+  v2.geometry.type = rbd::parsers::Geometry::Type::MESH;
   v2.geometry.data = mesh;
 
   res.visual = {{"b0", {v1, v2}}};
@@ -274,7 +281,7 @@ const double TOL = 1e-6;
 BOOST_AUTO_TEST_CASE(loadTest)
 {
   auto cppRobot = createRobot();
-  auto strRobot = rbd::from_yaml(XYZSarmYaml);
+  auto strRobot = rbd::parsers::from_yaml(XYZSarmYaml);
 
   BOOST_CHECK_EQUAL(cppRobot.mb.nrBodies(), strRobot.mb.nrBodies());
   BOOST_CHECK_EQUAL(cppRobot.mb.nrJoints(), strRobot.mb.nrJoints());
@@ -322,7 +329,7 @@ BOOST_AUTO_TEST_CASE(loadTest)
 BOOST_AUTO_TEST_CASE(visualTest)
 {
   auto cppRobot = createRobot();
-  auto strRobot = rbd::from_yaml(XYZSarmYaml);
+  auto strRobot = rbd::parsers::from_yaml(XYZSarmYaml);
   const auto & cpp_geometries = cppRobot.visual;
   const auto & str_geometries = strRobot.visual;
 

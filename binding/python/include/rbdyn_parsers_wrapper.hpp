@@ -9,52 +9,52 @@
 
 namespace rbdyn_parsers
 {
-const rbd::Geometry::Mesh & getMesh(const rbd::Geometry & geom)
+const rbd::parsers::Geometry::Mesh & getMesh(const rbd::parsers::Geometry & geom)
 {
-  return boost::get<rbd::Geometry::Mesh>(geom.data);
+  return boost::get<rbd::parsers::Geometry::Mesh>(geom.data);
 }
 
-const rbd::Geometry::Box & getBox(const rbd::Geometry & geom)
+const rbd::parsers::Geometry::Box & getBox(const rbd::parsers::Geometry & geom)
 {
-  return boost::get<rbd::Geometry::Box>(geom.data);
+  return boost::get<rbd::parsers::Geometry::Box>(geom.data);
 }
 
-const rbd::Geometry::Cylinder & getCylinder(const rbd::Geometry & geom)
+const rbd::parsers::Geometry::Cylinder & getCylinder(const rbd::parsers::Geometry & geom)
 {
-  return boost::get<rbd::Geometry::Cylinder>(geom.data);
+  return boost::get<rbd::parsers::Geometry::Cylinder>(geom.data);
 }
 
-const rbd::Geometry::Sphere & getSphere(const rbd::Geometry & geom)
+const rbd::parsers::Geometry::Sphere & getSphere(const rbd::parsers::Geometry & geom)
 {
-  return boost::get<rbd::Geometry::Sphere>(geom.data);
+  return boost::get<rbd::parsers::Geometry::Sphere>(geom.data);
 }
 
-const rbd::Geometry::Superellipsoid & getSuperellipsoid(const rbd::Geometry & geom)
+const rbd::parsers::Geometry::Superellipsoid & getSuperellipsoid(const rbd::parsers::Geometry & geom)
 {
-  return boost::get<rbd::Geometry::Superellipsoid>(geom.data);
+  return boost::get<rbd::parsers::Geometry::Superellipsoid>(geom.data);
 }
 
-void setMesh(rbd::Geometry & geom, const rbd::Geometry::Mesh & data)
-{
-  geom.data = data;
-}
-
-void setBox(rbd::Geometry & geom, const rbd::Geometry::Box & data)
+void setMesh(rbd::parsers::Geometry & geom, const rbd::parsers::Geometry::Mesh & data)
 {
   geom.data = data;
 }
 
-void setCylinder(rbd::Geometry & geom, const rbd::Geometry::Cylinder & data)
+void setBox(rbd::parsers::Geometry & geom, const rbd::parsers::Geometry::Box & data)
 {
   geom.data = data;
 }
 
-void setSphere(rbd::Geometry & geom, const rbd::Geometry::Sphere & data)
+void setCylinder(rbd::parsers::Geometry & geom, const rbd::parsers::Geometry::Cylinder & data)
 {
   geom.data = data;
 }
 
-void setSuperellipsoid(rbd::Geometry & geom, const rbd::Geometry::Superellipsoid & data)
+void setSphere(rbd::parsers::Geometry & geom, const rbd::parsers::Geometry::Sphere & data)
+{
+  geom.data = data;
+}
+
+void setSuperellipsoid(rbd::parsers::Geometry & geom, const rbd::parsers::Geometry::Superellipsoid & data)
 {
   geom.data = data;
 }

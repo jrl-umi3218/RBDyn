@@ -20,6 +20,9 @@
 namespace rbd
 {
 
+namespace parsers
+{
+
 enum class RBDYN_PARSERS_DLLAPI ParserInput
 {
   File,
@@ -104,9 +107,9 @@ struct RBDYN_PARSERS_DLLAPI ParserResult
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
   rbd::MultiBodyGraph mbg;
-  rbd::Limits limits;
-  std::map<std::string, std::vector<rbd::Visual>> visual;
-  std::map<std::string, std::vector<rbd::Visual>> collision;
+  Limits limits;
+  std::map<std::string, std::vector<Visual>> visual;
+  std::map<std::string, std::vector<Visual>> collision;
   std::string name;
 };
 
@@ -121,5 +124,7 @@ RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path,
                                             const std::string & base_link = "",
                                             bool with_virtual_links = true,
                                             const std::string spherical_suffix = "_spherical");
+
+} // namespace parsers
 
 } // namespace rbd
