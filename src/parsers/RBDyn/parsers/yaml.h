@@ -17,7 +17,7 @@ class Node;
 namespace rbd
 {
 
-class RBDYN_DLLAPI RBDynFromYAML
+class RBDYN_PARSERS_DLLAPI RBDynFromYAML
 {
 public:
   RBDynFromYAML(const std::string & input,
@@ -90,20 +90,20 @@ private:
   void parseJoint(const YAML::Node & joint);
 };
 
-RBDYN_DLLAPI ParserResult from_yaml(const std::string & content,
-                                    bool fixed = true,
-                                    const std::vector<std::string> & filteredLinksIn = {},
-                                    bool transformInertia = true,
-                                    const std::string & baseLinkIn = "",
-                                    bool withVirtualLinks = true,
-                                    const std::string & sphericalSuffix = "_spherical");
+RBDYN_PARSERS_DLLAPI ParserResult from_yaml(const std::string & content,
+                                            bool fixed = true,
+                                            const std::vector<std::string> & filteredLinksIn = {},
+                                            bool transformInertia = true,
+                                            const std::string & baseLinkIn = "",
+                                            bool withVirtualLinks = true,
+                                            const std::string & sphericalSuffix = "_spherical");
 
-RBDYN_DLLAPI ParserResult from_yaml_file(const std::string & file_path,
-                                         bool fixed = true,
-                                         const std::vector<std::string> & filteredLinksIn = {},
-                                         bool transformInertia = true,
-                                         const std::string & baseLinkIn = "",
-                                         bool withVirtualLinks = true,
-                                         const std::string & sphericalSuffix = "_spherical");
+RBDYN_PARSERS_DLLAPI ParserResult from_yaml_file(const std::string & file_path,
+                                                 bool fixed = true,
+                                                 const std::vector<std::string> & filteredLinksIn = {},
+                                                 bool transformInertia = true,
+                                                 const std::string & baseLinkIn = "",
+                                                 bool withVirtualLinks = true,
+                                                 const std::string & sphericalSuffix = "_spherical");
 
 } // namespace rbd

@@ -8,7 +8,7 @@
 #include <RBDyn/MultiBody.h>
 #include <RBDyn/MultiBodyConfig.h>
 #include <RBDyn/MultiBodyGraph.h>
-#include <rbdyn/config.hh>
+#include <RBDyn/parsers/api.h>
 
 #include <SpaceVecAlg/SpaceVecAlg>
 
@@ -20,13 +20,13 @@
 namespace rbd
 {
 
-enum class RBDYN_DLLAPI ParserInput
+enum class RBDYN_PARSERS_DLLAPI ParserInput
 {
   File,
   Description
 };
 
-struct RBDYN_DLLAPI Limits
+struct RBDYN_PARSERS_DLLAPI Limits
 {
 public:
   std::map<std::string, std::vector<double>> lower;
@@ -35,7 +35,7 @@ public:
   std::map<std::string, std::vector<double>> torque;
 };
 
-struct RBDYN_DLLAPI Geometry
+struct RBDYN_PARSERS_DLLAPI Geometry
 {
 public:
   struct Mesh
@@ -91,14 +91,14 @@ public:
   Geometry() : type(UNKNOWN) {}
 };
 
-struct RBDYN_DLLAPI Visual
+struct RBDYN_PARSERS_DLLAPI Visual
 {
   std::string name;
   sva::PTransformd origin;
   Geometry geometry;
 };
 
-struct RBDYN_DLLAPI ParserResult
+struct RBDYN_PARSERS_DLLAPI ParserResult
 {
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
@@ -114,12 +114,12 @@ struct RBDYN_DLLAPI ParserResult
 //!
 //! \param file_path Path to the file to parse
 //! \return ParserResult The parsing result
-ParserResult from_file(const std::string & file_path,
-                       bool fixed = true,
-                       const std::vector<std::string> & filtered_links = {},
-                       bool transform_inertia = true,
-                       const std::string & base_link = "",
-                       bool with_virtual_links = true,
-                       const std::string spherical_suffix = "_spherical");
+RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path,
+                                            bool fixed = true,
+                                            const std::vector<std::string> & filtered_links = {},
+                                            bool transform_inertia = true,
+                                            const std::string & base_link = "",
+                                            bool with_virtual_links = true,
+                                            const std::string spherical_suffix = "_spherical");
 
 } // namespace rbd
