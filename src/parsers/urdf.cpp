@@ -168,6 +168,82 @@ sva::PTransformd originFromTag(const tinyxml2::XMLElement & root, const std::str
   return originFromTag(root.FirstChildElement(tagName.c_str()));
 }
 
+rbd::Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
+{
+  Geometry::Mesh mesh;
+  mesh.filename = meshDom.Attribute("filename");
+  mesh.scale = attrToDouble(meshDom, "scale", 1.0);
+  return mesh;
+}
+
+rbd::Geometry::Data geometryFromBox(const tinyxml2::XMLElement & boxDom)
+{
+  Geometry::Box box;
+  box.size = attrToVector(boxDom, "size", Eigen::Vector3d::Zero());
+  return box;
+}
+
+rbd::Geometry::Data geometryFromCylinder(const tinyxml2::XMLElement & cylinderDom)
+{
+  Geometry::Cylinder cylinder;
+  cylinder.radius = attrToDouble(cylinderDom, "radius");
+  cylinder.length = attrToDouble(cylinderDom, "length");
+  return cylinder;
+}
+
+rbd::Geometry::Data geometryFromSphere(const tinyxml2::XMLElement & sphereDom)
+{
+  Geometry::Sphere sphere;
+  sphere.radius = attrToDouble(sphereDom, "radius");
+  return sphere;
+}
+
+rbd::Geometry::Data geometryFromSuperEllipsoid(const tinyxml2::XMLElement & seDom)
+{
+  Geometry::Superellipsoid se;
+  se.size = attrToVector(seDom, "size", Eigen::Vector3d::Zero());
+  se.epsilon1 = attrToDouble(seDom, "epsilon1", 1.0);
+  se.epsilon2 = attrToDouble(seDom, "epsilon2", 1.0);
+  return se;
+}
+
+bool visualFromTag(const tinyxml2::XMLElement & dom, rbd::Visual & out)
+{
+  const tinyxml2::XMLElement * geometryDomPtr = dom.FirstChildElement("geometry");
+  if(!geometryDomPtr)
+  {
+    return false;
+  }
+  const auto & geometryDom = *geometryDomPtr;
+  using geometry_fn = rbd::Geometry::Data (*)(const tinyxml2::XMLElement & mesh);
+  auto handleGeometry = [&out, &geometryDom](const char * name, Geometry::Type type, geometry_fn get_geom) {
+    auto geom = geometryDom.FirstChildElement(name);
+    if(!geom)
+    {
+      return false;
+    }
+    out.geometry.type = type;
+    out.geometry.data = get_geom(*geom);
+    return true;
+  };
+  out.origin = originFromTag(&dom);
+  if(!handleGeometry("mesh", Geometry::MESH, &geometryFromMesh)
+     && !handleGeometry("box", Geometry::BOX, &geometryFromBox)
+     && !handleGeometry("cylinder", Geometry::CYLINDER, &geometryFromCylinder)
+     && !handleGeometry("sphere", Geometry::SPHERE, &geometryFromSphere)
+     && !handleGeometry("superellipsoid", Geometry::SUPERELLIPSOID, &geometryFromSuperEllipsoid))
+  {
+    out.geometry.type = Geometry::UNKNOWN;
+    std::cerr << "Warning: unknown visual or collision element was encountered\n";
+  }
+  const char * name = dom.Attribute("name");
+  if(name)
+  {
+    out.name = name;
+  }
+  return true;
+}
+
 std::string parseMultiBodyGraphFromURDF(ParserResult & res,
                                         const std::string & content,
                                         const std::vector<std::string> & filteredLinksIn,
@@ -262,26 +338,8 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
         child = child->NextSiblingElement("visual"))
     {
       Visual v;
-      tinyxml2::XMLElement * geometryDom = child->FirstChildElement("geometry");
-      if(geometryDom)
+      if(visualFromTag(*child, v))
       {
-        tinyxml2::XMLElement * meshDom = geometryDom->FirstChildElement("mesh");
-        if(meshDom)
-        {
-          v.origin = originFromTag(child);
-          v.geometry.type = Geometry::Type::MESH;
-          auto mesh = Geometry::Mesh();
-          mesh.filename = meshDom->Attribute("filename");
-          v.geometry.data = mesh;
-          // Optional scale
-          mesh.scale = attrToDouble(*meshDom, "scale", 1.0);
-        }
-        else
-        {
-          std::cerr << "Warning: only mesh geometry is supported, visual element has been ignored" << std::endl;
-        }
-        const char * name = child->Attribute("name");
-        if(name) v.name = name;
         res.visual[linkName].push_back(v);
       }
     }
@@ -291,72 +349,8 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
         child = child->NextSiblingElement("collision"))
     {
       Visual v;
-      tinyxml2::XMLElement * geometryDom = child->FirstChildElement("geometry");
-      if(geometryDom)
+      if(visualFromTag(*child, v))
       {
-        tinyxml2::XMLElement * meshDom = geometryDom->FirstChildElement("mesh");
-        if(meshDom)
-        {
-          v.origin = originFromTag(child);
-          v.geometry.type = Geometry::Type::MESH;
-          auto mesh = Geometry::Mesh();
-          mesh.filename = meshDom->Attribute("filename");
-          v.geometry.data = mesh;
-          // Optional scale
-          double scale = 1.;
-          meshDom->QueryDoubleAttribute("scale", &scale);
-          mesh.scale = scale;
-        }
-        else
-        {
-          tinyxml2::XMLElement * boxDom = geometryDom->FirstChildElement("box");
-          if(boxDom)
-          {
-            v.origin = originFromTag(child);
-            v.geometry.type = Geometry::Type::BOX;
-            auto box = Geometry::Box();
-            box.size = attrToVector(*boxDom, "size", Eigen::Vector3d(0, 0, 0));
-            v.geometry.data = box;
-          }
-          else
-          {
-            tinyxml2::XMLElement * sphereDom = geometryDom->FirstChildElement("sphere");
-            if(sphereDom)
-            {
-              v.origin = originFromTag(child);
-              v.geometry.type = Geometry::Type::SPHERE;
-              auto sphere = Geometry::Sphere();
-              sphere.radius = sphereDom->DoubleAttribute("radius");
-              v.geometry.data = sphere;
-            }
-            else
-            {
-              tinyxml2::XMLElement * superellipsoidDom = geometryDom->FirstChildElement("superellipsoid");
-              if(superellipsoidDom)
-              {
-                v.origin = originFromTag(child);
-                v.geometry.type = Geometry::Type::SUPERELLIPSOID;
-                auto superellipsoid = Geometry::Superellipsoid();
-                superellipsoid.size = attrToVector(*superellipsoidDom, "size", Eigen::Vector3d(0, 0, 0));
-
-                double epsilon1 = 1.;
-                superellipsoidDom->QueryDoubleAttribute("epsilon1", &epsilon1);
-                superellipsoid.epsilon1 = epsilon1;
-
-                double epsilon2 = 1.;
-                superellipsoidDom->QueryDoubleAttribute("epsilon2", &epsilon2);
-                superellipsoid.epsilon2 = epsilon2;
-
-                v.geometry.data = superellipsoid;
-              }
-              else
-                std::cerr << "Warning: only mesh geometry is supported, collision element has been ignored"
-                          << std::endl;
-            }
-          }
-        }
-        const char * name = child->Attribute("name");
-        if(name) v.name = name;
         res.collision[linkName].push_back(v);
       }
     }

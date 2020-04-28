@@ -86,7 +86,8 @@ public:
     UNKNOWN
   };
   Type type;
-  boost::variant<Box, Cylinder, Mesh, Sphere, Superellipsoid> data;
+  using Data = boost::variant<Box, Cylinder, Mesh, Sphere, Superellipsoid>;
+  Data data;
 
   Geometry() : type(UNKNOWN) {}
 };
