@@ -3,7 +3,6 @@
 #
 
 cmake_minimum_required(VERSION 3.1.3)
-
 set(CMAKE_CXX_STANDARD 11)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -13,6 +12,8 @@ set(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
 set(PROJECT_DEBUG_POSTFIX "_d")
 set(PROJECT_VERSION 1.1.0)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
+
+option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
 
 include(cmake/base.cmake)
 include(cmake/cython/cython.cmake)

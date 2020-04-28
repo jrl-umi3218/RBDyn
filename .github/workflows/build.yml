@@ -13,7 +13,7 @@ jobs:
   clang-format:
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install clang-format-6.0
       run: |
         sudo apt-get -qq update
@@ -40,7 +40,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
     - name: Install dependencies
@@ -49,16 +49,20 @@ jobs:
         compiler: ${{ matrix.compiler }}
         build-type: ${{ matrix.build-type }}
         ubuntu: |
-          apt: cython cython3 python-nose python3-nose python-numpy python3-numpy python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev
+          apt: cython cython3 python-nose python3-nose python-numpy python3-numpy python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev libtinyxml2-dev libyaml-cpp-dev
         macos: |
           cask: gfortran
-          brew: eigen boost
+          brew: eigen boost tinyxml2  yaml-cpp
           pip: Cython coverage nose numpy
         windows: |
           pip: Cython coverage nose numpy
           github:
             - path: eigenteam/eigen-git-mirror
               ref: 3.3.7
+            - path: leethomason/tinyxml2
+              ref: 7.1.0
+            - path: jbeder/yaml-cpp
+              ref: 29dcf92f870ee51cce8d68f8fcfe228942e8dfe1
         github: |
           - path: jrl-umi3218/Eigen3ToPython
           - path: jrl-umi3218/SpaceVecAlg
