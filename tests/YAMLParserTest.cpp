@@ -326,11 +326,6 @@ BOOST_AUTO_TEST_CASE(visualTest)
   const auto & cpp_geometries = cppRobot.visual;
   const auto & str_geometries = strRobot.visual;
 
-  for(auto v : str_geometries)
-  {
-    std::cout << v.first << ": " << v.second.size() << std::endl;
-  }
-
   BOOST_CHECK_EQUAL(str_geometries.size(), cpp_geometries.size());
   for(const auto & g : str_geometries)
   {
