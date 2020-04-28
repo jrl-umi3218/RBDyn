@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: Member List</title>
+<title>RBDyn: rbd::parsers::Geometry Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -49,7 +49,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('a00979.html','');});
+$(document).ready(function(){initNavTree('a00976.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -67,27 +67,166 @@ $(document).ready(function(){initNavTree('a00979.html','');});
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="a00973.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">rbd::InverseKinematics Member List</div>  </div>
+<div class="title">rbd::parsers::Geometry Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="a00979.html">rbd::InverseKinematics</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="a00979.html#a6bedb6a014d460dd706e66e3fb199783">almost_zero_</a></td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00979.html#ad8ac966b9ece34c3a3c95daf842084cc">InverseKinematics</a>(const MultiBody &amp;mb, int ef_index)</td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00979.html#ae3899d5b6efbaef606567ebf52c2897a">inverseKinematics</a>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, const sva::PTransformd &amp;ef_target)</td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00979.html#affe230038bdcbfda74a9456a7297373c">lambda_</a></td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00979.html#a53a472b37454cffbd7c314560ddcdd3d">max_iterations_</a></td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00979.html#a007d635fbd464139be26fa9470ee81bd">sInverseKinematics</a>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, const sva::PTransformd &amp;ef_target)</td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00979.html#afdf3d123b3a62e3032763711296fe6f1">threshold_</a></td><td class="entry"><a class="el" href="a00979.html">rbd::InverseKinematics</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<p><code>#include &lt;parsers/RBDyn/parsers/common.h&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00984.html">Box</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00988.html">Cylinder</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00980.html">Mesh</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00992.html">Sphere</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00996.html">Superellipsoid</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="a00996.html" title="A Superellipsoid can approximate primitive shapes as boxes, cylinders and pyrimids while remaining st...">Superellipsoid</a> can approximate primitive shapes as boxes, cylinders and pyrimids while remaining strictly convex.  <a href="a00996.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a91ba6c5a035011ff6a22120b1c26c71f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71f">Type</a> { <br />
+&#160;&#160;<a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71fa0ef17f0fc0df1e20fb78c45b4a74807e">BOX</a>, 
+<br />
+&#160;&#160;<a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71fa432d58276d46aa3962c7382dcc82d1f1">CYLINDER</a>, 
+<br />
+&#160;&#160;<a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71fad4fb8530fbdc84aed1feff1d06c52608">SPHERE</a>, 
+<br />
+&#160;&#160;<a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71fa37421f0954c52ffdc57591ae7af8523e">MESH</a>, 
+<br />
+&#160;&#160;<a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71faa5764e87619d57bbfecba704406478c6">SUPERELLIPSOID</a>, 
+<br />
+&#160;&#160;<a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71fa5d27e21c67e97e9527efa6f021626382">UNKNOWN</a>
+<br />
+ }</td></tr>
+<tr class="separator:a91ba6c5a035011ff6a22120b1c26c71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41d057e8542e152158fc510f3f4bc437"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00976.html#a41d057e8542e152158fc510f3f4bc437">Data</a> = boost::variant&lt; <a class="el" href="a00984.html">Box</a>, <a class="el" href="a00988.html">Cylinder</a>, <a class="el" href="a00980.html">Mesh</a>, <a class="el" href="a00992.html">Sphere</a>, <a class="el" href="a00996.html">Superellipsoid</a> &gt;</td></tr>
+<tr class="separator:a41d057e8542e152158fc510f3f4bc437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a1cfea103c70e2d434599cf650731a7a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00976.html#a1cfea103c70e2d434599cf650731a7a4">Geometry</a> ()</td></tr>
+<tr class="separator:a1cfea103c70e2d434599cf650731a7a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a32fb2501333d49d96d640c57acdf11cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71f">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00976.html#a32fb2501333d49d96d640c57acdf11cf">type</a></td></tr>
+<tr class="separator:a32fb2501333d49d96d640c57acdf11cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88c157efdcc952cc050ff6248c5d02aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a00976.html#a41d057e8542e152158fc510f3f4bc437">Data</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00976.html#a88c157efdcc952cc050ff6248c5d02aa">data</a></td></tr>
+<tr class="separator:a88c157efdcc952cc050ff6248c5d02aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a41d057e8542e152158fc510f3f4bc437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41d057e8542e152158fc510f3f4bc437">&#9670;&nbsp;</a></span>Data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="a00976.html#a41d057e8542e152158fc510f3f4bc437">rbd::parsers::Geometry::Data</a> =  boost::variant&lt;<a class="el" href="a00984.html">Box</a>, <a class="el" href="a00988.html">Cylinder</a>, <a class="el" href="a00980.html">Mesh</a>, <a class="el" href="a00992.html">Sphere</a>, <a class="el" href="a00996.html">Superellipsoid</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a91ba6c5a035011ff6a22120b1c26c71f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91ba6c5a035011ff6a22120b1c26c71f">&#9670;&nbsp;</a></span>Type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71f">rbd::parsers::Geometry::Type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a91ba6c5a035011ff6a22120b1c26c71fa0ef17f0fc0df1e20fb78c45b4a74807e"></a>BOX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91ba6c5a035011ff6a22120b1c26c71fa432d58276d46aa3962c7382dcc82d1f1"></a>CYLINDER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91ba6c5a035011ff6a22120b1c26c71fad4fb8530fbdc84aed1feff1d06c52608"></a>SPHERE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91ba6c5a035011ff6a22120b1c26c71fa37421f0954c52ffdc57591ae7af8523e"></a>MESH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91ba6c5a035011ff6a22120b1c26c71faa5764e87619d57bbfecba704406478c6"></a>SUPERELLIPSOID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91ba6c5a035011ff6a22120b1c26c71fa5d27e21c67e97e9527efa6f021626382"></a>UNKNOWN&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a1cfea103c70e2d434599cf650731a7a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cfea103c70e2d434599cf650731a7a4">&#9670;&nbsp;</a></span>Geometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">rbd::parsers::Geometry::Geometry </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a88c157efdcc952cc050ff6248c5d02aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88c157efdcc952cc050ff6248c5d02aa">&#9670;&nbsp;</a></span>data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="a00976.html#a41d057e8542e152158fc510f3f4bc437">Data</a> rbd::parsers::Geometry::data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a32fb2501333d49d96d640c57acdf11cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32fb2501333d49d96d640c57acdf11cf">&#9670;&nbsp;</a></span>type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="a00976.html#a91ba6c5a035011ff6a22120b1c26c71f">Type</a> rbd::parsers::Geometry::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="a00399.html">rbd</a></li><li class="navelem"><a class="el" href="a00400.html">parsers</a></li><li class="navelem"><a class="el" href="a00976.html">Geometry</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:09 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: MultiBodyConfig.h File Reference</title>
+<title>RBDyn: IK.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -70,98 +70,38 @@ $(document).ready(function(){initNavTree('a00368.html','');});
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">MultiBodyConfig.h File Reference</div>  </div>
+<div class="title">IK.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;stdexcept&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
+<div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
-<code>#include &lt;rbdyn/config.hh&gt;</code><br />
-<code>#include &quot;<a class="el" href="a00365.html">MultiBody.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="a00374.html">Jacobian.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01007.html">rbd::MultiBodyConfig</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="a01007.html">MultiBodyConfig</a> to another <a class="el" href="a01007.html">MultiBodyConfig</a> of the same <a class="el" href="a01015.html" title="Graph representation of the robot. ">MultiBodyGraph</a>.  <a href="a01011.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01040.html">rbd::InverseKinematics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inverse Kinematics algorithm.  <a href="a01040.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00403"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00403.html">rbd::ik</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a4bf39e343eab5ea745b6b5ad06e1322c"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a4bf39e343eab5ea745b6b5ad06e1322c">rbd::paramToVector</a> (const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</td></tr>
-<tr class="memdesc:a4bf39e343eab5ea745b6b5ad06e1322c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert parameter vector to <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html">Eigen</a> Vector.  <a href="a00381.html#a4bf39e343eab5ea745b6b5ad06e1322c">More...</a><br /></td></tr>
-<tr class="separator:a4bf39e343eab5ea745b6b5ad06e1322c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa230afce88a5b03f4cdb24bbe5697709"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aa230afce88a5b03f4cdb24bbe5697709">rbd::sParamToVector</a> (const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</td></tr>
-<tr class="memdesc:aa230afce88a5b03f4cdb24bbe5697709"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version of.  <a href="a00381.html#aa230afce88a5b03f4cdb24bbe5697709">More...</a><br /></td></tr>
-<tr class="separator:aa230afce88a5b03f4cdb24bbe5697709"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e97ed59ef038e4668d094c149f4dbf4"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a4e97ed59ef038e4668d094c149f4dbf4">rbd::paramToVector</a> (const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</td></tr>
-<tr class="memdesc:a4e97ed59ef038e4668d094c149f4dbf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert parameter vector to <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html">Eigen</a> Vector.  <a href="a00381.html#a4e97ed59ef038e4668d094c149f4dbf4">More...</a><br /></td></tr>
-<tr class="separator:a4e97ed59ef038e4668d094c149f4dbf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4553c85e948490a728217442f42017a5"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a4553c85e948490a728217442f42017a5">rbd::sParamToVector</a> (const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</td></tr>
-<tr class="memdesc:a4553c85e948490a728217442f42017a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version of.  <a href="a00381.html#a4553c85e948490a728217442f42017a5">More...</a><br /></td></tr>
-<tr class="separator:a4553c85e948490a728217442f42017a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35ba4e7bcaf28864ee5b873aa2f7ad98"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a35ba4e7bcaf28864ee5b873aa2f7ad98">rbd::dofToVector</a> (const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</td></tr>
-<tr class="memdesc:a35ba4e7bcaf28864ee5b873aa2f7ad98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert dof vector to <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html">Eigen</a> Vector.  <a href="a00381.html#a35ba4e7bcaf28864ee5b873aa2f7ad98">More...</a><br /></td></tr>
-<tr class="separator:a35ba4e7bcaf28864ee5b873aa2f7ad98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40551e81dcb5a17dc51f28e51df91ab7"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a40551e81dcb5a17dc51f28e51df91ab7">rbd::sDofToVector</a> (const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</td></tr>
-<tr class="memdesc:a40551e81dcb5a17dc51f28e51df91ab7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version of.  <a href="a00381.html#a40551e81dcb5a17dc51f28e51df91ab7">More...</a><br /></td></tr>
-<tr class="separator:a40551e81dcb5a17dc51f28e51df91ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1506b1cecfe2dc93145cdee35024021"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ae1506b1cecfe2dc93145cdee35024021">rbd::vectorToParam</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</td></tr>
-<tr class="memdesc:ae1506b1cecfe2dc93145cdee35024021"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert parameter vector to <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html">Eigen</a> Vector.  <a href="a00381.html#ae1506b1cecfe2dc93145cdee35024021">More...</a><br /></td></tr>
-<tr class="separator:ae1506b1cecfe2dc93145cdee35024021"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa53030956d0aaa3b8f8573f876551cdf"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aa53030956d0aaa3b8f8573f876551cdf">rbd::sVectorToParam</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</td></tr>
-<tr class="memdesc:aa53030956d0aaa3b8f8573f876551cdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version of.  <a href="a00381.html#aa53030956d0aaa3b8f8573f876551cdf">More...</a><br /></td></tr>
-<tr class="separator:aa53030956d0aaa3b8f8573f876551cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad81da92788d049e1111ea95aad747d9a"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ad81da92788d049e1111ea95aad747d9a">rbd::vectorToParam</a> (const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</td></tr>
-<tr class="memdesc:ad81da92788d049e1111ea95aad747d9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert parameter vector to <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html">Eigen</a> Vector.  <a href="a00381.html#ad81da92788d049e1111ea95aad747d9a">More...</a><br /></td></tr>
-<tr class="separator:ad81da92788d049e1111ea95aad747d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a12e59958ebc1de682cb558002236fa"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a9a12e59958ebc1de682cb558002236fa">rbd::sVectorToParam</a> (const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</td></tr>
-<tr class="memdesc:a9a12e59958ebc1de682cb558002236fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version of.  <a href="a00381.html#a9a12e59958ebc1de682cb558002236fa">More...</a><br /></td></tr>
-<tr class="separator:a9a12e59958ebc1de682cb558002236fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e26c3bab795feca51d727beb784cf13"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a4e26c3bab795feca51d727beb784cf13">rbd::vectorToDof</a> (const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</td></tr>
-<tr class="memdesc:a4e26c3bab795feca51d727beb784cf13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert dof vector to <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html">Eigen</a> Vector.  <a href="a00381.html#a4e26c3bab795feca51d727beb784cf13">More...</a><br /></td></tr>
-<tr class="separator:a4e26c3bab795feca51d727beb784cf13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac7e53f4e1a1bf92a34842130f017325"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aac7e53f4e1a1bf92a34842130f017325">rbd::sVectorToDof</a> (const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</td></tr>
-<tr class="memdesc:aac7e53f4e1a1bf92a34842130f017325"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version of.  <a href="a00381.html#aac7e53f4e1a1bf92a34842130f017325">More...</a><br /></td></tr>
-<tr class="separator:aac7e53f4e1a1bf92a34842130f017325"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a962a1e605f4f3936684e8a18c30e10c6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a962a1e605f4f3936684e8a18c30e10c6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="a00381.html#a962a1e605f4f3936684e8a18c30e10c6">rbd::checkMatchBodiesVector</a> (const MultiBody &amp;mb, const std::vector&lt; T &gt; &amp;vec, const std::string &amp;name)</td></tr>
-<tr class="separator:a962a1e605f4f3936684e8a18c30e10c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a2ee0f62601c711eeeedd9b38191c8c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4a2ee0f62601c711eeeedd9b38191c8c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="a00381.html#a4a2ee0f62601c711eeeedd9b38191c8c">rbd::checkMatchJointsVector</a> (const MultiBody &amp;mb, const std::vector&lt; T &gt; &amp;vec, const std::string &amp;name)</td></tr>
-<tr class="separator:a4a2ee0f62601c711eeeedd9b38191c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3ad6457f66a076b7e3743ba5883d774"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ab3ad6457f66a076b7e3743ba5883d774">rbd::checkMatchBodyPos</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:ab3ad6457f66a076b7e3743ba5883d774"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac65ee5665504496fefb03acd8510c41b"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ac65ee5665504496fefb03acd8510c41b">rbd::checkMatchParentToSon</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:ac65ee5665504496fefb03acd8510c41b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9052f21a2d371b7cceeca3ae9d7c5027"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a9052f21a2d371b7cceeca3ae9d7c5027">rbd::checkMatchBodyVel</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a9052f21a2d371b7cceeca3ae9d7c5027"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a9b4e0d1a7d097f947005ae638e398"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a35a9b4e0d1a7d097f947005ae638e398">rbd::checkMatchBodyAcc</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a35a9b4e0d1a7d097f947005ae638e398"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3dec972fc9c0669fbb28e584c036f78"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ac3dec972fc9c0669fbb28e584c036f78">rbd::checkMatchJointConf</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:ac3dec972fc9c0669fbb28e584c036f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9ea39279af93f142550f8aea088a257"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ad9ea39279af93f142550f8aea088a257">rbd::checkMatchJointVelocity</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:ad9ea39279af93f142550f8aea088a257"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6f14bfe8a4062f836871f2a42149c28"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#ac6f14bfe8a4062f836871f2a42149c28">rbd::checkMatchJointTorque</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:ac6f14bfe8a4062f836871f2a42149c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1327f38fc720ddfc67438a26b5d47a64"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a1327f38fc720ddfc67438a26b5d47a64">rbd::checkMatchMotionSubspace</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a1327f38fc720ddfc67438a26b5d47a64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f429d7788904c24634cb927b04b4dfc"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a1f429d7788904c24634cb927b04b4dfc">rbd::checkMatchQ</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a1f429d7788904c24634cb927b04b4dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79207fb4bfe485b88f7cced51418f1fa"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a79207fb4bfe485b88f7cced51418f1fa">rbd::checkMatchAlpha</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a79207fb4bfe485b88f7cced51418f1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a321010d59e162b9e53722eee7a97b3"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a5a321010d59e162b9e53722eee7a97b3">rbd::checkMatchAlphaD</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a5a321010d59e162b9e53722eee7a97b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c0a3a499a70eddeb7eb992690ab4985"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a7c0a3a499a70eddeb7eb992690ab4985">rbd::checkMatchForce</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="separator:a7c0a3a499a70eddeb7eb992690ab4985"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ae317f521fae5c7b22bfbb9a78a61d18a"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00403.html#ae317f521fae5c7b22bfbb9a78a61d18a">rbd::ik::MAX_ITERATIONS</a> = 50</td></tr>
+<tr class="separator:ae317f521fae5c7b22bfbb9a78a61d18a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d33a0a91940347106715aec2c101e73"><td class="memItemLeft" align="right" valign="top">static constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00403.html#a7d33a0a91940347106715aec2c101e73">rbd::ik::LAMBDA</a> = 0.9</td></tr>
+<tr class="separator:a7d33a0a91940347106715aec2c101e73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b016fd4f8f2731c231d7318c18a5ece"><td class="memItemLeft" align="right" valign="top">static constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00403.html#a8b016fd4f8f2731c231d7318c18a5ece">rbd::ik::THRESHOLD</a> = 1e-8</td></tr>
+<tr class="separator:a8b016fd4f8f2731c231d7318c18a5ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60f8b844c5af661d2a90adb93619d2c8"><td class="memItemLeft" align="right" valign="top">static constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00403.html#a60f8b844c5af661d2a90adb93619d2c8">rbd::ik::ALMOST_ZERO</a> = 1e-8</td></tr>
+<tr class="separator:a60f8b844c5af661d2a90adb93619d2c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -169,8 +109,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00368.html">MultiBodyConfig.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_a4ac87526d6db31e6130d8cf523ce70d.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00368.html">IK.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:08 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

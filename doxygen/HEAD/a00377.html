@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: ZMP.h File Reference</title>
+<title>RBDyn: Joint.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -68,31 +68,39 @@ $(document).ready(function(){initNavTree('a00377.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">ZMP.h File Reference</div>  </div>
+<div class="title">Joint.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;rbdyn/config.hh&gt;</code><br />
+<div class="textblock"><code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01056.html">rbd::Joint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="a01056.html" title="Joint representation. ">Joint</a> representation.  <a href="a01056.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a394e1cd05547fb851d8dbe8f0ddbbbe5"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a394e1cd05547fb851d8dbe8f0ddbbbe5">rbd::computeCentroidalZMP</a> (MultiBodyConfig &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude)</td></tr>
-<tr class="memdesc:a394e1cd05547fb851d8dbe8f0ddbbbe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the ZMP in the world frame as in Kajita's book on humanoid robots chap.  <a href="a00381.html#a394e1cd05547fb851d8dbe8f0ddbbbe5">More...</a><br /></td></tr>
-<tr class="separator:a394e1cd05547fb851d8dbe8f0ddbbbe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29fb02f3699713bd952eac420794f673"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a29fb02f3699713bd952eac420794f673">rbd::computeCentroidalZMPNoGravity</a> (Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude)</td></tr>
-<tr class="memdesc:a29fb02f3699713bd952eac420794f673"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the ZMP in the world frame considering that gravity is taken into account in the CoM acceleration.  <a href="a00381.html#a29fb02f3699713bd952eac420794f673">More...</a><br /></td></tr>
-<tr class="separator:a29fb02f3699713bd952eac420794f673"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#afeb4fb0f92e547a41ae4bd57b09febc7">rbd::computeCentroidalZMPComplete</a> (MultiBodyConfig &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude, <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#aaea958106abfa742585ced52492029c4">sva::ForceVecd</a> wr_external, double mass)</td></tr>
-<tr class="memdesc:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the ZMP considering the external wrench applied on the robot the gravity should also be already in the CoM acceleration.  <a href="a00381.html#afeb4fb0f92e547a41ae4bd57b09febc7">More...</a><br /></td></tr>
-<tr class="separator:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d00127b1f623476b945e05e88eb95d6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7d00127b1f623476b945e05e88eb95d6"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00069.html#ac4d27bf92869006caf1413e5d218e2f1">Eigen::Matrix3</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="a00399.html#a7d00127b1f623476b945e05e88eb95d6">rbd::QuatToE</a> (const std::vector&lt; T &gt; &amp;q)</td></tr>
+<tr class="memdesc:a7d00127b1f623476b945e05e88eb95d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility function to compute a rotation matrix from the parameter vector.  <a href="a00399.html#a7d00127b1f623476b945e05e88eb95d6">More...</a><br /></td></tr>
+<tr class="separator:a7d00127b1f623476b945e05e88eb95d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3088586b9fe6169533319c4dba20e9f"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#ac3088586b9fe6169533319c4dba20e9f">rbd::operator&lt;&lt;</a> (std::ostream &amp;out, const Joint &amp;b)</td></tr>
+<tr class="separator:ac3088586b9fe6169533319c4dba20e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -100,8 +108,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00377.html">ZMP.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_a4ac87526d6db31e6130d8cf523ce70d.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00377.html">Joint.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:08 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

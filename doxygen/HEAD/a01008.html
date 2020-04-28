@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: Member List</title>
+<title>RBDyn: rbd::parsers::RBDynFromYAML Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -49,7 +49,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('a01011.html','');});
+$(document).ready(function(){initNavTree('a01008.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -67,27 +67,151 @@ $(document).ready(function(){initNavTree('a01011.html','');});
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="a01005.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">rbd::ConfigConverter Member List</div>  </div>
+<div class="title">rbd::parsers::RBDynFromYAML Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="a01011.html">rbd::ConfigConverter</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="a01011.html#a59d66903b85b36a6ae94a68e7f2df0d6">ConfigConverter</a>(const MultiBody &amp;from, const MultiBody &amp;to)</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a01011.html#acebb8d9e8de53df4aa29d04ee0539ac9">convert</a>(const MultiBodyConfig &amp;from, MultiBodyConfig &amp;to) const</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a01011.html#a8f4e11dbb17bf4533d4a8405def878c8">convertJoint</a>(const std::vector&lt; T &gt; &amp;from, std::vector&lt; T &gt; &amp;to) const</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="a01011.html#a99b20586b567ae35c46284d1126e7df1">convertJoint</a>(const std::vector&lt; T &gt; &amp;from) const</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a01011.html#a0836ef089bb5523266da79bc9a8650ec">sConstructor</a>(const MultiBody &amp;from, const MultiBody &amp;to)</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr><td class="entry"><a class="el" href="a01011.html#a3a7ee08f163490c0aa910e94ae181ea5">sConvert</a>(const MultiBodyConfig &amp;from, MultiBodyConfig &amp;to) const</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a01011.html#ad53bb7d337f8a954fe1912ad8c6661cc">sConvertJoint</a>(const std::vector&lt; T &gt; &amp;from, std::vector&lt; T &gt; &amp;to) const</td><td class="entry"><a class="el" href="a01011.html">rbd::ConfigConverter</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-</table></div><!-- contents -->
+<p><code>#include &lt;parsers/RBDyn/parsers/yaml.h&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:abdd56d27d7e56468eb8a37d496646ee4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01008.html#abdd56d27d7e56468eb8a37d496646ee4">RBDynFromYAML</a> (const std::string &amp;input, ParserInput input_type=<a class="el" href="a00329.html#af10f27103f941f5cbafc9d21d6554e56">ParserInput::File</a>, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string &amp;spherical_suffix=&quot;_spherical&quot;)</td></tr>
+<tr class="separator:abdd56d27d7e56468eb8a37d496646ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9e45779b7d88f272e2ccd36c00fcec8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a01004.html">ParserResult</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01008.html#ae9e45779b7d88f272e2ccd36c00fcec8">result</a> ()</td></tr>
+<tr class="separator:ae9e45779b7d88f272e2ccd36c00fcec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5ecb74cc9d7177ee7c5e64b41b1197f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01008.html#ad5ecb74cc9d7177ee7c5e64b41b1197f">operator std::tuple&lt; rbd::MultiBody &amp;, rbd::MultiBodyConfig &amp;, rbd::MultiBodyGraph &amp; &gt;</a> ()</td></tr>
+<tr class="separator:ad5ecb74cc9d7177ee7c5e64b41b1197f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="abdd56d27d7e56468eb8a37d496646ee4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdd56d27d7e56468eb8a37d496646ee4">&#9670;&nbsp;</a></span>RBDynFromYAML()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">rbd::parsers::RBDynFromYAML::RBDynFromYAML </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ParserInput&#160;</td>
+          <td class="paramname"><em>input_type</em> = <code><a class="el" href="a00329.html#af10f27103f941f5cbafc9d21d6554e56">ParserInput::File</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>fixed</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>filtered_links</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>transform_inertia</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>base_link</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>with_virtual_links</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>spherical_suffix</em> = <code>&quot;_spherical&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad5ecb74cc9d7177ee7c5e64b41b1197f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5ecb74cc9d7177ee7c5e64b41b1197f">&#9670;&nbsp;</a></span>operator std::tuple< rbd::MultiBody &, rbd::MultiBodyConfig &, rbd::MultiBodyGraph & >()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">rbd::parsers::RBDynFromYAML::operator std::tuple&lt; <a class="el" href="a01064.html">rbd::MultiBody</a> &amp;, <a class="el" href="a01068.html">rbd::MultiBodyConfig</a> &amp;, <a class="el" href="a01076.html">rbd::MultiBodyGraph</a> &amp;&gt; </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="reference">References <a class="el" href="a00400.html#a12db4429e23daa8ec351099198b69d2f">rbd::parsers::from_yaml()</a>, <a class="el" href="a00400.html#a6d188b64e5c4c1d1d130ec77567ef86f">rbd::parsers::from_yaml_file()</a>, and <a class="el" href="a00326.html#a644463f26f4f468dad805153d93d648d">RBDYN_PARSERS_DLLAPI</a>.</p>
+
+</div>
+</div>
+<a id="ae9e45779b7d88f272e2ccd36c00fcec8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9e45779b7d88f272e2ccd36c00fcec8">&#9670;&nbsp;</a></span>result()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="a01004.html">ParserResult</a>&amp; rbd::parsers::RBDynFromYAML::result </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="a00399.html">rbd</a></li><li class="navelem"><a class="el" href="a00400.html">parsers</a></li><li class="navelem"><a class="el" href="a01008.html">RBDynFromYAML</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:09 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

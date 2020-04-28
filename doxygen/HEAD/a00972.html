@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: Member List</title>
+<title>RBDyn: rbd::parsers::Limits Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -49,7 +49,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('a00975.html','');});
+$(document).ready(function(){initNavTree('a00972.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -67,25 +67,92 @@ $(document).ready(function(){initNavTree('a00975.html','');});
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="a00969.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">rbd::IDIM Member List</div>  </div>
+<div class="title">rbd::parsers::Limits Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="a00975.html">rbd::IDIM</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="a00975.html#a831222dc88e7589ff614ecb4d47ac723">computeY</a>(const rbd::MultiBody &amp;mb, const rbd::MultiBodyConfig &amp;mbc)</td><td class="entry"><a class="el" href="a00975.html">rbd::IDIM</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00975.html#abb151fcfc055baf22e2a978a1a0d4681">IDIM</a>()</td><td class="entry"><a class="el" href="a00975.html">rbd::IDIM</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00975.html#a4dc06152129e65ddaa7cd509d5cd343f">IDIM</a>(const rbd::MultiBody &amp;mb)</td><td class="entry"><a class="el" href="a00975.html">rbd::IDIM</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00975.html#a069ddd75223494e75f3815fe765df97f">sComputeY</a>(const rbd::MultiBody &amp;mb, const rbd::MultiBodyConfig &amp;mbc)</td><td class="entry"><a class="el" href="a00975.html">rbd::IDIM</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00975.html#aa99e315c9da1c0ef6da65e226dfd24cb">Y</a>() const</td><td class="entry"><a class="el" href="a00975.html">rbd::IDIM</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-</table></div><!-- contents -->
+<p><code>#include &lt;parsers/RBDyn/parsers/common.h&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a5346e43523eb7acd93638e1c212b7d36"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00972.html#a5346e43523eb7acd93638e1c212b7d36">lower</a></td></tr>
+<tr class="separator:a5346e43523eb7acd93638e1c212b7d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a2dbbeff9c4c34ffc5466c4081fb0f4"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00972.html#a1a2dbbeff9c4c34ffc5466c4081fb0f4">upper</a></td></tr>
+<tr class="separator:a1a2dbbeff9c4c34ffc5466c4081fb0f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabbfd94d8fa7d1bfc85e71fa12b15e0b"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00972.html#aabbfd94d8fa7d1bfc85e71fa12b15e0b">velocity</a></td></tr>
+<tr class="separator:aabbfd94d8fa7d1bfc85e71fa12b15e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaa9be2e775b850682c202d6ba63cbce"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00972.html#aeaa9be2e775b850682c202d6ba63cbce">torque</a></td></tr>
+<tr class="separator:aeaa9be2e775b850682c202d6ba63cbce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5346e43523eb7acd93638e1c212b7d36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5346e43523eb7acd93638e1c212b7d36">&#9670;&nbsp;</a></span>lower</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::string, std::vector&lt;double&gt; &gt; rbd::parsers::Limits::lower</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeaa9be2e775b850682c202d6ba63cbce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaa9be2e775b850682c202d6ba63cbce">&#9670;&nbsp;</a></span>torque</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::string, std::vector&lt;double&gt; &gt; rbd::parsers::Limits::torque</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a2dbbeff9c4c34ffc5466c4081fb0f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a2dbbeff9c4c34ffc5466c4081fb0f4">&#9670;&nbsp;</a></span>upper</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::string, std::vector&lt;double&gt; &gt; rbd::parsers::Limits::upper</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aabbfd94d8fa7d1bfc85e71fa12b15e0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabbfd94d8fa7d1bfc85e71fa12b15e0b">&#9670;&nbsp;</a></span>velocity</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::string, std::vector&lt;double&gt; &gt; rbd::parsers::Limits::velocity</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="a00399.html">rbd</a></li><li class="navelem"><a class="el" href="a00400.html">parsers</a></li><li class="navelem"><a class="el" href="a00972.html">Limits</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:09 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

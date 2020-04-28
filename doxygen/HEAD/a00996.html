@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: Member List</title>
+<title>RBDyn: rbd::parsers::Geometry::Superellipsoid Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -49,7 +49,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('a00999.html','');});
+$(document).ready(function(){initNavTree('a00996.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -67,37 +67,115 @@ $(document).ready(function(){initNavTree('a00999.html','');});
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="a00993.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">rbd::CentroidalMomentumMatrix Member List</div>  </div>
+<div class="title">rbd::parsers::Geometry::Superellipsoid Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a6b55e44910a80fa9c05088fe5c77fb1b">CentroidalMomentumMatrix</a>()</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#a7ef581ba6472f63b0dadc3baf432dc2d">CentroidalMomentumMatrix</a>(const MultiBody &amp;mb)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a3b491ce6fbfdc95443bf49d1e1f9b5ea">CentroidalMomentumMatrix</a>(const MultiBody &amp;mb, std::vector&lt; double &gt; weight)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#a0f8b409e01c66bf4f81cb11b67a6d3d2">computeMatrix</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a7209519ce50bd70bd373c62186a0687e">computeMatrixAndMatrixDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#af138f48312d885b9ee551859fec2fae5">computeMatrixDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a2cf1537f878328acc33a98e8ae425f68">matrix</a>() const</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#a53c65afd5798ee503336df77c065c930">matrixDot</a>() const</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a28099ca77aaf3bddbac712abc5ede61d">momentum</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com) const</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#a18f5451f5ad70e40032575100a965e57">normalMomentumDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a53b91b4c45565e273631c107ce590af0">normalMomentumDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#af9113c5576b12cd42c16d392e1b4c169">sComputeMatrix</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#acd362ff05788f15da61600d81194dc2f">sComputeMatrixAndMatrixDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#a2c6ea5e364ddd4ab3bf08ae4bbf4d20d">sComputeMatrixDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#a294e50a3d0c8ffcbd74104c489684f5f">sMomentum</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com) const</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="a00999.html#ae45738dc7076e4cd66da6f6c01c373cd">sNormalMomentumDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="a00999.html#acf365504fcbd9b85e2ea6b9317107ecf">sNormalMomentumDot</a>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</td><td class="entry"><a class="el" href="a00999.html">rbd::CentroidalMomentumMatrix</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<p>A <a class="el" href="a00996.html" title="A Superellipsoid can approximate primitive shapes as boxes, cylinders and pyrimids while remaining st...">Superellipsoid</a> can approximate primitive shapes as boxes, cylinders and pyrimids while remaining strictly convex.  
+ <a href="a00996.html#details">More...</a></p>
+
+<p><code>#include &lt;parsers/RBDyn/parsers/common.h&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:abc2c226c7e1a300c7898036dd1bb964e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00996.html#abc2c226c7e1a300c7898036dd1bb964e">Superellipsoid</a> ()</td></tr>
+<tr class="separator:abc2c226c7e1a300c7898036dd1bb964e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a1b8769a1fbbcff11e40bc1ac3e641d7c"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00996.html#a1b8769a1fbbcff11e40bc1ac3e641d7c">size</a></td></tr>
+<tr class="separator:a1b8769a1fbbcff11e40bc1ac3e641d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27aa85d4aca772b82c7e09be0bf66427"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00996.html#a27aa85d4aca772b82c7e09be0bf66427">epsilon1</a></td></tr>
+<tr class="separator:a27aa85d4aca772b82c7e09be0bf66427"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2f836762930124bde9bbfb52ff06282"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00996.html#af2f836762930124bde9bbfb52ff06282">epsilon2</a></td></tr>
+<tr class="separator:af2f836762930124bde9bbfb52ff06282"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A <a class="el" href="a00996.html" title="A Superellipsoid can approximate primitive shapes as boxes, cylinders and pyrimids while remaining st...">Superellipsoid</a> can approximate primitive shapes as boxes, cylinders and pyrimids while remaining strictly convex. </p>
+<p>An illustration of superellipsoids can be found here <a href="https://en.wikipedia.org/wiki/Superellipsoid#/media/File:Superellipsoid_collection.png,">https://en.wikipedia.org/wiki/Superellipsoid#/media/File:Superellipsoid_collection.png,</a> with epsilon1 = e/2 and epsilon2 = n/2. The size of the superellipsoid is half its bounding box</p>
+<p>Superellipsoids are not part of the URDF standard and so won't probably be available in other URDF parsers </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="abc2c226c7e1a300c7898036dd1bb964e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc2c226c7e1a300c7898036dd1bb964e">&#9670;&nbsp;</a></span>Superellipsoid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">rbd::parsers::Geometry::Superellipsoid::Superellipsoid </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a27aa85d4aca772b82c7e09be0bf66427"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27aa85d4aca772b82c7e09be0bf66427">&#9670;&nbsp;</a></span>epsilon1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rbd::parsers::Geometry::Superellipsoid::epsilon1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af2f836762930124bde9bbfb52ff06282"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2f836762930124bde9bbfb52ff06282">&#9670;&nbsp;</a></span>epsilon2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rbd::parsers::Geometry::Superellipsoid::epsilon2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1b8769a1fbbcff11e40bc1ac3e641d7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b8769a1fbbcff11e40bc1ac3e641d7c">&#9670;&nbsp;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::Vector3d rbd::parsers::Geometry::Superellipsoid::size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="a00399.html">rbd</a></li><li class="navelem"><a class="el" href="a00400.html">parsers</a></li><li class="navelem"><a class="el" href="a00976.html">Geometry</a></li><li class="navelem"><a class="el" href="a00996.html">Superellipsoid</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:09 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

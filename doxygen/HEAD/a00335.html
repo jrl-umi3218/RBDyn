@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: FD.h File Reference</title>
+<title>RBDyn: yaml.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -69,26 +69,37 @@ $(document).ready(function(){initNavTree('a00335.html','');});
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">FD.h File Reference</div>  </div>
+<div class="title">yaml.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;Eigen/Core&gt;</code><br />
-<code>#include &lt;rbdyn/config.hh&gt;</code><br />
-<code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="a00383.html">RBDyn/MultiBody.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00386.html">RBDyn/MultiBodyConfig.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00389.html">RBDyn/MultiBodyGraph.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00329.html">RBDyn/parsers/common.h</a>&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00967.html">rbd::ForwardDynamics</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward Dynamics algorithm.  <a href="a00967.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01008.html">rbd::parsers::RBDynFromYAML</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="memitem:a00402"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00402.html">YAML</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00400"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00400.html">rbd::parsers</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a12db4429e23daa8ec351099198b69d2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a00326.html#a644463f26f4f468dad805153d93d648d">RBDYN_PARSERS_DLLAPI</a> ParserResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00400.html#a12db4429e23daa8ec351099198b69d2f">rbd::parsers::from_yaml</a> (const std::string &amp;content, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</td></tr>
+<tr class="separator:a12db4429e23daa8ec351099198b69d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d188b64e5c4c1d1d130ec77567ef86f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a00326.html#a644463f26f4f468dad805153d93d648d">RBDYN_PARSERS_DLLAPI</a> ParserResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00400.html#a6d188b64e5c4c1d1d130ec77567ef86f">rbd::parsers::from_yaml_file</a> (const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</td></tr>
+<tr class="separator:a6d188b64e5c4c1d1d130ec77567ef86f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -96,8 +107,8 @@ Namespaces</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00335.html">FD.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_25205df789895db728d786a757b2675c.html">parsers</a></li><li class="navelem"><a class="el" href="dir_5d4996d05c2d4601ec9b60d0b9215ba6.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_301ca94643ed7669ff1fa685ddd268d5.html">parsers</a></li><li class="navelem"><a class="el" href="a00335.html">yaml.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:09 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

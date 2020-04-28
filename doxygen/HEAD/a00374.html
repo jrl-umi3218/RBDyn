@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: VisServo.h File Reference</title>
+<title>RBDyn: Jacobian.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -68,43 +68,34 @@ $(document).ready(function(){initNavTree('a00374.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle">
-<div class="title">VisServo.h File Reference</div>  </div>
+<div class="title">Jacobian.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;rbdyn/config.hh&gt;</code><br />
-<code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
+<code>#include &quot;<a class="el" href="a00383.html">MultiBody.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01048.html">rbd::Block</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a contiguous block of DoFs in a <a class="el" href="a01052.html" title="Algorithm to compute the jacobian of a specified body. ">Jacobian</a>.  <a href="a01048.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01052.html">rbd::Jacobian</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Algorithm to compute the jacobian of a specified body.  <a href="a01052.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a07491bc6c9c4efc66e979df49eec7a77"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a07491bc6c9c4efc66e979df49eec7a77">rbd::imagePointJacobian</a> (const Eigen::Vector2d &amp;point2d, const double depthEstimate, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
-<tr class="memdesc:a07491bc6c9c4efc66e979df49eec7a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="a00381.html#a07491bc6c9c4efc66e979df49eec7a77">More...</a><br /></td></tr>
-<tr class="separator:a07491bc6c9c4efc66e979df49eec7a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a3f883d5b2cb2d74f03f930d7097aa91e">rbd::imagePointJacobian</a> (const Eigen::Vector3d &amp;point3d, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
-<tr class="memdesc:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of an image point.  <a href="a00381.html#a3f883d5b2cb2d74f03f930d7097aa91e">More...</a><br /></td></tr>
-<tr class="separator:a3f883d5b2cb2d74f03f930d7097aa91e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a387fb33722a5c4a574a9aefcac1f80e5"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a387fb33722a5c4a574a9aefcac1f80e5">rbd::imagePointJacobianDot</a> (const Eigen::Vector2d &amp;imagePoint, const Eigen::Vector2d &amp;imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</td></tr>
-<tr class="memdesc:a387fb33722a5c4a574a9aefcac1f80e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix derivative of an image point.  <a href="a00381.html#a387fb33722a5c4a574a9aefcac1f80e5">More...</a><br /></td></tr>
-<tr class="separator:a387fb33722a5c4a574a9aefcac1f80e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aa7c485df3cfdbc0819e75bbea7cb2632">rbd::poseJacobian</a> (const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac, const double rot_angle_threshold=1.0e-8)</td></tr>
-<tr class="memdesc:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of a pose.  <a href="a00381.html#aa7c485df3cfdbc0819e75bbea7cb2632">More...</a><br /></td></tr>
-<tr class="separator:aa7c485df3cfdbc0819e75bbea7cb2632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef704a4c74be13842752ab1232da6b52"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#aef704a4c74be13842752ab1232da6b52">rbd::depthDotJacobian</a> (const Eigen::Vector2d &amp;imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</td></tr>
-<tr class="memdesc:aef704a4c74be13842752ab1232da6b52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interaction matrix of the depth derivative.  <a href="a00381.html#aef704a4c74be13842752ab1232da6b52">More...</a><br /></td></tr>
-<tr class="separator:aef704a4c74be13842752ab1232da6b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a42e2c6560ae5a3978c5d999e5dfb9375">rbd::getAngleAxis</a> (const Eigen::Matrix3d &amp;rotation, double &amp;rot_angle, Eigen::Vector3d &amp;rot_axis)</td></tr>
-<tr class="memdesc:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the angle and axis of an angle-axis rotation representation given a rotation matrix.  <a href="a00381.html#a42e2c6560ae5a3978c5d999e5dfb9375">More...</a><br /></td></tr>
-<tr class="separator:a42e2c6560ae5a3978c5d999e5dfb9375"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af84dc61728c402a7a3a5b61dc7b8a780"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#af84dc61728c402a7a3a5b61dc7b8a780">rbd::getSkewSym</a> (const Eigen::Vector3d &amp;vector, Eigen::Matrix3d &amp;matrix)</td></tr>
-<tr class="memdesc:af84dc61728c402a7a3a5b61dc7b8a780"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obtain the skew-symmetric (or anti-symmetric) matrix of a vector.  <a href="a00381.html#af84dc61728c402a7a3a5b61dc7b8a780">More...</a><br /></td></tr>
-<tr class="separator:af84dc61728c402a7a3a5b61dc7b8a780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:addcc00b58bd78ec27ff56ad979f5ff2d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#addcc00b58bd78ec27ff56ad979f5ff2d">rbd::Blocks</a> = std::vector&lt; Block &gt;</td></tr>
+<tr class="separator:addcc00b58bd78ec27ff56ad979f5ff2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -112,8 +103,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00374.html">VisServo.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_a4ac87526d6db31e6130d8cf523ce70d.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00374.html">Jacobian.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:08 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

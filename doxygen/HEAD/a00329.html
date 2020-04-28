@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: EulerIntegration.h File Reference</title>
+<title>RBDyn: common.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -68,41 +68,87 @@ $(document).ready(function(){initNavTree('a00329.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">EulerIntegration.h File Reference</div>  </div>
+<div class="title">common.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;rbdyn/config.hh&gt;</code><br />
-<code>#include &quot;<a class="el" href="a00359.html">Joint.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="a00377.html">RBDyn/Joint.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00383.html">RBDyn/MultiBody.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00386.html">RBDyn/MultiBodyConfig.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00389.html">RBDyn/MultiBodyGraph.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="a00326.html">RBDyn/parsers/api.h</a>&gt;</code><br />
+<code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
+<code>#include &lt;boost/variant.hpp&gt;</code><br />
+<code>#include &lt;Eigen/Core&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00972.html">rbd::parsers::Limits</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00976.html">rbd::parsers::Geometry</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00980.html">rbd::parsers::Geometry::Mesh</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00984.html">rbd::parsers::Geometry::Box</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00988.html">rbd::parsers::Geometry::Cylinder</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00992.html">rbd::parsers::Geometry::Sphere</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00996.html">rbd::parsers::Geometry::Superellipsoid</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="a00996.html" title="A Superellipsoid can approximate primitive shapes as boxes, cylinders and pyrimids while remaining st...">Superellipsoid</a> can approximate primitive shapes as boxes, cylinders and pyrimids while remaining strictly convex.  <a href="a00996.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01000.html">rbd::parsers::Visual</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01004.html">rbd::parsers::ParserResult</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00400"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00400.html">rbd::parsers</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3bd2d0d6d7e28cb91bf1d4595c170eed"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a3bd2d0d6d7e28cb91bf1d4595c170eed">rbd::eulerJointIntegration</a> (Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q)</td></tr>
-<tr class="memdesc:a3bd2d0d6d7e28cb91bf1d4595c170eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate joint configuration.  <a href="a00381.html#a3bd2d0d6d7e28cb91bf1d4595c170eed">More...</a><br /></td></tr>
-<tr class="separator:a3bd2d0d6d7e28cb91bf1d4595c170eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1d5e428f8fea58734485e214420ad45"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#af1d5e428f8fea58734485e214420ad45">rbd::eulerIntegration</a> (const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</td></tr>
-<tr class="memdesc:af1d5e428f8fea58734485e214420ad45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use the euler method to integrate.  <a href="a00381.html#af1d5e428f8fea58734485e214420ad45">More...</a><br /></td></tr>
-<tr class="separator:af1d5e428f8fea58734485e214420ad45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd0e7a890bf8ed1ba9790c65f2b172c2"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#abd0e7a890bf8ed1ba9790c65f2b172c2">rbd::sEulerIntegration</a> (const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</td></tr>
-<tr class="memdesc:abd0e7a890bf8ed1ba9790c65f2b172c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">safe version of  <a href="a00381.html#abd0e7a890bf8ed1ba9790c65f2b172c2">More...</a><br /></td></tr>
-<tr class="separator:abd0e7a890bf8ed1ba9790c65f2b172c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a421e0a101b5db4ea6fa03ec2a851229c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="a00326.html#a644463f26f4f468dad805153d93d648d">RBDYN_PARSERS_DLLAPI</a> ParserResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00400.html#a421e0a101b5db4ea6fa03ec2a851229c">rbd::parsers::from_file</a> (const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</td></tr>
+<tr class="memdesc:a421e0a101b5db4ea6fa03ec2a851229c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the file extension and parses it as URDF or <a class="el" href="a00402.html">YAML</a> accordingly.  <a href="a00400.html#a421e0a101b5db4ea6fa03ec2a851229c">More...</a><br /></td></tr>
+<tr class="separator:a421e0a101b5db4ea6fa03ec2a851229c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:af10f27103f941f5cbafc9d21d6554e56"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00329.html#af10f27103f941f5cbafc9d21d6554e56">File</a></td></tr>
+<tr class="separator:af10f27103f941f5cbafc9d21d6554e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="af10f27103f941f5cbafc9d21d6554e56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af10f27103f941f5cbafc9d21d6554e56">&#9670;&nbsp;</a></span>File</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">File</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00329.html">EulerIntegration.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_25205df789895db728d786a757b2675c.html">parsers</a></li><li class="navelem"><a class="el" href="dir_5d4996d05c2d4601ec9b60d0b9215ba6.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_301ca94643ed7669ff1fa685ddd268d5.html">parsers</a></li><li class="navelem"><a class="el" href="a00329.html">common.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:08 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

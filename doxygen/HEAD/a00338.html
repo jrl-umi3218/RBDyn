@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: FK.h File Reference</title>
+<title>RBDyn: Body.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -68,27 +68,31 @@ $(document).ready(function(){initNavTree('a00338.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">FK.h File Reference</div>  </div>
+<div class="title">Body.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;rbdyn/config.hh&gt;</code><br />
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01012.html">rbd::Body</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="a01012.html" title="Body representation. ">Body</a> representation.  <a href="a01012.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a96c3cea742bc063bc8cac29d42411ac9"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a96c3cea742bc063bc8cac29d42411ac9">rbd::forwardKinematics</a> (const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="memdesc:a96c3cea742bc063bc8cac29d42411ac9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the forward kinematic of a <a class="el" href="a01003.html" title="Kinematic tree of a multibody system. ">MultiBody</a>.  <a href="a00381.html#a96c3cea742bc063bc8cac29d42411ac9">More...</a><br /></td></tr>
-<tr class="separator:a96c3cea742bc063bc8cac29d42411ac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11ae46b6402eb8d74f53677aca71babb"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a11ae46b6402eb8d74f53677aca71babb">rbd::sForwardKinematics</a> (const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="memdesc:a11ae46b6402eb8d74f53677aca71babb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version.  <a href="a00381.html#a11ae46b6402eb8d74f53677aca71babb">More...</a><br /></td></tr>
-<tr class="separator:a11ae46b6402eb8d74f53677aca71babb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3e2f68a8f7a4ce79266e72ddaabb5e"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#aef3e2f68a8f7a4ce79266e72ddaabb5e">rbd::operator&lt;&lt;</a> (std::ostream &amp;out, const Body &amp;b)</td></tr>
+<tr class="separator:aef3e2f68a8f7a4ce79266e72ddaabb5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -96,8 +100,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00338.html">FK.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_a4ac87526d6db31e6130d8cf523ce70d.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00338.html">Body.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:08 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RBDyn: FV.h File Reference</title>
+<title>RBDyn: CoM.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="jquery.js"></script>
@@ -68,27 +68,52 @@ $(document).ready(function(){initNavTree('a00341.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">FV.h File Reference</div>  </div>
+<div class="title">CoM.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;rbdyn/config.hh&gt;</code><br />
+<div class="textblock"><code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;Eigen/Core&gt;</code><br />
+<code>#include &lt;rbdyn/config.hh&gt;</code><br />
+<code>#include &quot;<a class="el" href="a00374.html">Jacobian.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01016.html">rbd::CoMJacobianDummy</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the CoM jacobian with a simple but slow algorithm.  <a href="a01016.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a01020.html">rbd::CoMJacobian</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the CoM jacobian.  <a href="a01020.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:a00381"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html">rbd</a></td></tr>
+<tr class="memitem:a00399"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html">rbd</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a45a97f5d7650231c3d723a11c9408cd8"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a45a97f5d7650231c3d723a11c9408cd8">rbd::forwardVelocity</a> (const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="memdesc:a45a97f5d7650231c3d723a11c9408cd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the forward velocity of a <a class="el" href="a01003.html" title="Kinematic tree of a multibody system. ">MultiBody</a>.  <a href="a00381.html#a45a97f5d7650231c3d723a11c9408cd8">More...</a><br /></td></tr>
-<tr class="separator:a45a97f5d7650231c3d723a11c9408cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fdbf73c467ae855e5aadcc0589b55ab"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00381.html#a6fdbf73c467ae855e5aadcc0589b55ab">rbd::sForwardVelocity</a> (const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</td></tr>
-<tr class="memdesc:a6fdbf73c467ae855e5aadcc0589b55ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version.  <a href="a00381.html#a6fdbf73c467ae855e5aadcc0589b55ab">More...</a><br /></td></tr>
-<tr class="separator:a6fdbf73c467ae855e5aadcc0589b55ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d5affc22a2a8da050bec954dbe49e7"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#aa3d5affc22a2a8da050bec954dbe49e7">rbd::computeCoM</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
+<tr class="memdesc:aa3d5affc22a2a8da050bec954dbe49e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the Center of Mass (CoM) position of a multibody.  <a href="a00399.html#aa3d5affc22a2a8da050bec954dbe49e7">More...</a><br /></td></tr>
+<tr class="separator:aa3d5affc22a2a8da050bec954dbe49e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae7a9a01b7d8e8f0113ac0ced2f3359f"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#aae7a9a01b7d8e8f0113ac0ced2f3359f">rbd::computeCoMVelocity</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
+<tr class="memdesc:aae7a9a01b7d8e8f0113ac0ced2f3359f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the Center of Mass (CoM) velocity of a multibody.  <a href="a00399.html#aae7a9a01b7d8e8f0113ac0ced2f3359f">More...</a><br /></td></tr>
+<tr class="separator:aae7a9a01b7d8e8f0113ac0ced2f3359f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66536ad8e1924b87c9b376d151f7321e"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#a66536ad8e1924b87c9b376d151f7321e">rbd::computeCoMAcceleration</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
+<tr class="memdesc:a66536ad8e1924b87c9b376d151f7321e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the Center of Mass (CoM) acceleration of a multibody.  <a href="a00399.html#a66536ad8e1924b87c9b376d151f7321e">More...</a><br /></td></tr>
+<tr class="separator:a66536ad8e1924b87c9b376d151f7321e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dce1b30151f67949e67f9da9b248960"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#a1dce1b30151f67949e67f9da9b248960">rbd::sComputeCoM</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
+<tr class="memdesc:a1dce1b30151f67949e67f9da9b248960"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version.  <a href="a00399.html#a1dce1b30151f67949e67f9da9b248960">More...</a><br /></td></tr>
+<tr class="separator:a1dce1b30151f67949e67f9da9b248960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a546da91f76a26766fe29b6269f4b6eaf"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#a546da91f76a26766fe29b6269f4b6eaf">rbd::sComputeCoMVelocity</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
+<tr class="memdesc:a546da91f76a26766fe29b6269f4b6eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version.  <a href="a00399.html#a546da91f76a26766fe29b6269f4b6eaf">More...</a><br /></td></tr>
+<tr class="separator:a546da91f76a26766fe29b6269f4b6eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36f0a66ff371f16920fa8451d48e3014"><td class="memItemLeft" align="right" valign="top">RBDYN_DLLAPI Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00399.html#a36f0a66ff371f16920fa8451d48e3014">rbd::sComputeCoMAcceleration</a> (const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</td></tr>
+<tr class="memdesc:a36f0a66ff371f16920fa8451d48e3014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe version.  <a href="a00399.html#a36f0a66ff371f16920fa8451d48e3014">More...</a><br /></td></tr>
+<tr class="separator:a36f0a66ff371f16920fa8451d48e3014"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -96,8 +121,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00341.html">FV.h</a></li>
-    <li class="footer">Generated on Tue Dec 24 2019 01:30:14 for RBDyn by
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html">RBDyn</a></li><li class="navelem"><a class="el" href="dir_a4ac87526d6db31e6130d8cf523ce70d.html">RBDyn</a></li><li class="navelem"><a class="el" href="a00341.html">CoM.h</a></li>
+    <li class="footer">Generated on Tue Apr 28 2020 10:04:08 for RBDyn by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>
