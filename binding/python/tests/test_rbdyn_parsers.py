@@ -235,7 +235,6 @@ class TestRBDynParsers(unittest.TestCase):
     self.assertEqual(parser_result.name, b"XYZSarm")
     self.assertEqual(len(parser_result.visual), 1)
     self.assertEqual(len(parser_result.collision), 0)
-    self.assertEqual(len(parser_result.collision_tf), 5)
     self.assertEqual(len(parser_result.limits.lower), 4)
     self.assertEqual(len(parser_result.limits.upper), 4)
     self.assertEqual(len(parser_result.limits.velocity), 4)

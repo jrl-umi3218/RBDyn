@@ -375,19 +375,6 @@ void rbd::RBDynFromYAML::parseLink(const YAML::Node & link)
   parseVisuals(link["visual"], res.visual, name);
   parseVisuals(link["collision"], res.collision, name);
 
-  {
-    auto collision_it = res.collision.find(name);
-    if(collision_it != res.collision.end() && !collision_it->second.empty())
-    {
-      // FIXME! Just like visual tags, there can be several collision tags!
-      res.collision_tf[name] = collision_it->second[0].origin;
-    }
-    else
-    {
-      res.collision_tf[name] = sva::PTransformd::Identity();
-    }
-  }
-
   if(verbose_)
   {
     std::cout << "\tmass: " << mass << '\n';

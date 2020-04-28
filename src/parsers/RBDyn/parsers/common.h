@@ -106,7 +106,6 @@ struct RBDYN_PARSERS_DLLAPI ParserResult
   rbd::Limits limits;
   std::map<std::string, std::vector<rbd::Visual>> visual;
   std::map<std::string, std::vector<rbd::Visual>> collision;
-  std::map<std::string, sva::PTransformd> collision_tf;
   std::string name;
 };
 

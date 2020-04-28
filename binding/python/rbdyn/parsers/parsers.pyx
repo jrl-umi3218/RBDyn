@@ -370,12 +370,6 @@ cdef class ParserResult(object):
         for v in it.second:
           res[it.first].append(VisualFromC(v))
       return res
-  property collision_tf:
-    def __get__(self):
-      res = {}
-      for it in self.impl.collision_tf:
-        res[it.first] = sva.PTransformdFromC(it.second)
-      return res
   property name:
     def __get__(self):
       return self.impl.name

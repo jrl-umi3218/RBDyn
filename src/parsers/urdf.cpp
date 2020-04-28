@@ -286,9 +286,6 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
       }
     }
 
-    // FIXME! Just like visual tags, there can be several collision tags!
-    res.collision_tf[linkName] = originFromTag(*linkDom, "collision");
-
     // Parse all collision tags. There may be several per link
     for(tinyxml2::XMLElement * child = linkDom->FirstChildElement("collision"); child != nullptr;
         child = child->NextSiblingElement("collision"))

@@ -62,7 +62,6 @@ cdef extern from "<RBDyn/parsers/common.h>" namespace "rbd":
     Limits limits
     cppmap[string, vector[Visual]] visual
     cppmap[string, vector[Visual]] collision
-    cppmap[string, PTransformd] collision_tf
     string name
 
   ParserResult from_file(const string&, cppbool, const vector[string]&, cppbool, const string&, cppbool)
