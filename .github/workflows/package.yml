@@ -1,39 +1,27 @@
+---
 name: Package RBDyn
-
-# This workflow only runs when pushing to master or pushing a tag
-#
-# On master, it will:
-# - Build packages for selected Debian/Ubuntu distro
-# - Upload the packages to https://dl.bintray.com/gergondet/multi-contact-head
-#
-# On tagged versions it will:
-# - Create a GitHub release draft
-# - Attach the sources to the release
-# - Build packages for selected Debian/Ubuntu distro
-# - Upload the packages to https://dl.bintray.com/gergondet/multi-contact
-# - Finalize the release
-
 on:
+  repository_dispatch:
+    types:
+    - package-master
+    - package-release
   push:
+    paths-ignore:
+    - doc/**
+    - README.md
+    - ".github/workflows/build.yml"
     branches:
-      - master
+    - master
     tags:
-      - v*
-
+    - v*
 jobs:
-  # For a given tag vX.Y.Z, this checks:
-  # - set(PROJECT_VERSION X.Y.Z) in CMakeLists.txt
-  # - version X.Y.Z in debian/changelog
-  # If these checks fail, the tag is automatically deleted
-  #
-  # This job does not run on the master branch
   check-tag:
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
-      if: github.ref != 'refs/heads/master'
+      if: startsWith(github.ref, 'refs/tags/')
     - name: Check version coherency
       run: |
         set -x
@@ -45,7 +33,7 @@ jobs:
         echo "::set-env name=REJECTION::"
         export TAG=`echo ${{ github.ref }} | sed -e 's@refs/tags/@@'`
         echo "::set-env name=RELEASE_TAG::${TAG}"
-      if: github.ref != 'refs/heads/master'
+      if: startsWith(github.ref, 'refs/tags/')
     - name: Delete tag
       run: |
         set -x
@@ -54,77 +42,114 @@ jobs:
     - name: Notify tag deletion
       uses: archive/github-actions-slack@master
       with:
-        slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
-        slack-channel: '#ci'
-        slack-text: >
+        slack-bot-user-oauth-access-token: "${{ secrets.SLACK_BOT_TOKEN }}"
+        slack-channel: "#ci"
+        slack-text: |
           Tag *${{ github.ref }}* in *${{ github.repository }}* was deleted:
             ${{ env.REJECTION}}
       if: failure()
     - name: Create release
       uses: jrl-umi3218/github-actions/create-release@master
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ env.RELEASE_TAG }}
-      if: github.ref != 'refs/heads/master'
-  # This job build binary packages for Ubuntu
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        tag: "${{ env.RELEASE_TAG }}"
+      if: startsWith(github.ref, 'refs/tags/')
   build-packages:
     needs: check-tag
     strategy:
       fail-fast: false
       matrix:
-        dist: [xenial, bionic, focal]
-        arch: [i386, amd64]
+        dist:
+        - xenial
+        - bionic
+        - focal
+        arch:
+        - i386
+        - amd64
+        exclude:
+        - dist: focal
+          arch: i386
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v1
-    - name: Prepare recipe
+    - uses: actions/checkout@v2
+    - name: Choose extra mirror
       run: |
-        set -x
-        cp .github/workflows/RBDyn.recipe /tmp/RBDyn.recipe
-        export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
-        sed -i "s#@REF@#${REF}#" /tmp/RBDyn.recipe
+        if [ "${{ github.event.action }}" == "package-master" ]
+        then
+          export REF=master
+        elif [ "${{ github.event.action }}" == "package-release" ]
+        then
+          export REF=`git tag --sort=committerdate --list 'v[0-9]*'|tail -1`
+          git checkout $REF
+          git submodule sync && git submodule update
+        else
+          export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+        fi
         if [ $REF == "master" ]
         then
+          echo "::set-env name=BINTRAY_REPO::multi-contact-head"
+          echo "::set-env name=BINTRAY_VERSION::HEAD"
           echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-head"
+          echo "::set-env name=PACKAGE_JOB::package-master"
         else
+          echo "::set-env name=BINTRAY_REPO::multi-contact-release"
+          echo "::set-env name=BINTRAY_VERSION::${REF}"
           echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
+          echo "::set-env name=PACKAGE_JOB::package-release"
         fi
-        echo "Prepared recipe"
-        echo "###############"
-        cat /tmp/RBDyn.recipe
     - name: Build package
-      uses: jrl-umi3218/github-actions/build-package@master
+      uses: jrl-umi3218/github-actions/build-package-native@master
       with:
-        dist: ${{ matrix.dist }}
-        arch: ${{ matrix.arch }}
-        recipe: /tmp/RBDyn.recipe
-        other-mirrors: ${{ env.EXTRA_MIRROR }}
-        other-gpg-keys: "0x892EA6EE273707C6495A6FB6220D644C64666806"
+        dist: "${{ matrix.dist }}"
+        arch: "${{ matrix.arch }}"
+        other-mirrors: "${{ env.EXTRA_MIRROR }}"
+        other-gpg-keys: '0x892EA6EE273707C6495A6FB6220D644C64666806'
     - uses: actions/upload-artifact@v1
       with:
         name: packages-${{ matrix.dist }}-${{ matrix.arch }}
-        path: /tmp/packages-${{ matrix.dist }}-${{ matrix.arch }}/
-  # This job upload binary packages for Ubuntu
+        path: "/tmp/packages-${{ matrix.dist }}-${{ matrix.arch }}/"
   upload-packages:
     needs: build-packages
     strategy:
       max-parallel: 1
       fail-fast: false
       matrix:
-        dist: [xenial, bionic, focal]
-        arch: [i386, amd64]
+        dist:
+        - xenial
+        - bionic
+        - focal
+        arch:
+        - i386
+        - amd64
+        exclude:
+        - dist: focal
+          arch: i386
     runs-on: ubuntu-18.04
     steps:
-    - name: Set upload parameters
+    - name: Choose extra mirror
       run: |
-        export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+        if [ "${{ github.event.action }}" == "package-master" ]
+        then
+          export REF=master
+        elif [ "${{ github.event.action }}" == "package-release" ]
+        then
+          export REF=`git tag --sort=committerdate --list 'v[0-9]*'|tail -1`
+          git checkout $REF
+          git submodule sync && git submodule update
+        else
+          export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+        fi
         if [ $REF == "master" ]
         then
           echo "::set-env name=BINTRAY_REPO::multi-contact-head"
           echo "::set-env name=BINTRAY_VERSION::HEAD"
+          echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-head"
+          echo "::set-env name=PACKAGE_JOB::package-master"
         else
           echo "::set-env name=BINTRAY_REPO::multi-contact-release"
           echo "::set-env name=BINTRAY_VERSION::${REF}"
+          echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
+          echo "::set-env name=PACKAGE_JOB::package-release"
         fi
     - name: Download packages
       uses: actions/download-artifact@v1
@@ -133,16 +158,56 @@ jobs:
     - name: Upload
       uses: jrl-umi3218/github-actions/upload-package@master
       with:
-        dist: ${{ matrix.dist }}
-        arch: ${{ matrix.arch }}
+        dist: "${{ matrix.dist }}"
+        arch: "${{ matrix.arch }}"
         subject: gergondet
-        repo: ${{ env.BINTRAY_REPO }}
+        repo: "${{ env.BINTRAY_REPO }}"
         package: |
           name: RBDyn
           desc: "RBDyn provides a set of classes and functions to model the dynamics of rigid body systems"
           licenses: [BSD 2-Clause]
           vcs_url: https://github.com/jrl-umi3218/RBDyn
-        version: ${{ env.BINTRAY_VERSION }}
+        version: "${{ env.BINTRAY_VERSION }}"
         path: packages-${{ matrix.dist }}-${{ matrix.arch }}
-        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        BINTRAY_API_KEY: "${{ secrets.BINTRAY_API_KEY }}"
+        GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
+  mirror-sync-and-trigger:
+    needs: upload-packages
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Choose extra mirror
+      run: |
+        if [ "${{ github.event.action }}" == "package-master" ]
+        then
+          export REF=master
+        elif [ "${{ github.event.action }}" == "package-release" ]
+        then
+          export REF=`git tag --sort=committerdate --list 'v[0-9]*'|tail -1`
+          git checkout $REF
+          git submodule sync && git submodule update
+        else
+          export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+        fi
+        if [ $REF == "master" ]
+        then
+          echo "::set-env name=BINTRAY_REPO::multi-contact-head"
+          echo "::set-env name=BINTRAY_VERSION::HEAD"
+          echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-head"
+          echo "::set-env name=PACKAGE_JOB::package-master"
+        else
+          echo "::set-env name=BINTRAY_REPO::multi-contact-release"
+          echo "::set-env name=BINTRAY_VERSION::${REF}"
+          echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
+          echo "::set-env name=PACKAGE_JOB::package-release"
+        fi
+    - name: Request mirror sync
+      run: 'curl -ugergondet:${{ secrets.BINTRAY_API_KEY }} --header "X-GPG-PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}" -X POST https://api.bintray.com/calc_metadata/gergondet/${{ env.BINTRAY_REPO }}
+
+'
+    - name: Trigger dependents rebuild
+      run: 'curl -H "Accept: application/vnd.github.everest-preview+json" -H "Authorization: token ${{ secrets.GH_PAGES_TOKEN }}" --request POST --data "{\"event_type\": \"${PACKAGE_JOB}\"}" https://api.github.com/repos/jrl-umi3218/Tasks/dispatches
+
+'

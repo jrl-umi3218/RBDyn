@@ -1,3 +1,0 @@
-# git-build-recipe format 0.4 deb-version {debversion}+{time}+{git-commit}
-https://github.com/jrl-umi3218/RBDyn @REF@
-run git submodule update --init

@@ -13,7 +13,7 @@ jobs:
   clang-format:
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install clang-format-6.0
       run: |
         sudo apt-get -qq update
@@ -40,7 +40,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
     - name: Install dependencies
