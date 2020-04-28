@@ -20,7 +20,7 @@ macro(addUnitTest name)
 endmacro(addUnitTest)
 
 macro(addParserUnitTest name)
-  if(${BUILD_TESTING} AND ${BUILD_PARSERS})
+  if(${BUILD_TESTING} AND ${BUILD_RBDYN_PARSERS})
     add_executable(${name} ${name}.cpp ${HEADERS})
     target_link_libraries(${name} PRIVATE RBDynParsers Boost::unit_test_framework Boost::system Boost::filesystem Boost::disable_autolinking)
     target_compile_definitions(${name} PRIVATE -DBOOST_TEST_DYN_LINK -DTESTS_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
