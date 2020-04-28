@@ -4,8 +4,8 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-cimport c_rbdyn_parsers
-cimport c_rbdyn_parsers_private
+cimport c_parsers
+cimport c_parsers_private
 
 cimport eigen.eigen as eigen
 cimport sva.sva as sva
@@ -91,7 +91,7 @@ cdef class Limits(object):
       else:
         self.impl.torque = value
 
-cdef Limits LimitsFromC(const c_rbdyn_parsers.Limits & lim):
+cdef Limits LimitsFromC(const c_parsers.Limits & lim):
     cdef Limits ret = Limits()
     ret.impl = lim
     return ret
@@ -121,7 +121,7 @@ cdef class GeometryMesh(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef GeometryMesh GeometryMeshFromC(const c_rbdyn_parsers.GeometryMesh & m):
+cdef GeometryMesh GeometryMeshFromC(const c_parsers.GeometryMesh & m):
     cdef GeometryMesh ret = GeometryMesh()
     ret.impl = m
     return ret
@@ -143,7 +143,7 @@ cdef class GeometryBox(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef GeometryBox GeometryBoxFromC(const c_rbdyn_parsers.GeometryBox & m):
+cdef GeometryBox GeometryBoxFromC(const c_parsers.GeometryBox & m):
     cdef GeometryBox ret = GeometryBox()
     ret.impl = m
     return ret
@@ -171,7 +171,7 @@ cdef class GeometryCylinder(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef GeometryCylinder GeometryCylinderFromC(const c_rbdyn_parsers.GeometryCylinder & m):
+cdef GeometryCylinder GeometryCylinderFromC(const c_parsers.GeometryCylinder & m):
     cdef GeometryCylinder ret = GeometryCylinder()
     ret.impl = m
     return ret
@@ -193,7 +193,7 @@ cdef class GeometrySphere(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef GeometrySphere GeometrySphereFromC(const c_rbdyn_parsers.GeometrySphere & m):
+cdef GeometrySphere GeometrySphereFromC(const c_parsers.GeometrySphere & m):
     cdef GeometrySphere ret = GeometrySphere()
     ret.impl = m
     return ret
@@ -227,18 +227,18 @@ cdef class GeometrySuperellipsoid(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef GeometrySuperellipsoid GeometrySuperellipsoidFromC(const c_rbdyn_parsers.GeometrySuperellipsoid & m):
+cdef GeometrySuperellipsoid GeometrySuperellipsoidFromC(const c_parsers.GeometrySuperellipsoid & m):
     cdef GeometrySuperellipsoid ret = GeometrySuperellipsoid()
     ret.impl = m
     return ret
 
 cdef class Geometry(object):
-  MESH = c_rbdyn_parsers.GeometryMESH
-  BOX = c_rbdyn_parsers.GeometryBOX
-  CYLINDER = c_rbdyn_parsers.GeometryCYLINDER
-  SPHERE = c_rbdyn_parsers.GeometrySPHERE
-  SUPERELLIPSOID = c_rbdyn_parsers.GeometrySUPERELLIPSOID
-  UNKNOWN = c_rbdyn_parsers.GeometryUNKNOWN
+  MESH = c_parsers.GeometryMESH
+  BOX = c_parsers.GeometryBOX
+  CYLINDER = c_parsers.GeometryCYLINDER
+  SPHERE = c_parsers.GeometrySPHERE
+  SUPERELLIPSOID = c_parsers.GeometrySUPERELLIPSOID
+  UNKNOWN = c_parsers.GeometryUNKNOWN
   def __cinit__(self, *args):
     pass
   property type:
@@ -246,35 +246,35 @@ cdef class Geometry(object):
       return self.impl._type
     def __set__(self, value):
       assert(__EXPERT_MODE__)
-      assert(value >= c_rbdyn_parsers.GeometryBOX and value <= c_rbdyn_parsers.GeometryUNKNOWN)
-      self.impl._type = <c_rbdyn_parsers.GeometryType>value
+      assert(value >= c_parsers.GeometryBOX and value <= c_parsers.GeometryUNKNOWN)
+      self.impl._type = <c_parsers.GeometryType>value
   def __set_geom_mesh(self, GeometryMesh value):
-    assert(self.impl._type == c_rbdyn_parsers.GeometryMESH)
-    c_rbdyn_parsers_private.setMesh(self.impl, value.impl)
+    assert(self.impl._type == c_parsers.GeometryMESH)
+    c_parsers_private.setMesh(self.impl, value.impl)
   def __set_geom_box(self, GeometryBox value):
-    assert(self.impl._type == c_rbdyn_parsers.GeometryBOX)
-    c_rbdyn_parsers_private.setBox(self.impl, value.impl)
+    assert(self.impl._type == c_parsers.GeometryBOX)
+    c_parsers_private.setBox(self.impl, value.impl)
   def __set_geom_cylinder(self, GeometryCylinder value):
-    assert(self.impl._type == c_rbdyn_parsers.GeometryCYLINDER)
-    c_rbdyn_parsers_private.setCylinder(self.impl, value.impl)
+    assert(self.impl._type == c_parsers.GeometryCYLINDER)
+    c_parsers_private.setCylinder(self.impl, value.impl)
   def __set_geom_sphere(self, GeometrySphere value):
-    assert(self.impl._type == c_rbdyn_parsers.GeometrySPHERE)
-    c_rbdyn_parsers_private.setSphere(self.impl, value.impl)
+    assert(self.impl._type == c_parsers.GeometrySPHERE)
+    c_parsers_private.setSphere(self.impl, value.impl)
   def __set_geom_superellipsoid(self, GeometrySuperellipsoid value):
-    assert(self.impl._type == c_rbdyn_parsers.GeometrySUPERELLIPSOID)
-    c_rbdyn_parsers_private.setSuperellipsoid(self.impl, value.impl)
+    assert(self.impl._type == c_parsers.GeometrySUPERELLIPSOID)
+    c_parsers_private.setSuperellipsoid(self.impl, value.impl)
   property data:
     def __get__(self):
-      if self.impl._type == c_rbdyn_parsers.GeometryMESH:
-        return GeometryMeshFromC(c_rbdyn_parsers_private.getMesh(self.impl))
-      elif self.impl._type == c_rbdyn_parsers.GeometryBOX:
-        return GeometryBoxFromC(c_rbdyn_parsers_private.getBox(self.impl))
-      elif self.impl._type == c_rbdyn_parsers.GeometryCYLINDER:
-        return GeometryCylinderFromC(c_rbdyn_parsers_private.getCylinder(self.impl))
-      elif self.impl._type == c_rbdyn_parsers.GeometrySPHERE:
-        return GeometrySphereFromC(c_rbdyn_parsers_private.getSphere(self.impl))
-      elif self.impl._type == c_rbdyn_parsers.GeometrySUPERELLIPSOID:
-        return GeometrySuperellipsoidFromC(c_rbdyn_parsers_private.getSuperellipsoid(self.impl))
+      if self.impl._type == c_parsers.GeometryMESH:
+        return GeometryMeshFromC(c_parsers_private.getMesh(self.impl))
+      elif self.impl._type == c_parsers.GeometryBOX:
+        return GeometryBoxFromC(c_parsers_private.getBox(self.impl))
+      elif self.impl._type == c_parsers.GeometryCYLINDER:
+        return GeometryCylinderFromC(c_parsers_private.getCylinder(self.impl))
+      elif self.impl._type == c_parsers.GeometrySPHERE:
+        return GeometrySphereFromC(c_parsers_private.getSphere(self.impl))
+      elif self.impl._type == c_parsers.GeometrySUPERELLIPSOID:
+        return GeometrySuperellipsoidFromC(c_parsers_private.getSuperellipsoid(self.impl))
       else:
         print "No data in the Geometry you are accessing"
         return None
@@ -300,7 +300,7 @@ cdef class Geometry(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef Geometry GeometryFromC(const c_rbdyn_parsers.Geometry & g):
+cdef Geometry GeometryFromC(const c_parsers.Geometry & g):
     cdef Geometry ret = Geometry()
     ret.impl = g
     return ret
@@ -334,7 +334,7 @@ cdef class Visual(object):
     else:
       raise NotImplementedError("This comparison is not supported")
 
-cdef Visual VisualFromC(const c_rbdyn_parsers.Visual& v):
+cdef Visual VisualFromC(const c_parsers.Visual& v):
     cdef Visual ret = Visual()
     ret.impl = v
     return ret
@@ -380,7 +380,7 @@ cdef class ParserResult(object):
     def __get__(self):
       return self.impl.name
 
-cdef ParserResult ParserResultFromC(const c_rbdyn_parsers.ParserResult & u):
+cdef ParserResult ParserResultFromC(const c_parsers.ParserResult & u):
     cdef ParserResult res = ParserResult()
     res.impl = u
     return res
@@ -391,7 +391,7 @@ def from_urdf(content, fixed = True, filteredLinks = [], transformInertia = True
   if isinstance(baseLink, unicode):
     baseLink = baseLink.encode(u'ascii')
   filteredLinks = [ fL.encode(u'ascii') if isinstance(fL, unicode) else fL for fL in filteredLinks ]
-  return ParserResultFromC(c_rbdyn_parsers.from_urdf(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
+  return ParserResultFromC(c_parsers.from_urdf(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
 
 def from_urdf_file(content, fixed = True, filteredLinks = [], transformInertia = True, baseLink = "", withVirtualLinks = True):
   if isinstance(content, unicode):
@@ -399,7 +399,7 @@ def from_urdf_file(content, fixed = True, filteredLinks = [], transformInertia =
   if isinstance(baseLink, unicode):
     baseLink = baseLink.encode(u'ascii')
   filteredLinks = [ fL.encode(u'ascii') if isinstance(fL, unicode) else fL for fL in filteredLinks ]
-  return ParserResultFromC(c_rbdyn_parsers.from_urdf_file(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
+  return ParserResultFromC(c_parsers.from_urdf_file(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
 
 def from_yaml(content, fixed = True, filteredLinks = [], transformInertia = True, baseLink = "", withVirtualLinks = True):
   if isinstance(content, unicode):
@@ -407,7 +407,7 @@ def from_yaml(content, fixed = True, filteredLinks = [], transformInertia = True
   if isinstance(baseLink, unicode):
     baseLink = baseLink.encode(u'ascii')
   filteredLinks = [ fL.encode(u'ascii') if isinstance(fL, unicode) else fL for fL in filteredLinks ]
-  return ParserResultFromC(c_rbdyn_parsers.from_yaml(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
+  return ParserResultFromC(c_parsers.from_yaml(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
 
 def from_yaml_file(content, fixed = True, filteredLinks = [], transformInertia = True, baseLink = "", withVirtualLinks = True):
   if isinstance(content, unicode):
@@ -415,4 +415,4 @@ def from_yaml_file(content, fixed = True, filteredLinks = [], transformInertia =
   if isinstance(baseLink, unicode):
     baseLink = baseLink.encode(u'ascii')
   filteredLinks = [ fL.encode(u'ascii') if isinstance(fL, unicode) else fL for fL in filteredLinks ]
-  return ParserResultFromC(c_rbdyn_parsers.from_yaml_file(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))
+  return ParserResultFromC(c_parsers.from_yaml_file(content, fixed, filteredLinks, transformInertia, baseLink, withVirtualLinks))

@@ -5,10 +5,7 @@
 
 import unittest
 
-import eigen as e3
-import sva
-import rbdyn as rbd
-import rbdyn_parsers as rbdp
+import rbdyn
 
 urdf_model = """<robot name="XYZSarm">
   <link name="b0">
@@ -234,7 +231,7 @@ yaml_model = """robot:
 
 
 class TestRBDynParsers(unittest.TestCase):
-  def perform_test(self, parser_result):
+  def check_result(self, parser_result):
     self.assertEqual(parser_result.name, b"XYZSarm")
     self.assertEqual(len(parser_result.visual), 1)
     self.assertEqual(len(parser_result.collision), 0)
@@ -249,8 +246,5 @@ class TestRBDynParsers(unittest.TestCase):
     self.assertEqual(parser_result.mbg.nrJoints(), 4)
 
   def test(self):
-    self.perform_test(rbdp.from_urdf(urdf_model))
-    self.perform_test(rbdp.from_yaml(yaml_model))
-
-if __name__ == '__main__':
-    unittest.main()
+    self.check_result(rbdyn.parsers.from_urdf(urdf_model))
+    self.check_result(rbdyn.parsers.from_yaml(yaml_model))

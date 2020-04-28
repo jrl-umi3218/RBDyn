@@ -2,7 +2,7 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-from c_rbdyn_parsers cimport *
+from c_parsers cimport *
 
 cdef extern from "rbdyn_parsers_wrapper.hpp" namespace "rbdyn_parsers":
   const GeometryMesh& getMesh(const Geometry&)

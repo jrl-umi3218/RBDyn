@@ -23,6 +23,7 @@ set(SOURCES common.cpp urdf.cpp yaml.cpp)
 set(HEADERS RBDyn/parsers/common.h RBDyn/parsers/urdf.h RBDyn/parsers/yaml.h)
 
 add_library(RBDynParsers SHARED ${SOURCES} ${HEADERS})
+add_library(RBDyn::Parsers ALIAS RBDynParsers)
 target_include_directories(RBDynParsers PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include> $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2 yaml-cpp Boost::boost)
 set_target_properties(RBDynParsers PROPERTIES CXX_STANDARD 11)
