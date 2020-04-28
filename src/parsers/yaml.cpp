@@ -15,6 +15,11 @@
 #  include <cxxabi.h>
 #endif
 
+#ifndef M_PI
+#  include <boost/math/constants/constants.hpp>
+#  define M_PI boost::math::constants::pi<double>()
+#endif
+
 namespace rbd
 {
 
