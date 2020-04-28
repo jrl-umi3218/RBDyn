@@ -6,6 +6,7 @@ add_project_dependency(yaml-cpp 0.5.0 REQUIRED)
 
 find_package(tinyxml2 QUIET)
 if(NOT ${tinyxml2_FOUND})
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules")
   find_package(RBDyn_TinyXML2 REQUIRED)
   install(FILES "${PROJECT_SOURCE_DIR}/CMakeModules/FindRBDyn_TinyXML2.cmake"
           DESTINATION "${CONFIG_INSTALL_DIR}")
