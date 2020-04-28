@@ -195,7 +195,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
       std::string linkName = link->Attribute("name");
       if(std::find(filteredLinks.begin(), filteredLinks.end(), linkName) == filteredLinks.end())
       {
-        if(not withVirtualLinks)
+        if(!withVirtualLinks)
         {
           if(link->FirstChildElement("inertial"))
           {
@@ -233,7 +233,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
 
     tinyxml2::XMLElement * inertialDom = linkDom->FirstChildElement("inertial");
     bool isVirtual = (inertialDom == 0);
-    if(not isVirtual)
+    if(!isVirtual)
     {
       tinyxml2::XMLElement * originDom = inertialDom->FirstChildElement("origin");
       tinyxml2::XMLElement * massDom = inertialDom->FirstChildElement("mass");
@@ -501,7 +501,7 @@ ParserResult from_urdf_file(const std::string & file_path,
                             const std::string & sphericalSuffix)
 {
   std::ifstream file(file_path);
-  if(not file.is_open())
+  if(!file.is_open())
   {
     throw std::runtime_error("URDF: Can't open " + file_path + " file for reading");
   }

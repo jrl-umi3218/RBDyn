@@ -42,7 +42,7 @@ rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
   }
 
   YAML::Node robot = config["robot"];
-  if(not robot)
+  if(!robot)
   {
     throw std::runtime_error("YAML: missing 'robot' root element");
   }
@@ -54,13 +54,13 @@ rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
   }
 
   YAML::Node links = robot["links"];
-  if(not links)
+  if(!links)
   {
     throw std::runtime_error("YAML: missing 'robot->links' element");
   }
 
   YAML::Node angles_in_degrees = robot["anglesInDegrees"];
-  if(not angles_in_degrees)
+  if(!angles_in_degrees)
   {
     throw std::runtime_error("YAML: missing 'robot->anglesInDegrees: true/false' element");
   }
@@ -75,7 +75,7 @@ rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
   }
 
   YAML::Node joints = robot["joints"];
-  if(not joints)
+  if(!joints)
   {
     throw std::runtime_error("YAML: missing 'robot->joints' element");
   }
@@ -84,7 +84,7 @@ rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
     parseJoint(joint);
   }
 
-  if(not base_link.empty())
+  if(!base_link.empty())
   {
     base_link_ = base_link;
   }
@@ -345,9 +345,9 @@ void rbd::RBDynFromYAML::parseLink(const YAML::Node & link)
 
   if(std::find(filtered_links_.begin(), filtered_links_.end(), name) == filtered_links_.end())
   {
-    if(not with_virtual_links_)
+    if(!with_virtual_links_)
     {
-      if(not link["inertial"])
+      if(!link["inertial"])
       {
         filtered_links_.push_back(name);
         return;
@@ -377,7 +377,7 @@ void rbd::RBDynFromYAML::parseLink(const YAML::Node & link)
 
   {
     auto collision_it = res.collision.find(name);
-    if(collision_it != res.collision.end() and not collision_it->second.empty())
+    if(collision_it != res.collision.end() && !collision_it->second.empty())
     {
       // FIXME! Just like visual tags, there can be several collision tags!
       res.collision_tf[name] = collision_it->second[0].origin;
@@ -429,7 +429,7 @@ bool rbd::RBDynFromYAML::parseJointType(const YAML::Node & type,
     {
       bool hasSphericalSuffix =
           name.length() >= spherical_suffix_.length()
-          and name.substr(name.length() - spherical_suffix_.length(), spherical_suffix_.length()) == spherical_suffix_;
+          && name.substr(name.length() - spherical_suffix_.length(), spherical_suffix_.length()) == spherical_suffix_;
       if(hasSphericalSuffix)
       {
         type_name = "spherical";
@@ -507,7 +507,7 @@ void rbd::RBDynFromYAML::parseJointLimits(const YAML::Node & limits,
   {
     if(dof_count > 1)
     {
-      if(not is_continuous)
+      if(!is_continuous)
       {
         lower = limits["lower"].as<std::vector<double>>(lower);
         upper = limits["upper"].as<std::vector<double>>(upper);
@@ -517,7 +517,7 @@ void rbd::RBDynFromYAML::parseJointLimits(const YAML::Node & limits,
     }
     else if(dof_count == 1)
     {
-      if(not is_continuous)
+      if(!is_continuous)
       {
         lower[0] = limits["lower"].as<double>(-infinity);
         upper[0] = limits["upper"].as<double>(infinity);
@@ -565,7 +565,7 @@ void rbd::RBDynFromYAML::parseJoint(const YAML::Node & joint)
   std::string parent = joint["parent"].as<std::string>("link" + std::to_string(joint_idx_));
   std::string child = joint["child"].as<std::string>("link" + std::to_string(joint_idx_ + 1));
   if(std::find(filtered_links_.begin(), filtered_links_.end(), child) != filtered_links_.end()
-     or std::find(filtered_links_.begin(), filtered_links_.end(), parent) != filtered_links_.end())
+     || std::find(filtered_links_.begin(), filtered_links_.end(), parent) != filtered_links_.end())
   {
     return;
   }

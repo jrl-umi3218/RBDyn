@@ -14,7 +14,7 @@ ParserResult from_file(const std::string & file_path,
 {
   auto extension_pos = file_path.rfind('.');
   auto extension = file_path.substr(extension_pos + 1);
-  if(extension == "yaml" or extension == "yml")
+  if(extension == "yaml" || extension == "yml")
   {
     return rbd::from_yaml_file(file_path, fixed, filtered_links, transform_inertia, base_link, with_virtual_links,
                                spherical_suffix);

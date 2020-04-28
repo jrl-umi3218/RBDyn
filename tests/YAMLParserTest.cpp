@@ -190,7 +190,7 @@ bool operator==(const Visual & v1, const Visual & v2)
 
 bool operator==(const Geometry::Superellipsoid & se1, const Geometry::Superellipsoid & se2)
 {
-  return (se1.size == se2.size and se1.epsilon1 == se2.epsilon1 and se1.epsilon2 == se2.epsilon2);
+  return (se1.size == se2.size && se1.epsilon1 == se2.epsilon1 && se1.epsilon2 == se2.epsilon2);
 }
 } // namespace rbd
 
