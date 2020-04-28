@@ -16,6 +16,8 @@ Build-Depends: debhelper (>= 9),
  libboost-filesystem-dev,
  libeigen3-dev (>= 3.2),
  libspacevecalg-dev,
+ libtinyxml2-dev,
+ libyaml-cpp-dev,
  python-all,
  python-dev,
  python-nose,
@@ -35,6 +37,8 @@ Architecture: any
 Depends: pkg-config,
          libeigen3-dev (>= 3.2),
          libspacevecalg-dev,
+         libtinyxml2-dev,
+         libyaml-cpp-dev,
          librbdyn1 (= ${binary:Version}),
          ${misc:Depends}
 Suggests: librbdyn-doc
