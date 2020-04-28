@@ -87,6 +87,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - &choose-extra-mirror
       name: Choose extra mirror
       run: |

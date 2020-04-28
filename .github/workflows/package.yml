@@ -72,6 +72,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Choose extra mirror
       run: |
         if [ "${{ github.event.action }}" == "package-master" ]
