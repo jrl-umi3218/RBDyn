@@ -6,14 +6,33 @@
 #include <RBDyn/FV.h>
 #include <RBDyn/parsers/yaml.h>
 
-#include <cxxabi.h>
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <yaml-cpp/yaml.h>
 
+#ifndef WIN32
+#  include <cxxabi.h>
+#endif
+
 namespace rbd
 {
+
+namespace
+{
+
+static inline std::string demangle(const char * name)
+{
+#ifndef WIN32
+  int status = 0;
+  std::unique_ptr<char, void (*)(void *)> res{abi::__cxa_demangle(name, NULL, NULL, &status), std::free};
+  return status == 0 ? res.get() : name;
+#else
+  return name;
+#endif
+}
+
+} // namespace
 
 rbd::RBDynFromYAML::RBDynFromYAML(const std::string & input,
                                   ParserInput input_type,
@@ -393,9 +412,7 @@ void rbd::RBDynFromYAML::parseLink(const YAML::Node & link)
         std::cout << "\t\tname: " << visual.name << '\n';
         std::cout << "\t\torigin: " << visual.origin.translation().transpose() << ", "
                   << visual.origin.rotation().eulerAngles(0, 1, 2).transpose() << '\n';
-        int status = 0;
-        std::cout << "\t\ttype: " << abi::__cxa_demangle(visual.geometry.data.type().name(), nullptr, nullptr, &status)
-                  << '\n';
+        std::cout << "\t\ttype: " << demangle(visual.geometry.data.type().name()) << '\n';
       }
     }
   }
