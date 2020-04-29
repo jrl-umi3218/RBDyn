@@ -82,6 +82,14 @@ public:
     bodies_[num] = b;
   }
 
+  /// @return Index of the root body
+  int rootBodyIndex() const
+  {
+    int index = bodyIndexByName(bodies_[0].name());
+    while(parent(index) != -1) index = parent(index);
+    return index;
+  }
+
   /// @return Joints of the multibody system.
   const std::vector<Joint> & joints() const
   {

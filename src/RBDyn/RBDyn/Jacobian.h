@@ -50,6 +50,19 @@ public:
   Jacobian(const MultiBody & mb, const std::string & bodyName, const Eigen::Vector3d & point = Eigen::Vector3d::Zero());
 
   /**
+   * Create a jacobian from a reference body to the specified body.
+   * @param mb Multibody where bodyId is in.
+   * @param bodyName Specified body.
+   * @param refBodyName Reference body.
+   * @param point Point in the body exprimed in body coordinate.
+   * @throw std::out_of_range If bodyId don't exist.
+   */
+  Jacobian(const MultiBody & mb,
+           const std::string & bodyName,
+           const std::string & refBodyName,
+           const Eigen::Vector3d & point = Eigen::Vector3d::Zero());
+
+  /**
    * Compute the jacobian at the point/frame specified by X_0_p.
    * @param mb MultiBody used has model.
    * @param mbc Use bodyPosW and motionSubspace.
@@ -307,6 +320,9 @@ public:
     return jointsPath_;
   }
 
+  /// @return The dof path vector from the root to the specified body.
+  std::vector<int> dofPath(const MultiBody & mb) const;
+
   /// @return The number of degree of freedom in the joint path
   int dof() const
   {
@@ -452,10 +468,14 @@ private:
 
 private:
   std::vector<int> jointsPath_;
+  std::vector<bool> reverseJoints_;
   sva::PTransformd point_;
 
   Eigen::MatrixXd jac_;
   Eigen::MatrixXd jacDot_;
+
+  int body_index_;
+  int ref_index_;
 };
 
 } // namespace rbd
