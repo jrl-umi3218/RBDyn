@@ -1,6 +1,6 @@
 var namespaces =
 [
-    [ "rbd", "a00399.html", "a00399" ],
-    [ "tinyxml2", "a00401.html", null ],
-    [ "YAML", "a00402.html", null ]
+    [ "rbd", "namespacerbd.html", "namespacerbd" ],
+    [ "tinyxml2", "namespacetinyxml2.html", null ],
+    [ "YAML", "namespaceYAML.html", null ]
 ];
