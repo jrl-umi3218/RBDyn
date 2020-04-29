@@ -402,15 +402,19 @@ double testEulerInteg(rbd::Joint::Type jType,
   using namespace rbd;
 
   Joint j(jType, axis, true, std::string("0"));
-  std::vector<double> qVec(j.params()), alphaVec(j.dof()), alphaDVec(j.dof());
+  const auto nparams = static_cast<size_t>(j.params());
+  const auto ndofs = static_cast<size_t>(j.dof());
+  std::vector<double> qVec(nparams), alphaVec(ndofs), alphaDVec(ndofs);
   for(int i = 0; i < j.params(); ++i)
   {
-    qVec[i] = q[i];
+    const auto ui = static_cast<size_t>(i);
+    qVec[ui] = q(i);
   }
   for(int i = 0; i < j.dof(); ++i)
   {
-    alphaVec[i] = alpha[i];
-    alphaDVec[i] = 0.;
+    const auto ui = static_cast<size_t>(i);
+    alphaVec[ui] = alpha(i);
+    alphaDVec[ui] = 0.;
   }
 
   sva::PTransformd initPos(j.pose(qVec));
@@ -484,15 +488,16 @@ BOOST_AUTO_TEST_CASE(FATest)
   forwardVelocity(mb, mbc);
   forwardAcceleration(mb, mbc);
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     BOOST_CHECK_SMALL(mbc.bodyAccB[i].vector().norm(), TOL);
   }
 
-  std::vector<rbd::Jacobian> jacs(mb.nrBodies());
+  std::vector<rbd::Jacobian> jacs(static_cast<size_t>(mb.nrBodies()));
   for(int i = 0; i < mb.nrBodies(); ++i)
   {
-    jacs[i] = rbd::Jacobian(mb, mb.body(i).name());
+    const auto ui = static_cast<size_t>(i);
+    jacs[ui] = rbd::Jacobian(mb, mb.body(i).name());
   }
 
   Eigen::MatrixXd fullJac(6, mb.nrDof());
@@ -514,7 +519,7 @@ BOOST_AUTO_TEST_CASE(FATest)
     forwardVelocity(mb, mbc);
     forwardAcceleration(mb, mbc);
 
-    for(int j = 0; j < mb.nrBodies(); ++j)
+    for(size_t j = 0; j < static_cast<size_t>(mb.nrBodies()); ++j)
     {
       const Eigen::MatrixXd & jac = jacs[j].bodyJacobian(mb, mbc);
       const Eigen::MatrixXd & jacDot = jacs[j].bodyJacobianDot(mb, mbc);

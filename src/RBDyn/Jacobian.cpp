@@ -53,7 +53,7 @@ Jacobian::Jacobian(const MultiBody & mb,
 
   int dof = 0;
   bool refindexFound = false;
-  while(not refindexFound && index != -1)
+  while(!refindexFound && index != -1)
   {
     jointsPath_.insert(jointsPath_.begin(), index);
     dof += mb.joint(index).dof();
@@ -85,8 +85,9 @@ Jacobian::Jacobian(const MultiBody & mb,
     bool commonJoints = true;
     while(commonJoints)
     {
-      if(jointsPath_[count] == index) commonJoints = false;
-      dof -= mb.joint(jointsPath_[count]).dof();
+      const auto joint_index = jointsPath_[static_cast<size_t>(count)];
+      if(joint_index == index) commonJoints = false;
+      dof -= mb.joint(joint_index).dof();
       jointsPath_.erase(jointsPath_.begin() + count);
       reverseJoints_.erase(reverseJoints_.begin() + count);
     }
@@ -108,7 +109,7 @@ MultiBody Jacobian::subMultiBody(const MultiBody & mb) const
 
   for(int index = 0; index < static_cast<int>(jointsPath_.size()); ++index)
   {
-    int i = jointsPath_[index];
+    int i = jointsPath_[static_cast<size_t>(index)];
     // body info
     bodies.push_back(mb.body(i));
     parent.push_back(index - 1);
@@ -129,7 +130,7 @@ std::vector<int> Jacobian::dofPath(const MultiBody & mb) const
   std::vector<int> dof_path;
   for(size_t i = 0; i < jointsPath_.size(); ++i)
   {
-    for(size_t j = 0; j < mb.joint(jointsPath_[i]).dof(); ++j) dof_path.push_back(jointsPath_[i]);
+    for(int j = 0; j < mb.joint(jointsPath_[i]).dof(); ++j) dof_path.push_back(jointsPath_[i]);
   }
   return dof_path;
 }
@@ -153,13 +154,13 @@ static inline const Eigen::MatrixXd & jacobian_(const MultiBody & mb,
 
   for(std::size_t index = 0; index < jointsPath.size(); ++index)
   {
-    int i = jointsPath[index];
+    const auto i = static_cast<size_t>(jointsPath[index]);
 
     sva::PTransformd X_i_N = X_0_p * mbc.bodyPosW[i].inv();
 
     for(int dof = 0; dof < joints[i].dof(); ++dof)
     {
-      if(not reverseJoints[index])
+      if(!reverseJoints[index])
       {
         jac.col(curJ + dof).noalias() = (X_i_N * (sva::MotionVecd(mbc.motionSubspace[i].col(dof)))).vector();
       }
@@ -176,8 +177,9 @@ static inline const Eigen::MatrixXd & jacobian_(const MultiBody & mb,
   if(ref_index != -1)
   {
     auto dof_count = jac.cols();
-    jac.block(0, 0, 3, dof_count) = mbc.bodyPosW[jointsPath[0]].rotation() * jac.block(0, 0, 3, dof_count);
-    jac.block(3, 0, 3, dof_count) = mbc.bodyPosW[jointsPath[0]].rotation() * jac.block(3, 0, 3, dof_count);
+    const auto joint_index = static_cast<size_t>(jointsPath[0]);
+    jac.block(0, 0, 3, dof_count) = mbc.bodyPosW[joint_index].rotation() * jac.block(0, 0, 3, dof_count);
+    jac.block(3, 0, 3, dof_count) = mbc.bodyPosW[joint_index].rotation() * jac.block(3, 0, 3, dof_count);
   }
 
   return jac;
@@ -192,7 +194,7 @@ const Eigen::MatrixXd & Jacobian::jacobian(const MultiBody & mb,
 
 const Eigen::MatrixXd & Jacobian::jacobian(const MultiBody & mb, const MultiBodyConfig & mbc)
 {
-  int N = jointsPath_.back();
+  auto N = static_cast<size_t>(jointsPath_.back());
 
   // the transformation must be read {}^0E_p {}^pT_N {}^NX_0
   Eigen::Vector3d T_0_Np((point_ * mbc.bodyPosW[N]).translation());
@@ -201,7 +203,7 @@ const Eigen::MatrixXd & Jacobian::jacobian(const MultiBody & mb, const MultiBody
 
 const Eigen::MatrixXd & Jacobian::bodyJacobian(const MultiBody & mb, const MultiBodyConfig & mbc)
 {
-  int N = jointsPath_.back();
+  auto N = static_cast<size_t>(jointsPath_.back());
 
   sva::PTransformd X_0_Np = point_ * mbc.bodyPosW[N];
   return jacobian_(mb, mbc, X_0_Np, jointsPath_, reverseJoints_, jac_, ref_index_);
@@ -214,14 +216,14 @@ const Eigen::MatrixXd & Jacobian::vectorJacobian(const MultiBody & mb,
   const std::vector<Joint> & joints = mb.joints();
 
   int curJ = 0;
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
 
   Eigen::Matrix3d E_N_0(mbc.bodyPosW[N].rotation().transpose());
   sva::PTransformd X_Np = point_ * mbc.bodyPosW[N];
   sva::PTransformd vec = sva::PTransformd(vector);
   for(std::size_t index = 0; index < jointsPath_.size(); ++index)
   {
-    int i = jointsPath_[index];
+    const auto i = static_cast<size_t>(jointsPath_[index]);
 
     sva::PTransformd X_i_N = X_Np * mbc.bodyPosW[i].inv();
     Eigen::Matrix3d E_i_0(E_N_0 * X_i_N.rotation());
@@ -250,13 +252,13 @@ const Eigen::MatrixXd & Jacobian::vectorBodyJacobian(const MultiBody & mb,
   const std::vector<Joint> & joints = mb.joints();
 
   int curJ = 0;
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
 
   sva::PTransformd X_Np = point_ * mbc.bodyPosW[N];
   sva::PTransformd vec = sva::PTransformd(vector);
   for(std::size_t index = 0; index < jointsPath_.size(); ++index)
   {
-    int i = jointsPath_[index];
+    const auto i = static_cast<size_t>(jointsPath_[index]);
 
     sva::PTransformd X_i_N = X_Np * mbc.bodyPosW[i].inv();
     sva::PTransformd X_i_Nv = vec * X_i_N;
@@ -283,7 +285,7 @@ const Eigen::MatrixXd & Jacobian::jacobianDot(const MultiBody & mb, const MultiB
   const std::vector<Joint> & joints = mb.joints();
 
   int curJ = 0;
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
 
   sva::PTransformd X_0_Np = point_ * mbc.bodyPosW[N];
   // speed of point in body N
@@ -295,7 +297,7 @@ const Eigen::MatrixXd & Jacobian::jacobianDot(const MultiBody & mb, const MultiB
 
   for(std::size_t index = 0; index < jointsPath_.size(); ++index)
   {
-    int i = jointsPath_[index];
+    const auto i = static_cast<size_t>(jointsPath_[index]);
 
     sva::PTransformd X_i_Np = X_0_Np * mbc.bodyPosW[i].inv();
     // speed of X_i_N in Np coordinate
@@ -323,7 +325,7 @@ const Eigen::MatrixXd & Jacobian::bodyJacobianDot(const MultiBody & mb, const Mu
   const std::vector<Joint> & joints = mb.joints();
 
   int curJ = 0;
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
 
   sva::PTransformd X_0_Np = point_ * mbc.bodyPosW[N];
   // speed of point in body N
@@ -331,7 +333,7 @@ const Eigen::MatrixXd & Jacobian::bodyJacobianDot(const MultiBody & mb, const Mu
 
   for(std::size_t index = 0; index < jointsPath_.size(); ++index)
   {
-    int i = jointsPath_[index];
+    const auto i = static_cast<size_t>(jointsPath_[index]);
 
     sva::PTransformd X_i_Np = X_0_Np * mbc.bodyPosW[i].inv();
     // speed of X_i_N in Np coordinate
@@ -356,13 +358,13 @@ sva::MotionVecd Jacobian::velocity(const MultiBody & /* mb */,
                                    const MultiBodyConfig & mbc,
                                    const sva::PTransformd & X_b_p) const
 {
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
   return X_b_p * mbc.bodyVelB[N];
 }
 
 sva::MotionVecd Jacobian::velocity(const MultiBody & /* mb */, const MultiBodyConfig & mbc) const
 {
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
   // equivalent of E_N_0*X_N_Np
   sva::PTransformd X_Np_w(mbc.bodyPosW[N].rotation().transpose(), point_.translation());
   return X_Np_w * mbc.bodyVelB[N];
@@ -370,7 +372,7 @@ sva::MotionVecd Jacobian::velocity(const MultiBody & /* mb */, const MultiBodyCo
 
 sva::MotionVecd Jacobian::bodyVelocity(const MultiBody & /* mb */, const MultiBodyConfig & mbc) const
 {
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
   return point_ * mbc.bodyVelB[N];
 }
 
@@ -379,7 +381,7 @@ static inline sva::MotionVecd normalAccB_(const rbd::MultiBodyConfig & mbc, cons
   sva::MotionVecd accel(Eigen::Vector6d::Zero());
   for(std::size_t index = 0; index < jointsPath.size(); ++index)
   {
-    int i = jointsPath[index];
+    const auto i = static_cast<size_t>(jointsPath[index]);
     const sva::PTransformd & X_p_i = mbc.parentToSon[i];
     const sva::MotionVecd & vj_i = mbc.jointVelocity[i];
     const sva::MotionVecd & vb_i = mbc.bodyVelB[i];
@@ -413,21 +415,21 @@ sva::MotionVecd Jacobian::normalAcceleration(const MultiBody & /* mb */,
                                              const sva::PTransformd & X_b_p,
                                              const sva::MotionVecd & V_b_p) const
 {
-  return normalAcceleration(mbc, normalAccB[jointsPath_.back()], X_b_p, V_b_p);
+  return normalAcceleration(mbc, normalAccB[static_cast<size_t>(jointsPath_.back())], X_b_p, V_b_p);
 }
 
 sva::MotionVecd Jacobian::normalAcceleration(const MultiBody & /* mb */,
                                              const MultiBodyConfig & mbc,
                                              const std::vector<sva::MotionVecd> & normalAccB) const
 {
-  return normalAcceleration(mbc, normalAccB[jointsPath_.back()]);
+  return normalAcceleration(mbc, normalAccB[static_cast<size_t>(jointsPath_.back())]);
 }
 
 sva::MotionVecd Jacobian::bodyNormalAcceleration(const MultiBody & /* mb */,
                                                  const MultiBodyConfig & mbc,
                                                  const std::vector<sva::MotionVecd> & normalAccB) const
 {
-  return bodyNormalAcceleration(mbc, normalAccB[jointsPath_.back()]);
+  return bodyNormalAcceleration(mbc, normalAccB[static_cast<size_t>(jointsPath_.back())]);
 }
 
 void Jacobian::translateJacobian(const Eigen::Ref<const Eigen::MatrixXd> & jac,
@@ -435,7 +437,7 @@ void Jacobian::translateJacobian(const Eigen::Ref<const Eigen::MatrixXd> & jac,
                                  const Eigen::Vector3d & point,
                                  Eigen::MatrixXd & res)
 {
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
   sva::PTransformd E_N_0(Eigen::Matrix3d(mbc.bodyPosW[N].rotation().transpose()));
   sva::PTransformd t(point);
 
@@ -830,13 +832,13 @@ sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig & mbc,
                                              const sva::PTransformd & X_b_p,
                                              const sva::MotionVecd & V_b_p) const
 {
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
   return X_b_p * bodyNNormalAcc + V_b_p.cross(X_b_p * mbc.bodyVelB[N]);
 }
 
 sva::MotionVecd Jacobian::normalAcceleration(const MultiBodyConfig & mbc, const sva::MotionVecd & bodyNNormalAcc) const
 {
-  int N = jointsPath_.back();
+  const auto N = static_cast<size_t>(jointsPath_.back());
   // equivalent of E_N_0*X_N_Np
   sva::PTransformd X_Np_w(mbc.bodyPosW[N].rotation().transpose(), point_.translation());
   sva::MotionVecd E_VN(mbc.bodyVelW[N].angular(), Eigen::Vector3d::Zero());

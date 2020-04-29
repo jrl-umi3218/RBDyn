@@ -26,8 +26,9 @@ typedef Matrix<double, 6, 6> Matrix6d;
 typedef Matrix<double, 6, 1> Vector6d;
 
 InverseStatics::InverseStatics(const MultiBody & mb)
-: f_(mb.nrBodies()), df_(mb.nrBodies()), jointTorqueDiff_(mb.nrJoints()), jacW_(mb.nrBodies()), fullJac_(6, mb.nrDof()),
-  jacobianSizeHasBeenSet_(false)
+: f_(static_cast<size_t>(mb.nrBodies())), df_(static_cast<size_t>(mb.nrBodies())),
+  jointTorqueDiff_(static_cast<size_t>(mb.nrJoints())), jacW_(static_cast<size_t>(mb.nrBodies())),
+  fullJac_(6, mb.nrDof()), jacobianSizeHasBeenSet_(false)
 {
   fullJac_.setZero();
   for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
@@ -94,9 +95,10 @@ void InverseStatics::inverseStatics(const MultiBody & mb, MultiBodyConfig & mbc)
     //    $  mbc.jointTorque[i][j] = mbc.motionSubspace[i].col(j).transpose() *
     //    f_[i].vector();
     //
-    VectorXd::Map(mbc.jointTorque[i].data(), joints[i].dof()) = f_[i].vector().transpose() * mbc.motionSubspace[i];
+    const auto ui = static_cast<size_t>(i);
+    VectorXd::Map(mbc.jointTorque[ui].data(), joints[ui].dof()) = f_[ui].vector().transpose() * mbc.motionSubspace[ui];
 
-    if(pred[i] != -1) f_[pred[i]] += mbc.parentToSon[i].transMul(f_[i]);
+    if(pred[ui] != -1) f_[static_cast<size_t>(pred[ui])] += mbc.parentToSon[ui].transMul(f_[ui]);
   }
 }
 
@@ -176,19 +178,21 @@ void InverseStatics::computeTorqueJacobianJoint(const MultiBody & mb,
 
   for(int i = static_cast<int>(joints.size()) - 1; i >= 0; --i)
   {
-    jointTorqueDiff_[i] = mbc.motionSubspace[i].transpose() * df_[i];
+    const auto ui = static_cast<size_t>(i);
+    jointTorqueDiff_[ui] = mbc.motionSubspace[ui].transpose() * df_[ui];
 
-    if(pred[i] != -1)
+    if(pred[ui] != -1)
     {
-      Matrix6d transPtS = transMat(mbc.parentToSon[i]);
+      const auto pred_index = static_cast<size_t>(pred[ui]);
+      Matrix6d transPtS = transMat(mbc.parentToSon[ui]);
 
-      f_[pred[i]] += mbc.parentToSon[i].transMul(f_[i]);
-      df_[pred[i]] += transPtS * df_[i];
+      f_[pred_index] += mbc.parentToSon[ui].transMul(f_[ui]);
+      df_[pred_index] += transPtS * df_[ui];
 
-      Matrix3d & R = mbc.jointConfig[i].rotation();
-      Vector3d & t = mbc.jointConfig[i].translation();
-      Vector3d RfC = R.transpose() * f_[i].couple();
-      Vector3d RfF = R.transpose() * f_[i].force();
+      Matrix3d & R = mbc.jointConfig[ui].rotation();
+      Vector3d & t = mbc.jointConfig[ui].translation();
+      Vector3d RfC = R.transpose() * f_[ui].couple();
+      Vector3d RfF = R.transpose() * f_[ui].force();
       Matrix3d hatRfC = vector3ToCrossMatrix(RfC);
       Matrix3d hatRfF = vector3ToCrossMatrix(RfF);
       Matrix6d MJ;
@@ -198,8 +202,8 @@ void InverseStatics::computeTorqueJacobianJoint(const MultiBody & mb,
       MJ.block(3, 0, 3, 3) = hatRfF;
       MJ.block(3, 3, 3, 3).setZero();
 
-      df_[pred[i]].block(0, mb.jointPosInDof(i), 6, joints[i].dof()) -=
-          transMat(mb.transforms()[i]) * MJ * mbc.motionSubspace[i];
+      df_[pred_index].block(0, mb.jointPosInDof(i), 6, joints[ui].dof()) -=
+          transMat(mb.transforms()[ui]) * MJ * mbc.motionSubspace[ui];
     }
   }
 }

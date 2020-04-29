@@ -279,24 +279,28 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
-      mbc.alphaD[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
+      mbc.alphaD[ui][uj] = 1.;
 
       testJacCoMVelAcc(mb, mbc, comJac);
 
-      mbc.alpha[i][j] = 0.;
-      mbc.alphaD[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
+      mbc.alphaD[ui][uj] = 0.;
     }
   }
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
-      mbc.alphaD[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
+      mbc.alphaD[ui][uj] = 1.;
 
       testJacCoMVelAcc(mb, mbc, comJac);
     }
@@ -315,24 +319,28 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
-      mbc.alphaD[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
+      mbc.alphaD[ui][uj] = 1.;
 
       testJacCoMVelAcc(mb, mbc, comJac);
 
-      mbc.alpha[i][j] = 0.;
-      mbc.alphaD[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
+      mbc.alphaD[ui][uj] = 0.;
     }
   }
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
-      mbc.alphaD[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
+      mbc.alphaD[ui][uj] = 1.;
 
       testJacCoMVelAcc(mb, mbc, comJac);
     }
@@ -357,9 +365,11 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
       forwardAcceleration(mb, mbc);
 
@@ -370,15 +380,17 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
       BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
       BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
       forwardAcceleration(mb, mbc);
 
@@ -389,7 +401,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
       BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
       BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
   mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
@@ -404,9 +416,11 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
       forwardAcceleration(mb, mbc);
 
@@ -417,15 +431,17 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
       BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
       BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
       forwardAcceleration(mb, mbc);
 
@@ -436,7 +452,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
       BOOST_CHECK_EQUAL(jacDot.cols(), mb.nrDof());
 
       BOOST_CHECK_SMALL((jacDot_diff - jacDot).norm(), TOL);
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
   mbc.alpha = {{}, {0.}, {0.}, {0.}, {0., 0., 0.}};
@@ -470,7 +486,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
   std::tie(mb, mbc, mbg) = makeXYZSarmRandomCoM();
 
-  std::vector<double> weight(mb.nrBodies());
+  std::vector<double> weight(static_cast<size_t>(mb.nrBodies()));
   for(std::size_t i = 0; i < weight.size(); ++i)
   {
     weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
@@ -506,9 +522,11 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       MatrixXd jacDotMat = comJac.jacobianDot(mb, mbc);
@@ -518,15 +536,17 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
       BOOST_CHECK_EQUAL(jacDotMat.cols(), mb.nrDof());
 
       BOOST_CHECK_SMALL((jacDotMat - jacDotDummyMat).norm(), TOL);
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       MatrixXd jacDotMat = comJac.jacobianDot(mb, mbc);

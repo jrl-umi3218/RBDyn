@@ -139,16 +139,18 @@ void checkJacobianMatrixFromVelocity(const rbd::MultiBody & subMb,
   int col = 0;
   for(int i = 0; i < subMb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < subMb.joint(i).dof(); ++j)
     {
-      subMbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      subMbc.alpha[ui][uj] = 1.;
 
       forwardVelocity(subMb, subMbc);
 
       Eigen::Vector6d mv = velVec.back().vector();
       BOOST_CHECK_SMALL((mv - jacMat.col(col)).norm(), TOL);
 
-      subMbc.alpha[i][j] = 0.;
+      subMbc.alpha[ui][uj] = 0.;
       ++col;
     }
   }
@@ -177,7 +179,8 @@ void checkFullJacobianMatrix(const rbd::MultiBody & mb,
 
   for(int i = 0; i < subMb.nrJoints(); ++i)
   {
-    int joint = jac.jointsPath()[i];
+    const auto ui = static_cast<size_t>(i);
+    int joint = jac.jointsPath()[ui];
     int dof = mb.joint(i).dof();
     BOOST_CHECK_EQUAL(jacMat.block(0, subMb.jointPosInDof(i), 6, dof),
                       fullJacMat.block(0, mb.jointPosInDof(joint), 6, dof));
@@ -195,11 +198,12 @@ void checkJacobian(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc, 
 
   // fill subMbc
   MultiBodyConfig subMbc(subMb);
-  for(int i = 0; i < subMb.nrJoints(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(subMb.nrJoints()); ++i)
   {
-    subMbc.bodyPosW[i] = mbc.bodyPosW[jac.jointsPath()[i]];
-    subMbc.jointConfig[i] = mbc.jointConfig[jac.jointsPath()[i]];
-    subMbc.parentToSon[i] = mbc.parentToSon[jac.jointsPath()[i]];
+    const auto joint_index = static_cast<size_t>(jac.jointsPath()[i]);
+    subMbc.bodyPosW[i] = mbc.bodyPosW[joint_index];
+    subMbc.jointConfig[i] = mbc.jointConfig[joint_index];
+    subMbc.parentToSon[i] = mbc.parentToSon[joint_index];
   }
 
   // test fullJacobian
@@ -426,14 +430,16 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
   forwardKinematics(mb, mbc);
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       testJacobianDot(mb, mbc, jac1);
 
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
@@ -445,14 +451,16 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
   forwardKinematics(mb, mbc);
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       testJacobianDot(mb, mbc, jac1);
 
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
@@ -461,14 +469,16 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
   forwardKinematics(mb, mbc);
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       testJacobianDot(mb, mbc, jac1);
 
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
@@ -477,23 +487,27 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
   forwardKinematics(mb, mbc);
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       testJacobianDot(mb, mbc, jac1);
 
-      mbc.alpha[i][j] = 0.;
+      mbc.alpha[ui][uj] = 0.;
     }
   }
 
   // test with all joint velocity
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       testJacobianDot(mb, mbc, jac1);
@@ -505,9 +519,11 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
   Jacobian jacP(mb, "b3", Vector3d::Random() * 10.);
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbc.alpha[ui][uj] = 1.;
       forwardVelocity(mb, mbc);
 
       testJacobianDot(mb, mbc, jacP);
@@ -530,9 +546,11 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 
   for(int i = 0; i < mbF.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mbF.joint(i).dof(); ++j)
     {
-      mbcF.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbcF.alpha[ui][uj] = 1.;
       forwardVelocity(mbF, mbcF);
 
       testJacobianDot(mbF, mbcF, jacF);
@@ -549,9 +567,11 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
 
   for(int i = 0; i < mbF.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mbF.joint(i).dof(); ++j)
     {
-      mbcF.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbcF.alpha[ui][uj] = 1.;
       forwardVelocity(mbF, mbcF);
 
       testJacobianDot(mbF, mbcF, jacF);

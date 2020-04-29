@@ -16,19 +16,24 @@ namespace rbd
 {
 
 MultiBodyConfig::MultiBodyConfig(const MultiBody & mb)
-: q(mb.nrJoints()), alpha(mb.nrJoints()), alphaD(mb.nrJoints()), force(mb.nrBodies()), jointConfig(mb.nrJoints()),
-  jointVelocity(mb.nrJoints()), jointTorque(mb.nrJoints()), motionSubspace(mb.nrJoints()), bodyPosW(mb.nrBodies()),
-  parentToSon(mb.nrBodies()), bodyVelW(mb.nrBodies()), bodyVelB(mb.nrBodies()), bodyAccB(mb.nrBodies()),
-  gravity(0., 9.81, 0.)
+: q(static_cast<size_t>(mb.nrJoints())), alpha(static_cast<size_t>(mb.nrJoints())),
+  alphaD(static_cast<size_t>(mb.nrJoints())), force(static_cast<size_t>(mb.nrBodies())),
+  jointConfig(static_cast<size_t>(mb.nrJoints())), jointVelocity(static_cast<size_t>(mb.nrJoints())),
+  jointTorque(static_cast<size_t>(mb.nrJoints())), motionSubspace(static_cast<size_t>(mb.nrJoints())),
+  bodyPosW(static_cast<size_t>(mb.nrBodies())), parentToSon(static_cast<size_t>(mb.nrBodies())),
+  bodyVelW(static_cast<size_t>(mb.nrBodies())), bodyVelB(static_cast<size_t>(mb.nrBodies())),
+  bodyAccB(static_cast<size_t>(mb.nrBodies())), gravity(0., 9.81, 0.)
 {
   for(int i = 0; i < static_cast<int>(q.size()); ++i)
   {
-    q[i].resize(mb.joint(i).params());
-    alpha[i].resize(mb.joint(i).dof());
-    alphaD[i].resize(mb.joint(i).dof());
+    const auto ui = static_cast<size_t>(i);
 
-    jointTorque[i].resize(mb.joint(i).dof());
-    motionSubspace[i].resize(6, mb.joint(i).dof());
+    q[ui].resize(static_cast<size_t>(mb.joint(i).params()));
+    alpha[ui].resize(static_cast<size_t>(mb.joint(i).dof()));
+    alphaD[ui].resize(static_cast<size_t>(mb.joint(i).dof()));
+
+    jointTorque[ui].resize(static_cast<size_t>(mb.joint(i).dof()));
+    motionSubspace[ui].resize(6, mb.joint(i).dof());
   }
 }
 
@@ -36,11 +41,13 @@ void MultiBodyConfig::zero(const MultiBody & mb)
 {
   for(int i = 0; i < static_cast<int>(q.size()); ++i)
   {
-    q[i] = mb.joint(i).zeroParam();
-    alpha[i] = mb.joint(i).zeroDof();
-    alphaD[i] = mb.joint(i).zeroDof();
+    const auto ui = static_cast<size_t>(i);
 
-    jointTorque[i] = mb.joint(i).zeroDof();
+    q[ui] = mb.joint(i).zeroParam();
+    alpha[ui] = mb.joint(i).zeroDof();
+    alphaD[ui] = mb.joint(i).zeroDof();
+
+    jointTorque[ui] = mb.joint(i).zeroDof();
   }
 
   for(std::size_t i = 0; i < force.size(); ++i)
@@ -58,7 +65,7 @@ std::vector<Eigen::MatrixXd> MultiBodyConfig::python_motionSubspace()
     ret[i] = motionSubspace[i];
   }
 
-  return std::move(ret);
+  return ret;
 }
 
 void MultiBodyConfig::python_motionSubspace(const std::vector<Eigen::MatrixXd> & v)
@@ -75,7 +82,7 @@ void MultiBodyConfig::python_motionSubspace(const std::vector<Eigen::MatrixXd> &
  */
 
 ConfigConverter::ConfigConverter(const MultiBody & from, const MultiBody & to)
-: jInd_(from.nrJoints() - 1), bInd_(from.nrBodies())
+: jInd_(static_cast<size_t>(from.nrJoints() - 1)), bInd_(static_cast<size_t>(from.nrBodies()))
 {
   using namespace Eigen;
 
@@ -97,14 +104,16 @@ void ConfigConverter::convert(const MultiBodyConfig & from, MultiBodyConfig & to
 {
   for(std::size_t i = 0; i < jInd_.size(); ++i)
   {
-    to.q[jInd_[i]] = from.q[i + 1];
-    to.alpha[jInd_[i]] = from.alpha[i + 1];
-    to.alphaD[jInd_[i]] = from.alphaD[i + 1];
+    const auto ui = static_cast<size_t>(i);
+    const auto joint_index = static_cast<size_t>(jInd_[ui]);
+    to.q[joint_index] = from.q[i + 1];
+    to.alpha[joint_index] = from.alpha[i + 1];
+    to.alphaD[joint_index] = from.alphaD[i + 1];
   }
 
   for(std::size_t i = 0; i < bInd_.size(); ++i)
   {
-    to.force[bInd_[i]] = from.force[i];
+    to.force[static_cast<size_t>(bInd_[i])] = from.force[i];
   }
 }
 
@@ -194,7 +203,7 @@ void paramToVector(const std::vector<std::vector<double>> & v, Eigen::Ref<Eigen:
 void sParamToVector(const std::vector<std::vector<double>> & v, Eigen::Ref<Eigen::VectorXd> e)
 {
   int nb = 0;
-  for(int i = 0; i < static_cast<int>(v.size()); ++i)
+  for(size_t i = 0; i < v.size(); ++i)
   {
     nb += static_cast<int>(v[i].size());
   }
@@ -214,7 +223,7 @@ Eigen::VectorXd paramToVector(const MultiBody & mb, const std::vector<std::vecto
   Eigen::VectorXd e(mb.nrParams());
   paramToVector(v, e);
 
-  return std::move(e);
+  return e;
 }
 
 Eigen::VectorXd sParamToVector(const MultiBody & mb, const std::vector<std::vector<double>> & v)
@@ -228,16 +237,17 @@ Eigen::VectorXd sParamToVector(const MultiBody & mb, const std::vector<std::vect
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
-    if(mb.joint(i).params() != static_cast<int>(v[i].size()))
+    const auto ui = static_cast<size_t>(i);
+    if(mb.joint(i).params() != static_cast<int>(v[ui].size()))
     {
       std::ostringstream str;
       str << "Parameters of joint " << i << " mismatch: expected size " << mb.joint(i).params() << " gived "
-          << v[i].size();
+          << v[ui].size();
       throw std::out_of_range(str.str());
     }
   }
 
-  return std::move(paramToVector(mb, v));
+  return paramToVector(mb, v);
 }
 
 Eigen::VectorXd dofToVector(const MultiBody & mb, const std::vector<std::vector<double>> & v)
@@ -245,7 +255,7 @@ Eigen::VectorXd dofToVector(const MultiBody & mb, const std::vector<std::vector<
   Eigen::VectorXd e(mb.nrDof());
   paramToVector(v, e);
 
-  return std::move(e);
+  return e;
 }
 
 Eigen::VectorXd sDofToVector(const MultiBody & mb, const std::vector<std::vector<double>> & v)
@@ -259,15 +269,16 @@ Eigen::VectorXd sDofToVector(const MultiBody & mb, const std::vector<std::vector
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
-    if(mb.joint(i).dof() != static_cast<int>(v[i].size()))
+    const auto ui = static_cast<size_t>(i);
+    if(mb.joint(i).dof() != static_cast<int>(v[ui].size()))
     {
       std::ostringstream str;
-      str << "Dof of joint " << i << " mismatch: expected size " << mb.joint(i).dof() << " gived " << v[i].size();
+      str << "Dof of joint " << i << " mismatch: expected size " << mb.joint(i).dof() << " gived " << v[ui].size();
       throw std::out_of_range(str.str());
     }
   }
 
-  return std::move(dofToVector(mb, v));
+  return dofToVector(mb, v);
 }
 
 void vectorToParam(const Eigen::Ref<const Eigen::VectorXd> & e, std::vector<std::vector<double>> & v)
@@ -303,15 +314,17 @@ void sVectorToParam(const Eigen::Ref<const Eigen::VectorXd> & e, std::vector<std
 
 std::vector<std::vector<double>> vectorToParam(const MultiBody & mb, const Eigen::VectorXd & e)
 {
-  std::vector<std::vector<double>> ret(mb.nrJoints());
+  std::vector<std::vector<double>> ret(static_cast<size_t>(mb.nrJoints()));
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
-    ret[i].resize(mb.joint(i).params());
+    const auto ui = static_cast<size_t>(i);
+    const auto nparams = static_cast<size_t>(mb.joint(i).params());
+    ret[ui].resize(nparams);
   }
 
   vectorToParam(e, ret);
 
-  return std::move(ret);
+  return ret;
 }
 
 std::vector<std::vector<double>> sVectorToParam(const MultiBody & mb, const Eigen::VectorXd & e)
@@ -322,20 +335,22 @@ std::vector<std::vector<double>> sVectorToParam(const MultiBody & mb, const Eige
     str << "Parameter vector size mismatch: expected size " << mb.nrParams() << " gived " << e.rows();
     throw std::out_of_range(str.str());
   }
-  return std::move(vectorToParam(mb, e));
+  return vectorToParam(mb, e);
 }
 
 std::vector<std::vector<double>> vectorToDof(const MultiBody & mb, const Eigen::VectorXd & e)
 {
-  std::vector<std::vector<double>> ret(mb.nrJoints());
+  std::vector<std::vector<double>> ret(static_cast<size_t>(mb.nrJoints()));
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
-    ret[i].resize(mb.joint(i).dof());
+    const auto ui = static_cast<size_t>(i);
+    const auto ndofs = static_cast<size_t>(mb.joint(i).dof());
+    ret[ui].resize(ndofs);
   }
 
   vectorToParam(e, ret);
 
-  return std::move(ret);
+  return ret;
 }
 
 std::vector<std::vector<double>> sVectorToDof(const MultiBody & mb, const Eigen::VectorXd & e)
@@ -346,7 +361,7 @@ std::vector<std::vector<double>> sVectorToDof(const MultiBody & mb, const Eigen:
     str << "Dof vector size mismatch: expected size " << mb.nrDof() << " gived " << e.rows();
     throw std::out_of_range(str.str());
   }
-  return std::move(vectorToDof(mb, e));
+  return vectorToDof(mb, e);
 }
 
 void checkMatchBodyPos(const MultiBody & mb, const MultiBodyConfig & mbc)
@@ -386,11 +401,12 @@ void checkMatchJointTorque(const MultiBody & mb, const MultiBodyConfig & mbc)
 
   for(int i = 0; i < static_cast<int>(mbc.jointTorque.size()); ++i)
   {
-    if(mbc.jointTorque[i].size() != static_cast<std::size_t>(mb.joint(i).dof()))
+    const auto ui = static_cast<size_t>(i);
+    if(mbc.jointTorque[ui].size() != static_cast<std::size_t>(mb.joint(i).dof()))
     {
       std::ostringstream str;
       str << "Bad number of torque variable for Joint " << mb.joint(i) << " at position " << i << ": expected size "
-          << mb.joint(i).dof() << " gived " << mbc.jointTorque[i].size();
+          << mb.joint(i).dof() << " gived " << mbc.jointTorque[ui].size();
       throw std::domain_error(str.str());
     }
   }
@@ -402,11 +418,12 @@ void checkMatchMotionSubspace(const MultiBody & mb, const MultiBodyConfig & mbc)
 
   for(int i = 0; i < static_cast<int>(mbc.motionSubspace.size()); ++i)
   {
-    if(mbc.motionSubspace[i].cols() != static_cast<unsigned>(mb.joint(i).dof()))
+    const auto ui = static_cast<size_t>(i);
+    if(mbc.motionSubspace[ui].cols() != static_cast<unsigned>(mb.joint(i).dof()))
     {
       std::ostringstream str;
       str << "Bad motionSubspace matrix size for Joint " << mb.joint(i) << " at position " << i
-          << ": expected column number " << mb.joint(i).dof() << " gived " << mbc.motionSubspace[i].cols();
+          << ": expected column number " << mb.joint(i).dof() << " gived " << mbc.motionSubspace[ui].cols();
       throw std::domain_error(str.str());
     }
   }
@@ -418,11 +435,12 @@ void checkMatchQ(const MultiBody & mb, const MultiBodyConfig & mbc)
 
   for(int i = 0; i < static_cast<int>(mbc.q.size()); ++i)
   {
-    if(mbc.q[i].size() != static_cast<std::size_t>(mb.joint(i).params()))
+    const auto ui = static_cast<size_t>(i);
+    if(mbc.q[ui].size() != static_cast<std::size_t>(mb.joint(i).params()))
     {
       std::ostringstream str;
       str << "Bad number of generalized position variable for Joint " << mb.joint(i) << " at position " << i
-          << ": expected size " << mb.joint(i).params() << " gived " << mbc.q[i].size();
+          << ": expected size " << mb.joint(i).params() << " gived " << mbc.q[ui].size();
       throw std::domain_error(str.str());
     }
   }
@@ -434,11 +452,12 @@ void checkMatchAlpha(const MultiBody & mb, const MultiBodyConfig & mbc)
 
   for(int i = 0; i < static_cast<int>(mbc.alpha.size()); ++i)
   {
-    if(mbc.alpha[i].size() != static_cast<std::size_t>(mb.joint(i).dof()))
+    const auto ui = static_cast<size_t>(i);
+    if(mbc.alpha[ui].size() != static_cast<std::size_t>(mb.joint(i).dof()))
     {
       std::ostringstream str;
       str << "Bad number of generalized velocity variable for Joint " << mb.joint(i) << " at position " << i
-          << ": expected size " << mb.joint(i).dof() << " gived " << mbc.alpha[i].size();
+          << ": expected size " << mb.joint(i).dof() << " gived " << mbc.alpha[ui].size();
       throw std::domain_error(str.str());
     }
   }
@@ -450,11 +469,12 @@ void checkMatchAlphaD(const MultiBody & mb, const MultiBodyConfig & mbc)
 
   for(int i = 0; i < static_cast<int>(mbc.alphaD.size()); ++i)
   {
-    if(mbc.alphaD[i].size() != static_cast<std::size_t>(mb.joint(i).dof()))
+    const auto ui = static_cast<size_t>(i);
+    if(mbc.alphaD[ui].size() != static_cast<std::size_t>(mb.joint(i).dof()))
     {
       std::ostringstream str;
       str << "Bad number of generalized acceleration variable for Joint " << mb.joint(i) << " at position " << i
-          << ": expected size " << mb.joint(i).dof() << " gived " << mbc.alphaD[i].size();
+          << ": expected size " << mb.joint(i).dof() << " gived " << mbc.alphaD[ui].size();
       throw std::domain_error(str.str());
     }
   }

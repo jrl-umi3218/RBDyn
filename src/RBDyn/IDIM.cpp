@@ -75,10 +75,12 @@ void IDIM::computeY(const MultiBody & mb, const MultiBodyConfig & mbc)
   Eigen::Matrix<double, 6, 10> bodyFPhi;
   for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
   {
-    const sva::MotionVecd & vb_i = mbc.bodyVelB[i];
+    const auto ui = static_cast<size_t>(i);
+
+    const sva::MotionVecd & vb_i = mbc.bodyVelB[ui];
     Eigen::Matrix<double, 6, 10> vb_i_Phi(IMPhi(vb_i));
 
-    bodyFPhi.noalias() = IMPhi(mbc.bodyAccB[i]);
+    bodyFPhi.noalias() = IMPhi(mbc.bodyAccB[ui]);
     // bodyFPhi += vb_i x* IMPhi(vb_i)
     // is faster to convert each col in a ForceVecd
     // than using sva::vector6ToCrossDualMatrix
@@ -89,9 +91,9 @@ void IDIM::computeY(const MultiBody & mb, const MultiBodyConfig & mbc)
 
     int iDofPos = mb.jointPosInDof(i);
 
-    Y_.block(iDofPos, i * 10, joints[i].dof(), 10).noalias() = mbc.motionSubspace[i].transpose() * bodyFPhi;
+    Y_.block(iDofPos, i * 10, joints[ui].dof(), 10).noalias() = mbc.motionSubspace[ui].transpose() * bodyFPhi;
 
-    int j = i;
+    auto j = static_cast<size_t>(i);
     while(pred[j] != -1)
     {
       const sva::PTransformd & X_p_j = mbc.parentToSon[j];
@@ -102,9 +104,9 @@ void IDIM::computeY(const MultiBody & mb, const MultiBodyConfig & mbc)
       {
         bodyFPhi.col(c) = X_p_j.transMul(sva::ForceVecd(bodyFPhi.col(c))).vector();
       }
-      j = pred[j];
+      j = static_cast<size_t>(pred[j]);
 
-      int jDofPos = mb.jointPosInDof(j);
+      int jDofPos = mb.jointPosInDof(static_cast<int>(j));
       if(joints[j].dof() != 0)
       {
         Y_.block(jDofPos, i * 10, joints[j].dof(), 10).noalias() = mbc.motionSubspace[j].transpose() * bodyFPhi;
