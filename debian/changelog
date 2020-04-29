@@ -1,3 +1,9 @@
+rbdyn (1.2.1-1ubuntu1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Wed, 29 Apr 2020 11:31:46 +0800
+
 rbdyn (1.2.0-1ubuntu1) unstable; urgency=medium
 
   * Update upstream version
