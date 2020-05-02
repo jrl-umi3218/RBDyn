@@ -19,7 +19,7 @@ endif()
 # CMake <= 3.5.0 needs at least one component to define Boost::boost
 add_project_dependency(Boost REQUIRED COMPONENTS system)
 
-set(SOURCES common.cpp urdf.cpp yaml.cpp)
+set(SOURCES common.cpp urdf.cpp to_urdf.cpp yaml.cpp to_yaml.cpp)
 set(HEADERS RBDyn/parsers/api.h RBDyn/parsers/common.h RBDyn/parsers/urdf.h RBDyn/parsers/yaml.h)
 
 add_library(RBDynParsers SHARED ${SOURCES} ${HEADERS})
@@ -39,3 +39,15 @@ install(
     RUNTIME DESTINATION "bin"
 )
 install(FILES ${HEADERS} DESTINATION ${INCLUDE_INSTALL_DESTINATION}/parsers)
+
+
+add_executable(urdf_yaml_converter urdf_yaml_conv.cpp)
+target_link_libraries(urdf_yaml_converter PUBLIC RBDyn::Parsers)
+set_target_properties(urdf_yaml_converter PROPERTIES COMPILE_FLAGS "-DRBDYN_PARSERS_DLLIMPORT")
+
+install(
+    TARGETS urdf_yaml_converter
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "bin"
+)

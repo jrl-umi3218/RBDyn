@@ -205,10 +205,10 @@ void RBDynFromYAML::parseInertial(const YAML::Node & inertial,
                                   Eigen::Vector3d & rpy,
                                   Eigen::Matrix3d & inertia)
 {
-  mass = 1.;
+  mass = 0.;
   xyz.setZero();
   rpy.setZero();
-  inertia.setIdentity();
+  inertia.setZero();
   if(inertial)
   {
     mass = inertial["mass"].as<double>(mass);
