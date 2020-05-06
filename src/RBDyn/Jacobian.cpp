@@ -8,6 +8,7 @@
 // includes
 // std
 #include <algorithm>
+#include <numeric>
 #include <stdexcept>
 
 // RBDyn
@@ -19,25 +20,8 @@ namespace rbd
 Jacobian::Jacobian() {}
 
 Jacobian::Jacobian(const MultiBody & mb, const std::string & bodyName, const Eigen::Vector3d & point)
-: jointsPath_(), point_(point), jac_(), jacDot_()
+: Jacobian(mb, bodyName, mb.body(0).name(), point)
 {
-  body_index_ = mb.sBodyIndexByName(bodyName);
-  ref_index_ = -1;
-
-  int index = body_index_;
-
-  int dof = 0;
-  while(index != -1)
-  {
-    jointsPath_.insert(jointsPath_.begin(), index);
-    dof += mb.joint(index).dof();
-    reverseJoints_.insert(reverseJoints_.begin(), false);
-
-    index = mb.parent(index);
-  }
-
-  jac_.resize(6, dof);
-  jacDot_.resize(6, dof);
 }
 
 Jacobian::Jacobian(const MultiBody & mb,
@@ -60,9 +44,10 @@ Jacobian::Jacobian(const MultiBody & mb,
     reverseJoints_.insert(reverseJoints_.begin(), false);
 
     if(index == ref_index_)
-      refindexFound = true;
-    else
-      index = mb.parent(index);
+    {
+      break;
+    }
+    index = mb.parent(index);
   }
 
   // The two bodies don't belong to the same branch -> start from ref body to the root of the tree
@@ -79,18 +64,18 @@ Jacobian::Jacobian(const MultiBody & mb,
 
       index = mb.parent(index);
       count++;
-    } while(std::find(jointsPath_.begin(), jointsPath_.end(), index) == jointsPath_.end());
+    } while(std::find(jointsPath_.begin() + count, jointsPath_.end(), index) == jointsPath_.end());
 
     // Delete common joints previously added
-    bool commonJoints = true;
-    while(commonJoints)
+    int commonIdx = count;
+    while(jointsPath_[static_cast<size_t>(++commonIdx)] != index)
     {
-      const auto joint_index = jointsPath_[static_cast<size_t>(count)];
-      if(joint_index == index) commonJoints = false;
-      dof -= mb.joint(joint_index).dof();
-      jointsPath_.erase(jointsPath_.begin() + count);
-      reverseJoints_.erase(reverseJoints_.begin() + count);
+      // Get to the common node
     }
+    dof -= std::accumulate(jointsPath_.begin() + count, jointsPath_.begin() + commonIdx, 0,
+                           [&](int dofC, int idx) { return dofC + mb.joint(idx).dof(); });
+    jointsPath_.erase(jointsPath_.begin() + count, jointsPath_.begin() + commonIdx);
+    reverseJoints_.erase(reverseJoints_.begin() + count, reverseJoints_.begin() + commonIdx);
   }
 
   jac_.resize(6, dof);
@@ -130,7 +115,10 @@ std::vector<int> Jacobian::dofPath(const MultiBody & mb) const
   std::vector<int> dof_path;
   for(size_t i = 0; i < jointsPath_.size(); ++i)
   {
-    for(int j = 0; j < mb.joint(jointsPath_[i]).dof(); ++j) dof_path.push_back(jointsPath_[i]);
+    for(int j = 0; j < mb.joint(jointsPath_[i]).dof(); ++j)
+    {
+      dof_path.push_back(jointsPath_[i]);
+    }
   }
   return dof_path;
 }
@@ -143,7 +131,7 @@ static inline const Eigen::MatrixXd & jacobian_(const MultiBody & mb,
                                                 const MultiBodyConfig & mbc,
                                                 const Transform & Trans_0_p,
                                                 const std::vector<int> & jointsPath,
-                                                const std::vector<bool> & reverseJoints,
+                                                const std::vector<uint8_t> & reverseJoints,
                                                 Eigen::MatrixXd & jac,
                                                 int ref_index)
 {
@@ -158,23 +146,17 @@ static inline const Eigen::MatrixXd & jacobian_(const MultiBody & mb,
 
     sva::PTransformd X_i_N = X_0_p * mbc.bodyPosW[i].inv();
 
+    // If the joint motion is seen from child body to parent body, we have to inverted its effect
+    double sgn = reverseJoints[index] ? -1 : 1;
     for(int dof = 0; dof < joints[i].dof(); ++dof)
     {
-      if(!reverseJoints[index])
-      {
-        jac.col(curJ + dof).noalias() = (X_i_N * (sva::MotionVecd(mbc.motionSubspace[i].col(dof)))).vector();
-      }
-      else
-      {
-        // The joint motion is seen from child body to parent body, so has inverted effect
-        jac.col(curJ + dof).noalias() = (X_i_N * (-sva::MotionVecd(mbc.motionSubspace[i].col(dof)))).vector();
-      }
+      jac.col(curJ + dof).noalias() = (X_i_N * (sva::MotionVecd(sgn * mbc.motionSubspace[i].col(dof)))).vector();
     }
 
     curJ += joints[i].dof();
   }
   // Change Jacobian base : root of the tree --> reference body
-  if(ref_index != -1)
+  if(ref_index > 0)
   {
     auto dof_count = jac.cols();
     const auto joint_index = static_cast<size_t>(jointsPath[0]);
