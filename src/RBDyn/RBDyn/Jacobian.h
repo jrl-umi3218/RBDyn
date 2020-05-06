@@ -42,20 +42,20 @@ public:
 
   /**
    * Create a jacobian from the root body to the specified body.
-   * @param mb Multibody where bodyId is in.
+   * @param mb Multibody where bodyName is in.
    * @param bodyName Specified body.
-   * @param point Point in the body exprimed in body coordinate.
-   * @throw std::out_of_range If bodyId don't exist.
+   * @param point Point in the body expressed in body coordinate.
+   * @throw std::out_of_range If bodyName don't exist.
    */
   Jacobian(const MultiBody & mb, const std::string & bodyName, const Eigen::Vector3d & point = Eigen::Vector3d::Zero());
 
   /**
    * Create a jacobian from a reference body to the specified body.
-   * @param mb Multibody where bodyId is in.
+   * @param mb Multibody where bodyName is in.
    * @param bodyName Specified body.
    * @param refBodyName Reference body.
-   * @param point Point in the body exprimed in body coordinate.
-   * @throw std::out_of_range If bodyId don't exist.
+   * @param point Point in the body expressed in body coordinate.
+   * @throw std::out_of_range If bodyName don't exist.
    */
   Jacobian(const MultiBody & mb,
            const std::string & bodyName,
