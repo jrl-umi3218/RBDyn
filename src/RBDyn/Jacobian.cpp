@@ -159,9 +159,8 @@ static inline const Eigen::MatrixXd & jacobian_(const MultiBody & mb,
   if(ref_index > 0)
   {
     auto dof_count = jac.cols();
-    const auto joint_index = static_cast<size_t>(jointsPath[0]);
-    jac.block(0, 0, 3, dof_count) = mbc.bodyPosW[joint_index].rotation() * jac.block(0, 0, 3, dof_count);
-    jac.block(3, 0, 3, dof_count) = mbc.bodyPosW[joint_index].rotation() * jac.block(3, 0, 3, dof_count);
+    jac.block(0, 0, 3, dof_count) = mbc.bodyPosW[ref_index].rotation() * jac.block(0, 0, 3, dof_count);
+    jac.block(3, 0, 3, dof_count) = mbc.bodyPosW[ref_index].rotation() * jac.block(3, 0, 3, dof_count);
   }
 
   return jac;
