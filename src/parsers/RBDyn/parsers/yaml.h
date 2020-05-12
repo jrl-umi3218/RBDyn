@@ -109,6 +109,8 @@ RBDYN_PARSERS_DLLAPI ParserResult from_yaml_file(const std::string & file_path,
                                                  bool withVirtualLinks = true,
                                                  const std::string & sphericalSuffix = "_spherical");
 
+RBDYN_PARSERS_DLLAPI std::string to_yaml(const ParserResult & res);
+
 } // namespace parsers
 
 } // namespace rbd

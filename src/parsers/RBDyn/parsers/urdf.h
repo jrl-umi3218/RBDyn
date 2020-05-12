@@ -67,6 +67,8 @@ RBDYN_PARSERS_DLLAPI ParserResult from_urdf_file(const std::string & file_path,
                                                  bool withVirtualLinks = true,
                                                  const std::string & sphericalSuffix = "_spherical");
 
+RBDYN_PARSERS_DLLAPI std::string to_urdf(const ParserResult & res);
+
 } // namespace parsers
 
 } // namespace rbd
