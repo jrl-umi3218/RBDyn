@@ -43,7 +43,6 @@ install(FILES ${HEADERS} DESTINATION ${INCLUDE_INSTALL_DESTINATION}/parsers)
 
 add_executable(urdf_yaml_converter urdf_yaml_conv.cpp)
 target_link_libraries(urdf_yaml_converter PUBLIC RBDyn::Parsers)
-set_target_properties(urdf_yaml_converter PROPERTIES COMPILE_FLAGS "-DRBDYN_PARSERS_DLLIMPORT")
 
 install(
     TARGETS urdf_yaml_converter

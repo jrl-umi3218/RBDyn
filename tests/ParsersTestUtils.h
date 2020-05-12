@@ -183,7 +183,8 @@ bool operator==(const Geometry & g1, const Geometry & g2)
 }
 bool operator==(const Visual & v1, const Visual & v2)
 {
-  return v1.name == v2.name && v1.origin == v2.origin && v1.geometry == v2.geometry;
+  return v1.name == v2.name && v1.origin.rotation().isApprox(v2.origin.rotation(), TOL)
+         && v1.origin.translation().isApprox(v2.origin.translation(), TOL) && v1.geometry == v2.geometry;
 }
 
 bool operator==(const Geometry::Superellipsoid & se1, const Geometry::Superellipsoid & se2)
