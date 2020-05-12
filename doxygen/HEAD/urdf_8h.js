@@ -8,5 +8,6 @@ var urdf_8h =
     [ "originFromTag", "urdf_8h.html#a3c943b9da48b57f1c7091d31016e194a", null ],
     [ "parseMultiBodyGraphFromURDF", "urdf_8h.html#a926c03dc3a56d02f90975b8ef815f850", null ],
     [ "rbdynFromUrdfJoint", "urdf_8h.html#a847ce2e6d8ab02ecd6431b7224d7deaa", null ],
-    [ "RPY", "urdf_8h.html#a5482476785d5d38926b8aac6e6484bc0", null ]
+    [ "RPY", "urdf_8h.html#a5482476785d5d38926b8aac6e6484bc0", null ],
+    [ "to_urdf", "urdf_8h.html#afc80e33687206ead50a94223be990c35", null ]
 ];

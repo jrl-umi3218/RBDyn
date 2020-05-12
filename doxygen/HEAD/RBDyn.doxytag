@@ -155,6 +155,13 @@
       <anchor>ad6c06f392bb87b12e8554d674a489659</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
     </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI std::string</type>
+      <name>to_urdf</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>afc80e33687206ead50a94223be990c35</anchor>
+      <arglist>(const ParserResult &amp;res)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>yaml.h</name>
@@ -181,6 +188,13 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a6d188b64e5c4c1d1d130ec77567ef86f</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI std::string</type>
+      <name>to_yaml</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>af2dd3b3cf52c276e7f13a7f6ab9430c5</anchor>
+      <arglist>(const ParserResult &amp;res)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -4013,6 +4027,13 @@
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
     </member>
     <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI std::string</type>
+      <name>to_urdf</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>afc80e33687206ead50a94223be990c35</anchor>
+      <arglist>(const ParserResult &amp;res)</arglist>
+    </member>
+    <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
       <name>from_yaml</name>
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
@@ -4025,6 +4046,13 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a6d188b64e5c4c1d1d130ec77567ef86f</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI std::string</type>
+      <name>to_yaml</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>af2dd3b3cf52c276e7f13a7f6ab9430c5</anchor>
+      <arglist>(const ParserResult &amp;res)</arglist>
     </member>
   </compound>
   <compound kind="namespace">
