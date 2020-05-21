@@ -30,6 +30,18 @@ sudo apt update
 sudo apt install librbdyn-dev python-rbdyn python3-rbdyn
 ```
 
+## Conan
+
+Install the latest version using [conan](https://conan.io/)
+
+```bash
+conan remote add multi-contact https://api.bintray.com/conan/gergondet/multi-contact
+# Install the latest release
+conan install RBDyn/latest@multi-contact/stable
+# Or install the latest development version
+# conan install RBDyn/latest@multi-contact/dev
+```
+
 ## Homebrew OS X install
 
 Install from the command line using [Homebrew](brew.sh):

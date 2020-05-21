@@ -2,9 +2,9 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-add_project_dependency(yaml-cpp 0.5.0 REQUIRED)
+add_project_dependency(yaml-cpp 0.5.0 REQUIRED NO_MODULE)
 
-find_package(tinyxml2 QUIET)
+find_package(tinyxml2 QUIET NO_MODULE)
 if(NOT ${tinyxml2_FOUND})
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules")
   find_package(RBDyn_TinyXML2 REQUIRED)
@@ -12,7 +12,7 @@ if(NOT ${tinyxml2_FOUND})
           DESTINATION "${CONFIG_INSTALL_DIR}")
   set(PACKAGE_EXTRA_MACROS "include(\${CMAKE_CURRENT_LIST_DIR}/FindRBDyn_TinyXML2.cmake)" CACHE INTERNAL "")
 else()
-  add_project_dependency(tinyxml2 REQUIRED)
+  add_project_dependency(tinyxml2 REQUIRED NO_MODULE)
 endif()
 
 # Note: technically we don't need system but it is likely to be here and
