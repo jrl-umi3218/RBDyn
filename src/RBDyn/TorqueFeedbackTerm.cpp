@@ -144,8 +144,17 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
 
     // std::cout << "Rafa, in computeTerm, filteredS = " << filteredS.transpose() << std::endl;
     
-    P_ = L_ * filteredS;
+    P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
+    // P_ = L_ * s;
 
+    /*
+    std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_hat = " << alphaVec_hat.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTerm::computeTerm, s = " << s.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTerm::computeTerm, filteredS = " << filteredS.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
+    */
+    
     time = clock();
     computeGammaD();
     elapsed_.at("computeFbTerm-GammaD") = (int) (clock() - time);
@@ -174,7 +183,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     Eigen::VectorXd filteredS = fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
     P_ = L_ * filteredS;
     
-    std::cout << "Rafa, computeTerm, P_ = " << P_.transpose() << std::endl;
+    std::cout << "Rafa, IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl;
   }
 }
 

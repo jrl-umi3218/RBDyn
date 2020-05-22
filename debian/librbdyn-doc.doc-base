@@ -1,0 +1,8 @@
+Document: librbdyn-api-documentation
+Title: API documentation for RBDyn
+Author: RBDyn authors
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/RBDyn/doxygen-html/index.html
+Files: /usr/share/doc/RBDyn/doxygen-html/*.html
