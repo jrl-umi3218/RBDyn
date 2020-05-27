@@ -75,7 +75,7 @@ $(document).ready(function(){initNavTree('ZMP_8h.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;rbdyn/config.hh&gt;</code><br />
-<code>#include &lt;<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00059.html">SpaceVecAlg/SpaceVecAlg</a>&gt;</code><br />
+<code>#include &lt;SpaceVecAlg/SpaceVecAlg&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for ZMP.h:</div>
 <div class="dyncontent">
@@ -98,7 +98,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a29fb02f3699713bd952eac420794f673"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerbd.html#a29fb02f3699713bd952eac420794f673">rbd::computeCentroidalZMPNoGravity</a> (Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude)</td></tr>
 <tr class="memdesc:a29fb02f3699713bd952eac420794f673"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the ZMP in the world frame considering that gravity is taken into account in the CoM acceleration.  <a href="namespacerbd.html#a29fb02f3699713bd952eac420794f673">More...</a><br /></td></tr>
 <tr class="separator:a29fb02f3699713bd952eac420794f673"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerbd.html#afeb4fb0f92e547a41ae4bd57b09febc7">rbd::computeCentroidalZMPComplete</a> (MultiBodyConfig &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude, <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#aaea958106abfa742585ced52492029c4">sva::ForceVecd</a> wr_external, double mass)</td></tr>
+<tr class="memitem:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerbd.html#afeb4fb0f92e547a41ae4bd57b09febc7">rbd::computeCentroidalZMPComplete</a> (MultiBodyConfig &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude, sva::ForceVecd wr_external, double mass)</td></tr>
 <tr class="memdesc:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the ZMP considering the external wrench applied on the robot the gravity should also be already in the CoM acceleration.  <a href="namespacerbd.html#afeb4fb0f92e547a41ae4bd57b09febc7">More...</a><br /></td></tr>
 <tr class="separator:afeb4fb0f92e547a41ae4bd57b09febc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

@@ -83,7 +83,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af526061a2e8657d100637ee84249d7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a505a02fa2ac61ecad2ab39755901ccb3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a505a02fa2ac61ecad2ab39755901ccb3">Jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const std::string &amp;bodyName, const Eigen::Vector3d &amp;<a class="el" href="classrbd_1_1Jacobian.html#a337b2b64fb240946ff5174137d87cb6d">point</a>=Eigen::Vector3d::Zero())</td></tr>
 <tr class="separator:a505a02fa2ac61ecad2ab39755901ccb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abba109aec7645809fc5a1b4e54361a50"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#abba109aec7645809fc5a1b4e54361a50">jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_0_p)</td></tr>
+<tr class="memitem:abba109aec7645809fc5a1b4e54361a50"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#abba109aec7645809fc5a1b4e54361a50">jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_0_p)</td></tr>
 <tr class="separator:abba109aec7645809fc5a1b4e54361a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2417e9496d9bcb449070d1c70b6837ca"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a2417e9496d9bcb449070d1c70b6837ca">jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="separator:a2417e9496d9bcb449070d1c70b6837ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -97,23 +97,23 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5318dd2fbbacb52f4cced639da50582b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6b17e17e474a5bf00cec19c8a5feb60"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ae6b17e17e474a5bf00cec19c8a5feb60">bodyJacobianDot</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="separator:ae6b17e17e474a5bf00cec19c8a5feb60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac82c13dc74e8e3dcfd5b13248f3d160"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#aac82c13dc74e8e3dcfd5b13248f3d160">velocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b_p) const</td></tr>
+<tr class="memitem:aac82c13dc74e8e3dcfd5b13248f3d160"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#aac82c13dc74e8e3dcfd5b13248f3d160">velocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_b_p) const</td></tr>
 <tr class="separator:aac82c13dc74e8e3dcfd5b13248f3d160"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc2a577b8e0ff766da362c0a6dda844b"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#adc2a577b8e0ff766da362c0a6dda844b">velocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:adc2a577b8e0ff766da362c0a6dda844b"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#adc2a577b8e0ff766da362c0a6dda844b">velocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:adc2a577b8e0ff766da362c0a6dda844b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9788ed60fbd5f49783142c2e68ad12d"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#aa9788ed60fbd5f49783142c2e68ad12d">bodyVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:aa9788ed60fbd5f49783142c2e68ad12d"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#aa9788ed60fbd5f49783142c2e68ad12d">bodyVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:aa9788ed60fbd5f49783142c2e68ad12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae93c6b2935bb1f3b439c0a65a5b9f6f4"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ae93c6b2935bb1f3b439c0a65a5b9f6f4">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b_p, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;V_b_p) const</td></tr>
+<tr class="memitem:ae93c6b2935bb1f3b439c0a65a5b9f6f4"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ae93c6b2935bb1f3b439c0a65a5b9f6f4">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_b_p, const sva::MotionVecd &amp;V_b_p) const</td></tr>
 <tr class="separator:ae93c6b2935bb1f3b439c0a65a5b9f6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fd453cc38d4fb58af1990f35abda347"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a8fd453cc38d4fb58af1990f35abda347">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:a8fd453cc38d4fb58af1990f35abda347"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a8fd453cc38d4fb58af1990f35abda347">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:a8fd453cc38d4fb58af1990f35abda347"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a650e1c1a9fc5d6e036cab59a40989adb"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a650e1c1a9fc5d6e036cab59a40989adb">bodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:a650e1c1a9fc5d6e036cab59a40989adb"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a650e1c1a9fc5d6e036cab59a40989adb">bodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:a650e1c1a9fc5d6e036cab59a40989adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7e4dbecb617039eb8e09bf85745b15e"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ab7e4dbecb617039eb8e09bf85745b15e">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;normalAccB, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b_p, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;V_b_p) const</td></tr>
+<tr class="memitem:ab7e4dbecb617039eb8e09bf85745b15e"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ab7e4dbecb617039eb8e09bf85745b15e">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB, const sva::PTransformd &amp;X_b_p, const sva::MotionVecd &amp;V_b_p) const</td></tr>
 <tr class="separator:ab7e4dbecb617039eb8e09bf85745b15e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab23b1165bd5b3fb19082281c0d650847"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ab23b1165bd5b3fb19082281c0d650847">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;normalAccB) const</td></tr>
+<tr class="memitem:ab23b1165bd5b3fb19082281c0d650847"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ab23b1165bd5b3fb19082281c0d650847">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</td></tr>
 <tr class="separator:ab23b1165bd5b3fb19082281c0d650847"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c7ffe3ecb96ff9d9f988d44e0ad1484"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a2c7ffe3ecb96ff9d9f988d44e0ad1484">bodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;normalAccB) const</td></tr>
+<tr class="memitem:a2c7ffe3ecb96ff9d9f988d44e0ad1484"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a2c7ffe3ecb96ff9d9f988d44e0ad1484">bodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</td></tr>
 <tr class="separator:a2c7ffe3ecb96ff9d9f988d44e0ad1484"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bba1bc1bf8dcb2b49e7a9f6e7f25399"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a8bba1bc1bf8dcb2b49e7a9f6e7f25399">translateJacobian</a> (const Eigen::Ref&lt; const Eigen::MatrixXd &gt; &amp;jac, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const Eigen::Vector3d &amp;<a class="el" href="classrbd_1_1Jacobian.html#a337b2b64fb240946ff5174137d87cb6d">point</a>, Eigen::MatrixXd &amp;res)</td></tr>
 <tr class="separator:a8bba1bc1bf8dcb2b49e7a9f6e7f25399"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,7 +143,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a337b2b64fb240946ff5174137d87cb6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95d0a2f2301bcd5c5f5c1b47647c6ff5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a95d0a2f2301bcd5c5f5c1b47647c6ff5">point</a> (const Eigen::Vector3d &amp;point)</td></tr>
 <tr class="separator:a95d0a2f2301bcd5c5f5c1b47647c6ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6a663e740335a4c0d68e025e0ac5cdc"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ac6a663e740335a4c0d68e025e0ac5cdc">sJacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_0_p)</td></tr>
+<tr class="memitem:ac6a663e740335a4c0d68e025e0ac5cdc"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ac6a663e740335a4c0d68e025e0ac5cdc">sJacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_0_p)</td></tr>
 <tr class="separator:ac6a663e740335a4c0d68e025e0ac5cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22492f7707bc6bcd3ac2fdb1799b5b8a"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a22492f7707bc6bcd3ac2fdb1799b5b8a">sJacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="separator:a22492f7707bc6bcd3ac2fdb1799b5b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,23 +163,23 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2c44a58e749f3e31e01a7b768ba7a6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad68687c621fc0bc5137d6cf929bf83f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ad68687c621fc0bc5137d6cf929bf83f1">sFullJacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const Eigen::MatrixXd &amp;jac, Eigen::MatrixXd &amp;res) const</td></tr>
 <tr class="separator:ad68687c621fc0bc5137d6cf929bf83f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe639518ab7d26218d9f11765655b53a"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#abe639518ab7d26218d9f11765655b53a">sVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b_p) const</td></tr>
+<tr class="memitem:abe639518ab7d26218d9f11765655b53a"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#abe639518ab7d26218d9f11765655b53a">sVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_b_p) const</td></tr>
 <tr class="separator:abe639518ab7d26218d9f11765655b53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab867134c652a2d2950f99851222fcb1b"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ab867134c652a2d2950f99851222fcb1b">sVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:ab867134c652a2d2950f99851222fcb1b"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#ab867134c652a2d2950f99851222fcb1b">sVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:ab867134c652a2d2950f99851222fcb1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6deacdb78badba4b849f68c4ef621d83"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6deacdb78badba4b849f68c4ef621d83">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b_p, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;V_b_p) const</td></tr>
+<tr class="memitem:a6deacdb78badba4b849f68c4ef621d83"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6deacdb78badba4b849f68c4ef621d83">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_b_p, const sva::MotionVecd &amp;V_b_p) const</td></tr>
 <tr class="separator:a6deacdb78badba4b849f68c4ef621d83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a141d56a08497a8895a789c5a11bff6c6"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a141d56a08497a8895a789c5a11bff6c6">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;normalAccB, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b_p, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;V_b_p) const</td></tr>
+<tr class="memitem:a141d56a08497a8895a789c5a11bff6c6"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a141d56a08497a8895a789c5a11bff6c6">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB, const sva::PTransformd &amp;X_b_p, const sva::MotionVecd &amp;V_b_p) const</td></tr>
 <tr class="separator:a141d56a08497a8895a789c5a11bff6c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c717107197f055dbd329b77746a6ca4"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a0c717107197f055dbd329b77746a6ca4">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:a0c717107197f055dbd329b77746a6ca4"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a0c717107197f055dbd329b77746a6ca4">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:a0c717107197f055dbd329b77746a6ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6715a7ae9ef65dd04833aa9728ec01e2"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6715a7ae9ef65dd04833aa9728ec01e2">sBodyVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:a6715a7ae9ef65dd04833aa9728ec01e2"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6715a7ae9ef65dd04833aa9728ec01e2">sBodyVelocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:a6715a7ae9ef65dd04833aa9728ec01e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba5cce10884822056a154e0f6fd19eb8"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#aba5cce10884822056a154e0f6fd19eb8">sBodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
+<tr class="memitem:aba5cce10884822056a154e0f6fd19eb8"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#aba5cce10884822056a154e0f6fd19eb8">sBodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:aba5cce10884822056a154e0f6fd19eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6980043072a4d75f7685dda0a47ee61d"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6980043072a4d75f7685dda0a47ee61d">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;normalAccB) const</td></tr>
+<tr class="memitem:a6980043072a4d75f7685dda0a47ee61d"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6980043072a4d75f7685dda0a47ee61d">sNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</td></tr>
 <tr class="separator:a6980043072a4d75f7685dda0a47ee61d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7081298e9bc5b4aaf19f3f9e5abff559"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a7081298e9bc5b4aaf19f3f9e5abff559">sBodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;normalAccB) const</td></tr>
+<tr class="memitem:a7081298e9bc5b4aaf19f3f9e5abff559"><td class="memItemLeft" align="right" valign="top">sva::MotionVecd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a7081298e9bc5b4aaf19f3f9e5abff559">sBodyNormalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</td></tr>
 <tr class="separator:a7081298e9bc5b4aaf19f3f9e5abff559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -414,7 +414,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::bodyNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::bodyNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -450,7 +450,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::bodyNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::bodyNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -464,7 +464,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; sva::MotionVecd &gt; &amp;&#160;</td>
           <td class="paramname"><em>normalAccB</em>&#160;</td>
         </tr>
         <tr>
@@ -493,7 +493,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::bodyVelocity </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::bodyVelocity </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -754,7 +754,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_0_p</em>&#160;</td>
         </tr>
         <tr>
@@ -881,7 +881,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::normalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::normalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -895,13 +895,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_b_p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::MotionVecd &amp;&#160;</td>
           <td class="paramname"><em>V_b_p</em>&#160;</td>
         </tr>
         <tr>
@@ -931,7 +931,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::normalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::normalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -967,7 +967,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::normalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::normalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -981,19 +981,19 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; sva::MotionVecd &gt; &amp;&#160;</td>
           <td class="paramname"><em>normalAccB</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_b_p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::MotionVecd &amp;&#160;</td>
           <td class="paramname"><em>V_b_p</em>&#160;</td>
         </tr>
         <tr>
@@ -1024,7 +1024,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::normalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::normalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1038,7 +1038,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; sva::MotionVecd &gt; &amp;&#160;</td>
           <td class="paramname"><em>normalAccB</em>&#160;</td>
         </tr>
         <tr>
@@ -1195,7 +1195,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sBodyNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sBodyNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1230,7 +1230,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sBodyNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sBodyNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1244,7 +1244,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; sva::MotionVecd &gt; &amp;&#160;</td>
           <td class="paramname"><em>normalAccB</em>&#160;</td>
         </tr>
         <tr>
@@ -1271,7 +1271,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sBodyVelocity </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sBodyVelocity </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1361,7 +1361,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_0_p</em>&#160;</td>
         </tr>
         <tr>
@@ -1458,7 +1458,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1472,13 +1472,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_b_p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::MotionVecd &amp;&#160;</td>
           <td class="paramname"><em>V_b_p</em>&#160;</td>
         </tr>
         <tr>
@@ -1505,7 +1505,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1519,19 +1519,19 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; sva::MotionVecd &gt; &amp;&#160;</td>
           <td class="paramname"><em>normalAccB</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_b_p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::MotionVecd &amp;&#160;</td>
           <td class="paramname"><em>V_b_p</em>&#160;</td>
         </tr>
         <tr>
@@ -1558,7 +1558,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1593,7 +1593,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sNormalAcceleration </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sNormalAcceleration </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1607,7 +1607,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; sva::MotionVecd &gt; &amp;&#160;</td>
           <td class="paramname"><em>normalAccB</em>&#160;</td>
         </tr>
         <tr>
@@ -1807,7 +1807,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sVelocity </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sVelocity </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -1821,7 +1821,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_b_p</em>&#160;</td>
         </tr>
         <tr>
@@ -1848,7 +1848,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::sVelocity </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::sVelocity </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -2067,7 +2067,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::velocity </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::velocity </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>
@@ -2081,7 +2081,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>X_b_p</em>&#160;</td>
         </tr>
         <tr>
@@ -2110,7 +2110,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#afc16c15a4fbcc2d8cf5676551b74816d">sva::MotionVecd</a> rbd::Jacobian::velocity </td>
+          <td class="memname">sva::MotionVecd rbd::Jacobian::velocity </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
           <td class="paramname"><em>mb</em>, </td>

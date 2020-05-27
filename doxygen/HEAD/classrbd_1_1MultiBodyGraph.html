@@ -103,7 +103,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6c3c7fa80770ae6d0eea6f4f0a294f03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ea2e5e03771bf756df8c049e45f6aa4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a9ea2e5e03771bf756df8c049e45f6aa4">addJoint</a> (const <a class="el" href="classrbd_1_1Joint.html">Joint</a> &amp;J)</td></tr>
 <tr class="separator:a9ea2e5e03771bf756df8c049e45f6aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac7bf70b53581fe955e86c6e4e975b51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#aac7bf70b53581fe955e86c6e4e975b51">linkBodies</a> (const std::string &amp;b1Name, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;tB1, const std::string &amp;b2Name, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;tB2, const std::string &amp;jointName, bool isB1toB2=true)</td></tr>
+<tr class="memitem:aac7bf70b53581fe955e86c6e4e975b51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#aac7bf70b53581fe955e86c6e4e975b51">linkBodies</a> (const std::string &amp;b1Name, const sva::PTransformd &amp;tB1, const std::string &amp;b2Name, const sva::PTransformd &amp;tB2, const std::string &amp;jointName, bool isB1toB2=true)</td></tr>
 <tr class="separator:aac7bf70b53581fe955e86c6e4e975b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a161214c01b5c4bddb957b0ec16248107"><td class="memItemLeft" align="right" valign="top">const std::shared_ptr&lt; <a class="el" href="structrbd_1_1MultiBodyGraph_1_1Node.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a161214c01b5c4bddb957b0ec16248107">nodeByName</a> (const std::string &amp;name) const</td></tr>
 <tr class="separator:a161214c01b5c4bddb957b0ec16248107"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,11 +113,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa5bff9ddeae50743e7a72002971179a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac566ff3b5fce861b20d6864bb635e880"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#ac566ff3b5fce861b20d6864bb635e880">nrJoints</a> () const</td></tr>
 <tr class="separator:ac566ff3b5fce861b20d6864bb635e880"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b609d5bef110eff5e418222b99daa14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a0b609d5bef110eff5e418222b99daa14">makeMultiBody</a> (const std::string &amp;rootBodyName, bool isFixed, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>(), const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>())</td></tr>
+<tr class="memitem:a0b609d5bef110eff5e418222b99daa14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a0b609d5bef110eff5e418222b99daa14">makeMultiBody</a> (const std::string &amp;rootBodyName, bool isFixed, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</td></tr>
 <tr class="separator:a0b609d5bef110eff5e418222b99daa14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53753c50aecde8267783c1c7380b84e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a53753c50aecde8267783c1c7380b84e3">makeMultiBody</a> (const std::string &amp;rootBodyName, <a class="el" href="classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fd">Joint::Type</a> rootJointType, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>(), const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>())</td></tr>
+<tr class="memitem:a53753c50aecde8267783c1c7380b84e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a53753c50aecde8267783c1c7380b84e3">makeMultiBody</a> (const std::string &amp;rootBodyName, <a class="el" href="classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fd">Joint::Type</a> rootJointType, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</td></tr>
 <tr class="separator:a53753c50aecde8267783c1c7380b84e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee451c3b6806f21bf44b9103c3498155"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#aee451c3b6806f21bf44b9103c3498155">makeMultiBody</a> (const std::string &amp;rootBodyName, <a class="el" href="classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fd">Joint::Type</a> rootJointType, const Eigen::Vector3d &amp;axis, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>(), const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>())</td></tr>
+<tr class="memitem:aee451c3b6806f21bf44b9103c3498155"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#aee451c3b6806f21bf44b9103c3498155">makeMultiBody</a> (const std::string &amp;rootBodyName, <a class="el" href="classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fd">Joint::Type</a> rootJointType, const Eigen::Vector3d &amp;axis, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</td></tr>
 <tr class="separator:aee451c3b6806f21bf44b9103c3498155"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9de7906c304ab726487e7ef158d81264"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a9de7906c304ab726487e7ef158d81264">removeJoint</a> (const std::string &amp;rootBodyName, const std::string &amp;jointName)</td></tr>
 <tr class="separator:a9de7906c304ab726487e7ef158d81264"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +125,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adc767caefca5cb2edb685f4875069f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c2f62094dc38b89089d09b5c4d4a367"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a6c2f62094dc38b89089d09b5c4d4a367">mergeSubBodies</a> (const std::string &amp;rootBodyName, const std::string &amp;jointName, const std::map&lt; std::string, std::vector&lt; double &gt;&gt; &amp;jointPosByName)</td></tr>
 <tr class="separator:a6c2f62094dc38b89089d09b5c4d4a367"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa729e4ff4fbb54e6c0fcf92cfda602ff"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#aa729e4ff4fbb54e6c0fcf92cfda602ff">bodiesBaseTransform</a> (const std::string &amp;rootBodyName, const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;X_b0_j0=<a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>())</td></tr>
+<tr class="memitem:aa729e4ff4fbb54e6c0fcf92cfda602ff"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, sva::PTransformd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#aa729e4ff4fbb54e6c0fcf92cfda602ff">bodiesBaseTransform</a> (const std::string &amp;rootBodyName, const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</td></tr>
 <tr class="separator:aa729e4ff4fbb54e6c0fcf92cfda602ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04cbebadb99bc2317885d5eebb4ab4ba"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::vector&lt; std::string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBodyGraph.html#a04cbebadb99bc2317885d5eebb4ab4ba">successorJoints</a> (const std::string &amp;rootBodyName)</td></tr>
 <tr class="separator:a04cbebadb99bc2317885d5eebb4ab4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -274,7 +274,7 @@ Protected Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;std::string, <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a>&gt; rbd::MultiBodyGraph::bodiesBaseTransform </td>
+          <td class="memname">std::map&lt;std::string, sva::PTransformd&gt; rbd::MultiBodyGraph::bodiesBaseTransform </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>rootBodyName</em>, </td>
@@ -282,8 +282,8 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_b0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_b0_j0</em> = <code>sva::PTransformd::Identity()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -423,7 +423,7 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>tB1</em>, </td>
         </tr>
         <tr>
@@ -435,7 +435,7 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
           <td class="paramname"><em>tB2</em>, </td>
         </tr>
         <tr>
@@ -498,14 +498,14 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>, </td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_0_j0</em> = <code>sva::PTransformd::Identity()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_b0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_b0_j0</em> = <code>sva::PTransformd::Identity()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -553,14 +553,14 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>, </td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_0_j0</em> = <code>sva::PTransformd::Identity()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_b0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_b0_j0</em> = <code>sva::PTransformd::Identity()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -614,14 +614,14 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>, </td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_0_j0</em> = <code>sva::PTransformd::Identity()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00067.html#a259dde998fab6de957995eedfdb4d179">sva::PTransformd</a> &amp;&#160;</td>
-          <td class="paramname"><em>X_b0_j0</em> = <code><a class="elRef" doxygen="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//SpaceVecAlg.doxytag:https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//" href="https://jrl-umi3218.github.io/SpaceVecAlg/doxygen/HEAD//a00639.html#a8f9781828ebc80b8c89a6e9bfba6ea4d">sva::PTransformd::Identity</a>()</code>&#160;</td>
+          <td class="paramtype">const sva::PTransformd &amp;&#160;</td>
+          <td class="paramname"><em>X_b0_j0</em> = <code>sva::PTransformd::Identity()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
