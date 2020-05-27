@@ -11,7 +11,8 @@
 // boost
 #define BOOST_TEST_MODULE Statics
 #include <boost/math/constants/constants.hpp>
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/output_test_stream.hpp>
 
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
