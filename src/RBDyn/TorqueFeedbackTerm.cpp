@@ -144,8 +144,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
 
     // std::cout << "Rafa, in computeTerm, filteredS = " << filteredS.transpose() << std::endl;
     
-    P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
-    // P_ = L_ * s;
+    // P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
+    P_ = L_ * s;
 
     /*
     std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl;
@@ -200,10 +200,8 @@ IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>
 					       const Eigen::Vector3d & maxAngAcc,
 					       const Eigen::VectorXd & torqueL,
 					       const Eigen::VectorXd & torqueU,
-                 double phiSlow,
-                 double phiFast, 
-                 double fastFilterWeight, 
-                 double timeStep )
+                                               double phiSlow, double phiFast, double fastFilterWeight, 
+                                               double timeStep)
   : IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, 
                 lambda, phiSlow, phiFast, fastFilterWeight, timeStep),
     perc_(perc), maxLinAcc_(maxLinAcc), maxAngAcc_(maxAngAcc),
@@ -217,14 +215,14 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
     computeGain(mb, mbc_real);
+
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, mb.nrDof() = " << mb.nrDof() << std::endl;
     
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
-  
+    
     Eigen::VectorXd s = alphaVec_ref - alphaVec_hat;
     P_ = L_ * s;
-
-    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_ = " << torqueU_.transpose() << std::endl;
 
     Eigen::VectorXd torqueU_prime = torqueU_ * perc_;
     Eigen::VectorXd torqueL_prime = torqueL_ * perc_;
@@ -240,21 +238,12 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
         break;
       }
     
-    // Eigen::VectorXd torqueU_prime = (abs(torqueU_.array()) < 1E-6).select( max_float_, torqueU_);
-    // Eigen::VectorXd torqueL_prime = (abs(torqueL_.array()) < 1E-6).select(-max_float_, torqueL_);
-
-    //std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, P_ = " << P_.transpose() << std::endl;
-    //std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, torqueU_prime = " << torqueU_prime.transpose() << std::endl;
-    
     double epsilonU = (abs(P_.array() / torqueU_prime.array())).maxCoeff();
     double epsilonL = (abs(P_.array() / torqueL_prime.array())).maxCoeff();
     double epsilon  = std::max(epsilonU, epsilonL);
-
-    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, epsilonU = " << epsilonU << ", epsilonL = " << epsilonL << ", epsilon = " << epsilon << std::endl << std::endl;
     
     if (epsilon > 1) {
       P_ /= epsilon;
-      //std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, the AntiWindup is activated with gain = " << 1/epsilon << std::endl;
     }
     
     computeGammaD();
