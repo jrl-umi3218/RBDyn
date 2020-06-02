@@ -144,8 +144,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
 
     // std::cout << "Rafa, in computeTerm, filteredS = " << filteredS.transpose() << std::endl;
     
-    // P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
-    P_ = L_ * s;
+    P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
+    // P_ = L_ * s;
 
     /*
     std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl;
@@ -230,7 +230,7 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
     for (size_t i = 0; i < mb.nrJoints(); i++)
       if (mb.joint(i).type() == rbd::Joint::Free)
       {
-        int j = mb.jointPosInDof(j);
+        int j = mb.jointPosInDof(i);
         Eigen::Vector6d acc;
 	acc << maxAngAcc_, maxLinAcc_;
         torqueU_prime.segment<6>(j) = fd_->H().block<6, 6>(j, j).diagonal().asDiagonal() * acc;
