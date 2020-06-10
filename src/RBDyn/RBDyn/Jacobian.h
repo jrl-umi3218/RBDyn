@@ -320,9 +320,6 @@ public:
     return jointsPath_;
   }
 
-  /// @return The dof path vector from the root to the specified body.
-  std::vector<int> dofPath(const MultiBody & mb) const;
-
   /// @return The number of degree of freedom in the joint path
   int dof() const
   {
@@ -474,8 +471,8 @@ private:
   Eigen::MatrixXd jac_;
   Eigen::MatrixXd jacDot_;
 
-  int body_index_;
-  int ref_index_;
+  int bodyIndex_;
+  int refBodyIndex_;
 };
 
 } // namespace rbd

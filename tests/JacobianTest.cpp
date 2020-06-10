@@ -29,6 +29,7 @@
 // Arm
 #include "SSSarm.h"
 #include "XYZSarm.h"
+#include "XXXdualarm.h"
 
 const double TOL = 0.0000001;
 
@@ -139,18 +140,17 @@ void checkJacobianMatrixFromVelocity(const rbd::MultiBody & subMb,
   int col = 0;
   for(int i = 0; i < subMb.nrJoints(); ++i)
   {
-    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < subMb.joint(i).dof(); ++j)
     {
-      const auto uj = static_cast<size_t>(j);
-      subMbc.alpha[ui][uj] = 1.;
+      subMbc.alpha[i][j] = 1.;
 
       forwardVelocity(subMb, subMbc);
 
       Eigen::Vector6d mv = velVec.back().vector();
+
       BOOST_CHECK_SMALL((mv - jacMat.col(col)).norm(), TOL);
 
-      subMbc.alpha[ui][uj] = 0.;
+      subMbc.alpha[i][j] = 0.;
       ++col;
     }
   }
@@ -181,7 +181,8 @@ void checkFullJacobianMatrix(const rbd::MultiBody & mb,
   {
     const auto ui = static_cast<size_t>(i);
     int joint = jac.jointsPath()[ui];
-    int dof = mb.joint(i).dof();
+    int dof = subMb.joint(i).dof();
+
     BOOST_CHECK_EQUAL(jacMat.block(0, subMb.jointPosInDof(i), 6, dof),
                       fullJacMat.block(0, mb.jointPosInDof(joint), 6, dof));
   }
@@ -198,12 +199,11 @@ void checkJacobian(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc, 
 
   // fill subMbc
   MultiBodyConfig subMbc(subMb);
-  for(size_t i = 0; i < static_cast<size_t>(subMb.nrJoints()); ++i)
+  for(int i = 0; i < subMb.nrJoints(); ++i)
   {
-    const auto joint_index = static_cast<size_t>(jac.jointsPath()[i]);
-    subMbc.bodyPosW[i] = mbc.bodyPosW[joint_index];
-    subMbc.jointConfig[i] = mbc.jointConfig[joint_index];
-    subMbc.parentToSon[i] = mbc.parentToSon[joint_index];
+    subMbc.bodyPosW[i] = mbc.bodyPosW[jac.jointsPath()[i]];
+    subMbc.jointConfig[i] = mbc.jointConfig[jac.jointsPath()[i]];
+    subMbc.parentToSon[i] = mbc.parentToSon[jac.jointsPath()[i]];
   }
 
   // test fullJacobian
@@ -219,6 +219,41 @@ void checkJacobian(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc, 
   checkJacobianMatrixSize(subMb, jac_mat_b);
   checkJacobianMatrixFromVelocity(subMb, subMbc, subMbc.bodyVelB, jac_mat_w);
 }
+
+void checkJacobianRefBody(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc, rbd::Jacobian & jac)
+{
+  using namespace Eigen;
+  using namespace sva;
+  using namespace rbd;
+
+  const MatrixXd & jac_mat = jac.jacobian(mb, mbc);
+  MultiBody subMb = jac.subMultiBody(mb);
+
+  // fill subMbc
+  MultiBodyConfig subMbc(subMb);
+
+  for(size_t i = 0; i < static_cast<size_t>(subMb.nrJoints()); ++i)
+  {
+    subMbc.q[i] = mbc.q[jac.jointsPath()[i]];
+  }
+
+  forwardKinematics(subMb, subMbc);
+  forwardVelocity(subMb, subMbc);
+
+  // test fullJacobian
+  checkFullJacobianMatrix(mb, subMb, jac, jac_mat);
+
+  // test jacobian
+  const MatrixXd & jac_mat_w = jac.jacobian(mb, mbc);
+  checkJacobianMatrixSize(subMb, jac_mat_w);
+  checkJacobianMatrixFromVelocity(subMb, subMbc, subMbc.bodyVelW, jac_mat_w);
+
+  // test bodyJacobian
+  const MatrixXd & jac_mat_b = jac.bodyJacobian(mb, mbc);
+  checkJacobianMatrixSize(subMb, jac_mat_b);
+  checkJacobianMatrixFromVelocity(subMb, subMbc, subMbc.bodyVelB, jac_mat_w);
+}
+
 
 BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 {
@@ -262,6 +297,50 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
   MultiBodyConfig mbcErr(mbErr);
   BOOST_CHECK_THROW(jac1.sJacobian(mbErr, mbcErr), std::domain_error);
 }
+
+BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
+{
+  using namespace Eigen;
+  using namespace sva;
+  using namespace rbd;
+  namespace cst = boost::math::constants;
+
+  MultiBody mb;
+  MultiBodyConfig mbc;
+  MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeXXXdualarm(false);
+
+  Jacobian jac1(mb, "b31", "b32");
+  Jacobian jac2(mb, "b32", "b31");
+
+  mbc.q = {{},{0.}, {0.}, {0.}, {0.}, {0.}};
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
+
+  checkJacobianRefBody(mb, mbc, jac1);
+  checkJacobianRefBody(mb, mbc, jac2);
+
+  mbc.q = {{}, {cst::pi<double>() / 2.}, {cst::pi<double>() / 3.}, {cst::pi<double>() / 4.}, {cst::pi<double>() / 5.}, {cst::pi<double>() / 6.}};
+  forwardKinematics(mb, mbc);
+  forwardVelocity(mb, mbc);
+
+  checkJacobianRefBody(mb, mbc, jac1);
+  checkJacobianRefBody(mb, mbc, jac2);
+
+  // test jacobian safe version
+  MultiBodyConfig mbcBadNrBodyPos(mbc);
+  mbcBadNrBodyPos.bodyPosW.resize(1);
+  BOOST_CHECK_THROW(jac1.sJacobian(mb, mbcBadNrBodyPos), std::domain_error);
+
+  MultiBodyConfig mbcBadNrJointConf(mbc);
+  mbcBadNrJointConf.motionSubspace.resize(1);
+  BOOST_CHECK_THROW(jac1.sJacobian(mb, mbcBadNrJointConf), std::domain_error);
+
+  MultiBody mbErr = jac2.subMultiBody(mb);
+  MultiBodyConfig mbcErr(mbErr);
+  BOOST_CHECK_THROW(jac1.sJacobian(mbErr, mbcErr), std::domain_error);
+}
+
 
 BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 {
