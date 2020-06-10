@@ -28,8 +28,8 @@
 
 // Arm
 #include "SSSarm.h"
-#include "XYZSarm.h"
 #include "XXXdualarm.h"
+#include "XYZSarm.h"
 
 const double TOL = 0.0000001;
 
@@ -254,7 +254,6 @@ void checkJacobianRefBody(const rbd::MultiBody & mb, const rbd::MultiBodyConfig 
   checkJacobianMatrixFromVelocity(subMb, subMbc, subMbc.bodyVelB, jac_mat_w);
 }
 
-
 BOOST_AUTO_TEST_CASE(JacobianComputeTest)
 {
   using namespace Eigen;
@@ -313,14 +312,19 @@ BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
   Jacobian jac1(mb, "b31", "b32");
   Jacobian jac2(mb, "b32", "b31");
 
-  mbc.q = {{},{0.}, {0.}, {0.}, {0.}, {0.}};
+  mbc.q = {{}, {0.}, {0.}, {0.}, {0.}, {0.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
   checkJacobianRefBody(mb, mbc, jac1);
   checkJacobianRefBody(mb, mbc, jac2);
 
-  mbc.q = {{}, {cst::pi<double>() / 2.}, {cst::pi<double>() / 3.}, {cst::pi<double>() / 4.}, {cst::pi<double>() / 5.}, {cst::pi<double>() / 6.}};
+  mbc.q = {{},
+           {cst::pi<double>() / 2.},
+           {cst::pi<double>() / 3.},
+           {cst::pi<double>() / 4.},
+           {cst::pi<double>() / 5.},
+           {cst::pi<double>() / 6.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
@@ -340,7 +344,6 @@ BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
   MultiBodyConfig mbcErr(mbErr);
   BOOST_CHECK_THROW(jac1.sJacobian(mbErr, mbcErr), std::domain_error);
 }
-
 
 BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
 {

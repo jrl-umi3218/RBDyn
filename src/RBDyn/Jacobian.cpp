@@ -104,21 +104,21 @@ MultiBody Jacobian::subMultiBody(const MultiBody & mb) const
     succ.push_back(index);
     pred.push_back(index - 1);
 
-    if (index == 0 )
+    if(index == 0)
     {
-      if (reverseJoints_[index])
+      if(reverseJoints_[index])
         Xt.push_back(sva::PTransformd(Eigen::Vector3d(0., 0., 0.)));
       else
         Xt.push_back(mb.transform(i));
     }
     else
     {
-      if (reverseJoints_[index-1])
+      if(reverseJoints_[index - 1])
       {
-        if (reverseJoints_[index])
-          Xt.push_back(mb.transform(jointsPath_[index-1]).inv());
+        if(reverseJoints_[index])
+          Xt.push_back(mb.transform(jointsPath_[index - 1]).inv());
         else
-          Xt.push_back(mb.transform(jointsPath_[index-1]).inv()*mb.transform(jointsPath_[index]));
+          Xt.push_back(mb.transform(jointsPath_[index - 1]).inv() * mb.transform(jointsPath_[index]));
       }
       else
       {
@@ -126,7 +126,7 @@ MultiBody Jacobian::subMultiBody(const MultiBody & mb) const
       }
     }
     auto joint = mb.joint(i);
-    if (reverseJoints_[index])
+    if(reverseJoints_[index])
     {
       auto fwd = joint.forward() ? false : true;
       joint.forward(fwd);
