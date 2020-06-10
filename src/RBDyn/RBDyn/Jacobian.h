@@ -465,7 +465,7 @@ private:
 
 private:
   std::vector<int> jointsPath_;
-  std::vector<uint8_t> reverseJoints_;
+  std::vector<double> jointsSign_;
   sva::PTransformd point_;
 
   Eigen::MatrixXd jac_;

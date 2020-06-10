@@ -140,9 +140,11 @@ void checkJacobianMatrixFromVelocity(const rbd::MultiBody & subMb,
   int col = 0;
   for(int i = 0; i < subMb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < subMb.joint(i).dof(); ++j)
     {
-      subMbc.alpha[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      subMbc.alpha[ui][uj] = 1.;
 
       forwardVelocity(subMb, subMbc);
 
@@ -150,7 +152,7 @@ void checkJacobianMatrixFromVelocity(const rbd::MultiBody & subMb,
 
       BOOST_CHECK_SMALL((mv - jacMat.col(col)).norm(), TOL);
 
-      subMbc.alpha[i][j] = 0.;
+      subMbc.alpha[ui][uj] = 0.;
       ++col;
     }
   }

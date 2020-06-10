@@ -22,17 +22,20 @@ void forwardVelocity(const MultiBody & mb, MultiBodyConfig & mbc)
 
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
+    const auto pred_index = static_cast<size_t>(pred[i]);
+    const auto succ_index = static_cast<size_t>(succ[i]);
+
     const sva::PTransformd & X_p_i = mbc.parentToSon[i];
 
     mbc.jointVelocity[i] = joints[i].motion(mbc.alpha[i]);
 
     if(pred[i] != -1)
-      mbc.bodyVelB[succ[i]] = X_p_i * mbc.bodyVelB[pred[i]] + mbc.jointVelocity[i];
+      mbc.bodyVelB[succ_index] = X_p_i * mbc.bodyVelB[pred_index] + mbc.jointVelocity[i];
     else
-      mbc.bodyVelB[succ[i]] = mbc.jointVelocity[i];
+      mbc.bodyVelB[succ_index] = mbc.jointVelocity[i];
 
-    sva::PTransformd E_0_i(mbc.bodyPosW[succ[i]].rotation());
-    mbc.bodyVelW[succ[i]] = E_0_i.invMul(mbc.bodyVelB[succ[i]]);
+    sva::PTransformd E_0_i(mbc.bodyPosW[succ_index].rotation());
+    mbc.bodyVelW[succ_index] = E_0_i.invMul(mbc.bodyVelB[succ_index]);
   }
 }
 
