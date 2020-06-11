@@ -201,11 +201,12 @@ void checkJacobian(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc, 
 
   // fill subMbc
   MultiBodyConfig subMbc(subMb);
-  for(int i = 0; i < subMb.nrJoints(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(subMb.nrJoints()); ++i)
   {
-    subMbc.bodyPosW[i] = mbc.bodyPosW[jac.jointsPath()[i]];
-    subMbc.jointConfig[i] = mbc.jointConfig[jac.jointsPath()[i]];
-    subMbc.parentToSon[i] = mbc.parentToSon[jac.jointsPath()[i]];
+    const auto joint_index = static_cast<size_t>(jac.jointsPath()[i]);
+    subMbc.bodyPosW[i] = mbc.bodyPosW[joint_index];
+    subMbc.jointConfig[i] = mbc.jointConfig[joint_index];
+    subMbc.parentToSon[i] = mbc.parentToSon[joint_index];
   }
 
   // test fullJacobian
@@ -236,7 +237,8 @@ void checkJacobianRefBody(const rbd::MultiBody & mb, const rbd::MultiBodyConfig 
 
   for(size_t i = 0; i < static_cast<size_t>(subMb.nrJoints()); ++i)
   {
-    subMbc.q[i] = mbc.q[jac.jointsPath()[i]];
+    const auto joint_index = static_cast<size_t>(jac.jointsPath()[i]);
+    subMbc.q[i] = mbc.q[joint_index];
   }
 
   forwardKinematics(subMb, subMbc);

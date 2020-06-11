@@ -93,7 +93,8 @@ MultiBody Jacobian::subMultiBody(const MultiBody & mb) const
 
   for(int index = 0; index < static_cast<int>(jointsPath_.size()); ++index)
   {
-    int i = jointsPath_[index];
+    const auto uindex = static_cast<size_t>(index);
+    int i = jointsPath_[uindex];
 
     // body info
     bodies.push_back(mb.body(i));
@@ -105,19 +106,19 @@ MultiBody Jacobian::subMultiBody(const MultiBody & mb) const
 
     if(index == 0)
     {
-      if(jointsSign_[index] == -1)
+      if(jointsSign_[uindex] == -1)
         Xt.push_back(sva::PTransformd(Eigen::Vector3d(0., 0., 0.)));
       else
         Xt.push_back(mb.transform(i));
     }
     else
     {
-      if(jointsSign_[index - 1] == -1)
+      if(jointsSign_[uindex - 1] == -1)
       {
-        if(jointsSign_[index] == -1)
-          Xt.push_back(mb.transform(jointsPath_[index - 1]).inv());
+        if(jointsSign_[uindex] == -1)
+          Xt.push_back(mb.transform(jointsPath_[uindex - 1]).inv());
         else
-          Xt.push_back(mb.transform(jointsPath_[index - 1]).inv() * mb.transform(jointsPath_[index]));
+          Xt.push_back(mb.transform(jointsPath_[uindex - 1]).inv() * mb.transform(jointsPath_[uindex]));
       }
       else
       {
@@ -125,7 +126,7 @@ MultiBody Jacobian::subMultiBody(const MultiBody & mb) const
       }
     }
     auto joint = mb.joint(i);
-    if(jointsSign_[index] == -1)
+    if(jointsSign_[uindex] == -1)
     {
       auto fwd = joint.forward() ? false : true;
       joint.forward(fwd);
@@ -179,8 +180,10 @@ const Eigen::MatrixXd & Jacobian::jacobian(const MultiBody & mb,
   if(refBodyIndex_ > 0)
   {
     auto dof_count = jac_.cols();
-    jac_.block(0, 0, 3, dof_count) = mbc.bodyPosW[refBodyIndex_].rotation() * jac_.block(0, 0, 3, dof_count);
-    jac_.block(3, 0, 3, dof_count) = mbc.bodyPosW[refBodyIndex_].rotation() * jac_.block(3, 0, 3, dof_count);
+    jac_.block(0, 0, 3, dof_count) =
+        mbc.bodyPosW[static_cast<size_t>(refBodyIndex_)].rotation() * jac_.block(0, 0, 3, dof_count);
+    jac_.block(3, 0, 3, dof_count) =
+        mbc.bodyPosW[static_cast<size_t>(refBodyIndex_)].rotation() * jac_.block(3, 0, 3, dof_count);
   }
   return jac_;
 }
@@ -196,8 +199,10 @@ const Eigen::MatrixXd & Jacobian::jacobian(const MultiBody & mb, const MultiBody
   if(refBodyIndex_ > 0)
   {
     auto dof_count = jac_.cols();
-    jac_.block(0, 0, 3, dof_count) = mbc.bodyPosW[refBodyIndex_].rotation() * jac_.block(0, 0, 3, dof_count);
-    jac_.block(3, 0, 3, dof_count) = mbc.bodyPosW[refBodyIndex_].rotation() * jac_.block(3, 0, 3, dof_count);
+    jac_.block(0, 0, 3, dof_count) =
+        mbc.bodyPosW[static_cast<size_t>(refBodyIndex_)].rotation() * jac_.block(0, 0, 3, dof_count);
+    jac_.block(3, 0, 3, dof_count) =
+        mbc.bodyPosW[static_cast<size_t>(refBodyIndex_)].rotation() * jac_.block(3, 0, 3, dof_count);
   }
   return jac_;
 }
