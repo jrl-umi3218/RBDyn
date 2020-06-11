@@ -154,6 +154,9 @@ jobs:
       matrix: *package-matrix
     runs-on: ubuntu-18.04
     steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Set upload parameters
       <<: *choose-extra-mirror
     - name: Download packages

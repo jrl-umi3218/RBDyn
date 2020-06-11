@@ -143,6 +143,9 @@ jobs:
           arch: i386
     runs-on: ubuntu-18.04
     steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Choose extra mirror
       run: |
         # We upload in all conditions except when building on PR or branch other than master
