@@ -1124,10 +1124,24 @@
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
+      <name>jacobian</name>
+      <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
+      <anchor>a3ce191b6c7fe5abf17b0a2af0db1b3bc</anchor>
+      <arglist>() const noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
       <anchor>a8f3c078468975cb8c4c57e8336c6ea00</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
+    </member>
+    <member kind="function">
+      <type>const Eigen::MatrixXd &amp;</type>
+      <name>jacobianDot</name>
+      <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
+      <anchor>a9ab69b1c01f98f8049ed14bda1a20c0e</anchor>
+      <arglist>() const noexcept</arglist>
     </member>
     <member kind="function">
       <type>Eigen::Vector3d</type>
@@ -1240,10 +1254,24 @@
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
+      <name>jacobian</name>
+      <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
+      <anchor>a7954605694e8d9177c03fee7cfef3603</anchor>
+      <arglist>() const noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
       <anchor>a4707fb88d4a83ea98107e8fee0e3ce34</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
+    </member>
+    <member kind="function">
+      <type>const Eigen::MatrixXd &amp;</type>
+      <name>jacobianDot</name>
+      <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
+      <anchor>a59b3060c596515c6a7b2402b8d09c9ae</anchor>
+      <arglist>() const noexcept</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>

@@ -94,8 +94,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a482eb7f57174cb499efd874a073a0770"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e4f4e1e52da2f12f818a1000482f6f4"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1CoMJacobian.html#a5e4f4e1e52da2f12f818a1000482f6f4">jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="separator:a5e4f4e1e52da2f12f818a1000482f6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ce191b6c7fe5abf17b0a2af0db1b3bc"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1CoMJacobian.html#a3ce191b6c7fe5abf17b0a2af0db1b3bc">jacobian</a> () const noexcept</td></tr>
+<tr class="separator:a3ce191b6c7fe5abf17b0a2af0db1b3bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f3c078468975cb8c4c57e8336c6ea00"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1CoMJacobian.html#a8f3c078468975cb8c4c57e8336c6ea00">jacobianDot</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
 <tr class="separator:a8f3c078468975cb8c4c57e8336c6ea00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ab69b1c01f98f8049ed14bda1a20c0e"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1CoMJacobian.html#a9ab69b1c01f98f8049ed14bda1a20c0e">jacobianDot</a> () const noexcept</td></tr>
+<tr class="separator:a9ab69b1c01f98f8049ed14bda1a20c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab528540ac4411e6878da1919688de205"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1CoMJacobian.html#ab528540ac4411e6878da1919688de205">velocity</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc) const</td></tr>
 <tr class="separator:ab528540ac4411e6878da1919688de205"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0da302e0ecf70b1770690d166801ffd"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1CoMJacobian.html#ad0da302e0ecf70b1770690d166801ffd">normalAcceleration</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
@@ -198,7 +202,7 @@ Public Member Functions</h2></td></tr>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5e4f4e1e52da2f12f818a1000482f6f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e4f4e1e52da2f12f818a1000482f6f4">&#9670;&nbsp;</a></span>jacobian()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e4f4e1e52da2f12f818a1000482f6f4">&#9670;&nbsp;</a></span>jacobian() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -233,8 +237,34 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a3ce191b6c7fe5abf17b0a2af0db1b3bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ce191b6c7fe5abf17b0a2af0db1b3bc">&#9670;&nbsp;</a></span>jacobian() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const Eigen::MatrixXd&amp; rbd::CoMJacobian::jacobian </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Access the last computed CoM jacobian </p><dl class="section return"><dt>Returns</dt><dd>Latest CoM jacobian that was computed by this object </dd></dl>
+
+</div>
+</div>
 <a id="a8f3c078468975cb8c4c57e8336c6ea00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f3c078468975cb8c4c57e8336c6ea00">&#9670;&nbsp;</a></span>jacobianDot()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f3c078468975cb8c4c57e8336c6ea00">&#9670;&nbsp;</a></span>jacobianDot() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -266,6 +296,32 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Time derivativo of the jacobian of mb with mbc configuration. </dd></dl>
+
+</div>
+</div>
+<a id="a9ab69b1c01f98f8049ed14bda1a20c0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ab69b1c01f98f8049ed14bda1a20c0e">&#9670;&nbsp;</a></span>jacobianDot() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const Eigen::MatrixXd&amp; rbd::CoMJacobian::jacobianDot </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Access the last computed derivative of the CoM jacobian </p><dl class="section return"><dt>Returns</dt><dd>Latest derivative of the CoM jacobian that was computed by this object </dd></dl>
 
 </div>
 </div>
