@@ -71,12 +71,30 @@ public:
   const Eigen::MatrixXd & jacobian(const MultiBody & mb, const MultiBodyConfig & mbc);
 
   /**
+   * Access the last computed CoM jacobian
+   * @return Latest CoM jacobian that was computed by this object
+   */
+  inline const Eigen::MatrixXd & jacobian() const noexcept
+  {
+    return jac_;
+  }
+
+  /**
    * Compute the time derivative of the CoM jacobian.
    * @param mb MultiBody used has model.
    * @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
    * @return Time derivativo of the jacobian of mb with mbc configuration.
    */
   const Eigen::MatrixXd & jacobianDot(const MultiBody & mb, const MultiBodyConfig & mbc);
+
+  /**
+   * Access the last computed derivative of the CoM jacobian
+   * @return Latest derivative of the CoM jacobian that was computed by this object
+   */
+  inline const Eigen::MatrixXd & jacobianDot() const noexcept
+  {
+    return jacDot_;
+  }
 
   // safe version for python binding
 
@@ -142,12 +160,30 @@ public:
   const Eigen::MatrixXd & jacobian(const MultiBody & mb, const MultiBodyConfig & mbc);
 
   /**
+   * Access the last computed CoM jacobian
+   * @return Latest CoM jacobian that was computed by this object
+   */
+  inline const Eigen::MatrixXd & jacobian() const noexcept
+  {
+    return jac_;
+  }
+
+  /**
    * Compute the time derivative of the CoM jacobian.
    * @param mb MultiBody used as model.
    * @param mbc Use bodyPosW, bodyVelB, bodyVelW, and motionSubspace.
    * @return Time derivativo of the jacobian of mb with mbc configuration.
    */
   const Eigen::MatrixXd & jacobianDot(const MultiBody & mb, const MultiBodyConfig & mbc);
+
+  /**
+   * Access the last computed derivative of the CoM jacobian
+   * @return Latest derivative of the CoM jacobian that was computed by this object
+   */
+  inline const Eigen::MatrixXd & jacobianDot() const noexcept
+  {
+    return jacDot_;
+  }
 
   /**
    * Compute the com velocity (with weight) (J·alpha).
