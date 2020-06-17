@@ -56,9 +56,14 @@ std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph> makeXXXdua
   mbg.addJoint(j21);
   mbg.addJoint(j22);
 
-  //  Root     j0       j1     j2
-  //  ---- b0 ---- b1 ---- b2 ----b3
-  //  Base    RevX   RevX    RevX
+  //                          j21
+  //                     b21 ----- b31
+  //                j11 /
+  //  Root      j0     /
+  //  ----- b0 ----- b1
+  //  Base             \
+  //                j21 \     j22
+  //                     b22 ----- b32
 
   PTransformd to(Vector3d(0., 1., 0.));
   PTransformd to1(Vector3d(0., 1., 1.));
