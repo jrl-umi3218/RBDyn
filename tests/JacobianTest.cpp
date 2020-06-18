@@ -316,14 +316,18 @@ BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
   Jacobian jac1(mb, "b31", "b32");
   Jacobian jac2(mb, "b32", "b31");
 
-  mbc.q = {{}, {0.}, {0.}, {0.}, {0.}, {0.}};
+  Quaterniond quat(AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX())
+                   * AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ()));
+  Vector3d tran = Vector3d::Random() * 10.;
+
+  mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()}, {0.}, {0.}, {0.}, {0.}, {0.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
   checkJacobianRefBody(mb, mbc, jac1);
   checkJacobianRefBody(mb, mbc, jac2);
 
-  mbc.q = {{},
+  mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()},
            {cst::pi<double>() / 2.},
            {cst::pi<double>() / 3.},
            {cst::pi<double>() / 4.},
