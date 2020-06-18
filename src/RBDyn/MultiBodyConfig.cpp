@@ -419,7 +419,7 @@ void checkMatchMotionSubspace(const MultiBody & mb, const MultiBodyConfig & mbc)
   for(int i = 0; i < static_cast<int>(mbc.motionSubspace.size()); ++i)
   {
     const auto ui = static_cast<size_t>(i);
-    if(mbc.motionSubspace[ui].cols() != static_cast<unsigned>(mb.joint(i).dof()))
+    if(mbc.motionSubspace[ui].cols() != mb.joint(i).dof())
     {
       std::ostringstream str;
       str << "Bad motionSubspace matrix size for Joint " << mb.joint(i) << " at position " << i
