@@ -78,8 +78,11 @@ void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc
       F_[i].col(dof).noalias() = (I_st_[i] * sva::MotionVecd(mbc.motionSubspace[i].col(dof))).vector();
     }
 
-    H_.block(dofPos_[i], dofPos_[i], joints[i].dof(), joints[i].dof()).noalias() =
+    if ( joints[i].dof() > 0)
+    {
+      H_.block(dofPos_[i], dofPos_[i], joints[i].dof(), joints[i].dof()).noalias() =
         mbc.motionSubspace[i].transpose() * F_[i];
+    }
 
     int j = i;
     while(pred[j] != -1)
@@ -132,7 +135,10 @@ void ForwardDynamics::computeC(const MultiBody & mb, const MultiBodyConfig & mbc
 
   for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
   {
-    C_.segment(dofPos_[i], joints[i].dof()).noalias() = mbc.motionSubspace[i].transpose() * f_[i].vector();
+    if (joints[i].dof() > 0)
+    {
+      C_.segment(dofPos_[i], joints[i].dof()).noalias() = mbc.motionSubspace[i].transpose() * f_[i].vector();
+    }    
 
     if(pred[i] != -1)
     {
