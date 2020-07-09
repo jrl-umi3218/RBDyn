@@ -147,14 +147,6 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
     // P_ = L_ * s;
 
-    /*
-    std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl;
-    std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_hat = " << alphaVec_hat.transpose() << std::endl;
-    std::cout << "Rafa, in IntegralTerm::computeTerm, s = " << s.transpose() << std::endl;
-    std::cout << "Rafa, in IntegralTerm::computeTerm, filteredS = " << filteredS.transpose() << std::endl;
-    std::cout << "Rafa, in IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
-    */
-    
     time = clock();
     computeGammaD();
     elapsed_.at("computeFbTerm-GammaD") = (int) (clock() - time);
@@ -167,6 +159,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
                                const Eigen::VectorXd & diff_torques)
 {
   computeTerm(mb, mbc_real, mbc_calc);
+
+  std::cout << "Rafa, in IntegralTerm::computeTerm for smooth transition, diff_torques = " << diff_torques.transpose() << std::endl;
 
   if (intglTermType_ == Simple || intglTermType_ == PassivityBased)
   {
@@ -183,7 +177,7 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     Eigen::VectorXd filteredS = fastFilterWeight_*fastFilteredS_+(1-fastFilterWeight_)*slowFilteredS_;
     P_ = L_ * filteredS;
     
-    std::cout << "Rafa, IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl;
+    std::cout << "Rafa, in IntegralTerm::computeTerm for smooth transition, P_ = " << P_.transpose() << std::endl;
   }
 }
 
@@ -216,8 +210,6 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
   {
     computeGain(mb, mbc_real);
 
-    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, mb.nrDof() = " << mb.nrDof() << std::endl;
-    
     Eigen::VectorXd alphaVec_ref = rbd::dofToVector(mb, mbc_calc.alpha);
     Eigen::VectorXd alphaVec_hat = rbd::dofToVector(mb, mbc_real.alpha);
     
