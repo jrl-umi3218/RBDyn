@@ -24,7 +24,7 @@ class RBDynConan(base.Eigen3ToPythonConan):
     license = "BSD-2-Clause"
     exports = ["LICENSE"]
     exports_sources = ["CMakeLists.txt", "conan/*", "binding/*", "cmake/*", "doc/*", "src/*"]
-    generators = ["cmake_find_package", "cmake_paths"]
+    generators = ["cmake_paths"]
     settings = "os", "arch", "compiler", "build_type"
     options = {
             "python2_version": [None, "2.7"],
@@ -57,17 +57,13 @@ list(APPEND CMAKE_MODULE_PATH "${{CMAKE_CURRENT_LIST_DIR}}")
 {}'''.format(pattern)
         tools.replace_in_file('cmake/Config.cmake.in', pattern, replacement)
         pattern = 'add_subdirectory(src)'
-        replacement = '''{}
+        replacement = '''list(APPEND CMAKE_MODULE_PATH "${{CMAKE_CURRENT_LIST_DIR}}/conan")
+{}
 install(FILES conan/FindBoost.cmake DESTINATION lib/cmake/RBDyn)'''.format(pattern)
         tools.replace_in_file('CMakeListsOriginal.txt', pattern, replacement)
-        pattern = "Boost::boost"
-        replacement = "$<BUILD_INTERFACE:Boost::Boost>$<INSTALL_INTERFACE:$<IF:$<BOOL:CONAN_BOOST_ROOT>,Boost::Boost,Boost::boost>>"
-        tools.replace_in_file('src/parsers/CMakeLists.txt', pattern, replacement)
 
     def package(self):
         cmake = self._configure_cmake()
-        pattern = "BOOL:CONAN_BOOST_ROOT"
-        replacement = "BOOL:${CONAN_BOOST_ROOT}"
-        generated = os.path.join(self.build_folder, 'CMakeFiles', 'Export', 'lib', 'cmake', self.name, '{}Targets.cmake'.format(self.name))
-        tools.replace_in_file(generated, pattern, replacement)
+        cmake.definitions['INSTALL_DOCUMENTATION'] = False
+        cmake.configure()
         cmake.install()
