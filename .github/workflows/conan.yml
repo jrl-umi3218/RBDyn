@@ -1,0 +1,53 @@
+name: conan packaging for RBDyn
+
+on:
+  repository_dispatch:
+    types: [conan-master, conan-release]
+  push:
+    branches:
+      - '**'
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Set git to use LF
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+      if: startsWith(runner.os, 'Windows')
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - uses: jrl-umi3218/github-actions/build-conan-package@master
+      with:
+        package: RBDyn
+        user: gergondet
+        repository: multi-contact
+        stable-channel: stable
+        dev-channel: dev
+        with-build-type: true
+        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+  sync:
+    needs: build
+    runs-on: ubuntu-18.04
+    if: github.ref == 'refs/heads/master' || github.event.action == 'conan-master' || github.event.action == 'conan-release'
+    steps:
+    - name: Trigger dependent rebuilds
+      run: |
+        if [ "${{ github.event.action }}" == "conan-release" ]
+        then
+          export DISPATCH="conan-release"
+        else
+          export DISPATCH="conan-master"
+        fi
+        curl -H "Accept: application/vnd.github.everest-preview+json" -H "Authorization: token ${{ secrets.GH_PAGES_TOKEN }}" --request POST --data "{\"event_type\": \"${DISPATCH}\"}" https://api.github.com/repos/jrl-umi3218/Tasks/dispatches

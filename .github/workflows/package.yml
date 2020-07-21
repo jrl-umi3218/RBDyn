@@ -11,7 +11,7 @@ on:
     - README.md
     - ".github/workflows/build.yml"
     branches:
-    - master
+    - "**"
     tags:
     - v*
 jobs:
@@ -30,6 +30,8 @@ jobs:
         grep -q "set(PROJECT_VERSION ${VERSION})" CMakeLists.txt
         echo "::set-env name=REJECTION::Upstream version in debian/changelog does not match tag"
         head -n 1 debian/changelog | grep -q "rbdyn (${VERSION}"
+        echo "::set-env name=REJECTION::Conan package version does not match tag"
+        grep -q '    version = "${VERSION}"' conanfile.py
         echo "::set-env name=REJECTION::"
         export TAG=`echo ${{ github.ref }} | sed -e 's@refs/tags/@@'`
         echo "::set-env name=RELEASE_TAG::${TAG}"
@@ -76,18 +78,29 @@ jobs:
         submodules: recursive
     - name: Choose extra mirror
       run: |
-        if [ "${{ github.event.action }}" == "package-master" ]
+        # We upload in all conditions except when building on PR or branch other than master
+        export PACKAGE_UPLOAD=true
+        if ${{ startsWith(github.ref, 'refs/tags/') }}
         then
-          export REF=master
+          export USE_HEAD=false
+        elif [ "${{ github.event.action }}" == "package-master" ]
+        then
+          export USE_HEAD=true
         elif [ "${{ github.event.action }}" == "package-release" ]
         then
+          export USE_HEAD=false
           export REF=`git tag --sort=committerdate --list 'v[0-9]*'|tail -1`
           git checkout $REF
           git submodule sync && git submodule update
         else
           export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+          export USE_HEAD=true
+          if [ $REF != "master" ]
+          then
+            export PACKAGE_UPLOAD=false
+          fi
         fi
-        if [ $REF == "master" ]
+        if $USE_HEAD
         then
           echo "::set-env name=BINTRAY_REPO::multi-contact-head"
           echo "::set-env name=BINTRAY_VERSION::HEAD"
@@ -99,6 +112,7 @@ jobs:
           echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
           echo "::set-env name=PACKAGE_JOB::package-release"
         fi
+        echo "::set-env name=PACKAGE_UPLOAD::${PACKAGE_UPLOAD}"
     - name: Build package
       uses: jrl-umi3218/github-actions/build-package-native@master
       with:
@@ -110,6 +124,7 @@ jobs:
       with:
         name: packages-${{ matrix.dist }}-${{ matrix.arch }}
         path: "/tmp/packages-${{ matrix.dist }}-${{ matrix.arch }}/"
+      if: env.PACKAGE_UPLOAD == 'true'
   upload-packages:
     needs: build-packages
     strategy:
@@ -128,20 +143,34 @@ jobs:
           arch: i386
     runs-on: ubuntu-18.04
     steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Choose extra mirror
       run: |
-        if [ "${{ github.event.action }}" == "package-master" ]
+        # We upload in all conditions except when building on PR or branch other than master
+        export PACKAGE_UPLOAD=true
+        if ${{ startsWith(github.ref, 'refs/tags/') }}
         then
-          export REF=master
+          export USE_HEAD=false
+        elif [ "${{ github.event.action }}" == "package-master" ]
+        then
+          export USE_HEAD=true
         elif [ "${{ github.event.action }}" == "package-release" ]
         then
+          export USE_HEAD=false
           export REF=`git tag --sort=committerdate --list 'v[0-9]*'|tail -1`
           git checkout $REF
           git submodule sync && git submodule update
         else
           export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+          export USE_HEAD=true
+          if [ $REF != "master" ]
+          then
+            export PACKAGE_UPLOAD=false
+          fi
         fi
-        if [ $REF == "master" ]
+        if $USE_HEAD
         then
           echo "::set-env name=BINTRAY_REPO::multi-contact-head"
           echo "::set-env name=BINTRAY_VERSION::HEAD"
@@ -153,10 +182,12 @@ jobs:
           echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
           echo "::set-env name=PACKAGE_JOB::package-release"
         fi
+        echo "::set-env name=PACKAGE_UPLOAD::${PACKAGE_UPLOAD}"
     - name: Download packages
       uses: actions/download-artifact@v1
       with:
         name: packages-${{ matrix.dist }}-${{ matrix.arch }}
+      if: env.PACKAGE_UPLOAD == 'true'
     - name: Upload
       uses: jrl-umi3218/github-actions/upload-package@master
       with:
@@ -173,6 +204,7 @@ jobs:
         path: packages-${{ matrix.dist }}-${{ matrix.arch }}
         BINTRAY_API_KEY: "${{ secrets.BINTRAY_API_KEY }}"
         GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
+      if: env.PACKAGE_UPLOAD == 'true'
   mirror-sync-and-trigger:
     needs: upload-packages
     runs-on: ubuntu-18.04
@@ -182,18 +214,29 @@ jobs:
         submodules: recursive
     - name: Choose extra mirror
       run: |
-        if [ "${{ github.event.action }}" == "package-master" ]
+        # We upload in all conditions except when building on PR or branch other than master
+        export PACKAGE_UPLOAD=true
+        if ${{ startsWith(github.ref, 'refs/tags/') }}
         then
-          export REF=master
+          export USE_HEAD=false
+        elif [ "${{ github.event.action }}" == "package-master" ]
+        then
+          export USE_HEAD=true
         elif [ "${{ github.event.action }}" == "package-release" ]
         then
+          export USE_HEAD=false
           export REF=`git tag --sort=committerdate --list 'v[0-9]*'|tail -1`
           git checkout $REF
           git submodule sync && git submodule update
         else
           export REF=`echo ${{ github.ref }} | sed -e 's@refs/[a-z]*/@@'`
+          export USE_HEAD=true
+          if [ $REF != "master" ]
+          then
+            export PACKAGE_UPLOAD=false
+          fi
         fi
-        if [ $REF == "master" ]
+        if $USE_HEAD
         then
           echo "::set-env name=BINTRAY_REPO::multi-contact-head"
           echo "::set-env name=BINTRAY_VERSION::HEAD"
@@ -205,11 +248,14 @@ jobs:
           echo "::set-env name=EXTRA_MIRROR::https://dl.bintray.com/gergondet/multi-contact-release"
           echo "::set-env name=PACKAGE_JOB::package-release"
         fi
+        echo "::set-env name=PACKAGE_UPLOAD::${PACKAGE_UPLOAD}"
     - name: Request mirror sync
       run: 'curl -ugergondet:${{ secrets.BINTRAY_API_KEY }} --header "X-GPG-PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}" -X POST https://api.bintray.com/calc_metadata/gergondet/${{ env.BINTRAY_REPO }}
 
 '
+      if: env.PACKAGE_UPLOAD == 'true'
     - name: Trigger dependents rebuild
       run: 'curl -H "Accept: application/vnd.github.everest-preview+json" -H "Authorization: token ${{ secrets.GH_PAGES_TOKEN }}" --request POST --data "{\"event_type\": \"${PACKAGE_JOB}\"}" https://api.github.com/repos/jrl-umi3218/Tasks/dispatches
 
 '
+      if: env.PACKAGE_UPLOAD == 'true'

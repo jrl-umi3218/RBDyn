@@ -2,7 +2,7 @@ RBDyn
 =====
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)](https://opensource.org/licenses/BSD-2-Clause)
-[ ![Download](https://api.bintray.com/packages/gergondet/multi-contact/SpaceVecAlg%3Agergondet/images/download.svg) ](https://bintray.com/gergondet/multi-contact/RBDyn%3Agergondet/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/gergondet/multi-contact/SpaceVecAlg%3Amulti-contact/images/download.svg) ](https://bintray.com/gergondet/multi-contact/RBDyn%3Amulti-contact/_latestVersion)
 [![CI](https://github.com/jrl-umi3218/RBDyn/workflows/CI%20of%20RBDyn/badge.svg?branch=master)](https://github.com/jrl-umi3218/RBDyn/actions?query=workflow%3A%22CI+of+RBDyn%22)
 [![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](http://jrl-umi3218.github.io/RBDyn/doxygen/HEAD/index.html)
 
@@ -28,6 +28,18 @@ sudo sh -c 'echo "deb https://dl.bintray.com/gergondet/multi-contact-release $(l
 sudo apt update
 # Install eigen-qld packages
 sudo apt install librbdyn-dev python-rbdyn python3-rbdyn
+```
+
+## Conan
+
+Install the latest version using [conan](https://conan.io/)
+
+```bash
+conan remote add multi-contact https://api.bintray.com/conan/gergondet/multi-contact
+# Install the latest release
+conan install RBDyn/latest@multi-contact/stable
+# Or install the latest development version
+# conan install RBDyn/latest@multi-contact/dev
 ```
 
 ## Homebrew OS X install
