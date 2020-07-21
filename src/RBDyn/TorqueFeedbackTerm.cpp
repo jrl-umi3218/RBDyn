@@ -97,11 +97,14 @@ void IntegralTerm::computeGain(const rbd::MultiBody & mb,
   else if (velGainType_ == MassDiagonal)
   {
     K = lambda_ * fd_->H().diagonal().asDiagonal();
+    // K.block<6, 6>(0, 0) = lambda_ * Eigen::MatrixXd::Identity(6, 6);  // Rafa, this is a test
   }
   else
   {
     K = lambda_ * Eigen::MatrixXd::Identity(nrDof_, nrDof_);
   }
+
+  // std::cout << "Rafa, in IntegralTerm::computeGain, K = " << std::endl << K << std::endl;
 
   clock_t time;
 
@@ -147,6 +150,8 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
     // P_ = L_ * s;
 
+    // std::cout << "Rafa, in IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl;
+    
     time = clock();
     computeGammaD();
     elapsed_.at("computeFbTerm-GammaD") = (int) (clock() - time);
@@ -229,10 +234,14 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
         torqueL_prime.segment<6>(j) = -torqueU_prime.segment<6>(j);
         break;
       }
-    
+
     double epsilonU = (abs(P_.array() / torqueU_prime.array())).maxCoeff();
     double epsilonL = (abs(P_.array() / torqueL_prime.array())).maxCoeff();
     double epsilon  = std::max(epsilonU, epsilonL);
+
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, before antiwindup, P_ = " << P_.transpose() << std::endl;
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, before antiwindup, torqueU_prime = " << torqueU_prime.transpose() << std::endl;    
+    // std::cout << "Rafa, in IntegralTermAntiWindup::computeTerm, before antiwindup, epsilon = " << epsilon << std::endl;
     
     if (epsilon > 1) {
       P_ /= epsilon;
