@@ -61,6 +61,9 @@ struct RBDYN_DLLAPI MultiBodyConfig
   /// Bodies speed in world coordinate.
   std::vector<sva::MotionVecd> bodyVelW;
 
+  /// Bodies acceleration in world coordinate.
+  std::vector<sva::MotionVecd> bodyAccW;
+
   /// Bodies speed in Body coordinate.
   std::vector<sva::MotionVecd> bodyVelB;
 
@@ -220,7 +223,8 @@ RBDYN_DLLAPI void checkMatchParentToSon(const MultiBody & mb, const MultiBodyCon
 /// (mbc.bodyVelW, mbc.bodyVelB).
 RBDYN_DLLAPI void checkMatchBodyVel(const MultiBody & mb, const MultiBodyConfig & mbc);
 
-/// @throw std::domain_error If there is a mismatch between mb and mbc.bodyAccB.
+/// @throw std::domain_error If there is a mismatch between mb and 
+/// (mbc.bodyAccW, mbc.bodyAccB).
 RBDYN_DLLAPI void checkMatchBodyAcc(const MultiBody & mb, const MultiBodyConfig & mbc);
 
 /// @throw std::domain_error If there is a mismatch between mb and mbc.jointConfig.

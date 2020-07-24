@@ -18,7 +18,7 @@ namespace rbd
 MultiBodyConfig::MultiBodyConfig(const MultiBody & mb)
 : q(mb.nrJoints()), alpha(mb.nrJoints()), alphaD(mb.nrJoints()), force(mb.nrBodies()), jointConfig(mb.nrJoints()),
   jointVelocity(mb.nrJoints()), jointTorque(mb.nrJoints()), motionSubspace(mb.nrJoints()), bodyPosW(mb.nrBodies()),
-  parentToSon(mb.nrBodies()), bodyVelW(mb.nrBodies()), bodyVelB(mb.nrBodies()), bodyAccB(mb.nrBodies()),
+  parentToSon(mb.nrBodies()), bodyVelW(mb.nrBodies()), bodyAccW(mb.nrBodies()), bodyVelB(mb.nrBodies()), bodyAccB(mb.nrBodies()),
   gravity(0., 9.81, 0.)
 {
   for(int i = 0; i < static_cast<int>(q.size()); ++i)
@@ -367,6 +367,7 @@ void checkMatchBodyVel(const MultiBody & mb, const MultiBodyConfig & mbc)
 
 void checkMatchBodyAcc(const MultiBody & mb, const MultiBodyConfig & mbc)
 {
+  checkMatchBodiesVector(mb, mbc.bodyAccW, "bodyAccW");
   checkMatchBodiesVector(mb, mbc.bodyAccB, "bodyAccB");
 }
 
