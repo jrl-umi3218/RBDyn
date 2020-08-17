@@ -40,7 +40,8 @@ void computeCentroidalInertiaAndVelocity
     // momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
     cmc += (mbc.bodyPosW[i] * X_com_0).transMul(hi).vector();
 
-    // sum: X^T_Gi*I_i*X_Gi
+    // sum: X^T_com_i*I_i*X_com_i
+    // X_com_i = X_i_0 * X_com_0
     ci += ((mbc.bodyPosW[i] * X_com_0).matrix().transpose())*(bodies[i].inertia().matrix()) * (mbc.bodyPosW[i] * X_com_0).matrix();
   }
 	
