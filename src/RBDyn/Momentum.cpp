@@ -13,6 +13,41 @@
 
 namespace rbd
 {
+void computeCentroidalInertiaAndVelocity
+	(const MultiBody & mb,
+	 const MultiBodyConfig & mbc,
+	 const Eigen::Vector3d & com,
+	 Eigen::Matrix6d & ci,
+	 sva::ForceVecd & cm,
+	 sva::ForceVecd & av 
+	 )
+{
+ 
+  using namespace Eigen;
+
+  const std::vector<Body> & bodies = mb.bodies();
+  // cm Candidate
+  Vector6d cmc = Vector6d::Zero();
+
+  ci = Matrix6d::Identity();
+
+  sva::PTransformd X_com_0(Vector3d(-com));
+  for(int i = 0; i < mb.nrBodies(); ++i)
+  {
+    // body momentum in body coordinate
+    sva::ForceVecd hi = bodies[i].inertia() * mbc.bodyVelB[i];
+
+    // momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
+    cmc += (mbc.bodyPosW[i] * X_com_0).transMul(hi).vector();
+
+    // sum: X^T_Gi*I_i*X_Gi
+    ci += ((mbc.bodyPosW[i] * X_com_0).matrix().transpose())*(bodies[i].inertia().matrix()) * (mbc.bodyPosW[i] * X_com_0).matrix();
+  }
+	
+  // Compute the average velocity: inertia.inverse()*momentum
+  av = sva::ForceVecd(ci.inverse()*cmc);
+  cm = sva::ForceVecd(cmc);
+}
 
 sva::ForceVecd computeCentroidalMomentum(const MultiBody & mb, const MultiBodyConfig & mbc, const Eigen::Vector3d & com)
 {
