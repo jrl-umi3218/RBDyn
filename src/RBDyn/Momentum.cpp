@@ -18,8 +18,8 @@ void computeCentroidalInertiaAndVelocity
 	 const MultiBodyConfig & mbc,
 	 const Eigen::Vector3d & com,
 	 Eigen::Matrix6d & ci,
-	 sva::ForceVecd & cm,
-	 sva::ForceVecd & av 
+	 Eigen::Vector6d & cm,
+	 Eigen::Vector6d & av 
 	 )
 {
  
@@ -46,8 +46,8 @@ void computeCentroidalInertiaAndVelocity
   }
 	
   // Compute the average velocity: inertia.inverse()*momentum
-  av = sva::ForceVecd(ci.inverse()*cmc);
-  cm = sva::ForceVecd(cmc);
+  av = ci.inverse()*cmc;
+  cm = cmc;
 }
 
 sva::ForceVecd computeCentroidalMomentum(const MultiBody & mb, const MultiBodyConfig & mbc, const Eigen::Vector3d & com)
