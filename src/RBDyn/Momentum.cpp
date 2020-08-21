@@ -13,16 +13,14 @@
 
 namespace rbd
 {
-void computeCentroidalInertiaAndVelocity
-	(const MultiBody & mb,
-	 const MultiBodyConfig & mbc,
-	 const Eigen::Vector3d & com,
-	 Eigen::Matrix6d & ci,
-	 Eigen::Vector6d & cm,
-	 Eigen::Vector6d & av 
-	 )
+void computeCentroidalInertiaAndVelocity(const MultiBody & mb,
+                                         const MultiBodyConfig & mbc,
+                                         const Eigen::Vector3d & com,
+                                         Eigen::Matrix6d & ci,
+                                         Eigen::Vector6d & cm,
+                                         Eigen::Vector6d & av)
 {
- 
+
   using namespace Eigen;
 
   const std::vector<Body> & bodies = mb.bodies();
@@ -42,11 +40,12 @@ void computeCentroidalInertiaAndVelocity
 
     // sum: X^T_com_i*I_i*X_com_i
     // X_com_i = X_i_0 * X_com_0
-    ci += ((mbc.bodyPosW[i] * X_com_0).matrix().transpose())*(bodies[i].inertia().matrix()) * (mbc.bodyPosW[i] * X_com_0).matrix();
+    ci += ((mbc.bodyPosW[i] * X_com_0).matrix().transpose()) * (bodies[i].inertia().matrix())
+          * (mbc.bodyPosW[i] * X_com_0).matrix();
   }
-	
+
   // Compute the average velocity: inertia.inverse()*momentum
-  av = ci.inverse()*cmc;
+  av = ci.inverse() * cmc;
   cm = cmc;
 }
 

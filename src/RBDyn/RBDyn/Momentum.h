@@ -31,15 +31,12 @@ class Jacobian;
  * @param cm centroidal momentum at the Centroidal frame.
  * @param av Average velocity is inverse(centroidalInertia)*centroidalMomentum
  */
-RBDYN_DLLAPI void computeCentroidalInertiaAndVelocity
-	(const MultiBody & mb,
-	 const MultiBodyConfig & mbc,
-	 const Eigen::Vector3d & com,
-	 Eigen::Matrix6d & ci,
-	 Eigen::Vector6d & cm,
-	 Eigen::Vector6d & av 
-	 );
-
+RBDYN_DLLAPI void computeCentroidalInertiaAndVelocity(const MultiBody & mb,
+                                                      const MultiBodyConfig & mbc,
+                                                      const Eigen::Vector3d & com,
+                                                      Eigen::Matrix6d & ci,
+                                                      Eigen::Vector6d & cm,
+                                                      Eigen::Vector6d & av);
 
 /**
  * Compute the centroidal momentum at the CoM frame
