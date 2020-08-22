@@ -13,19 +13,17 @@
 
 namespace rbd
 {
-void computeCentroidalInertiaAndVelocity(const MultiBody & mb,
-                                         const MultiBodyConfig & mbc,
-                                         const Eigen::Vector3d & com,
-                                         Eigen::Matrix6d & ci,
-                                         Eigen::Vector6d & cm,
-                                         Eigen::Vector6d & av)
+void computeCentroidalInertia(const MultiBody & mb,
+                              const MultiBodyConfig & mbc,
+                              const Eigen::Vector3d & com,
+                              Eigen::Matrix6d & ci,
+                              Eigen::Vector6d & cm)
 {
 
   using namespace Eigen;
 
   const std::vector<Body> & bodies = mb.bodies();
-  // cm Candidate
-  Vector6d cmc = Vector6d::Zero();
+  cm = Vector6d::Zero();
 
   ci = Matrix6d::Identity();
 
@@ -36,17 +34,25 @@ void computeCentroidalInertiaAndVelocity(const MultiBody & mb,
     sva::ForceVecd hi = bodies[i].inertia() * mbc.bodyVelB[i];
 
     // momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
-    cmc += (mbc.bodyPosW[i] * X_com_0).transMul(hi).vector();
+    cm += (mbc.bodyPosW[i] * X_com_0).transMul(hi).vector();
 
     // sum: X^T_com_i*I_i*X_com_i
     // X_com_i = X_i_0 * X_com_0
     ci += ((mbc.bodyPosW[i] * X_com_0).matrix().transpose()) * (bodies[i].inertia().matrix())
           * (mbc.bodyPosW[i] * X_com_0).matrix();
   }
+}
 
+void computeCentroidalInertia(const MultiBody & mb,
+                              const MultiBodyConfig & mbc,
+                              const Eigen::Vector3d & com,
+                              Eigen::Matrix6d & ci,
+                              Eigen::Vector6d & cm,
+                              Eigen::Vector6d & av)
+{
+  computeCentroidalInertia(mb, mbc, com, ci, cm);
   // Compute the average velocity: inertia.inverse()*momentum
-  av = ci.inverse() * cmc;
-  cm = cmc;
+  av = ci.llt().solve(cm);
 }
 
 sva::ForceVecd computeCentroidalMomentum(const MultiBody & mb, const MultiBodyConfig & mbc, const Eigen::Vector3d & com)
