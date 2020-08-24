@@ -22,22 +22,6 @@ using Blocks = std::vector<Block>;
 class Jacobian;
 
 /**
- * Compute the centroidal inertia (ci), and centroidal momentum (cm)
- * at the CoM frame as describe in [Orin and Gosawami 2008].
- * @param mb MultiBody used has model.
- * @param mbc Use bodyPosW, bodyVelB.
- * @param com CoM position.
- * @param ci Centroidal inertia at the Centroidal frame.
- * @param cm centroidal momentum at the Centroidal frame.
- * @param av Average velocity is inverse(centroidalInertia)*centroidalMomentum
- */
-RBDYN_DLLAPI void computeCentroidalInertia(const MultiBody & mb,
-                                           const MultiBodyConfig & mbc,
-                                           const Eigen::Vector3d & com,
-                                           Eigen::Matrix6d & ci,
-                                           Eigen::Vector6d & cm);
-
-/**
  * Compute the centroidal inertia (ci), centroidal momentum (cm),
  * and the average velocity (av = ci^-1*cm)
  * at the CoM frame as describe in [Orin and Gosawami 2008].
@@ -46,13 +30,30 @@ RBDYN_DLLAPI void computeCentroidalInertia(const MultiBody & mb,
  * @param com CoM position.
  * @param ci Centroidal inertia at the Centroidal frame.
  * @param cm centroidal momentum at the Centroidal frame.
- * @param av Average velocity is inverse(centroidalInertia)*centroidalMomentum
+ * @param av Average velocity is: av = ci.inverse()*cm
  */
 RBDYN_DLLAPI void computeCentroidalInertia(const MultiBody & mb,
                                            const MultiBodyConfig & mbc,
                                            const Eigen::Vector3d & com,
                                            Eigen::Matrix6d & ci,
                                            Eigen::Vector6d & cm,
+                                           Eigen::Vector6d & av);
+/**
+ * Compute the centroidal inertia (ci), centroidal momentum (cm),
+ * and the average velocity (av = ci^-1*cm)
+ * at the CoM frame as describe in [Orin and Gosawami 2008].
+ * @param mb MultiBody used has model.
+ * @param mbc Use bodyPosW, bodyVelB.
+ * @param com CoM position.
+ * @param ci Centroidal inertia at the Centroidal frame.
+ * @param av Average velocity is inverse(centroidalInertia)*centroidalMomentum
+ *
+ * If the Centroidal Momentum is needed, we can easily compute it as: cm = ci*av.
+ */
+RBDYN_DLLAPI void computeCentroidalInertia(const MultiBody & mb,
+                                           const MultiBodyConfig & mbc,
+                                           const Eigen::Vector3d & com,
+                                           Eigen::Matrix6d & ci,
                                            Eigen::Vector6d & av);
 
 /**
