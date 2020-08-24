@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['fixed',['Fixed',['../classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fda81b78f2a5f37470430e975ed9436ce1d',1,'rbd::Joint']]],
-  ['free',['Free',['../classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fdab6d9c54c25c59aa44ef674c5b58be044',1,'rbd::Joint']]]
+  ['description',['Description',['../namespacerbd_1_1parsers.html#a8578b943029e74399e94ba9ec80992f4ab5a7adde1af5c87d7fd797b6245c2a39',1,'rbd::parsers']]]
 ];

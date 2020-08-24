@@ -65,7 +65,7 @@ var searchData=
   ['successorjoints',['successorJoints',['../classrbd_1_1MultiBodyGraph.html#a04cbebadb99bc2317885d5eebb4ab4ba',1,'rbd::MultiBodyGraph']]],
   ['successors',['successors',['../classrbd_1_1MultiBody.html#a1d19eda17b1475a42c61bf752c962671',1,'rbd::MultiBody']]],
   ['supdateinertialparameters',['sUpdateInertialParameters',['../classrbd_1_1CoMJacobian.html#abe439888b900a65bd9428739145f6dc7',1,'rbd::CoMJacobian']]],
-  ['superellipsoid',['Superellipsoid',['../structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid.html',1,'rbd::parsers::Geometry::Superellipsoid'],['../structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid.html#abc2c226c7e1a300c7898036dd1bb964e',1,'rbd::parsers::Geometry::Superellipsoid::Superellipsoid()'],['../structrbd_1_1parsers_1_1Geometry.html#a91ba6c5a035011ff6a22120b1c26c71faa5764e87619d57bbfecba704406478c6',1,'rbd::parsers::Geometry::SUPERELLIPSOID()']]],
+  ['superellipsoid',['Superellipsoid',['../structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid.html',1,'rbd::parsers::Geometry::Superellipsoid'],['../structrbd_1_1parsers_1_1Geometry.html#a91ba6c5a035011ff6a22120b1c26c71faa5764e87619d57bbfecba704406478c6',1,'rbd::parsers::Geometry::SUPERELLIPSOID()'],['../structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid.html#abc2c226c7e1a300c7898036dd1bb964e',1,'rbd::parsers::Geometry::Superellipsoid::Superellipsoid()']]],
   ['svectorbodyjacobian',['sVectorBodyJacobian',['../classrbd_1_1Jacobian.html#a12fe24d4d2dd0f4ea54003555f7be082',1,'rbd::Jacobian']]],
   ['svectorjacobian',['sVectorJacobian',['../classrbd_1_1Jacobian.html#a46622bd3bf3709a545de3fb338715156',1,'rbd::Jacobian']]],
   ['svectortodof',['sVectorToDof',['../namespacerbd.html#aac7e53f4e1a1bf92a34842130f017325',1,'rbd']]],

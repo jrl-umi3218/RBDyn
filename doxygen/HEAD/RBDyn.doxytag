@@ -65,19 +65,21 @@
     <class kind="struct">rbd::parsers::ParserResult</class>
     <namespace>rbd</namespace>
     <namespace>rbd::parsers</namespace>
+    <member kind="enumeration">
+      <type></type>
+      <name>ParserInput</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a8578b943029e74399e94ba9ec80992f4</anchor>
+      <arglist></arglist>
+      <enumvalue file="namespacerbd_1_1parsers.html" anchor="a8578b943029e74399e94ba9ec80992f4a0b27918290ff5323bea1e3b78a9cf04e">File</enumvalue>
+      <enumvalue file="namespacerbd_1_1parsers.html" anchor="a8578b943029e74399e94ba9ec80992f4ab5a7adde1af5c87d7fd797b6245c2a39">Description</enumvalue>
+    </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
       <name>from_file</name>
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a421e0a101b5db4ea6fa03ec2a851229c</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>File</name>
-      <anchorfile>common_8h.html</anchorfile>
-      <anchor>af10f27103f941f5cbafc9d21d6554e56</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -746,8 +748,8 @@
       <type>RBDYN_DLLAPI void</type>
       <name>poseJacobian</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa7c485df3cfdbc0819e75bbea7cb2632</anchor>
-      <arglist>(const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac, const double rot_angle_threshold=1.0e-8)</arglist>
+      <anchor>a277d78c0932c547f7deab0bc98a39120</anchor>
+      <arglist>(const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -1809,6 +1811,13 @@
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
       <anchor>a505a02fa2ac61ecad2ab39755901ccb3</anchor>
       <arglist>(const MultiBody &amp;mb, const std::string &amp;bodyName, const Eigen::Vector3d &amp;point=Eigen::Vector3d::Zero())</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Jacobian</name>
+      <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
+      <anchor>a6f8e47fe8f3cd71a106a180d593d1da0</anchor>
+      <arglist>(const MultiBody &amp;mb, const std::string &amp;bodyName, const std::string &amp;refBodyName, const Eigen::Vector3d &amp;point=Eigen::Vector3d::Zero())</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
@@ -3926,8 +3935,8 @@
       <type>RBDYN_DLLAPI void</type>
       <name>poseJacobian</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa7c485df3cfdbc0819e75bbea7cb2632</anchor>
-      <arglist>(const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac, const double rot_angle_threshold=1.0e-8)</arglist>
+      <anchor>a277d78c0932c547f7deab0bc98a39120</anchor>
+      <arglist>(const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -3984,6 +3993,15 @@
     <class kind="struct">rbd::parsers::ParserResult</class>
     <class kind="class">rbd::parsers::RBDynFromYAML</class>
     <class kind="struct">rbd::parsers::Visual</class>
+    <member kind="enumeration">
+      <type></type>
+      <name>ParserInput</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a8578b943029e74399e94ba9ec80992f4</anchor>
+      <arglist></arglist>
+      <enumvalue file="namespacerbd_1_1parsers.html" anchor="a8578b943029e74399e94ba9ec80992f4a0b27918290ff5323bea1e3b78a9cf04e">File</enumvalue>
+      <enumvalue file="namespacerbd_1_1parsers.html" anchor="a8578b943029e74399e94ba9ec80992f4ab5a7adde1af5c87d7fd797b6245c2a39">Description</enumvalue>
+    </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
       <name>from_file</name>

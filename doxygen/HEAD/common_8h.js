@@ -9,6 +9,9 @@ var common_8h =
     [ "Superellipsoid", "structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid.html", "structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid" ],
     [ "Visual", "structrbd_1_1parsers_1_1Visual.html", "structrbd_1_1parsers_1_1Visual" ],
     [ "ParserResult", "structrbd_1_1parsers_1_1ParserResult.html", "structrbd_1_1parsers_1_1ParserResult" ],
-    [ "from_file", "common_8h.html#a421e0a101b5db4ea6fa03ec2a851229c", null ],
-    [ "File", "common_8h.html#af10f27103f941f5cbafc9d21d6554e56", null ]
+    [ "ParserInput", "common_8h.html#a8578b943029e74399e94ba9ec80992f4", [
+      [ "File", "common_8h.html#a8578b943029e74399e94ba9ec80992f4a0b27918290ff5323bea1e3b78a9cf04e", null ],
+      [ "Description", "common_8h.html#a8578b943029e74399e94ba9ec80992f4ab5a7adde1af5c87d7fd797b6245c2a39", null ]
+    ] ],
+    [ "from_file", "common_8h.html#a421e0a101b5db4ea6fa03ec2a851229c", null ]
 ];

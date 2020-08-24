@@ -83,6 +83,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af526061a2e8657d100637ee84249d7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a505a02fa2ac61ecad2ab39755901ccb3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a505a02fa2ac61ecad2ab39755901ccb3">Jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const std::string &amp;bodyName, const Eigen::Vector3d &amp;<a class="el" href="classrbd_1_1Jacobian.html#a337b2b64fb240946ff5174137d87cb6d">point</a>=Eigen::Vector3d::Zero())</td></tr>
 <tr class="separator:a505a02fa2ac61ecad2ab39755901ccb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f8e47fe8f3cd71a106a180d593d1da0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a6f8e47fe8f3cd71a106a180d593d1da0">Jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const std::string &amp;bodyName, const std::string &amp;refBodyName, const Eigen::Vector3d &amp;<a class="el" href="classrbd_1_1Jacobian.html#a337b2b64fb240946ff5174137d87cb6d">point</a>=Eigen::Vector3d::Zero())</td></tr>
+<tr class="separator:a6f8e47fe8f3cd71a106a180d593d1da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abba109aec7645809fc5a1b4e54361a50"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#abba109aec7645809fc5a1b4e54361a50">jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc, const sva::PTransformd &amp;X_0_p)</td></tr>
 <tr class="separator:abba109aec7645809fc5a1b4e54361a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2417e9496d9bcb449070d1c70b6837ca"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Jacobian.html#a2417e9496d9bcb449070d1c70b6837ca">jacobian</a> (const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;mb, const <a class="el" href="structrbd_1_1MultiBodyConfig.html">MultiBodyConfig</a> &amp;mbc)</td></tr>
@@ -186,7 +188,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Algorithm to compute the jacobian of a specified body. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af526061a2e8657d100637ee84249d7ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af526061a2e8657d100637ee84249d7ae">&#9670;&nbsp;</a></span>Jacobian() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af526061a2e8657d100637ee84249d7ae">&#9670;&nbsp;</a></span>Jacobian() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -203,7 +205,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a505a02fa2ac61ecad2ab39755901ccb3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a505a02fa2ac61ecad2ab39755901ccb3">&#9670;&nbsp;</a></span>Jacobian() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a505a02fa2ac61ecad2ab39755901ccb3">&#9670;&nbsp;</a></span>Jacobian() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -235,15 +237,70 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Create a jacobian from the root body to the specified body. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">mb</td><td>Multibody where bodyId is in. </td></tr>
+    <tr><td class="paramname">mb</td><td>Multibody where bodyName is in. </td></tr>
     <tr><td class="paramname">bodyName</td><td>Specified body. </td></tr>
-    <tr><td class="paramname">point</td><td>Point in the body exprimed in body coordinate. </td></tr>
+    <tr><td class="paramname">point</td><td>Point in the body expressed in body coordinate. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::out_of_range</td><td>If bodyId don't exist. </td></tr>
+    <tr><td class="paramname">std::out_of_range</td><td>If bodyName don't exist. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6f8e47fe8f3cd71a106a180d593d1da0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f8e47fe8f3cd71a106a180d593d1da0">&#9670;&nbsp;</a></span>Jacobian() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">rbd::Jacobian::Jacobian </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrbd_1_1MultiBody.html">MultiBody</a> &amp;&#160;</td>
+          <td class="paramname"><em>mb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>bodyName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>refBodyName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
+          <td class="paramname"><em>point</em> = <code>Eigen::Vector3d::Zero()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a jacobian from a reference body to the specified body. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mb</td><td>Multibody where bodyName is in. </td></tr>
+    <tr><td class="paramname">bodyName</td><td>Specified body. </td></tr>
+    <tr><td class="paramname">refBodyName</td><td>Reference body. </td></tr>
+    <tr><td class="paramname">point</td><td>Point in the body expressed in body coordinate. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>If bodyName don't exist. </td></tr>
   </table>
   </dd>
 </dl>

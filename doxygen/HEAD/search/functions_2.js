@@ -38,6 +38,6 @@ var searchData=
   ['configconverter',['ConfigConverter',['../classrbd_1_1ConfigConverter.html#a59d66903b85b36a6ae94a68e7f2df0d6',1,'rbd::ConfigConverter']]],
   ['convert',['convert',['../classrbd_1_1ConfigConverter.html#acebb8d9e8de53df4aa29d04ee0539ac9',1,'rbd::ConfigConverter']]],
   ['convertjoint',['convertJoint',['../classrbd_1_1ConfigConverter.html#a8f4e11dbb17bf4533d4a8405def878c8',1,'rbd::ConfigConverter::convertJoint(const std::vector&lt; T &gt; &amp;from, std::vector&lt; T &gt; &amp;to) const'],['../classrbd_1_1ConfigConverter.html#a99b20586b567ae35c46284d1126e7df1',1,'rbd::ConfigConverter::convertJoint(const std::vector&lt; T &gt; &amp;from) const']]],
-  ['coriolis',['Coriolis',['../classrbd_1_1Coriolis.html#a348f175e288bb3557d9757e8f55d6128',1,'rbd::Coriolis::Coriolis(const rbd::MultiBody &amp;mb)'],['../classrbd_1_1Coriolis.html#a686bade8cef9c1016aee0a794a3c04ab',1,'rbd::Coriolis::coriolis(const rbd::MultiBody &amp;mb, const rbd::MultiBodyConfig &amp;mbc)']]],
+  ['coriolis',['coriolis',['../classrbd_1_1Coriolis.html#a686bade8cef9c1016aee0a794a3c04ab',1,'rbd::Coriolis::coriolis(const rbd::MultiBody &amp;mb, const rbd::MultiBodyConfig &amp;mbc)'],['../classrbd_1_1Coriolis.html#a348f175e288bb3557d9757e8f55d6128',1,'rbd::Coriolis::Coriolis(const rbd::MultiBody &amp;mb)']]],
   ['cylinder',['Cylinder',['../structrbd_1_1parsers_1_1Geometry_1_1Cylinder.html#a80055daf457091d42df46242da095657',1,'rbd::parsers::Geometry::Cylinder']]]
 ];

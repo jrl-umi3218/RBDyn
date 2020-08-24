@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['rev',['Rev',['../classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fdac5b8dc11c03ee56b4eab11623556d65d',1,'rbd::Joint']]],
-  ['revx',['RevX',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a27319663df173fa147a2d271e0ef355f',1,'rbd::Joint']]],
-  ['revy',['RevY',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a3686aba670ebb2c1a6a3b789114884bd',1,'rbd::Joint']]],
-  ['revz',['RevZ',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a432be99df9b9483bee433d8d9f948cc2',1,'rbd::Joint']]]
+  ['planar',['Planar',['../classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fdac2828adb78c3ca3bd54403ac28146b44',1,'rbd::Joint']]],
+  ['prism',['Prism',['../classrbd_1_1Joint.html#afff99e26b5eeb3d899af433df385f4fda6ab8434106bd98660ed6d2a2ea5db39c',1,'rbd::Joint']]],
+  ['prismx',['PrismX',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a8dd925b3afb50905fc0c3d4f79ffb7da',1,'rbd::Joint']]],
+  ['prismy',['PrismY',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a260534d401ae5149cf89643e963697af',1,'rbd::Joint']]],
+  ['prismz',['PrismZ',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536aa4977f4e65cd2d481b4c3081de7a3c63',1,'rbd::Joint']]]
 ];
