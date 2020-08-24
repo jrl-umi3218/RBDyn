@@ -274,7 +274,7 @@ inline void ConfigConverter::convertJoint(const std::vector<T> & from, std::vect
 {
   for(std::size_t i = 0; i < jInd_.size(); ++i)
   {
-    to[jInd_[i]] = from[i + 1];
+    to[static_cast<size_t>(jInd_[i])] = from[i + 1];
   }
 }
 
@@ -295,10 +295,10 @@ inline std::vector<T> ConfigConverter::convertJoint(const std::vector<T> & from)
   std::vector<T> to(from.size());
   for(std::size_t i = 0; i < jInd_.size(); ++i)
   {
-    to[jInd_[i]] = from[i + 1];
+    to[static_cast<size_t>(jInd_[i])] = from[i + 1];
   }
 
-  return std::move(to);
+  return to;
 }
 
 } // namespace rbd

@@ -23,14 +23,17 @@ void forwardKinematics(const MultiBody & mb, MultiBodyConfig & mbc)
 
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
+    const auto pred_index = static_cast<size_t>(pred[i]);
+    const auto succ_index = static_cast<size_t>(succ[i]);
+
     mbc.jointConfig[i] = joints[i].pose(mbc.q[i]);
     mbc.parentToSon[i] = mbc.jointConfig[i] * Xt[i];
     mbc.motionSubspace[i] = joints[i].motionSubspace();
 
     if(pred[i] != -1)
-      mbc.bodyPosW[succ[i]] = mbc.parentToSon[i] * mbc.bodyPosW[pred[i]];
+      mbc.bodyPosW[succ_index] = mbc.parentToSon[i] * mbc.bodyPosW[pred_index];
     else
-      mbc.bodyPosW[succ[i]] = mbc.parentToSon[i];
+      mbc.bodyPosW[succ_index] = mbc.parentToSon[i];
   }
 }
 

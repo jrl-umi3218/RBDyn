@@ -22,6 +22,9 @@ void forwardAcceleration(const MultiBody & mb, MultiBodyConfig & mbc, const sva:
 
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
+    const auto pred_index = static_cast<size_t>(pred[i]);
+    const auto succ_index = static_cast<size_t>(succ[i]);
+
     const sva::PTransformd & X_p_i = mbc.parentToSon[i];
 
     const sva::MotionVecd & vj_i = mbc.jointVelocity[i];
@@ -30,9 +33,9 @@ void forwardAcceleration(const MultiBody & mb, MultiBodyConfig & mbc, const sva:
     const sva::MotionVecd & vb_i = mbc.bodyVelB[i];
 
     if(pred[i] != -1)
-      mbc.bodyAccB[succ[i]] = X_p_i * mbc.bodyAccB[pred[i]] + ai_tan + vb_i.cross(vj_i);
+      mbc.bodyAccB[succ_index] = X_p_i * mbc.bodyAccB[pred_index] + ai_tan + vb_i.cross(vj_i);
     else
-      mbc.bodyAccB[succ[i]] = X_p_i * A_0 + ai_tan + vb_i.cross(vj_i);
+      mbc.bodyAccB[succ_index] = X_p_i * A_0 + ai_tan + vb_i.cross(vj_i);
   }
 }
 

@@ -26,7 +26,7 @@ public:
    * @param rbInertia Body spatial rigid body inertia.
    * @param name Body name, must be unique in a multibody.
    */
-  Body(const sva::RBInertiad & rbInertia, std::string name) : inertia_(rbInertia), name_(name) {}
+  Body(const sva::RBInertiad & rbInertia, std::string name) : inertia_(rbInertia), name_(std::move(name)) {}
 
   /**
    * @param mass Body mass.
@@ -35,7 +35,7 @@ public:
    * @param name Body name, must be unique in a multibody.
    */
   Body(double mass, const Eigen::Vector3d & com, const Eigen::Matrix3d & inertia, std::string name)
-  : inertia_(mass, mass * com, inertia), name_(name)
+  : inertia_(mass, mass * com, inertia), name_(std::move(name))
   {
   }
 

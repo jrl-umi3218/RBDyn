@@ -113,7 +113,7 @@ void normalizeQuat(std::vector<double> & q)
 {
   Eigen::Vector4d qv(q[0], q[1], q[2], q[3]);
   double norm = qv.norm();
-  for(int i = 0; i < 4; ++i) q[i] /= norm;
+  for(size_t i = 0; i < 4; ++i) q[i] /= norm;
 }
 
 void makeRandomConfig(rbd::MultiBodyConfig & mbc)
@@ -156,9 +156,11 @@ Eigen::MatrixXd makeHFromID(const rbd::MultiBody & mb,
   int col = 0;
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     for(int j = 0; j < mb.joint(i).dof(); ++j)
     {
-      mbcd.alphaD[i][j] = 1.;
+      const auto uj = static_cast<size_t>(j);
+      mbcd.alphaD[ui][uj] = 1.;
 
       id.inverseDynamics(mb, mbcd);
 
@@ -174,7 +176,7 @@ Eigen::MatrixXd makeHFromID(const rbd::MultiBody & mb,
 
       H.col(col) = Hd - C;
 
-      mbcd.alphaD[i][j] = 0.;
+      mbcd.alphaD[ui][uj] = 0.;
       ++col;
     }
   }
