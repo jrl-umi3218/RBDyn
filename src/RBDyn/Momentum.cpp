@@ -28,7 +28,8 @@ void computeCentroidalInertia(const MultiBody & mb,
   ci = Matrix6d::Identity();
 
   sva::PTransformd X_com_0(Vector3d(-com));
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  size_t nrBodies = static_cast<size_t>(mb.nrBodies());
+  for(size_t i = 0; i < nrBodies; ++i)
   {
     // body momentum in body coordinate
     sva::ForceVecd hi = bodies[i].inertia() * mbc.bodyVelB[i];
