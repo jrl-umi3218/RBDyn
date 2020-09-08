@@ -34,7 +34,7 @@ jobs:
         echo "::set-env name=REJECTION::Upstream version in debian/changelog does not match tag"
         head -n 1 debian/changelog | grep -q "rbdyn (${VERSION}"
         echo "::set-env name=REJECTION::Conan package version does not match tag"
-        grep -q '    version = "${VERSION}"' conanfile.py
+        grep -q "version = \"${VERSION}\"" conanfile.py
         echo "::set-env name=REJECTION::"
         export TAG=`echo ${{ github.ref }} | sed -e 's@refs/tags/@@'`
         echo "::set-env name=RELEASE_TAG::${TAG}"

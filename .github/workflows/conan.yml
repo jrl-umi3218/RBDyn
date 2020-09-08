@@ -40,11 +40,11 @@ jobs:
   sync:
     needs: build
     runs-on: ubuntu-18.04
-    if: github.ref == 'refs/heads/master' || github.event.action == 'conan-master' || github.event.action == 'conan-release'
+    if: github.ref == 'refs/heads/master' || github.event.action == 'conan-master' || github.event.action == 'conan-release' || startsWith(github.ref, 'refs/tags/')
     steps:
     - name: Trigger dependent rebuilds
       run: |
-        if [ "${{ github.event.action }}" == "conan-release" ]
+        if [ "${{ github.event.action }}" == "conan-release" ] || ${{ startsWith(github.ref, 'refs/tags/') }}
         then
           export DISPATCH="conan-release"
         else
