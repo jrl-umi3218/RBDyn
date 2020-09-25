@@ -184,7 +184,7 @@ public:
     return jointPosInParam_[static_cast<std::size_t>(i)];
   }
 
-  /// @return the joint i position in dof vector (alpha, alphaD…).
+  /// @return the joint i position in dof vector (alpha, alphaD...).
   int jointPosInDof(int i) const
   {
     return jointPosInDof_[static_cast<std::size_t>(i)];
@@ -196,7 +196,7 @@ public:
     return jointPosInParam_;
   }
 
-  /// @return the joint position in dof vector (alpha, alphaD…).
+  /// @return the joint position in dof vector (alpha, alphaD...).
   const std::vector<int> & jointsPosInDof() const
   {
     return jointPosInDof_;
@@ -357,7 +357,7 @@ protected:
 
   /// Position of joint i in parameter vector.
   std::vector<int> jointPosInParam_;
-  /// Position of joint i in dof vector (velocity, acceleration…).
+  /// Position of joint i in dof vector (velocity, acceleration...).
   std::vector<int> jointPosInDof_;
 
   int nrParams_;
