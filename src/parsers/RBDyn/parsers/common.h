@@ -23,7 +23,7 @@ namespace rbd
 namespace parsers
 {
 
-enum class RBDYN_PARSERS_DLLAPI ParserInput
+enum class ParserInput
 {
   File,
   Description

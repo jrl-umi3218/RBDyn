@@ -39,7 +39,7 @@ void imagePointJacobianDot(const Eigen::Vector2d & imagePoint,
       depthDot / Z_sq, (imagePointSpeed(1) * depth - imagePoint(1) * depthDot) / Z_sq;
 }
 
-void poseJacobian(const Eigen::Matrix3d & rotation, Eigen::Matrix<double, 6, 6> & jac, const double rot_angle_threshold)
+void poseJacobian(const Eigen::Matrix3d & rotation, Eigen::Matrix<double, 6, 6> & jac)
 {
   Eigen::Matrix3d i3 = Eigen::Matrix3d::Identity();
 

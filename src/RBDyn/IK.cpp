@@ -57,15 +57,15 @@ bool InverseKinematics::inverseKinematics(const MultiBody & mb,
     // non-strict zeros in jacobian can be a problem...
     jacMat = jacMat.unaryExpr(CwiseRoundOp(-almost_zero_, almost_zero_));
     svd_.compute(jacMat, Eigen::ComputeThinU | Eigen::ComputeThinV);
-    rotErr = sva::rotationError(mbc.bodyPosW[ef_index_].rotation(), ef_target.rotation());
-    v << rotErr, ef_target.translation() - mbc.bodyPosW[ef_index_].translation();
+    rotErr = sva::rotationError(mbc.bodyPosW[static_cast<size_t>(ef_index_)].rotation(), ef_target.rotation());
+    v << rotErr, ef_target.translation() - mbc.bodyPosW[static_cast<size_t>(ef_index_)].translation();
     converged = v.norm() < threshold_;
     res = svd_.solve(v);
 
     dof = 0;
     for(auto index : jac_.jointsPath())
     {
-      std::vector<double> & qi = mbc.q[index];
+      std::vector<double> & qi = mbc.q[static_cast<size_t>(index)];
       for(auto & qv : qi)
       {
         qv += lambda_ * res[dof];

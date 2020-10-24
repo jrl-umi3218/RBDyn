@@ -42,11 +42,14 @@ const Eigen::MatrixXd & Coriolis::coriolis(const rbd::MultiBody & mb, const rbd:
 
   for(int i = 0; i < mb.nrBodies(); ++i)
   {
-    const auto & jac = jacs_[i].jacobian(mb, mbc);
-    const auto & jacDot = jacs_[i].jacobianDot(mb, mbc);
+    const auto body_sindex = static_cast<int>(i);
+    const auto body_uindex = static_cast<size_t>(i);
 
-    rot = mbc.bodyPosW[i].rotation().transpose();
-    rDot.noalias() = sva::vector3ToCrossMatrix(mbc.bodyVelW[i].angular()) * rot;
+    const auto & jac = jacs_[body_uindex].jacobian(mb, mbc);
+    const auto & jacDot = jacs_[body_uindex].jacobianDot(mb, mbc);
+
+    rot = mbc.bodyPosW[body_uindex].rotation().transpose();
+    rDot.noalias() = sva::vector3ToCrossMatrix(mbc.bodyVelW[body_uindex].angular()) * rot;
 
     auto jvi = jac.bottomRows<3>();
     auto jDvi = jacDot.bottomRows<3>();
@@ -54,10 +57,10 @@ const Eigen::MatrixXd & Coriolis::coriolis(const rbd::MultiBody & mb, const rbd:
     auto jwi = jac.topRows<3>();
     auto jDwi = jacDot.topRows<3>();
 
-    double mass = mb.body(i).inertia().mass();
-    inertia = mb.body(i).inertia().inertia()
-              - sva::vector3ToCrossMatrix<double>(mass * jacs_[i].point())
-                    * sva::vector3ToCrossMatrix(jacs_[i].point()).transpose();
+    double mass = mb.body(body_sindex).inertia().mass();
+    inertia = mb.body(body_sindex).inertia().inertia()
+              - sva::vector3ToCrossMatrix<double>(mass * jacs_[body_uindex].point())
+                    * sva::vector3ToCrossMatrix(jacs_[body_uindex].point()).transpose();
 
     Eigen::Matrix3d ir = inertia * rot.transpose();
 
@@ -65,10 +68,11 @@ const Eigen::MatrixXd & Coriolis::coriolis(const rbd::MultiBody & mb, const rbd:
      *        + J_{w_i}^T R_i I_i R_i^T \dot{J}_{w_i}
      *        + J_{w_i}^T \dot{R}_i I_i R_i^T J_{w_i} */
 
-    res_.topLeftCorner(jacs_[i].dof(), jacs_[i].dof()).noalias() =
+    res_.topLeftCorner(jacs_[body_uindex].dof(), jacs_[body_uindex].dof()).noalias() =
         mass * jvi.transpose() * jDvi + jwi.transpose() * (rot * ir * jDwi + rDot * ir * jwi);
 
-    jacs_[i].expandAdd(compactPaths_[i], res_.topLeftCorner(jacs_[i].dof(), jacs_[i].dof()), coriolis_);
+    jacs_[body_uindex].expandAdd(compactPaths_[body_uindex],
+                                 res_.topLeftCorner(jacs_[body_uindex].dof(), jacs_[body_uindex].dof()), coriolis_);
   }
 
   return coriolis_;
