@@ -95,11 +95,46 @@ public:
   Geometry() : type(UNKNOWN) {}
 };
 
+/** A material, as specified in the URDF format, is optionally attached to a visual element
+ *
+ * It can be either:
+ * - NONE if there is not material attached to the visual element
+ * - COLOR if it is a color element (rgba values in the [0, 1] range)
+ * - TEXTURE if it is a texture (filename)
+ */
+struct RBDYN_PARSERS_DLLAPI Material
+{
+  struct Color
+  {
+    double r;
+    double g;
+    double b;
+    double a;
+  };
+  struct Texture
+  {
+    std::string filename;
+  };
+
+  enum class Type
+  {
+    NONE,
+    COLOR,
+    TEXTURE
+  };
+  Type type;
+  using Data = boost::variant<Color, Texture>;
+  Data data;
+
+  Material() : type(Type::NONE) {}
+};
+
 struct RBDYN_PARSERS_DLLAPI Visual
 {
   std::string name;
   sva::PTransformd origin;
   Geometry geometry;
+  Material material;
 };
 
 struct RBDYN_PARSERS_DLLAPI ParserResult
