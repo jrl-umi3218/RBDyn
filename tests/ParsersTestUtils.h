@@ -126,6 +126,8 @@ rbd::parsers::ParserResult createRobot()
     sphere.radius = 2;
     v1.geometry.type = rbd::parsers::Geometry::Type::SPHERE;
     v1.geometry.data = sphere;
+    v1.material.type = rbd::parsers::Material::Type::COLOR;
+    v1.material.data = rbd::parsers::Material::Color{1.0, 0.0, 0.0, 1.0};
 
     res.visual["b3"] = {v1};
   }
@@ -140,6 +142,8 @@ rbd::parsers::ParserResult createRobot()
     superellipsoid.epsilon2 = 1;
     v1.geometry.type = rbd::parsers::Geometry::Type::SUPERELLIPSOID;
     v1.geometry.data = superellipsoid;
+    v1.material.type = rbd::parsers::Material::Type::TEXTURE;
+    v1.material.data = rbd::parsers::Material::Texture{"/some/texture.png"};
 
     res.visual["b4"] = {v1};
   }
@@ -181,10 +185,27 @@ bool operator==(const Geometry & g1, const Geometry & g2)
 {
   return g1.type == g2.type && g1.data == g2.data;
 }
+
+bool operator==(const Material::Color & c1, const Material::Color & c2)
+{
+  return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
+}
+
+bool operator==(const Material::Texture & t1, const Material::Texture & t2)
+{
+  return t1.filename == t2.filename;
+}
+
+bool operator==(const Material & m1, const Material & m2)
+{
+  return m1.type == m2.type && (m1.type == Material::Type::NONE || m1.data == m2.data);
+}
+
 bool operator==(const Visual & v1, const Visual & v2)
 {
   return v1.name == v2.name && v1.origin.rotation().isApprox(v2.origin.rotation(), TOL)
-         && v1.origin.translation().isApprox(v2.origin.translation(), TOL) && v1.geometry == v2.geometry;
+         && v1.origin.translation().isApprox(v2.origin.translation(), TOL) && v1.geometry == v2.geometry
+         && v1.material == v2.material;
 }
 
 bool operator==(const Geometry::Superellipsoid & se1, const Geometry::Superellipsoid & se2)
@@ -267,6 +288,9 @@ const std::string XYZSarmUrdf(
         <geometry>
           <sphere radius="2"/>
         </geometry>
+        <material name="Red">
+          <color rgba="1.0 0.0 0.0 1.0" />
+        </material>
       </visual>
     </link>
     <link name="b4">
@@ -281,6 +305,9 @@ const std::string XYZSarmUrdf(
         <geometry>
           <superellipsoid size="0.1 0.2 0.3" epsilon1="0.5" epsilon2="1"/>
         </geometry>
+        <material name="Texture">
+          <texture filename="/some/texture.png" />
+        </material>
       </visual>
     </link>
     <joint name="j0" type="revolute">
@@ -415,6 +442,10 @@ const std::string XYZSarmYaml(
           geometry:
             sphere:
               radius: 2
+          material:
+            name: Red
+            color:
+              rgba: [1.0, 0.0, 0.0, 1.0]
     - name: b4
       inertial:
         mass: 1
@@ -437,6 +468,10 @@ const std::string XYZSarmYaml(
               size: [0.1, 0.2, 0.3]
               epsilon1: 0.5
               epsilon2: 1        
+          material:
+            name: Texture
+            texture:
+              filename: /some/texture.png
   joints:
     - name: j0
       parent: b0

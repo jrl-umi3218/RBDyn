@@ -25,6 +25,10 @@ jobs:
         git config --global core.autocrlf false
         git config --global core.eol lf
       if: startsWith(runner.os, 'Windows')
+    - name: Change Xcode version
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_11.7.app
+      if: startsWith(runner.os, 'macOS')
     - uses: actions/checkout@v2
       with:
         submodules: recursive
