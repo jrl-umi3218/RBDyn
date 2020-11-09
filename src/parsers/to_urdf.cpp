@@ -101,73 +101,99 @@ std::string to_urdf(const ParserResult & res)
 
     auto generate_visual = [&](const char * type, const std::map<std::string, std::vector<Visual>> & visuals) {
       auto visuals_it = visuals.find(link.name());
-      if(visuals_it != visuals.end())
+      if(visuals_it == visuals.end())
       {
-        for(const auto & visual : visuals_it->second)
+        return;
+      }
+      for(size_t i = 0; i < visuals_it->second.size(); ++i)
+      {
+        const auto & visual = visuals_it->second[i];
+        if(visual.geometry.type == Geometry::Type::UNKNOWN)
         {
-          if(visual.geometry.type == Geometry::Type::UNKNOWN)
-          {
-            continue;
-          }
-
-          auto visual_node = doc.NewElement(type);
-
-          set_origin_from_ptransform(visual_node, visual.origin);
-
-          auto geometry_node = doc.NewElement("geometry");
-          switch(visual.geometry.type)
-          {
-            case Geometry::Type::BOX:
-            {
-              auto node = doc.NewElement("box");
-              const auto box = boost::get<Geometry::Box>(visual.geometry.data);
-              set_vec3d(node, "size", box.size);
-              geometry_node->InsertEndChild(node);
-            }
-            break;
-            case Geometry::Type::CYLINDER:
-            {
-              auto node = doc.NewElement("cylinder");
-              const auto cylinder = boost::get<Geometry::Cylinder>(visual.geometry.data);
-              node->SetAttribute("radius", std::to_string(cylinder.radius).c_str());
-              node->SetAttribute("length", std::to_string(cylinder.length).c_str());
-              geometry_node->InsertEndChild(node);
-            }
-            break;
-            case Geometry::Type::MESH:
-            {
-              auto node = doc.NewElement("mesh");
-              const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
-              node->SetAttribute("filename", mesh.filename.c_str());
-              node->SetAttribute("scale", std::to_string(mesh.scale).c_str());
-              geometry_node->InsertEndChild(node);
-            }
-            break;
-            case Geometry::Type::SPHERE:
-            {
-              auto node = doc.NewElement("sphere");
-              const auto sphere = boost::get<Geometry::Sphere>(visual.geometry.data);
-              node->SetAttribute("radius", std::to_string(sphere.radius).c_str());
-              geometry_node->InsertEndChild(node);
-            }
-            break;
-            case Geometry::Type::SUPERELLIPSOID:
-            {
-              auto node = doc.NewElement("superellipsoid");
-              const auto superellipsoid = boost::get<Geometry::Superellipsoid>(visual.geometry.data);
-              set_vec3d(node, "size", superellipsoid.size);
-              node->SetAttribute("epsilon1", std::to_string(superellipsoid.epsilon1).c_str());
-              node->SetAttribute("epsilon2", std::to_string(superellipsoid.epsilon2).c_str());
-              geometry_node->InsertEndChild(node);
-            }
-            break;
-            case Geometry::Type::UNKNOWN:
-              break;
-          }
-          visual_node->InsertEndChild(geometry_node);
-
-          node->InsertEndChild(visual_node);
+          continue;
         }
+
+        auto visual_node = doc.NewElement(type);
+
+        set_origin_from_ptransform(visual_node, visual.origin);
+
+        const auto & material = visual.material;
+        if(material.type != Material::Type::NONE)
+        {
+          auto material_node = doc.NewElement("material");
+          material_node->SetAttribute("name", ("material_" + link.name() + "_" + std::to_string(i)).c_str());
+          if(material.type == Material::Type::COLOR)
+          {
+            const auto & c = boost::get<Material::Color>(material.data);
+            auto color_node = doc.NewElement("color");
+            color_node->SetAttribute("rgba", (std::to_string(c.r) + " " + std::to_string(c.g) + " "
+                                              + std::to_string(c.b) + " " + std::to_string(c.a))
+                                                 .c_str());
+            material_node->InsertEndChild(color_node);
+          }
+          else if(material.type == Material::Type::TEXTURE)
+          {
+            const auto & texture = boost::get<Material::Texture>(material.data);
+            auto texture_node = doc.NewElement("texture");
+            texture_node->SetAttribute("filename", texture.filename.c_str());
+            material_node->InsertEndChild(texture_node);
+          }
+          visual_node->InsertEndChild(material_node);
+        }
+
+        auto geometry_node = doc.NewElement("geometry");
+        switch(visual.geometry.type)
+        {
+          case Geometry::Type::BOX:
+          {
+            auto node = doc.NewElement("box");
+            const auto box = boost::get<Geometry::Box>(visual.geometry.data);
+            set_vec3d(node, "size", box.size);
+            geometry_node->InsertEndChild(node);
+          }
+          break;
+          case Geometry::Type::CYLINDER:
+          {
+            auto node = doc.NewElement("cylinder");
+            const auto cylinder = boost::get<Geometry::Cylinder>(visual.geometry.data);
+            node->SetAttribute("radius", std::to_string(cylinder.radius).c_str());
+            node->SetAttribute("length", std::to_string(cylinder.length).c_str());
+            geometry_node->InsertEndChild(node);
+          }
+          break;
+          case Geometry::Type::MESH:
+          {
+            auto node = doc.NewElement("mesh");
+            const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
+            node->SetAttribute("filename", mesh.filename.c_str());
+            node->SetAttribute("scale", std::to_string(mesh.scale).c_str());
+            geometry_node->InsertEndChild(node);
+          }
+          break;
+          case Geometry::Type::SPHERE:
+          {
+            auto node = doc.NewElement("sphere");
+            const auto sphere = boost::get<Geometry::Sphere>(visual.geometry.data);
+            node->SetAttribute("radius", std::to_string(sphere.radius).c_str());
+            geometry_node->InsertEndChild(node);
+          }
+          break;
+          case Geometry::Type::SUPERELLIPSOID:
+          {
+            auto node = doc.NewElement("superellipsoid");
+            const auto superellipsoid = boost::get<Geometry::Superellipsoid>(visual.geometry.data);
+            set_vec3d(node, "size", superellipsoid.size);
+            node->SetAttribute("epsilon1", std::to_string(superellipsoid.epsilon1).c_str());
+            node->SetAttribute("epsilon2", std::to_string(superellipsoid.epsilon2).c_str());
+            geometry_node->InsertEndChild(node);
+          }
+          break;
+          case Geometry::Type::UNKNOWN:
+            break;
+        }
+        visual_node->InsertEndChild(geometry_node);
+
+        node->InsertEndChild(visual_node);
       }
     };
 
