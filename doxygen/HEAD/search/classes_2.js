@@ -1,6 +1,7 @@
 var searchData=
 [
   ['centroidalmomentummatrix',['CentroidalMomentumMatrix',['../classrbd_1_1CentroidalMomentumMatrix.html',1,'rbd']]],
+  ['color',['Color',['../structrbd_1_1parsers_1_1Material_1_1Color.html',1,'rbd::parsers::Material']]],
   ['comjacobian',['CoMJacobian',['../classrbd_1_1CoMJacobian.html',1,'rbd']]],
   ['comjacobiandummy',['CoMJacobianDummy',['../classrbd_1_1CoMJacobianDummy.html',1,'rbd']]],
   ['configconverter',['ConfigConverter',['../classrbd_1_1ConfigConverter.html',1,'rbd']]],

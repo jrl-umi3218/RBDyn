@@ -7,6 +7,9 @@ var common_8h =
     [ "Cylinder", "structrbd_1_1parsers_1_1Geometry_1_1Cylinder.html", "structrbd_1_1parsers_1_1Geometry_1_1Cylinder" ],
     [ "Sphere", "structrbd_1_1parsers_1_1Geometry_1_1Sphere.html", "structrbd_1_1parsers_1_1Geometry_1_1Sphere" ],
     [ "Superellipsoid", "structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid.html", "structrbd_1_1parsers_1_1Geometry_1_1Superellipsoid" ],
+    [ "Material", "structrbd_1_1parsers_1_1Material.html", "structrbd_1_1parsers_1_1Material" ],
+    [ "Color", "structrbd_1_1parsers_1_1Material_1_1Color.html", "structrbd_1_1parsers_1_1Material_1_1Color" ],
+    [ "Texture", "structrbd_1_1parsers_1_1Material_1_1Texture.html", "structrbd_1_1parsers_1_1Material_1_1Texture" ],
     [ "Visual", "structrbd_1_1parsers_1_1Visual.html", "structrbd_1_1parsers_1_1Visual" ],
     [ "ParserResult", "structrbd_1_1parsers_1_1ParserResult.html", "structrbd_1_1parsers_1_1ParserResult" ],
     [ "ParserInput", "common_8h.html#a8578b943029e74399e94ba9ec80992f4", [

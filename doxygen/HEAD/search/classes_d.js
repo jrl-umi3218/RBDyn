@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['visual',['Visual',['../structrbd_1_1parsers_1_1Visual.html',1,'rbd::parsers']]]
+  ['texture',['Texture',['../structrbd_1_1parsers_1_1Material_1_1Texture.html',1,'rbd::parsers::Material']]]
 ];

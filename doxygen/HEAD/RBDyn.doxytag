@@ -61,6 +61,9 @@
     <class kind="struct">rbd::parsers::Geometry::Cylinder</class>
     <class kind="struct">rbd::parsers::Geometry::Sphere</class>
     <class kind="struct">rbd::parsers::Geometry::Superellipsoid</class>
+    <class kind="struct">rbd::parsers::Material</class>
+    <class kind="struct">rbd::parsers::Material::Color</class>
+    <class kind="struct">rbd::parsers::Material::Texture</class>
     <class kind="struct">rbd::parsers::Visual</class>
     <class kind="struct">rbd::parsers::ParserResult</class>
     <namespace>rbd</namespace>
@@ -1070,6 +1073,38 @@
       <anchorfile>classrbd_1_1CentroidalMomentumMatrix.html</anchorfile>
       <anchor>acf365504fcbd9b85e2ea6b9317107ecf</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot, const std::vector&lt; sva::MotionVecd &gt; &amp;normalAccB) const</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>rbd::parsers::Material::Color</name>
+    <filename>structrbd_1_1parsers_1_1Material_1_1Color.html</filename>
+    <member kind="variable">
+      <type>double</type>
+      <name>r</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material_1_1Color.html</anchorfile>
+      <anchor>ac091dd6c2225928c6e0226deb2a0d3de</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>double</type>
+      <name>g</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material_1_1Color.html</anchorfile>
+      <anchor>adab1d9d3ab092b4fea3d441f2d00b677</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>double</type>
+      <name>b</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material_1_1Color.html</anchorfile>
+      <anchor>a33017e2153cc2306d67870d34824e28b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>double</type>
+      <name>a</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material_1_1Color.html</anchorfile>
+      <anchor>a51746deb3aedab36aa52c9d92f583c4f</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -2580,6 +2615,50 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>rbd::parsers::Material</name>
+    <filename>structrbd_1_1parsers_1_1Material.html</filename>
+    <class kind="struct">rbd::parsers::Material::Color</class>
+    <class kind="struct">rbd::parsers::Material::Texture</class>
+    <member kind="enumeration">
+      <type></type>
+      <name>Type</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material.html</anchorfile>
+      <anchor>ae6eac1997c9928f2ff6338a3e0b15b3c</anchor>
+      <arglist></arglist>
+      <enumvalue file="structrbd_1_1parsers_1_1Material.html" anchor="ae6eac1997c9928f2ff6338a3e0b15b3cab50339a10e1de285ac99d4c3990b8693">NONE</enumvalue>
+      <enumvalue file="structrbd_1_1parsers_1_1Material.html" anchor="ae6eac1997c9928f2ff6338a3e0b15b3ca04bd834032febb3fda8c6936ee140949">COLOR</enumvalue>
+      <enumvalue file="structrbd_1_1parsers_1_1Material.html" anchor="ae6eac1997c9928f2ff6338a3e0b15b3ca3f92f542bd9ec48f912b9350e22736ac">TEXTURE</enumvalue>
+    </member>
+    <member kind="typedef">
+      <type>boost::variant&lt; Color, Texture &gt;</type>
+      <name>Data</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material.html</anchorfile>
+      <anchor>a1eb11fc3a225dc02f3a83a90b0889423</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Material</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material.html</anchorfile>
+      <anchor>a13cf6cd5224478e12c56ebe2a86433e4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>Type</type>
+      <name>type</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material.html</anchorfile>
+      <anchor>a7d8af4cb4dcf307fdee19da800d69ae8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Data</type>
+      <name>data</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material.html</anchorfile>
+      <anchor>aaa2a1eb3605215f2a77903ce486e3f71</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>rbd::parsers::Geometry::Mesh</name>
     <filename>structrbd_1_1parsers_1_1Geometry_1_1Mesh.html</filename>
     <member kind="function">
@@ -3486,6 +3565,17 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>rbd::parsers::Material::Texture</name>
+    <filename>structrbd_1_1parsers_1_1Material_1_1Texture.html</filename>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>filename</name>
+      <anchorfile>structrbd_1_1parsers_1_1Material_1_1Texture.html</anchorfile>
+      <anchor>a7c7fd3b25325ee7643c925e984c31b4a</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>rbd::parsers::Visual</name>
     <filename>structrbd_1_1parsers_1_1Visual.html</filename>
     <member kind="variable">
@@ -3507,6 +3597,13 @@
       <name>geometry</name>
       <anchorfile>structrbd_1_1parsers_1_1Visual.html</anchorfile>
       <anchor>a924b2a35727114098d036b17eefdd473</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Material</type>
+      <name>material</name>
+      <anchorfile>structrbd_1_1parsers_1_1Visual.html</anchorfile>
+      <anchor>a6a5cafeb8b368f4631fc813433b89fd6</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3990,6 +4087,7 @@
     <filename>namespacerbd_1_1parsers.html</filename>
     <class kind="struct">rbd::parsers::Geometry</class>
     <class kind="struct">rbd::parsers::Limits</class>
+    <class kind="struct">rbd::parsers::Material</class>
     <class kind="struct">rbd::parsers::ParserResult</class>
     <class kind="class">rbd::parsers::RBDynFromYAML</class>
     <class kind="struct">rbd::parsers::Visual</class>

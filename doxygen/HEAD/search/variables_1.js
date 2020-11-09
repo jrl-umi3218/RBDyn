@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['b',['b',['../structrbd_1_1parsers_1_1Material_1_1Color.html#a33017e2153cc2306d67870d34824e28b',1,'rbd::parsers::Material::Color']]],
   ['bodies_5f',['bodies_',['../classrbd_1_1MultiBody.html#abbea0b9458d4a5bfc17d1821882e78f2',1,'rbd::MultiBody']]],
   ['body',['body',['../structrbd_1_1MultiBodyGraph_1_1Node.html#aea931fe8a425c0795911395cd09071b6',1,'rbd::MultiBodyGraph::Node']]],
   ['bodyaccb',['bodyAccB',['../structrbd_1_1MultiBodyConfig.html#a25fc059a35f32434f2743f91f78c06bb',1,'rbd::MultiBodyConfig']]],

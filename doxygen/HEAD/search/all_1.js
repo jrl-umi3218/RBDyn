@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['b',['b',['../structrbd_1_1parsers_1_1Material_1_1Color.html#a33017e2153cc2306d67870d34824e28b',1,'rbd::parsers::Material::Color']]],
   ['block',['Block',['../structrbd_1_1Block.html',1,'rbd::Block'],['../structrbd_1_1Block.html#ad655df495540f9830ce18c857a16194f',1,'rbd::Block::Block()=default'],['../structrbd_1_1Block.html#a72aad336bed307fedb69b4899c935cb5',1,'rbd::Block::Block(Eigen::DenseIndex startDof, Eigen::DenseIndex startJac, Eigen::DenseIndex length)']]],
   ['blocks',['Blocks',['../namespacerbd.html#addcc00b58bd78ec27ff56ad979f5ff2d',1,'rbd']]],
   ['bodies',['bodies',['../classrbd_1_1MultiBody.html#a11c8909737502423642f67ff6ba2dfd5',1,'rbd::MultiBody::bodies() const'],['../classrbd_1_1MultiBody.html#a3374d2c673adf3410c20d0dae9fd1622',1,'rbd::MultiBody::bodies(std::vector&lt; Body &gt; b)']]],
@@ -18,5 +19,5 @@ var searchData=
   ['bodyvelb',['bodyVelB',['../structrbd_1_1MultiBodyConfig.html#a7f8b9fcb9804bf87505c65a0d6e17785',1,'rbd::MultiBodyConfig']]],
   ['bodyvelocity',['bodyVelocity',['../classrbd_1_1Jacobian.html#aa9788ed60fbd5f49783142c2e68ad12d',1,'rbd::Jacobian']]],
   ['bodyvelw',['bodyVelW',['../structrbd_1_1MultiBodyConfig.html#a278db7240fb454ea06bd3dce78a18da9',1,'rbd::MultiBodyConfig']]],
-  ['box',['Box',['../structrbd_1_1parsers_1_1Geometry_1_1Box.html',1,'rbd::parsers::Geometry::Box'],['../structrbd_1_1parsers_1_1Geometry.html#a91ba6c5a035011ff6a22120b1c26c71fa0ef17f0fc0df1e20fb78c45b4a74807e',1,'rbd::parsers::Geometry::BOX()'],['../structrbd_1_1parsers_1_1Geometry_1_1Box.html#ad46c0f08b6a7a1cfb3463107ed418c98',1,'rbd::parsers::Geometry::Box::Box()']]]
+  ['box',['Box',['../structrbd_1_1parsers_1_1Geometry_1_1Box.html',1,'rbd::parsers::Geometry::Box'],['../structrbd_1_1parsers_1_1Geometry_1_1Box.html#ad46c0f08b6a7a1cfb3463107ed418c98',1,'rbd::parsers::Geometry::Box::Box()'],['../structrbd_1_1parsers_1_1Geometry.html#a91ba6c5a035011ff6a22120b1c26c71fa0ef17f0fc0df1e20fb78c45b4a74807e',1,'rbd::parsers::Geometry::BOX()']]]
 ];

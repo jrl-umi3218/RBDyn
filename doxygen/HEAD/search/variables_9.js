@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['material',['material',['../structrbd_1_1parsers_1_1Visual.html#a6a5cafeb8b368f4631fc813433b89fd6',1,'rbd::parsers::Visual']]],
   ['max_5fiterations_5f',['max_iterations_',['../classrbd_1_1InverseKinematics.html#a53a472b37454cffbd7c314560ddcdd3d',1,'rbd::InverseKinematics']]],
   ['mb',['mb',['../structrbd_1_1parsers_1_1ParserResult.html#a19d87a139175e27740a129cedd1c88d0',1,'rbd::parsers::ParserResult']]],
   ['mbc',['mbc',['../structrbd_1_1parsers_1_1ParserResult.html#a76a1a05c885ac6246d2636c8f219f367',1,'rbd::parsers::ParserResult']]],
