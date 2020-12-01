@@ -18,6 +18,7 @@
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/Momentum.h"
+#include "RBDyn/FD.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 
@@ -77,11 +78,10 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 
     BOOST_CHECK_SMALL((momentum - momentumM).vector().norm(), TOL);
   }
-
-  // test J·q against CentroidalMomentumMatrix::momentum
+ // test J·q against CentroidalMomentumMatrix::momentum
   for(int i = 0; i < 50; ++i)
   {
-    std::vector<double> weight(mb.nrBodies());
+    std::vector<double> weight(static_cast<size_t>(mb.nrBodies()));
     for(std::size_t i = 0; i < weight.size(); ++i)
     {
       weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
   // test JDot·q against CentroidalMomentumMatrix::normalMomentumDot
   for(int i = 0; i < 50; ++i)
   {
-    std::vector<double> weight(mb.nrBodies());
+    std::vector<double> weight(static_cast<size_t>(mb.nrBodies()));
     for(std::size_t i = 0; i < weight.size(); ++i)
     {
       weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
@@ -213,5 +213,128 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
 
     BOOST_CHECK_SMALL((normalMomentumDot1 - normalMomentumDotM).vector().norm(), TOL);
     BOOST_CHECK_SMALL((normalMomentumDot2 - normalMomentumDotM).vector().norm(), TOL);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(centroidalInertia)
+{
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+  Eigen::VectorXd q(mb.nrParams());
+  Eigen::VectorXd alpha(mb.nrDof());
+
+  Eigen::Matrix6d ci;
+  Eigen::Vector6d cm;
+  Eigen::Vector6d av;
+
+  Eigen::Matrix6d ci_improved;
+
+  rbd::CentroidalMomentumMatrix cmm(mb);
+  rbd::ForwardDynamics fd(mb);
+
+  // Test two Composite-rigid-body inertia against each other 
+  for(int i = 0; i < 100; ++i)
+  {
+    q.setRandom();
+    q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
+    alpha.setRandom();
+    rbd::vectorToParam(q, mbc.q);
+    rbd::vectorToParam(alpha, mbc.alpha);
+
+    rbd::forwardKinematics(mb, mbc);
+    rbd::forwardVelocity(mb, mbc);
+    rbd::forwardAcceleration(mb, mbc);
+
+    fd.forwardDynamics(mb, mbc);
+
+
+    Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+    rbd::computeCentroidalInertia(mb, mbc, com, ci, cm, av);
+    rbd::computeCentroidalInertia(fd.H(), com, ci_improved);
+
+    //std::cout<<"The improved Centroidal Inertia is: "<<std::endl<<ci_improved<<std::endl;
+    //std::cout<<"The Centroidal Inertia is: "<<std::endl<<ci<<std::endl;
+
+
+    // Compute the mass: 
+    double mass = 0.0;
+    for (auto & body:mb.bodies())
+    {
+      mass+=body.inertia().mass(); 
+    }
+
+    //std::cout<<"The robot mass is: "<<std::endl<<mass<<std::endl;
+
+    //Eigen::Vector6d ci_diag = ci.diagonal();
+    //Eigen::Vector6d ci_improved_diag = ci_improved.diagonal();
+
+    //BOOST_CHECK_SMALL((ci_improved_diag.tail(3) - ci_diag.tail(3)).norm(), TOL);
+    //BOOST_CHECK_SMALL((ci_improved_diag.head<3>() - ci_diag.head<3>()).norm(), TOL);
+
+    cmm.computeMatrix(mb, mbc, com);
+
+    Eigen::Matrix6d cmmMatrix;
+    Eigen::Vector6d cmmMatrixdqd;
+
+    computeCentroidalInertia(
+		mbc,
+		fd.H(), 
+		fd.C(), 
+		com,
+		cmmMatrix,
+		cmmMatrixdqd
+		);
+
+
+    BOOST_CHECK_SMALL((cmmMatrix - cmm.matrix()).norm(), TOL);
+
+    sva::ForceVecd momentumM(cmm.matrix() * alpha);
+    sva::ForceVecd improved_momentumM(cmmMatrix * alpha);
+
+    BOOST_CHECK_SMALL((improved_momentumM- momentumM).vector().norm(), TOL);
+
+  }
+
+  // Test rbd::comVelocity against average velocity
+  
+  for(int i = 0; i < 100; ++i)
+  {
+    q.setRandom();
+    q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
+    alpha.setRandom();
+    rbd::vectorToParam(q, mbc.q);
+    rbd::vectorToParam(alpha, mbc.alpha);
+
+    rbd::forwardKinematics(mb, mbc);
+    rbd::forwardVelocity(mb, mbc);
+    rbd::forwardAcceleration(mb, mbc);
+
+    Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+    Eigen::Vector3d comVelocity = rbd::computeCoMVelocity(mb, mbc);
+    rbd::computeCentroidalInertia(mb, mbc, com, ci, cm, av);
+
+    BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
+  }
+
+  // Same test with in-place overload
+  for(int i = 0; i < 100; ++i)
+  {
+    q.setRandom();
+    q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
+    alpha.setRandom();
+    rbd::vectorToParam(q, mbc.q);
+    rbd::vectorToParam(alpha, mbc.alpha);
+
+    rbd::forwardKinematics(mb, mbc);
+    rbd::forwardVelocity(mb, mbc);
+
+    Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+    Eigen::Vector3d comVelocity = rbd::computeCoMVelocity(mb, mbc);
+    rbd::computeCentroidalInertia(mb, mbc, com, ci, av);
+
+    BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
   }
 }
