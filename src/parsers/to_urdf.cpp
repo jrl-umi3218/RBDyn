@@ -302,6 +302,9 @@ std::string to_urdf(const ParserResult & res)
       case Joint::Type::Fixed:
         node->SetAttribute("type", "fixed");
         break;
+      case Joint::Type::Rev_Fixed:
+        node->SetAttribute("type", "revolute fixed");
+        break;
     }
 
     auto index = res.mb.jointIndexByName(joint.name());
@@ -357,6 +360,8 @@ std::string to_urdf(const ParserResult & res)
       case Joint::Type::Free:
         break;
       case Joint::Type::Fixed:
+        break;
+      case Joint::Type::Rev_Fixed:
         break;
     }
     if(!axis.isZero())

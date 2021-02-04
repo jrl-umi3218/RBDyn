@@ -157,8 +157,8 @@ class IntegralTermAntiWindup : public IntegralTerm
 			 const Eigen::Vector3d & maxAngAcc,
 			 const Eigen::VectorXd & torqueL,
 			 const Eigen::VectorXd & torqueU,
-       double phiSlow, double phiFast, 
-       double fastFilterWeight, double timeStep);
+                         double phiSlow, double phiFast, 
+                         double fastFilterWeight, double timeStep);
   
   void computeTerm(const rbd::MultiBody & mb,
                    const rbd::MultiBodyConfig & mbc_real,
@@ -166,9 +166,9 @@ class IntegralTermAntiWindup : public IntegralTerm
 
  private:
 
+  double perc_;
   Eigen::Vector3d maxLinAcc_, maxAngAcc_;
   Eigen::VectorXd torqueL_, torqueU_;
-  double perc_;
 };
 
 

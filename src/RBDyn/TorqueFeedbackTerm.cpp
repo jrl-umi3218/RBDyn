@@ -202,7 +202,7 @@ IntegralTermAntiWindup::IntegralTermAntiWindup(const std::vector<rbd::MultiBody>
                                                double phiSlow, double phiFast, double fastFilterWeight, 
                                                double timeStep)
   : IntegralTerm(mbs, robotIndex, fd, intglTermType, velGainType, 
-                lambda, phiSlow, phiFast, fastFilterWeight, timeStep),
+                 lambda, phiSlow, phiFast, fastFilterWeight, timeStep),
     perc_(perc), maxLinAcc_(maxLinAcc), maxAngAcc_(maxAngAcc),
     torqueL_(torqueL), torqueU_(torqueU)
 {}
@@ -224,7 +224,7 @@ void IntegralTermAntiWindup::computeTerm(const rbd::MultiBody & mb,
     Eigen::VectorXd torqueU_prime = torqueU_ * perc_;
     Eigen::VectorXd torqueL_prime = torqueL_ * perc_;
     
-    for (size_t i = 0; i < mb.nrJoints(); i++)
+    for (int i = 0; i < mb.nrJoints(); i++)
       if (mb.joint(i).type() == rbd::Joint::Free)
       {
         int j = mb.jointPosInDof(i);
@@ -296,7 +296,7 @@ void PassivityPIDTerm::computeTerm(const rbd::MultiBody & mb,
 
   Eigen::VectorXd e = Eigen::VectorXd::Zero(nrDof_);
 
-  int pos = 0;
+  size_t pos = 0;
   for (std::size_t i = 0; i < joints.size(); i++) {
     Eigen::VectorXd ei = errorParam(joints[i].type(), mbc_calc.q[i], mbc_real.q[i]);
     e.segment(pos, ei.size()) = ei;
@@ -321,28 +321,41 @@ Eigen::VectorXd PassivityPIDTerm::errorParam(rbd::Joint::Type type,
 
   case rbd::Joint::Rev:
   case rbd::Joint::Prism:
-
-    e.resize(1);
-    e[0] = (q_ref[0] - q_hat[0]);
-    break;
+    {
+      e.resize(1);
+      e[0] = (q_ref[0] - q_hat[0]);
+      break;
+    }
 
   case rbd::Joint::Free:
-
-    e.resize(6);
+    {
+      e.resize(6);
     
-    Eigen::Quaterniond quat_ref(q_ref[0], q_ref[1], q_ref[2], q_ref[3]);
-    Eigen::Quaterniond quat_hat(q_hat[0], q_hat[1], q_hat[2], q_hat[3]);
+      Eigen::Quaterniond quat_ref(q_ref[0], q_ref[1], q_ref[2], q_ref[3]);
+      Eigen::Quaterniond quat_hat(q_hat[0], q_hat[1], q_hat[2], q_hat[3]);
 
-    Eigen::MatrixXd Re = quat_ref.normalized().toRotationMatrix() * quat_hat.normalized().toRotationMatrix().transpose();
-    Eigen::MatrixXd Sw = Re.log();
+      Eigen::MatrixXd Re = quat_ref.normalized().toRotationMatrix() * quat_hat.normalized().toRotationMatrix().transpose();
+      Eigen::MatrixXd Sw = Re.log();
 
-    e[0] = Sw(2, 1);
-    e[1] = Sw(0, 2);
-    e[2] = Sw(1, 0);
+      e[0] = Sw(2, 1);
+      e[1] = Sw(0, 2);
+      e[2] = Sw(1, 0);
 
-    for (std::size_t i = 0; i < 3; i++)
-      e[3 + i] = q_ref[4 + i] - q_hat[4 + i];
+      for (std::size_t i = 0; i < 3; i++)
+        e[3 + i] = q_ref[4 + i] - q_hat[4 + i];
+      
+      break;
+    }
 
+  case rbd::Joint::Spherical:
+  case rbd::Joint::Planar:
+  case rbd::Joint::Fixed:
+  case rbd::Joint::Rev_Fixed:
+  default:
+
+    // Rafa, fix this properly later...
+    std::cout << "[PassivityPIDTerm] error not defined for Joint type " << type << std::endl;
+    
     break;
   }
 
