@@ -101,77 +101,101 @@ std::string to_yaml(const ParserResult & res)
 
     auto generate_visual = [&](const char * type, const std::map<std::string, std::vector<Visual>> & visuals) {
       auto visuals_it = visuals.find(link.name());
-      if(visuals_it != visuals.end())
+      if(visuals_it == visuals.end())
       {
-        doc << Key << type << Value << BeginSeq;
-        for(const auto & visual : visuals_it->second)
+        return;
+      }
+      doc << Key << type << Value << BeginSeq;
+      for(size_t i = 0; i < visuals_it->second.size(); ++i)
+      {
+        const auto & visual = visuals_it->second[i];
+        if(visual.geometry.type == Geometry::Type::UNKNOWN)
         {
-          if(visual.geometry.type == Geometry::Type::UNKNOWN)
-          {
-            continue;
-          }
-
-          doc << BeginMap;
-
-          set_origin_from_ptransform(visual.origin);
-
-          doc << Key << "geometry" << Value << BeginMap;
-
-          switch(visual.geometry.type)
-          {
-            case Geometry::Type::BOX:
-            {
-              doc << Key << "box" << BeginMap;
-              const auto box = boost::get<Geometry::Box>(visual.geometry.data);
-              set_vec3d("size", box.size);
-              doc << EndMap;
-            }
-            break;
-            case Geometry::Type::CYLINDER:
-            {
-              doc << Key << "cylinder" << BeginMap;
-              const auto cylinder = boost::get<Geometry::Cylinder>(visual.geometry.data);
-              doc << Key << "radius" << Value << cylinder.radius;
-              doc << Key << "length" << Value << cylinder.length;
-              doc << EndMap;
-            }
-            break;
-            case Geometry::Type::MESH:
-            {
-              doc << Key << "mesh" << BeginMap;
-              const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
-              doc << Key << "filename" << Value << mesh.filename;
-              doc << Key << "scale" << Value << mesh.scale;
-              doc << EndMap;
-            }
-            break;
-            case Geometry::Type::SPHERE:
-            {
-              doc << Key << "sphere" << BeginMap;
-              const auto sphere = boost::get<Geometry::Sphere>(visual.geometry.data);
-              doc << Key << "radius" << Value << sphere.radius;
-              doc << EndMap;
-            }
-            break;
-            case Geometry::Type::SUPERELLIPSOID:
-            {
-              doc << Key << "superellipsoid" << BeginMap;
-              const auto superellipsoid = boost::get<Geometry::Superellipsoid>(visual.geometry.data);
-              set_vec3d("size", superellipsoid.size);
-              doc << Key << "epsilon1" << Value << superellipsoid.epsilon1;
-              doc << Key << "epsilon2" << Value << superellipsoid.epsilon2;
-              doc << EndMap;
-            }
-            break;
-            case Geometry::Type::UNKNOWN:
-              break;
-          }
-
-          doc << EndMap << EndMap;
+          continue;
         }
 
-        doc << EndSeq;
+        doc << BeginMap;
+
+        set_origin_from_ptransform(visual.origin);
+
+        const auto & material = visual.material;
+        if(material.type != Material::Type::NONE)
+        {
+          doc << Key << "material" << Value << BeginMap;
+          doc << Key << "name" << Value << ("material_" + link.name() + "_" + std::to_string(i));
+          if(material.type == Material::Type::COLOR)
+          {
+            const auto & c = boost::get<Material::Color>(material.data);
+            doc << Key << "color" << Value << BeginMap;
+            doc << Key << "rgba" << Value << Flow << BeginSeq << c.r << c.g << c.b << c.a << EndSeq;
+            doc << EndMap;
+          }
+          else if(material.type == Material::Type::TEXTURE)
+          {
+            const auto & texture = boost::get<Material::Texture>(material.data);
+            doc << Key << "texture" << Value << BeginMap;
+            doc << Key << "filename" << Value << texture.filename;
+            doc << EndMap;
+          }
+          doc << EndMap;
+        }
+
+        doc << Key << "geometry" << Value << BeginMap;
+
+        switch(visual.geometry.type)
+        {
+          case Geometry::Type::BOX:
+          {
+            doc << Key << "box" << BeginMap;
+            const auto box = boost::get<Geometry::Box>(visual.geometry.data);
+            set_vec3d("size", box.size);
+            doc << EndMap;
+          }
+          break;
+          case Geometry::Type::CYLINDER:
+          {
+            doc << Key << "cylinder" << BeginMap;
+            const auto cylinder = boost::get<Geometry::Cylinder>(visual.geometry.data);
+            doc << Key << "radius" << Value << cylinder.radius;
+            doc << Key << "length" << Value << cylinder.length;
+            doc << EndMap;
+          }
+          break;
+          case Geometry::Type::MESH:
+          {
+            doc << Key << "mesh" << BeginMap;
+            const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
+            doc << Key << "filename" << Value << mesh.filename;
+            doc << Key << "scale" << Value << mesh.scale;
+            doc << EndMap;
+          }
+          break;
+          case Geometry::Type::SPHERE:
+          {
+            doc << Key << "sphere" << BeginMap;
+            const auto sphere = boost::get<Geometry::Sphere>(visual.geometry.data);
+            doc << Key << "radius" << Value << sphere.radius;
+            doc << EndMap;
+          }
+          break;
+          case Geometry::Type::SUPERELLIPSOID:
+          {
+            doc << Key << "superellipsoid" << BeginMap;
+            const auto superellipsoid = boost::get<Geometry::Superellipsoid>(visual.geometry.data);
+            set_vec3d("size", superellipsoid.size);
+            doc << Key << "epsilon1" << Value << superellipsoid.epsilon1;
+            doc << Key << "epsilon2" << Value << superellipsoid.epsilon2;
+            doc << EndMap;
+          }
+          break;
+          case Geometry::Type::UNKNOWN:
+            break;
+        }
+
+        doc << EndMap << EndMap;
       }
+
+      doc << EndSeq;
     };
 
     generate_visual("visual", res.visual);

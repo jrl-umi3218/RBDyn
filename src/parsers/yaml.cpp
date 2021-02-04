@@ -80,6 +80,15 @@ RBDynFromYAML::RBDynFromYAML(const std::string & input,
     std::cout << "Robot name: " << res.name << std::endl;
   }
 
+  YAML::Node materials = robot["materials"];
+  if(materials)
+  {
+    for(const auto & material : materials)
+    {
+      parseMaterial(material);
+    }
+  }
+
   YAML::Node links = robot["links"];
   if(!links)
   {
@@ -162,10 +171,7 @@ void RBDynFromYAML::parseFrame(const YAML::Node & frame,
       {
         throw std::runtime_error("YAML: Invalid array size (" + name + "->intertial->frame->xyz");
       }
-      for(size_t i = 0; i < 3; ++i)
-      {
-        xyz[i] = xyz_data[i];
-      }
+      std::copy_n(std::begin(xyz_data), 3, xyz.data());
     }
     auto rpy_node = frame["rpy"];
     if(rpy_node)
@@ -175,10 +181,7 @@ void RBDynFromYAML::parseFrame(const YAML::Node & frame,
       {
         throw std::runtime_error("YAML: Invalid array size (" + name + "->intertial->frame->rpy");
       }
-      for(size_t i = 0; i < 3; ++i)
-      {
-        rpy[i] = rpy_data[i];
-      }
+      std::copy_n(std::begin(rpy_data), 3, rpy.data());
       if(frame["anglesInDegrees"].as<bool>(angles_in_degrees_))
       {
         rpy *= M_PI / 180.;
@@ -221,6 +224,68 @@ void RBDynFromYAML::parseInertial(const YAML::Node & inertial,
       inertia = sva::inertiaToOrigin(inertia, mass, xyz, rot);
     }
   }
+}
+
+void RBDynFromYAML::parseMaterial(const YAML::Node & material)
+{
+  if(!material)
+  {
+    return;
+  }
+  auto name = material["name"].as<std::string>("");
+  if(name.empty())
+  {
+    return;
+  }
+  parseMaterial(material, materials_[name]);
+}
+
+void RBDynFromYAML::parseMaterial(const YAML::Node & material, Material & out, bool cache)
+{
+  if(!material)
+  {
+    return;
+  }
+  auto name = material["name"].as<std::string>("");
+  if(name.empty())
+  {
+    return;
+  }
+  if(cache && materials_.count(name))
+  {
+    out = materials_[name];
+  }
+  auto color = material["color"];
+  if(color)
+  {
+    auto color_data = color["rgba"].as<std::vector<double>>();
+    if(color_data.size() != 4)
+    {
+      std::cerr << "YAML: Invalid rgba size in color element (" << color_data.size() << ") in material " << name
+                << "\nThis material will be ignored\n";
+      return;
+    }
+    out.type = Material::Type::COLOR;
+    const auto & c = color_data;
+    out.data = Material::Color{c[0], c[1], c[2], c[3]};
+    return;
+  }
+  auto texture = material["texture"];
+  if(texture)
+  {
+    auto filename = texture["filename"].as<std::string>("");
+    if(filename.empty())
+    {
+      std::cerr << "YAML: Empty filename in texture element in material " << name
+                << "\nThis material will be ignored\n";
+      return;
+    }
+    out.type = Material::Type::TEXTURE;
+    out.data = Material::Texture{filename};
+    return;
+  }
+  std::cerr << "YAML: material " << name << " has no color or texture element, it will be ignored\n";
+  return;
 }
 
 bool RBDynFromYAML::parseGeometry(const YAML::Node & geometry, Geometry & data)
@@ -353,6 +418,8 @@ void RBDynFromYAML::parseVisuals(const YAML::Node & visuals,
     parseFrame(visual["frame"], v.name, xyz, rpy);
     v.origin.rotation() = MatrixFromRPY(rpy[0], rpy[1], rpy[2]);
     v.origin.translation() = xyz;
+
+    parseMaterial(visual["material"], v.material);
 
     if(parseGeometry(visual["geometry"], v.geometry))
     {
@@ -492,10 +559,7 @@ void RBDynFromYAML::parseJointAxis(const YAML::Node & axis, const std::string & 
     {
       throw std::runtime_error("YAML: Invalid array size (" + name + "->intertial->frame->axis");
     }
-    for(size_t i = 0; i < 3; ++i)
-    {
-      joint_axis[i] = axis_data[i];
-    }
+    std::copy_n(std::begin(axis_data), 3, joint_axis.data());
   }
   else
   {

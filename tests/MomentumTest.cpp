@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
   // test J·q against CentroidalMomentumMatrix::momentum
   for(int i = 0; i < 50; ++i)
   {
-    std::vector<double> weight(mb.nrBodies());
+    std::vector<double> weight(static_cast<size_t>(mb.nrBodies()));
     for(std::size_t i = 0; i < weight.size(); ++i)
     {
       weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);
@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
   // test JDot·q against CentroidalMomentumMatrix::normalMomentumDot
   for(int i = 0; i < 50; ++i)
   {
-    std::vector<double> weight(mb.nrBodies());
+    std::vector<double> weight(static_cast<size_t>(mb.nrBodies()));
     for(std::size_t i = 0; i < weight.size(); ++i)
     {
       weight[i] = Eigen::Matrix<double, 1, 1>::Random()(0);

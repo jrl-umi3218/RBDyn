@@ -10,7 +10,7 @@ set(PROJECT_NAME RBDyn)
 set(PROJECT_DESCRIPTION "...")
 set(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
 set(PROJECT_DEBUG_POSTFIX "_d")
-set(PROJECT_VERSION 1.2.1)
+set(PROJECT_VERSION 1.4.0)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 
 option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
@@ -18,9 +18,6 @@ option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
 include(cmake/base.cmake)
 include(cmake/cython/cython.cmake)
 include(cmake/msvc-specific.cmake)
-
-# Disable -Werror on Unix for now.
-set(CXX_DISABLE_WERROR True)
 
 project(RBDyn CXX)
 

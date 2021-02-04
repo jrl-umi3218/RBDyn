@@ -218,23 +218,24 @@ void checkMultiBodyEq(const rbd::MultiBody & mb,
   BOOST_CHECK_EQUAL_COLLECTIONS(mb.transforms().begin(), mb.transforms().end(), Xt.begin(), Xt.end());
 
   // nrBodies
-  BOOST_CHECK_EQUAL(mb.nrBodies(), bodies.size());
+  BOOST_CHECK_EQUAL(static_cast<size_t>(mb.nrBodies()), bodies.size());
   // nrJoints
-  BOOST_CHECK_EQUAL(mb.nrJoints(), bodies.size());
+  BOOST_CHECK_EQUAL(static_cast<size_t>(mb.nrJoints()), bodies.size());
 
   int params = 0, dof = 0;
   for(int i = 0; i < static_cast<int>(joints.size()); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     BOOST_CHECK_EQUAL(mb.jointPosInParam(i), params);
-    BOOST_CHECK_EQUAL(mb.jointsPosInParam()[i], params);
+    BOOST_CHECK_EQUAL(mb.jointsPosInParam()[ui], params);
     BOOST_CHECK_EQUAL(mb.sJointPosInParam(i), params);
 
     BOOST_CHECK_EQUAL(mb.jointPosInDof(i), dof);
-    BOOST_CHECK_EQUAL(mb.jointsPosInDof()[i], dof);
+    BOOST_CHECK_EQUAL(mb.jointsPosInDof()[ui], dof);
     BOOST_CHECK_EQUAL(mb.sJointPosInDof(i), dof);
 
-    params += joints[i].params();
-    dof += joints[i].dof();
+    params += joints[ui].params();
+    dof += joints[ui].dof();
   }
 
   BOOST_CHECK_EQUAL(params, mb.nrParams());
@@ -563,7 +564,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
   for(int i = 0; i < mb4.nrBodies(); ++i)
   {
-    BOOST_CHECK_EQUAL(mb4.body(i).inertia().momentum(), bCom[i]);
+    const auto ui = static_cast<size_t>(i);
+    BOOST_CHECK_EQUAL(mb4.body(i).inertia().momentum(), bCom[ui]);
   }
 }
 
@@ -683,13 +685,14 @@ BOOST_AUTO_TEST_CASE(MultiBodyConfigFunction2)
     std::vector<double> zp = mb.joint(i).zeroParam();
     std::vector<double> zd = mb.joint(i).zeroDof();
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.q[i].begin(), mbc.q[i].end(), zp.begin(), zp.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.alpha[i].begin(), mbc.alpha[i].end(), zd.begin(), zd.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.alphaD[i].begin(), mbc.alphaD[i].end(), zd.begin(), zd.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.jointTorque[i].begin(), mbc.jointTorque[i].end(), zd.begin(), zd.end());
+    const auto ui = static_cast<size_t>(i);
+    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.q[ui].begin(), mbc.q[ui].end(), zp.begin(), zp.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.alpha[ui].begin(), mbc.alpha[ui].end(), zd.begin(), zd.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.alphaD[ui].begin(), mbc.alphaD[ui].end(), zd.begin(), zd.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(mbc.jointTorque[ui].begin(), mbc.jointTorque[ui].end(), zd.begin(), zd.end());
   }
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     BOOST_CHECK_EQUAL(mbc.force[i].vector(), Vector6d::Zero());
   }
@@ -831,7 +834,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyBaseTransformTest)
   // since the multibody is construct with the old body linking api
   // we must add an offset to joint origin of mb3 that correspond mb0 transform
   // to body base
-  mb3 = mbg.makeMultiBody("b3", true, mb3Surface * mb0ToBase["b3"] * mbc0.bodyPosW[mb0.bodyIndexByName("b3")],
+  mb3 = mbg.makeMultiBody("b3", true,
+                          mb3Surface * mb0ToBase["b3"] * mbc0.bodyPosW[static_cast<size_t>(mb0.bodyIndexByName("b3"))],
                           mb3Surface);
   rbd::ConfigConverter mb0ToMb3(mb0, mb3);
   mbc3 = rbd::MultiBodyConfig(mb3);
@@ -839,7 +843,8 @@ BOOST_AUTO_TEST_CASE(MultiBodyBaseTransformTest)
   rbd::forwardKinematics(mb3, mbc3);
   auto mb3ToBase = mbg.bodiesBaseTransform("b3", mb3Surface);
 
-  mb4 = mbg.makeMultiBody("b4", true, mb4Surface * mb0ToBase["b4"] * mbc0.bodyPosW[mb0.bodyIndexByName("b4")],
+  mb4 = mbg.makeMultiBody("b4", true,
+                          mb4Surface * mb0ToBase["b4"] * mbc0.bodyPosW[static_cast<size_t>(mb0.bodyIndexByName("b4"))],
                           mb4Surface);
   mbc4 = rbd::MultiBodyConfig(mb4);
   rbd::ConfigConverter mb0ToMb4(mb0, mb4);
@@ -850,13 +855,14 @@ BOOST_AUTO_TEST_CASE(MultiBodyBaseTransformTest)
   for(int bi = 0; bi < mb0.nrBodies(); ++bi)
   {
     std::string name = mb0.body(bi).name();
-    int mb3Index = mb3.bodyIndexByName(name);
-    int mb4Index = mb4.bodyIndexByName(name);
+    const auto mb3Index = static_cast<size_t>(mb3.bodyIndexByName(name));
+    const auto mb4Index = static_cast<size_t>(mb4.bodyIndexByName(name));
+    const auto ubi = static_cast<size_t>(bi);
     BOOST_CHECK_SMALL(
-        ((mb0ToBase[name] * mbc0.bodyPosW[bi]).matrix() - (mb3ToBase[name] * mbc3.bodyPosW[mb3Index]).matrix()).norm(),
+        ((mb0ToBase[name] * mbc0.bodyPosW[ubi]).matrix() - (mb3ToBase[name] * mbc3.bodyPosW[mb3Index]).matrix()).norm(),
         1e-8);
     BOOST_CHECK_SMALL(
-        ((mb0ToBase[name] * mbc0.bodyPosW[bi]).matrix() - (mb4ToBase[name] * mbc4.bodyPosW[mb4Index]).matrix()).norm(),
+        ((mb0ToBase[name] * mbc0.bodyPosW[ubi]).matrix() - (mb4ToBase[name] * mbc4.bodyPosW[mb4Index]).matrix()).norm(),
         1e-8);
   }
 }

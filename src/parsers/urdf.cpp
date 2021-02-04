@@ -148,6 +148,65 @@ rbd::Joint::Type rbdynFromUrdfJoint(const std::string & type, bool hasSphericalS
   return rbd::Joint::Fixed;
 }
 
+using MaterialCache = std::unordered_map<std::string, Material>;
+
+// no-op
+void addToCache(const MaterialCache &, const std::string &, const Material &) {}
+
+void addToCache(MaterialCache & cache, const std::string & name, const Material & m)
+{
+  cache[name] = m;
+}
+
+template<typename CacheT>
+bool materialFromTag(const tinyxml2::XMLElement & dom, CacheT & materials, Material & out)
+{
+  static_assert(std::is_same<typename std::decay<CacheT>::type, MaterialCache>::value, "WRONG");
+  const char * name = dom.Attribute("name");
+  if(!name)
+  {
+    std::cerr << "Warning: unnamed material encountered while parsing, it will be ignored\n";
+    return false;
+  }
+  if(materials.count(name))
+  {
+    out = materials.at(name);
+    return true;
+  }
+  auto colorDom = dom.FirstChildElement("color");
+  if(colorDom)
+  {
+    auto color = attrToList(*colorDom, "rgba", {1.0, 0.0, 0.0, 1.0});
+    if(color.size() != 4)
+    {
+      std::cerr << "Warning: rgba attribute in color element in material " << name
+                << " does not have 4 components, it will be ignored\n";
+      return false;
+    }
+    out.type = Material::Type::COLOR;
+    out.data = Material::Color{color[0], color[1], color[2], color[3]};
+    addToCache(materials, name, out);
+    return true;
+  }
+  auto textureDom = dom.FirstChildElement("texture");
+  if(textureDom)
+  {
+    const char * filename = textureDom->Attribute("filename");
+    if(!filename)
+    {
+      std::cerr << "Warning: texture element in material " << name
+                << " does not have a filename attribute, it will be ignored\n";
+      return false;
+    }
+    out.type = Material::Type::TEXTURE;
+    out.data = Material::Texture{filename};
+    addToCache(materials, name, out);
+    return true;
+  }
+  std::cerr << "Warning: material " << name << " has no color or texture element, it will be ignored\n";
+  return false;
+}
+
 sva::PTransformd originFromTag(const tinyxml2::XMLElement * dom)
 {
   sva::PTransformd tf = sva::PTransformd::Identity();
@@ -210,7 +269,7 @@ Geometry::Data geometryFromSuperEllipsoid(const tinyxml2::XMLElement & seDom)
   return se;
 }
 
-bool visualFromTag(const tinyxml2::XMLElement & dom, Visual & out)
+bool visualFromTag(const tinyxml2::XMLElement & dom, const MaterialCache & materials, Visual & out)
 {
   const tinyxml2::XMLElement * geometryDomPtr = dom.FirstChildElement("geometry");
   if(!geometryDomPtr)
@@ -244,6 +303,15 @@ bool visualFromTag(const tinyxml2::XMLElement & dom, Visual & out)
   {
     out.name = name;
   }
+  const tinyxml2::XMLElement * materialDom = dom.FirstChildElement("material");
+  if(materialDom)
+  {
+    Material m;
+    if(materialFromTag(*materialDom, materials, m))
+    {
+      out.material = m;
+    }
+  }
   return true;
 }
 
@@ -264,6 +332,19 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     return "";
   }
   res.name = robot->Attribute("name");
+
+  // Extract all material elements from the root as these can be reference in material nodes
+  MaterialCache materials;
+  {
+    auto material = robot->FirstChildElement("material");
+    Material m;
+    while(material)
+    {
+      materialFromTag(*material, materials, m);
+      material = material->NextSiblingElement("material");
+    }
+  }
+
   std::vector<tinyxml2::XMLElement *> links;
   std::vector<std::string> filteredLinks = filteredLinksIn;
   // Extract link elements from the document, remove filtered links
@@ -341,7 +422,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
         child = child->NextSiblingElement("visual"))
     {
       Visual v;
-      if(visualFromTag(*child, v))
+      if(visualFromTag(*child, materials, v))
       {
         res.visual[linkName].push_back(v);
       }
@@ -352,7 +433,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
         child = child->NextSiblingElement("collision"))
     {
       Visual v;
-      if(visualFromTag(*child, v))
+      if(visualFromTag(*child, materials, v))
       {
         res.collision[linkName].push_back(v);
       }

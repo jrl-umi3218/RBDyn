@@ -21,7 +21,7 @@ Eigen::Vector3d computeCoM(const MultiBody & mb, const MultiBodyConfig & mbc)
   Vector3d com = Vector3d::Zero();
   double totalMass = 0.;
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     double mass = bodies[i].inertia().mass();
 
@@ -43,7 +43,7 @@ Eigen::Vector3d computeCoMVelocity(const MultiBody & mb, const MultiBodyConfig &
   Vector3d comV = Vector3d::Zero();
   double totalMass = 0.;
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     double mass = bodies[i].inertia().mass();
     totalMass += mass;
@@ -68,7 +68,7 @@ Eigen::Vector3d computeCoMAcceleration(const MultiBody & mb, const MultiBodyConf
   Vector3d comA = Vector3d::Zero();
   double totalMass = 0.;
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     double mass = bodies[i].inertia().mass();
 
@@ -120,15 +120,15 @@ Eigen::Vector3d sComputeCoMAcceleration(const MultiBody & mb, const MultiBodyCon
 CoMJacobianDummy::CoMJacobianDummy() {}
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody & mb)
-: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), jacFull_(3, mb.nrDof()), jacVec_(mb.nrBodies()), totalMass_(0.),
-  bodiesWeight_(mb.nrBodies(), 1.)
+: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), jacFull_(3, mb.nrDof()), jacVec_(static_cast<size_t>(mb.nrBodies())),
+  totalMass_(0.), bodiesWeight_(static_cast<size_t>(mb.nrBodies()), 1.)
 {
   init(mb);
 }
 
 CoMJacobianDummy::CoMJacobianDummy(const MultiBody & mb, std::vector<double> weight)
-: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), jacFull_(3, mb.nrDof()), jacVec_(mb.nrBodies()), totalMass_(0.),
-  bodiesWeight_(std::move(weight))
+: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), jacFull_(3, mb.nrDof()), jacVec_(static_cast<size_t>(mb.nrBodies())),
+  totalMass_(0.), bodiesWeight_(std::move(weight))
 {
   init(mb);
 
@@ -150,7 +150,7 @@ const Eigen::MatrixXd & CoMJacobianDummy::jacobian(const MultiBody & mb, const M
 
   jac_.setZero();
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     const MatrixXd & jac = jacVec_[i].jacobian(mb, mbc);
     jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
@@ -171,7 +171,7 @@ const Eigen::MatrixXd & CoMJacobianDummy::jacobianDot(const MultiBody & mb, cons
 
   jacDot_.setZero();
 
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     const MatrixXd & jac = jacVec_[i].jacobianDot(mb, mbc);
     jacVec_[i].fullJacobian(mb, jac.block(3, 0, 3, jac.cols()), jacFull_);
@@ -210,7 +210,7 @@ void CoMJacobianDummy::init(const rbd::MultiBody & mb)
     Vector3d comT(0, 0, 0);
     if(bodyMass > 0) comT = mb.body(i).inertia().momentum() / bodyMass;
 
-    jacVec_[i] = Jacobian(mb, mb.body(i).name(), comT);
+    jacVec_[static_cast<size_t>(i)] = Jacobian(mb, mb.body(i).name(), comT);
     totalMass_ += mb.body(i).inertia().mass();
   }
 }
@@ -222,17 +222,19 @@ void CoMJacobianDummy::init(const rbd::MultiBody & mb)
 CoMJacobian::CoMJacobian() {}
 
 CoMJacobian::CoMJacobian(const MultiBody & mb)
-: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), bodiesCoeff_(mb.nrBodies()), bodiesCoM_(mb.nrBodies()),
-  jointsSubBodies_(mb.nrJoints()), bodiesCoMWorld_(mb.nrBodies()), bodiesCoMVelB_(mb.nrBodies()),
-  normalAcc_(mb.nrJoints()), weight_(mb.nrBodies(), 1.)
+: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), bodiesCoeff_(static_cast<size_t>(mb.nrBodies())),
+  bodiesCoM_(static_cast<size_t>(mb.nrBodies())), jointsSubBodies_(static_cast<size_t>(mb.nrJoints())),
+  bodiesCoMWorld_(static_cast<size_t>(mb.nrBodies())), bodiesCoMVelB_(static_cast<size_t>(mb.nrBodies())),
+  normalAcc_(static_cast<size_t>(mb.nrJoints())), weight_(static_cast<size_t>(mb.nrBodies()), 1.)
 {
   init(mb);
 }
 
 CoMJacobian::CoMJacobian(const MultiBody & mb, std::vector<double> weight)
-: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), bodiesCoeff_(mb.nrBodies()), bodiesCoM_(mb.nrBodies()),
-  jointsSubBodies_(mb.nrJoints()), bodiesCoMWorld_(mb.nrBodies()), bodiesCoMVelB_(mb.nrBodies()),
-  normalAcc_(mb.nrJoints()), weight_(std::move(weight))
+: jac_(3, mb.nrDof()), jacDot_(3, mb.nrDof()), bodiesCoeff_(static_cast<size_t>(mb.nrBodies())),
+  bodiesCoM_(static_cast<size_t>(mb.nrBodies())), jointsSubBodies_(static_cast<size_t>(mb.nrJoints())),
+  bodiesCoMWorld_(static_cast<size_t>(mb.nrBodies())), bodiesCoMVelB_(static_cast<size_t>(mb.nrBodies())),
+  normalAcc_(static_cast<size_t>(mb.nrJoints())), weight_(std::move(weight))
 {
   if(int(weight_.size()) != mb.nrBodies())
   {
@@ -256,11 +258,11 @@ void CoMJacobian::updateInertialParameters(const MultiBody & mb)
   for(int i = 0; i < mb.nrBodies(); ++i)
   {
     double bodyMass = mb.body(i).inertia().mass();
-    bodiesCoeff_[i] = (bodyMass * weight_[i]) / mass;
+    bodiesCoeff_[static_cast<size_t>(i)] = (bodyMass * weight_[static_cast<size_t>(i)]) / mass;
     if(bodyMass > 0)
-      bodiesCoM_[i] = sva::PTransformd((mb.body(i).inertia().momentum() / bodyMass).eval());
+      bodiesCoM_[static_cast<size_t>(i)] = sva::PTransformd((mb.body(i).inertia().momentum() / bodyMass).eval());
     else
-      bodiesCoM_[i] = sva::PTransformd::Identity();
+      bodiesCoM_[static_cast<size_t>(i)] = sva::PTransformd::Identity();
   }
 }
 
@@ -282,7 +284,7 @@ const Eigen::MatrixXd & CoMJacobian::jacobian(const MultiBody & mb, const MultiB
   jac_.setZero();
 
   // we pre compute the CoM position of each bodie in world frame
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     // the transformation must be read {}^0E_p {}^pT_N {}^NX_0
     sva::PTransformd X_0_com_w = bodiesCoM_[i] * mbc.bodyPosW[i];
@@ -290,17 +292,18 @@ const Eigen::MatrixXd & CoMJacobian::jacobian(const MultiBody & mb, const MultiB
   }
 
   int curJ = 0;
-  for(int i = 0; i < mb.nrJoints(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrJoints()); ++i)
   {
     std::vector<int> & subBodies = jointsSubBodies_[i];
     sva::PTransformd X_i_0 = mbc.bodyPosW[i].inv();
     for(int b : subBodies)
     {
-      sva::PTransformd X_i_com = bodiesCoMWorld_[b] * X_i_0;
+      const auto body_index = static_cast<size_t>(b);
+      sva::PTransformd X_i_com = bodiesCoMWorld_[body_index] * X_i_0;
       for(int dof = 0; dof < joints[i].dof(); ++dof)
       {
         jac_.col(curJ + dof).noalias() +=
-            (X_i_com.linearMul(sva::MotionVecd(mbc.motionSubspace[i].col(dof)))) * bodiesCoeff_[b];
+            (X_i_com.linearMul(sva::MotionVecd(mbc.motionSubspace[i].col(dof)))) * bodiesCoeff_[body_index];
       }
     }
     curJ += joints[i].dof();
@@ -316,26 +319,27 @@ const Eigen::MatrixXd & CoMJacobian::jacobianDot(const MultiBody & mb, const Mul
   jacDot_.setZero();
 
   // we pre compute the CoM position/velocity of each bodie
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     bodiesCoMWorld_[i] = bodiesCoM_[i] * mbc.bodyPosW[i];
     bodiesCoMVelB_[i] = bodiesCoM_[i] * mbc.bodyVelB[i];
   }
 
   int curJ = 0;
-  for(int i = 0; i < mb.nrJoints(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrJoints()); ++i)
   {
     std::vector<int> & subBodies = jointsSubBodies_[i];
     sva::PTransformd X_i_0 = mbc.bodyPosW[i].inv();
 
     for(int b : subBodies)
     {
-      sva::PTransformd X_i_com = bodiesCoMWorld_[b] * X_i_0;
-      sva::PTransformd E_b_0(Eigen::Matrix3d(mbc.bodyPosW[b].rotation().transpose()));
+      const auto body_index = static_cast<size_t>(b);
+      sva::PTransformd X_i_com = bodiesCoMWorld_[body_index] * X_i_0;
+      sva::PTransformd E_b_0(Eigen::Matrix3d(mbc.bodyPosW[body_index].rotation().transpose()));
 
       // angular velocity of rotation N to O
-      sva::MotionVecd E_Vb(mbc.bodyVelW[b].angular(), Eigen::Vector3d::Zero());
-      sva::MotionVecd X_Vcom_i_com = X_i_com * mbc.bodyVelB[i] - bodiesCoMVelB_[b];
+      sva::MotionVecd E_Vb(mbc.bodyVelW[body_index].angular(), Eigen::Vector3d::Zero());
+      sva::MotionVecd X_Vcom_i_com = X_i_com * mbc.bodyVelB[i] - bodiesCoMVelB_[body_index];
 
       for(int dof = 0; dof < joints[i].dof(); ++dof)
       {
@@ -346,7 +350,7 @@ const Eigen::MatrixXd & CoMJacobian::jacobianDot(const MultiBody & mb, const Mul
         // X_i_com_d = (Vi - Vcom)_com x X_i_com
         jacDot_.col(curJ + dof).noalias() +=
             ((E_Vb.cross(E_b_0 * X_i_com * S_ij)).linear() + (E_b_0 * X_Vcom_i_com.cross(X_i_com * S_ij)).linear())
-            * bodiesCoeff_[b];
+            * bodiesCoeff_[body_index];
       }
     }
     curJ += joints[i].dof();
@@ -358,7 +362,7 @@ const Eigen::MatrixXd & CoMJacobian::jacobianDot(const MultiBody & mb, const Mul
 Eigen::Vector3d CoMJacobian::velocity(const MultiBody & mb, const MultiBodyConfig & mbc) const
 {
   Eigen::Vector3d comV = Eigen::Vector3d::Zero();
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     const Eigen::Vector3d & comT = bodiesCoM_[i].translation();
 
@@ -376,16 +380,19 @@ Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody & mb, const Mult
   const std::vector<int> & pred = mb.predecessors();
   const std::vector<int> & succ = mb.successors();
 
-  for(int i = 0; i < mb.nrJoints(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrJoints()); ++i)
   {
     const sva::PTransformd & X_p_i = mbc.parentToSon[i];
     const sva::MotionVecd & vj_i = mbc.jointVelocity[i];
     const sva::MotionVecd & vb_i = mbc.bodyVelB[i];
 
+    const auto pred_index = static_cast<size_t>(pred[i]);
+    const auto succ_index = static_cast<size_t>(succ[i]);
+
     if(pred[i] != -1)
-      normalAcc_[succ[i]] = X_p_i * normalAcc_[pred[i]] + vb_i.cross(vj_i);
+      normalAcc_[succ_index] = X_p_i * normalAcc_[pred_index] + vb_i.cross(vj_i);
     else
-      normalAcc_[succ[i]] = vb_i.cross(vj_i);
+      normalAcc_[succ_index] = vb_i.cross(vj_i);
   }
 
   return normalAcceleration(mb, mbc, normalAcc_);
@@ -396,7 +403,7 @@ Eigen::Vector3d CoMJacobian::normalAcceleration(const MultiBody & mb,
                                                 const std::vector<sva::MotionVecd> & normalAccB) const
 {
   Eigen::Vector3d comA(Eigen::Vector3d::Zero());
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     const Eigen::Vector3d & comT = bodiesCoM_[i].translation();
 
@@ -510,7 +517,7 @@ void CoMJacobian::init(const MultiBody & mb)
 
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
-    std::vector<int> & subBodies = jointsSubBodies_[i];
+    std::vector<int> & subBodies = jointsSubBodies_[static_cast<size_t>(i)];
     jointBodiesSuccessors(mb, i, subBodies);
   }
 }
