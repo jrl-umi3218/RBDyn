@@ -97,7 +97,7 @@ void IntegralTerm::computeGain(const rbd::MultiBody & mb,
   else if (velGainType_ == MassDiagonal)
   {
     K = lambda_ * fd_->H().diagonal().asDiagonal();
-    // K.block<6, 6>(0, 0) = lambda_ * Eigen::MatrixXd::Identity(6, 6);  // Rafa, this is a test
+    K.block<6, 6>(0, 0) = lambda_ * Eigen::MatrixXd::Identity(6, 6);  // Rafa, this is a test
   }
   else
   {
@@ -150,7 +150,9 @@ void IntegralTerm::computeTerm(const rbd::MultiBody & mb,
     P_ = L_ * filteredS;  // Rafa, this disabled code is just temporary... we have to use this
     // P_ = L_ * s;
 
-    // std::cout << "Rafa, in IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl;
+    // std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_ref = " << alphaVec_ref.transpose() << std::endl;
+    // std::cout << "Rafa, in IntegralTerm::computeTerm, alphaVec_hat = " << alphaVec_hat.transpose() << std::endl;
+    // std::cout << "Rafa, in IntegralTerm::computeTerm, P_ = " << P_.transpose() << std::endl << std::endl;
     
     time = clock();
     computeGammaD();
