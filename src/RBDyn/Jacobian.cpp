@@ -65,16 +65,19 @@ Jacobian::Jacobian(const MultiBody & mb,
       count++;
     } while(std::find(jointsPath_.begin() + count, jointsPath_.end(), index) == jointsPath_.end());
 
-    // Delete common joints previously added
-    int commonIdx = count;
-    while(jointsPath_[static_cast<size_t>(++commonIdx)] != index)
+    if(index > 0)
     {
-      // Get to the common node
+      // Delete joints between the common joint and the root
+      int commonIdx = count;
+      while(jointsPath_[static_cast<size_t>(++commonIdx)] != index)
+      {
+        // Get to the common node
+      }
+      dof -= std::accumulate(jointsPath_.begin() + count, jointsPath_.begin() + commonIdx + 1, 0,
+                             [&](int dofC, int idx) { return dofC + mb.joint(idx).dof(); });
+      jointsPath_.erase(jointsPath_.begin() + count, jointsPath_.begin() + commonIdx + 1);
+      jointsSign_.erase(jointsSign_.begin() + count, jointsSign_.begin() + commonIdx + 1);
     }
-    dof -= std::accumulate(jointsPath_.begin() + count, jointsPath_.begin() + commonIdx + 1, 0,
-                           [&](int dofC, int idx) { return dofC + mb.joint(idx).dof(); });
-    jointsPath_.erase(jointsPath_.begin() + count, jointsPath_.begin() + commonIdx + 1);
-    jointsSign_.erase(jointsSign_.begin() + count, jointsSign_.begin() + commonIdx + 1);
   }
 
   jac_.resize(6, dof);
