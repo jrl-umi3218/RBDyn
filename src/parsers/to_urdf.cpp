@@ -386,6 +386,15 @@ std::string to_urdf(const ParserResult & res)
       node->InsertEndChild(limit_node);
     }
 
+    if(joint.isMimic())
+    {
+      auto mimic_node = doc.NewElement("mimic");
+      mimic_node->SetAttribute("joint", joint.mimicName().c_str());
+      set_double(mimic_node, "multiplier", joint.mimicMultiplier());
+      set_double(mimic_node, "offset", joint.mimicOffset());
+      node->InsertEndChild(mimic_node);
+    }
+
     robot->InsertEndChild(node);
   }
 
