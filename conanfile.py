@@ -15,7 +15,7 @@ def get_default_options():
 
 class RBDynConan(base.Eigen3ToPythonConan):
     name = "RBDyn"
-    version = "1.4.0"
+    version = "1.5.0"
     description = "Model the dynamics of rigid body systems"
     topics = ("robotics", "dynamics", "eigen", "python")
     url = "https://github.com/jrl-umi3218/RBDyn"
