@@ -3309,22 +3309,22 @@
       <type>MultiBody</type>
       <name>makeMultiBody</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a0b609d5bef110eff5e418222b99daa14</anchor>
-      <arglist>(const std::string &amp;rootBodyName, bool isFixed, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</arglist>
+      <anchor>ad168d77d01dc6ba8d5d2279499b3af09</anchor>
+      <arglist>(const std::string &amp;rootBodyName, bool isFixed, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity()) const</arglist>
     </member>
     <member kind="function">
       <type>MultiBody</type>
       <name>makeMultiBody</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a53753c50aecde8267783c1c7380b84e3</anchor>
-      <arglist>(const std::string &amp;rootBodyName, Joint::Type rootJointType, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</arglist>
+      <anchor>ae938230d6bbc9c7424f825d28d5b1183</anchor>
+      <arglist>(const std::string &amp;rootBodyName, Joint::Type rootJointType, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity()) const</arglist>
     </member>
     <member kind="function">
       <type>MultiBody</type>
       <name>makeMultiBody</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>aee451c3b6806f21bf44b9103c3498155</anchor>
-      <arglist>(const std::string &amp;rootBodyName, Joint::Type rootJointType, const Eigen::Vector3d &amp;axis, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</arglist>
+      <anchor>a310a151a57e80f198721c3158d4e5288</anchor>
+      <arglist>(const std::string &amp;rootBodyName, Joint::Type rootJointType, const Eigen::Vector3d &amp;axis, const sva::PTransformd &amp;X_0_j0=sva::PTransformd::Identity(), const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity()) const</arglist>
     </member>
     <member kind="function">
       <type>void</type>
