@@ -1,5 +1,6 @@
 #include <RBDyn/parsers/urdf.h>
 
+#include <locale>
 #include <tinyxml2.h>
 
 namespace rbd
@@ -15,8 +16,16 @@ std::string to_urdf(const ParserResult & res)
   auto robot = doc.NewElement("robot");
   robot->SetAttribute("name", res.name.c_str());
 
+  auto set_double = [](XMLElement * e, const char * name, double value) {
+    std::stringstream ss;
+    ss.imbue(std::locale::classic());
+    ss << value;
+    e->SetAttribute(name, ss.str().c_str());
+  };
+
   auto set_vec3d = [](XMLElement * e, const char * name, Eigen::Ref<const Eigen::Vector3d> xyz) {
     std::stringstream ss;
+    ss.imbue(std::locale::classic());
     Eigen::IOFormat f(Eigen::StreamPrecision, Eigen::DontAlignCols);
     ss << xyz.transpose().format(f);
     e->SetAttribute(name, ss.str().c_str());
@@ -75,7 +84,7 @@ std::string to_urdf(const ParserResult & res)
       if(link.inertia().mass() > 0.)
       {
         auto mass_node = doc.NewElement("mass");
-        mass_node->SetAttribute("value", link.inertia().mass());
+        set_double(mass_node, "value", link.inertia().mass());
         inertial_node->InsertEndChild(mass_node);
       }
 
@@ -87,12 +96,12 @@ std::string to_urdf(const ParserResult & res)
                                                   Eigen::Matrix3d::Identity().eval());
 
         auto inertia_node = doc.NewElement("inertia");
-        inertia_node->SetAttribute("ixx", inertia(0, 0));
-        inertia_node->SetAttribute("ixy", inertia(0, 1));
-        inertia_node->SetAttribute("ixz", inertia(0, 2));
-        inertia_node->SetAttribute("iyy", inertia(1, 1));
-        inertia_node->SetAttribute("iyz", inertia(1, 2));
-        inertia_node->SetAttribute("izz", inertia(2, 2));
+        set_double(inertia_node, "ixx", inertia(0, 0));
+        set_double(inertia_node, "ixy", inertia(0, 1));
+        set_double(inertia_node, "ixz", inertia(0, 2));
+        set_double(inertia_node, "iyy", inertia(1, 1));
+        set_double(inertia_node, "iyz", inertia(1, 2));
+        set_double(inertia_node, "izz", inertia(2, 2));
         inertial_node->InsertEndChild(inertia_node);
       }
 
@@ -126,9 +135,10 @@ std::string to_urdf(const ParserResult & res)
           {
             const auto & c = boost::get<Material::Color>(material.data);
             auto color_node = doc.NewElement("color");
-            color_node->SetAttribute("rgba", (std::to_string(c.r) + " " + std::to_string(c.g) + " "
-                                              + std::to_string(c.b) + " " + std::to_string(c.a))
-                                                 .c_str());
+            std::stringstream ss;
+            ss.imbue(std::locale::classic());
+            ss << c.r << " " << c.g << " " << c.b << " " << c.a;
+            color_node->SetAttribute("rgba", ss.str().c_str());
             material_node->InsertEndChild(color_node);
           }
           else if(material.type == Material::Type::TEXTURE)
@@ -156,8 +166,8 @@ std::string to_urdf(const ParserResult & res)
           {
             auto node = doc.NewElement("cylinder");
             const auto cylinder = boost::get<Geometry::Cylinder>(visual.geometry.data);
-            node->SetAttribute("radius", std::to_string(cylinder.radius).c_str());
-            node->SetAttribute("length", std::to_string(cylinder.length).c_str());
+            set_double(node, "radius", cylinder.radius);
+            set_double(node, "length", cylinder.length);
             geometry_node->InsertEndChild(node);
           }
           break;
@@ -166,7 +176,7 @@ std::string to_urdf(const ParserResult & res)
             auto node = doc.NewElement("mesh");
             const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
             node->SetAttribute("filename", mesh.filename.c_str());
-            node->SetAttribute("scale", std::to_string(mesh.scale).c_str());
+            set_double(node, "scale", mesh.scale);
             geometry_node->InsertEndChild(node);
           }
           break;
@@ -174,7 +184,7 @@ std::string to_urdf(const ParserResult & res)
           {
             auto node = doc.NewElement("sphere");
             const auto sphere = boost::get<Geometry::Sphere>(visual.geometry.data);
-            node->SetAttribute("radius", std::to_string(sphere.radius).c_str());
+            set_double(node, "radius", sphere.radius);
             geometry_node->InsertEndChild(node);
           }
           break;
@@ -183,8 +193,8 @@ std::string to_urdf(const ParserResult & res)
             auto node = doc.NewElement("superellipsoid");
             const auto superellipsoid = boost::get<Geometry::Superellipsoid>(visual.geometry.data);
             set_vec3d(node, "size", superellipsoid.size);
-            node->SetAttribute("epsilon1", std::to_string(superellipsoid.epsilon1).c_str());
-            node->SetAttribute("epsilon2", std::to_string(superellipsoid.epsilon2).c_str());
+            set_double(node, "epsilon1", superellipsoid.epsilon1);
+            set_double(node, "epsilon2", superellipsoid.epsilon2);
             geometry_node->InsertEndChild(node);
           }
           break;
@@ -226,6 +236,7 @@ std::string to_urdf(const ParserResult & res)
 
   auto set_vector = [](XMLElement * e, const char * name, const std::vector<double> & v) {
     std::stringstream ss;
+    ss.imbue(std::locale::classic());
     for(size_t i = 0; i < v.size(); i++)
     {
       ss << v[i];
@@ -373,6 +384,15 @@ std::string to_urdf(const ParserResult & res)
       set_limit(limit_node, joint, "velocity", res.limits.velocity);
       set_limit(limit_node, joint, "effort", res.limits.torque);
       node->InsertEndChild(limit_node);
+    }
+
+    if(joint.isMimic())
+    {
+      auto mimic_node = doc.NewElement("mimic");
+      mimic_node->SetAttribute("joint", joint.mimicName().c_str());
+      set_double(mimic_node, "multiplier", joint.mimicMultiplier());
+      set_double(mimic_node, "offset", joint.mimicOffset());
+      node->InsertEndChild(mimic_node);
     }
 
     robot->InsertEndChild(node);
