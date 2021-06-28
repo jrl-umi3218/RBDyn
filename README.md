@@ -39,7 +39,7 @@ sudo apt install librbdyn-dev python-rbdyn python3-rbdyn
 
 ## vcpkg
 
-Use the overlay available [here](https://github.com/jrl-umi3218/vcpkg/)
+Use the registry available [here](https://github.com/mc-rtc/vcpkg-registry/)
 
 
 ## Homebrew OS X install
