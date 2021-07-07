@@ -215,3 +215,57 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
     BOOST_CHECK_SMALL((normalMomentumDot2 - normalMomentumDotM).vector().norm(), TOL);
   }
 }
+
+BOOST_AUTO_TEST_CASE(centroidalInertia)
+{
+  rbd::MultiBody mb;
+  rbd::MultiBodyConfig mbc;
+  rbd::MultiBodyGraph mbg;
+  std::tie(mb, mbc, mbg) = makeXYZSarm();
+
+  Eigen::VectorXd q(mb.nrParams());
+  Eigen::VectorXd alpha(mb.nrDof());
+
+  Eigen::Matrix6d ci;
+  Eigen::Vector6d cm;
+  Eigen::Vector6d av;
+
+  // Test rbd::comVelocity against average velocity
+  for(int i = 0; i < 100; ++i)
+  {
+    q.setRandom();
+    q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
+    alpha.setRandom();
+    rbd::vectorToParam(q, mbc.q);
+    rbd::vectorToParam(alpha, mbc.alpha);
+
+    rbd::forwardKinematics(mb, mbc);
+    rbd::forwardVelocity(mb, mbc);
+    rbd::forwardAcceleration(mb, mbc);
+
+    Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+    Eigen::Vector3d comVelocity = rbd::computeCoMVelocity(mb, mbc);
+    rbd::computeCentroidalInertia(mb, mbc, com, ci, cm, av);
+
+    BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
+  }
+
+  // Same test with in-place overload
+  for(int i = 0; i < 100; ++i)
+  {
+    q.setRandom();
+    q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
+    alpha.setRandom();
+    rbd::vectorToParam(q, mbc.q);
+    rbd::vectorToParam(alpha, mbc.alpha);
+
+    rbd::forwardKinematics(mb, mbc);
+    rbd::forwardVelocity(mb, mbc);
+
+    Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
+    Eigen::Vector3d comVelocity = rbd::computeCoMVelocity(mb, mbc);
+    rbd::computeCentroidalInertia(mb, mbc, com, ci, av);
+
+    BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
+  }
+}
