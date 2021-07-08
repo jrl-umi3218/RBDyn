@@ -29,6 +29,7 @@ namespace rbd
 class RBDYN_DLLAPI MultiBody
 {
 public:
+
   MultiBody();
 
   /**
@@ -214,6 +215,36 @@ public:
     return nrDof_;
   }
 
+  void setJointRotorInertia(int num, double Ir)
+  {
+    joints_[num].setRotorInertia(Ir);
+  }
+  
+  void setJointGearRatio(int num, double gr)
+  {
+    joints_[num].setGearRatio(gr);
+  }
+
+  void setJointStaticFriction(int num, double Ts)
+  {
+    joints_[num].setStaticFriction(Ts);
+  }
+
+  void setJointKineticFriction(int num, double Tc)
+  {
+    joints_[num].setKineticFriction(Tc);
+  }
+
+  void setJointViscousFrictionCoeff(int num, double Tv)
+  {
+    joints_[num].setViscousFrictionCoeff(Tv);
+  }
+
+  void setJointBreakawayVelocity(int num, double wbrk)
+  {
+    joints_[num].setBreakawayVelocity(wbrk);
+  }
+  
   // safe accessors version for python binding
 
   /** Safe version of @see bodies.

@@ -305,6 +305,9 @@ std::string to_yaml(const ParserResult & res)
       case Joint::Type::Fixed:
         doc << Key << "type" << Value << "fixed";
         break;
+      case Joint::Type::Rev_Fixed:
+        doc << Key << "type" << Value << "revolute fixed";
+        break;
     }
 
     auto index = res.mb.jointIndexByName(joint.name());
@@ -354,6 +357,8 @@ std::string to_yaml(const ParserResult & res)
       case Joint::Type::Free:
         break;
       case Joint::Type::Fixed:
+        break;
+      case Joint::Type::Rev_Fixed:
         break;
     }
     if(!axis.isZero())
