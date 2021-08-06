@@ -610,7 +610,7 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d & a)
       dof_ = 1;
       break;
     case Rev_Fixed:
-      S_ = dir_*(Vector6d() << a, Vector3d::Zero()).finished();
+      S_ = dir_*(Eigen::Vector6d() << a, Eigen::Vector3d::Zero()).finished();
       params_ = 1;
       dof_ = 0;
       break;
