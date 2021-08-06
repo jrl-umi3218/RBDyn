@@ -357,30 +357,28 @@ inline Joint::Joint() : dir_(0.0), params_(0), dof_(0), name_("") {}
 inline Joint::Joint(OldType type, bool forward, std::string name)
 : dir_(forward ? 1. : -1), params_(0), dof_(0), name_(name)
 {
-  using namespace Eigen;
-
   switch(type)
   {
     case RevX:
-      constructJoint(Rev, Vector3d::UnitX());
+      constructJoint(Rev, Eigen::Vector3d::UnitX());
       break;
     case RevY:
-      constructJoint(Rev, Vector3d::UnitY());
+      constructJoint(Rev, Eigen::Vector3d::UnitY());
       break;
     case RevZ:
-      constructJoint(Rev, Vector3d::UnitZ());
+      constructJoint(Rev, Eigen::Vector3d::UnitZ());
       break;
     case PrismX:
-      constructJoint(Prism, Vector3d::UnitX());
+      constructJoint(Prism, Eigen::Vector3d::UnitX());
       break;
     case PrismY:
-      constructJoint(Prism, Vector3d::UnitY());
+      constructJoint(Prism, Eigen::Vector3d::UnitY());
       break;
     case PrismZ:
-      constructJoint(Prism, Vector3d::UnitZ());
+      constructJoint(Prism, Eigen::Vector3d::UnitZ());
       break;
     default:
-      constructJoint(Fixed, Vector3d::Zero());
+      constructJoint(Fixed, Eigen::Vector3d::Zero());
       break;
   }
 }
@@ -413,96 +411,95 @@ inline void Joint::makeMimic(const std::string & name, double multiplier, double
 template<typename T>
 inline sva::PTransform<T> Joint::pose(const std::vector<T> & q) const
 {
-  using namespace Eigen;
-  using namespace sva;
-  Matrix3<T> rot;
+  Eigen::Matrix3<T> rot;
   switch(type_)
   {
     case Rev:
     case Rev_Fixed:
       // minus S because rotation is anti trigonometric
-      return PTransform<T>(AngleAxis<T>(-q[0], S_.block<3, 1>(0, 0).cast<T>()).matrix());
+      return sva::PTransform<T>(Eigen::AngleAxis<T>(-q[0], S_.block<3, 1>(0, 0).cast<T>()).matrix());
     case Prism:
-      return PTransform<T>(Vector3<T>(S_.block<3, 1>(3, 0).cast<T>() * q[0]));
+      return sva::PTransform<T>(Eigen::Vector3<T>(S_.block<3, 1>(3, 0).cast<T>() * q[0]));
     case Spherical:
-      return PTransform<T>(Quaternion<T>(q[0], dir_ * q[1], dir_ * q[2], dir_ * q[3]).inverse());
+      return sva::PTransform<T>(Eigen::Quaternion<T>(q[0], dir_ * q[1], dir_ * q[2], dir_ * q[3]).inverse());
     case Planar:
       rot = sva::RotZ(q[0]);
       if(dir_ == 1.)
       {
-        return PTransform<T>(rot, rot.transpose() * Vector3d(q[1], q[2], 0.));
+        return sva::PTransform<T>(rot, rot.transpose() * Eigen::Vector3<T>(q[1], q[2], 0.));
       }
       else
       {
-        return PTransform<T>(rot, rot.transpose() * Vector3d(q[1], q[2], 0.)).inv();
+        return sva::PTransform<T>(rot, rot.transpose() * Eigen::Vector3<T>(q[1], q[2], 0.)).inv();
       }
     case Cylindrical:
-      return PTransform<T>(AngleAxis<T>(-q[0], S_.col(0).head<3>().cast<T>()).matrix(),
-                           S_.col(1).tail<3>().cast<T>() * q[1]);
+      return sva::PTransform<T>(Eigen::AngleAxis<T>(-q[0], S_.col(0).head<3>().cast<T>()).matrix(),
+                                S_.col(1).tail<3>().cast<T>() * q[1]);
     case Free:
       rot = QuatToE(q);
       if(dir_ == 1.)
       {
-        return PTransform<T>(rot, Vector3<T>(q[4], q[5], q[6]));
+        return sva::PTransform<T>(rot, Eigen::Vector3<T>(q[4], q[5], q[6]));
       }
       else
       {
-        return PTransform<T>(rot, Vector3<T>(q[4], q[5], q[6])).inv();
+        return sva::PTransform<T>(rot, Eigen::Vector3<T>(q[4], q[5], q[6])).inv();
       }
     case Fixed:
     default:
-      return PTransform<T>::Identity();
+      return sva::PTransform<T>::Identity();
   }
 }
 
 inline sva::MotionVecd Joint::motion(const std::vector<double> & alpha) const
 {
-  using namespace Eigen;
-  using namespace sva;
   switch(type_)
   {
     case Rev:
-      return MotionVecd((Vector6d() << S_.block<3, 1>(0, 0) * alpha[0], Vector3d::Zero()).finished());
+      return sva::MotionVecd(
+          (Eigen::Vector6d() << S_.block<3, 1>(0, 0) * alpha[0], Eigen::Vector3d::Zero()).finished());
     case Prism:
-      return MotionVecd((Vector6d() << Vector3d::Zero(), S_.block<3, 1>(3, 0) * alpha[0]).finished());
+      return sva::MotionVecd(
+          (Eigen::Vector6d() << Eigen::Vector3d::Zero(), S_.block<3, 1>(3, 0) * alpha[0]).finished());
     case Spherical:
-      return MotionVecd(S_ * Vector3d(alpha[0], alpha[1], alpha[2]));
+      return sva::MotionVecd(S_ * Eigen::Vector3d(alpha[0], alpha[1], alpha[2]));
     case Planar:
-      return MotionVecd(S_ * Vector3d(alpha[0], alpha[1], alpha[2]));
+      return sva::MotionVecd(S_ * Eigen::Vector3d(alpha[0], alpha[1], alpha[2]));
     case Cylindrical:
-      return MotionVecd(S_ * Vector2d(alpha[0], alpha[1]));
+      return sva::MotionVecd(S_ * Eigen::Vector2d(alpha[0], alpha[1]));
     case Free:
-      return MotionVecd(S_ * (Vector6d() << alpha[0], alpha[1], alpha[2], alpha[3], alpha[4], alpha[5]).finished());
+      return sva::MotionVecd(
+          S_ * (Eigen::Vector6d() << alpha[0], alpha[1], alpha[2], alpha[3], alpha[4], alpha[5]).finished());
     case Fixed:
     case Rev_Fixed:
     default:
-      return MotionVecd(Vector6d::Zero());
+      return sva::MotionVecd(Eigen::Vector6d::Zero());
   }
 }
 
 inline sva::MotionVecd Joint::tanAccel(const std::vector<double> & alphaD) const
 {
-  using namespace Eigen;
-  using namespace sva;
   switch(type_)
   {
     case Rev:
-      return MotionVecd((Vector6d() << S_.block<3, 1>(0, 0) * alphaD[0], Vector3d::Zero()).finished());
+      return sva::MotionVecd(
+          (Eigen::Vector6d() << S_.block<3, 1>(0, 0) * alphaD[0], Eigen::Vector3d::Zero()).finished());
     case Prism:
-      return MotionVecd((Vector6d() << Vector3d::Zero(), S_.block<3, 1>(3, 0) * alphaD[0]).finished());
+      return sva::MotionVecd(
+          (Eigen::Vector6d() << Eigen::Vector3d::Zero(), S_.block<3, 1>(3, 0) * alphaD[0]).finished());
     case Spherical:
-      return MotionVecd(S_ * Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+      return sva::MotionVecd(S_ * Eigen::Vector3d(alphaD[0], alphaD[1], alphaD[2]));
     case Planar:
-      return MotionVecd(S_ * Vector3d(alphaD[0], alphaD[1], alphaD[2]));
+      return sva::MotionVecd(S_ * Eigen::Vector3d(alphaD[0], alphaD[1], alphaD[2]));
     case Cylindrical:
-      return MotionVecd(S_ * Vector2d(alphaD[0], alphaD[1]));
+      return sva::MotionVecd(S_ * Eigen::Vector2d(alphaD[0], alphaD[1]));
     case Free:
-      return MotionVecd(S_
-                        * (Vector6d() << alphaD[0], alphaD[1], alphaD[2], alphaD[3], alphaD[4], alphaD[5]).finished());
+      return sva::MotionVecd(
+          S_ * (Eigen::Vector6d() << alphaD[0], alphaD[1], alphaD[2], alphaD[3], alphaD[4], alphaD[5]).finished());
     case Fixed:
     case Rev_Fixed:
     default:
-      return MotionVecd(Vector6d::Zero());
+      return sva::MotionVecd(Eigen::Vector6d::Zero());
   }
 }
 
@@ -603,13 +600,12 @@ inline std::vector<double> Joint::ZeroDof(Type type)
 
 inline void Joint::constructJoint(Type t, const Eigen::Vector3d & a)
 {
-  using namespace Eigen;
   type_ = t;
 
   switch(t)
   {
     case Rev:
-      S_ = dir_ * (Vector6d() << a, Vector3d::Zero()).finished();
+      S_ = dir_ * (Eigen::Vector6d() << a, Eigen::Vector3d::Zero()).finished();
       params_ = 1;
       dof_ = 1;
       break;
@@ -619,26 +615,26 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d & a)
       dof_ = 0;
       break;
     case Prism:
-      S_ = dir_ * (Vector6d() << Vector3d::Zero(), a).finished();
+      S_ = dir_ * (Eigen::Vector6d() << Eigen::Vector3d::Zero(), a).finished();
       params_ = 1;
       dof_ = 1;
       break;
     case Spherical:
-      S_ = Matrix<double, 6, 3>::Zero();
+      S_ = Eigen::Matrix<double, 6, 3>::Zero();
       S_.block<3, 3>(0, 0).setIdentity();
       S_ *= dir_;
       params_ = 4;
       dof_ = 3;
       break;
     case Planar:
-      S_ = Matrix<double, 6, 3>::Zero();
+      S_ = Eigen::Matrix<double, 6, 3>::Zero();
       S_.block<3, 3>(2, 0).setIdentity();
       S_ *= dir_;
       params_ = 3;
       dof_ = 3;
       break;
     case Cylindrical:
-      S_ = Matrix<double, 6, 2>::Zero();
+      S_ = Eigen::Matrix<double, 6, 2>::Zero();
       S_.col(0).head<3>() = a;
       S_.col(1).tail<3>() = a;
       S_ *= dir_;
@@ -646,13 +642,13 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d & a)
       dof_ = 2;
       break;
     case Free:
-      S_ = dir_ * Matrix6d::Identity();
+      S_ = dir_ * Eigen::Matrix6d::Identity();
       params_ = 7;
       dof_ = 6;
       break;
     case Fixed:
     default:
-      S_ = Matrix<double, 6, 0>::Zero();
+      S_ = Eigen::Matrix<double, 6, 0>::Zero();
       params_ = 0;
       dof_ = 0;
       break;
@@ -662,7 +658,6 @@ inline void Joint::constructJoint(Type t, const Eigen::Vector3d & a)
 template<typename T>
 inline Eigen::Matrix3<T> QuatToE(const std::vector<T> & q)
 {
-  using namespace Eigen;
   T p0 = q[0];
   T p1 = q[1];
   T p2 = q[2];
@@ -683,7 +678,7 @@ inline Eigen::Matrix3<T> QuatToE(const std::vector<T> & q)
   T p3s = std::pow(p3, 2);
 
   return 2.
-         * (Matrix3<T>() << p0s + p1s - 0.5, p1p2 + p0p3, p1p3 - p0p2, p1p2 - p0p3, p0s + p2s - 0.5, p2p3 + p0p1,
+         * (Eigen::Matrix3<T>() << p0s + p1s - 0.5, p1p2 + p0p3, p1p3 - p0p2, p1p2 - p0p3, p0s + p2s - 0.5, p2p3 + p0p1,
             p1p3 + p0p2, p2p3 - p0p1, p0s + p3s - 0.5)
                .finished();
 }

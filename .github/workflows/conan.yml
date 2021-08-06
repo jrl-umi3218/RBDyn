@@ -3,14 +3,14 @@ name: conan packaging for RBDyn
 on:
   repository_dispatch:
     types: [conan-master, conan-release]
-  push:
-    branches:
-      - '**'
-    tags:
-      - v*
-  pull_request:
-    branches:
-      - '**'
+#  push:
+#    branches:
+#      - '**'
+#    tags:
+#      - v*
+#  pull_request:
+#    branches:
+#      - '**'
 
 jobs:
   build:

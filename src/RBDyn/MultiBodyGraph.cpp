@@ -127,7 +127,7 @@ std::size_t MultiBodyGraph::nrJoints() const
 MultiBody MultiBodyGraph::makeMultiBody(const std::string & rootBodyName,
                                         bool isFixed,
                                         const sva::PTransformd & X_0_j0,
-                                        const sva::PTransformd & X_b0_j0)
+                                        const sva::PTransformd & X_b0_j0) const
 {
   return makeMultiBody(rootBodyName, isFixed ? Joint::Fixed : Joint::Free, X_0_j0, X_b0_j0);
 }
@@ -135,7 +135,7 @@ MultiBody MultiBodyGraph::makeMultiBody(const std::string & rootBodyName,
 MultiBody MultiBodyGraph::makeMultiBody(const std::string & rootBodyName,
                                         Joint::Type rootJointType,
                                         const sva::PTransformd & X_0_j0,
-                                        const sva::PTransformd & X_b0_j0)
+                                        const sva::PTransformd & X_b0_j0) const
 {
   return makeMultiBody(rootBodyName, rootJointType, Eigen::Vector3d::UnitZ(), X_0_j0, X_b0_j0);
 }
@@ -144,7 +144,7 @@ MultiBody MultiBodyGraph::makeMultiBody(const std::string & rootBodyName,
                                         Joint::Type rootJointType,
                                         const Eigen::Vector3d & axis,
                                         const sva::PTransformd & X_0_j0,
-                                        const sva::PTransformd & X_b0_j0)
+                                        const sva::PTransformd & X_b0_j0) const
 {
   using namespace Eigen;
 

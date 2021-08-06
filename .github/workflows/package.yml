@@ -105,14 +105,10 @@ jobs:
         fi
         if $USE_HEAD
         then
-          echo "BINTRAY_REPO=multi-contact-head" >> $GITHUB_ENV
-          echo "BINTRAY_VERSION=HEAD" >> $GITHUB_ENV
-          echo "EXTRA_MIRROR=https://dl.bintray.com/gergondet/multi-contact-head" >> $GITHUB_ENV
+          echo "CLOUDSMITH_REPO=mc-rtc/head" >> $GITHUB_ENV
           echo "PACKAGE_JOB=package-master" >> $GITHUB_ENV
         else
-          echo "BINTRAY_REPO=multi-contact-release" >> $GITHUB_ENV
-          echo "BINTRAY_VERSION=${REF}" >> $GITHUB_ENV
-          echo "EXTRA_MIRROR=https://dl.bintray.com/gergondet/multi-contact-release" >> $GITHUB_ENV
+          echo "CLOUDSMITH_REPO=mc-rtc/stable" >> $GITHUB_ENV
           echo "PACKAGE_JOB=package-release" >> $GITHUB_ENV
         fi
         echo "PACKAGE_UPLOAD=${PACKAGE_UPLOAD}" >> $GITHUB_ENV
@@ -121,8 +117,7 @@ jobs:
       with:
         dist: "${{ matrix.dist }}"
         arch: "${{ matrix.arch }}"
-        other-mirrors: "${{ env.EXTRA_MIRROR }}"
-        other-gpg-keys: '0x892EA6EE273707C6495A6FB6220D644C64666806'
+        cloudsmith-repo: "${{ env.CLOUDSMITH_REPO }}"
     - uses: actions/upload-artifact@v1
       with:
         name: packages-${{ matrix.dist }}-${{ matrix.arch }}
@@ -175,14 +170,10 @@ jobs:
         fi
         if $USE_HEAD
         then
-          echo "BINTRAY_REPO=multi-contact-head" >> $GITHUB_ENV
-          echo "BINTRAY_VERSION=HEAD" >> $GITHUB_ENV
-          echo "EXTRA_MIRROR=https://dl.bintray.com/gergondet/multi-contact-head" >> $GITHUB_ENV
+          echo "CLOUDSMITH_REPO=mc-rtc/head" >> $GITHUB_ENV
           echo "PACKAGE_JOB=package-master" >> $GITHUB_ENV
         else
-          echo "BINTRAY_REPO=multi-contact-release" >> $GITHUB_ENV
-          echo "BINTRAY_VERSION=${REF}" >> $GITHUB_ENV
-          echo "EXTRA_MIRROR=https://dl.bintray.com/gergondet/multi-contact-release" >> $GITHUB_ENV
+          echo "CLOUDSMITH_REPO=mc-rtc/stable" >> $GITHUB_ENV
           echo "PACKAGE_JOB=package-release" >> $GITHUB_ENV
         fi
         echo "PACKAGE_UPLOAD=${PACKAGE_UPLOAD}" >> $GITHUB_ENV
@@ -194,19 +185,10 @@ jobs:
     - name: Upload
       uses: jrl-umi3218/github-actions/upload-package@master
       with:
-        dist: "${{ matrix.dist }}"
-        arch: "${{ matrix.arch }}"
-        subject: gergondet
-        repo: "${{ env.BINTRAY_REPO }}"
-        package: |
-          name: RBDyn
-          desc: "RBDyn provides a set of classes and functions to model the dynamics of rigid body systems"
-          licenses: [BSD 2-Clause]
-          vcs_url: https://github.com/jrl-umi3218/RBDyn
-        version: "${{ env.BINTRAY_VERSION }}"
+        dist: ubuntu/${{ matrix.dist }}
+        repo: "${{ env.CLOUDSMITH_REPO }}"
         path: packages-${{ matrix.dist }}-${{ matrix.arch }}
-        BINTRAY_API_KEY: "${{ secrets.BINTRAY_API_KEY }}"
-        GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
+        CLOUDSMITH_API_KEY: "${{ secrets.CLOUDSMITH_API_KEY }}"
       if: env.PACKAGE_UPLOAD == 'true'
   mirror-sync-and-trigger:
     needs: upload-packages
@@ -241,24 +223,15 @@ jobs:
         fi
         if $USE_HEAD
         then
-          echo "BINTRAY_REPO=multi-contact-head" >> $GITHUB_ENV
-          echo "BINTRAY_VERSION=HEAD" >> $GITHUB_ENV
-          echo "EXTRA_MIRROR=https://dl.bintray.com/gergondet/multi-contact-head" >> $GITHUB_ENV
+          echo "CLOUDSMITH_REPO=mc-rtc/head" >> $GITHUB_ENV
           echo "PACKAGE_JOB=package-master" >> $GITHUB_ENV
         else
-          echo "BINTRAY_REPO=multi-contact-release" >> $GITHUB_ENV
-          echo "BINTRAY_VERSION=${REF}" >> $GITHUB_ENV
-          echo "EXTRA_MIRROR=https://dl.bintray.com/gergondet/multi-contact-release" >> $GITHUB_ENV
+          echo "CLOUDSMITH_REPO=mc-rtc/stable" >> $GITHUB_ENV
           echo "PACKAGE_JOB=package-release" >> $GITHUB_ENV
         fi
         echo "PACKAGE_UPLOAD=${PACKAGE_UPLOAD}" >> $GITHUB_ENV
-    - name: Request mirror sync
-      run: 'curl -ugergondet:${{ secrets.BINTRAY_API_KEY }} --header "X-GPG-PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}" -X POST https://api.bintray.com/calc_metadata/gergondet/${{ env.BINTRAY_REPO }}
-
-'
-      if: env.PACKAGE_UPLOAD == 'true'
     - name: Trigger dependents rebuild
       run: 'curl -H "Accept: application/vnd.github.everest-preview+json" -H "Authorization: token ${{ secrets.GH_PAGES_TOKEN }}" --request POST --data "{\"event_type\": \"${PACKAGE_JOB}\"}" https://api.github.com/repos/jrl-umi3218/Tasks/dispatches
 
-'
+        '
       if: env.PACKAGE_UPLOAD == 'true'
