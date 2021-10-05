@@ -145,7 +145,7 @@ std::string to_urdf(const ParserResult & res)
           {
             const auto & texture = boost::get<Material::Texture>(material.data);
             auto texture_node = doc.NewElement("texture");
-            texture_node->SetAttribute("filename", texture.filename.c_str());
+            texture_node->SetAttribute("filename", prefix_path(texture.filename).c_str());
             material_node->InsertEndChild(texture_node);
           }
           visual_node->InsertEndChild(material_node);
@@ -175,7 +175,7 @@ std::string to_urdf(const ParserResult & res)
           {
             auto node = doc.NewElement("mesh");
             const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
-            node->SetAttribute("filename", mesh.filename.c_str());
+            node->SetAttribute("filename", prefix_path(mesh.filename).c_str());
             set_vec3d(node, "scale", Eigen::Vector3d::Constant(mesh.scale));
             geometry_node->InsertEndChild(node);
           }
