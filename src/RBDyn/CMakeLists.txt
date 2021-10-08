@@ -9,7 +9,7 @@ set(HEADERS RBDyn/Body.h RBDyn/Joint.h RBDyn/MultiBodyGraph.h RBDyn/MultiBody.h 
   RBDyn/FK.h RBDyn/FV.h RBDyn/FA.h RBDyn/Jacobian.h RBDyn/ID.h RBDyn/IK.h RBDyn/IS.h RBDyn/FD.h RBDyn/EulerIntegration.h RBDyn/CoM.h
   RBDyn/Momentum.h RBDyn/ZMP.h RBDyn/IDIM.h RBDyn/VisServo.h RBDyn/util.hh RBDyn/util.hxx RBDyn/Coriolis.h)
 
-add_library(RBDyn SHARED ${SOURCES} ${HEADERS})
+add_library(RBDyn ${SOURCES} ${HEADERS})
 target_include_directories(RBDyn PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include> $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDyn PUBLIC SpaceVecAlg::SpaceVecAlg)
 set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
