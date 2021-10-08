@@ -84,6 +84,13 @@
       <anchor>a421e0a101b5db4ea6fa03ec2a851229c</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</arglist>
     </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI std::string</type>
+      <name>prefix_path</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a3c153d162b210b4112e026f80b7cd42d</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>urdf.h</name>
@@ -4106,6 +4113,13 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a421e0a101b5db4ea6fa03ec2a851229c</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI std::string</type>
+      <name>prefix_path</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a3c153d162b210b4112e026f80b7cd42d</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::vector&lt; double &gt;</type>
