@@ -75,12 +75,12 @@ rbd::parsers::ParserResult createRobot()
     rbd::parsers::Visual v1, v2;
     rbd::parsers::Geometry::Mesh mesh;
     v1.origin = create_ptransform(0.1, 0.2, 0.3, 0, 0, 0);
-    mesh.filename = "test_mesh1.dae";
+    mesh.filename = "file://test_mesh1.dae";
     v1.geometry.type = rbd::parsers::Geometry::Type::MESH;
     v1.geometry.data = mesh;
 
     v2.origin = create_ptransform(0, 0, 0, 0, 0, 0);
-    mesh.filename = "test_mesh2.dae";
+    mesh.filename = "file://test_mesh2.dae";
     v2.geometry.type = rbd::parsers::Geometry::Type::MESH;
     v2.geometry.data = mesh;
 
@@ -143,7 +143,7 @@ rbd::parsers::ParserResult createRobot()
     v1.geometry.type = rbd::parsers::Geometry::Type::SUPERELLIPSOID;
     v1.geometry.data = superellipsoid;
     v1.material.type = rbd::parsers::Material::Type::TEXTURE;
-    v1.material.data = rbd::parsers::Material::Texture{"/some/texture.png"};
+    v1.material.data = rbd::parsers::Material::Texture{"file:///some/texture.png"};
 
     res.visual["b4"] = {v1};
   }
@@ -229,13 +229,13 @@ const std::string XYZSarmUrdf(
       <visual>
         <origin rpy="0. 0. 0." xyz=".1 .2 .3"/>
         <geometry>
-          <mesh filename="test_mesh1.dae"/>
+          <mesh filename="file://test_mesh1.dae"/>
         </geometry>
       </visual>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <mesh filename="test_mesh2.dae"/>
+          <mesh filename="file://test_mesh2.dae"/>
         </geometry>
       </visual>
       <visual>
@@ -306,7 +306,7 @@ const std::string XYZSarmUrdf(
           <superellipsoid size="0.1 0.2 0.3" epsilon1="0.5" epsilon2="1"/>
         </geometry>
         <material name="Texture">
-          <texture filename="/some/texture.png" />
+          <texture filename="file:///some/texture.png" />
         </material>
       </visual>
     </link>
@@ -364,13 +364,13 @@ const std::string XYZSarmYaml(
             rpy: [0, 0, 0]
           geometry:
             mesh:
-              filename: test_mesh1.dae
+              filename: file://test_mesh1.dae
         - frame:
             xyz: [0, 0, 0]
             rpy: [0, 0, 0]
           geometry:
             mesh:
-              filename: test_mesh2.dae
+              filename: file://test_mesh2.dae
         - frame:
             xyz: [0, 0, 0]
             rpy: [0, 0, 0]
@@ -471,7 +471,7 @@ const std::string XYZSarmYaml(
           material:
             name: Texture
             texture:
-              filename: /some/texture.png
+              filename: file:///some/texture.png
   joints:
     - name: j0
       parent: b0

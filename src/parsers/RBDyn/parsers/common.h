@@ -159,6 +159,14 @@ RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path,
                                             const std::string & base_link = "",
                                             bool with_virtual_links = true,
                                             const std::string spherical_suffix = "_spherical");
+/**
+ * \brief Ensures that a path is prefixed by either package:// or file://
+ *
+ * Some ROS tools (such as rviz) require even local paths to be explicitely prefixed. Thus
+ * - If a path is already prefixed by file:// or package://, leave it unchanged.
+ * - If a path has no prefix, assume it is a local path and add the file:// prefix
+ */
+RBDYN_PARSERS_DLLAPI std::string prefix_path(const std::string & path);
 
 } // namespace parsers
 

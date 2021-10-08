@@ -134,7 +134,7 @@ std::string to_yaml(const ParserResult & res)
           {
             const auto & texture = boost::get<Material::Texture>(material.data);
             doc << Key << "texture" << Value << BeginMap;
-            doc << Key << "filename" << Value << texture.filename;
+            doc << Key << "filename" << Value << prefix_path(texture.filename);
             doc << EndMap;
           }
           doc << EndMap;
@@ -165,7 +165,7 @@ std::string to_yaml(const ParserResult & res)
           {
             doc << Key << "mesh" << BeginMap;
             const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
-            doc << Key << "filename" << Value << mesh.filename;
+            doc << Key << "filename" << Value << prefix_path(mesh.filename);
             doc << Key << "scale" << Value << mesh.scale;
             doc << EndMap;
           }
