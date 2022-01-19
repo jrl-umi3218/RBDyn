@@ -231,6 +231,8 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
   Eigen::Vector6d av;
 
   // Test rbd::comVelocity against average velocity
+  
+  /*
   for(int i = 0; i < 100; ++i)
   {
     q.setRandom();
@@ -249,8 +251,10 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
 
     BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
   }
+  */
 
   // Same test with in-place overload
+  
   for(int i = 0; i < 100; ++i)
   {
     q.setRandom();
@@ -266,6 +270,12 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
     Eigen::Vector3d comVelocity = rbd::computeCoMVelocity(mb, mbc);
     rbd::computeCentroidalInertia(mb, mbc, com, ci, av);
 
+    std::cout<<"i is: "<<i<<std::endl;
+    std::cout<<"com vel is: "<<comVelocity.transpose()<<std::endl;
+    std::cout<<"av linear vel is: "<<av.tail(3).transpose()<<std::endl;
+    std::cout<<"av angular vel is: "<<av.head(3).transpose()<<std::endl;
+
     BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
   }
+  
 }
