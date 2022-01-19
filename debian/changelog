@@ -1,3 +1,33 @@
+rbdyn (1.5.2-1debian1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Wed, 18 Aug 2021 11:36:14 +0800
+
+rbdyn (1.5.1-1ubuntu1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Mon, 28 Jun 2021 11:06:20 +0800
+
+rbdyn (1.5.0-1ubuntu1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Wed, 26 May 2021 18:53:34 +0800
+
+rbdyn (1.4.0-1ubuntu1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Mon, 09 Nov 2020 14:48:30 +0800
+
+rbdyn (1.3.0-1ubuntu1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Tue, 08 Sep 2020 18:54:59 +0800
+
 rbdyn (1.2.1-1ubuntu1) unstable; urgency=medium
 
   * Update upstream version

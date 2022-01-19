@@ -3,6 +3,6 @@
 #
 
 add_subdirectory(RBDyn)
-if(${BUILD_RBDYN_PARSERS})
+if(BUILD_RBDYN_PARSERS)
     add_subdirectory(parsers)
 endif()

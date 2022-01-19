@@ -35,6 +35,18 @@ ParserResult from_file(const std::string & file_path,
   }
 }
 
+std::string prefix_path(const std::string & path)
+{
+  if(path.rfind("package://", 0) == 0 || path.rfind("file://", 0) == 0)
+  {
+    return path;
+  }
+  else
+  {
+    return std::string{"file://"} + path;
+  }
+}
+
 } // namespace parsers
 
 } // namespace rbd

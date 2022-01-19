@@ -137,7 +137,7 @@ public:
   MultiBody makeMultiBody(const std::string & rootBodyName,
                           bool isFixed,
                           const sva::PTransformd & X_0_j0 = sva::PTransformd::Identity(),
-                          const sva::PTransformd & X_b0_j0 = sva::PTransformd::Identity());
+                          const sva::PTransformd & X_b0_j0 = sva::PTransformd::Identity()) const;
 
   /**
    * Create a MultiBody from the graph.
@@ -150,7 +150,7 @@ public:
   MultiBody makeMultiBody(const std::string & rootBodyName,
                           Joint::Type rootJointType,
                           const sva::PTransformd & X_0_j0 = sva::PTransformd::Identity(),
-                          const sva::PTransformd & X_b0_j0 = sva::PTransformd::Identity());
+                          const sva::PTransformd & X_b0_j0 = sva::PTransformd::Identity()) const;
 
   /**
    * Create a MultiBody from the graph.
@@ -165,7 +165,7 @@ public:
                           Joint::Type rootJointType,
                           const Eigen::Vector3d & axis,
                           const sva::PTransformd & X_0_j0 = sva::PTransformd::Identity(),
-                          const sva::PTransformd & X_b0_j0 = sva::PTransformd::Identity());
+                          const sva::PTransformd & X_b0_j0 = sva::PTransformd::Identity()) const;
 
   /**
    * Remove a joint (and successor joints and bodies) from the graph.

@@ -54,6 +54,7 @@ private:
   std::vector<std::string> filtered_links_;
   bool with_virtual_links_;
   const std::string & spherical_suffix_;
+  std::unordered_map<std::string, Material> materials_;
 
   Eigen::Matrix3d makeInertia(double ixx, double iyy, double izz, double iyz, double ixz, double ixy);
 
@@ -75,6 +76,15 @@ private:
   void parseVisuals(const YAML::Node & visuals,
                     std::map<std::string, std::vector<Visual>> & data,
                     const std::string & name);
+
+  /** Parse a material tag and cache it */
+  void parseMaterial(const YAML::Node & material);
+
+  /** Parse a material tag into the output parameter (if the tag is valid)
+   *
+   * \param cache If true, lookup existing materials in the cache
+   */
+  void parseMaterial(const YAML::Node & material, Material & out, bool cache = true);
 
   void parseLink(const YAML::Node & link);
 

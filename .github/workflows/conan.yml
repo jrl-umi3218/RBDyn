@@ -3,14 +3,14 @@ name: conan packaging for RBDyn
 on:
   repository_dispatch:
     types: [conan-master, conan-release]
-  push:
-    branches:
-      - '**'
-    tags:
-      - v*
-  pull_request:
-    branches:
-      - '**'
+#  push:
+#    branches:
+#      - '**'
+#    tags:
+#      - v*
+#  pull_request:
+#    branches:
+#      - '**'
 
 jobs:
   build:
@@ -25,6 +25,10 @@ jobs:
         git config --global core.autocrlf false
         git config --global core.eol lf
       if: startsWith(runner.os, 'Windows')
+    - name: Change Xcode version
+      run: |
+        sudo xcode-select -switch /Applications/Xcode_11.7.app
+      if: startsWith(runner.os, 'macOS')
     - uses: actions/checkout@v2
       with:
         submodules: recursive
@@ -40,11 +44,11 @@ jobs:
   sync:
     needs: build
     runs-on: ubuntu-18.04
-    if: github.ref == 'refs/heads/master' || github.event.action == 'conan-master' || github.event.action == 'conan-release'
+    if: github.ref == 'refs/heads/master' || github.event.action == 'conan-master' || github.event.action == 'conan-release' || startsWith(github.ref, 'refs/tags/')
     steps:
     - name: Trigger dependent rebuilds
       run: |
-        if [ "${{ github.event.action }}" == "conan-release" ]
+        if [ "${{ github.event.action }}" == "conan-release" ] || ${{ startsWith(github.ref, 'refs/tags/') }}
         then
           export DISPATCH="conan-release"
         else
