@@ -268,7 +268,7 @@ std::map<std::string, sva::PTransformd> MultiBodyGraph::bodiesBaseTransform(cons
 
   std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
   computeTransform(rootNode, nullptr, X_b0_j0);
-  return std::move(X_nb_b);
+  return X_nb_b;
 }
 
 std::map<std::string, std::vector<std::string>> MultiBodyGraph::successorJoints(const std::string & rootBodyName)
@@ -291,7 +291,7 @@ std::map<std::string, std::vector<std::string>> MultiBodyGraph::successorJoints(
 
   std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
   computeSuccesors(rootNode, nullptr);
-  return std::move(successorJoints);
+  return successorJoints;
 }
 
 std::map<std::string, std::string> MultiBodyGraph::predecessorJoint(const std::string & rootBodyName)
@@ -317,7 +317,7 @@ std::map<std::string, std::string> MultiBodyGraph::predecessorJoint(const std::s
 
   std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
   computePredecessor(rootNode, nullptr, rootJointName_);
-  return std::move(predJoint);
+  return predJoint;
 }
 
 MultiBodyGraph MultiBodyGraph::fixJoints(const MultiBodyGraph & other,

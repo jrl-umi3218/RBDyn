@@ -89,6 +89,7 @@ void eulerJointIntegration(Joint::Type type,
       // don't break, we go in spherical
     }
     /// @todo manage reverse joint
+    /* fallthrough */
     case Joint::Spherical:
     {
       Eigen::Quaterniond qi(q[0], q[1], q[2], q[3]);
@@ -125,7 +126,7 @@ void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step)
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
     eulerJointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i]);
-    for(int j = 0; j < joints[i].dof(); ++j)
+    for(size_t j = 0; j < static_cast<size_t>(joints[i].dof()); ++j)
     {
       mbc.alpha[i][j] += mbc.alphaD[i][j] * step;
     }

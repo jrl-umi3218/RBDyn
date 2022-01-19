@@ -27,14 +27,16 @@ MultiBody::MultiBody(std::vector<Body> bodies,
 {
   for(int i = 0; i < static_cast<int>(bodies_.size()); ++i)
   {
-    bodyNameToInd_[bodies_[i].name()] = i;
-    jointNameToInd_[joints_[i].name()] = i;
+    const auto ui = static_cast<size_t>(i);
 
-    jointPosInParam_[i] = nrParams_;
-    jointPosInDof_[i] = nrDof_;
+    bodyNameToInd_[bodies_[ui].name()] = i;
+    jointNameToInd_[joints_[ui].name()] = i;
 
-    nrParams_ += joints_[i].params();
-    nrDof_ += joints_[i].dof();
+    jointPosInParam_[ui] = nrParams_;
+    jointPosInDof_[ui] = nrDof_;
+
+    nrParams_ += joints_[ui].params();
+    nrDof_ += joints_[ui].dof();
   }
 }
 

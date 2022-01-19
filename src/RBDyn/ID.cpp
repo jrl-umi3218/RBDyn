@@ -13,7 +13,7 @@
 namespace rbd
 {
 
-InverseDynamics::InverseDynamics(const MultiBody & mb) : f_(mb.nrBodies()) {}
+InverseDynamics::InverseDynamics(const MultiBody & mb) : f_(static_cast<size_t>(mb.nrBodies())) {}
 
 void InverseDynamics::inverseDynamics(const MultiBody & mb, MultiBodyConfig & mbc)
 {
@@ -33,7 +33,7 @@ void InverseDynamics::inverseDynamics(const MultiBody & mb, MultiBodyConfig & mb
     const sva::MotionVecd & vb_i = mbc.bodyVelB[i];
 
     if(pred[i] != -1)
-      mbc.bodyAccB[i] = X_p_i * mbc.bodyAccB[pred[i]] + ai_tan + vb_i.cross(vj_i);
+      mbc.bodyAccB[i] = X_p_i * mbc.bodyAccB[static_cast<size_t>(pred[i])] + ai_tan + vb_i.cross(vj_i);
     else
       mbc.bodyAccB[i] = X_p_i * a_0 + ai_tan + vb_i.cross(vj_i);
 
@@ -46,7 +46,7 @@ void InverseDynamics::inverseDynamics(const MultiBody & mb, MultiBodyConfig & mb
 
 void InverseDynamics::inverseDynamicsNoInertia(const MultiBody & mb, MultiBodyConfig & mbc)
 {
-  for(int i = 0; i < mb.nrBodies(); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(mb.nrBodies()); ++i)
   {
     f_[i] = mbc.bodyPosW[i].dualMul(mbc.force[i]);
   }
@@ -105,15 +105,17 @@ void InverseDynamics::computeJointTorques(const MultiBody & mb, MultiBodyConfig 
 
   for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
   {
-    for(int j = 0; j < joints[i].dof(); ++j)
+    const auto ui = static_cast<size_t>(i);
+    for(int j = 0; j < joints[ui].dof(); ++j)
     {
-      mbc.jointTorque[i][j] = mbc.motionSubspace[i].col(j).transpose() * f_[i].vector();
+      const auto uj = static_cast<size_t>(j);
+      mbc.jointTorque[ui][uj] = mbc.motionSubspace[ui].col(j).transpose() * f_[ui].vector();
     }
 
-    if(pred[i] != -1)
+    if(pred[ui] != -1)
     {
-      const sva::PTransformd & X_p_i = mbc.parentToSon[i];
-      f_[pred[i]] = f_[pred[i]] + X_p_i.transMul(f_[i]);
+      const sva::PTransformd & X_p_i = mbc.parentToSon[ui];
+      f_[static_cast<size_t>(pred[ui])] = f_[static_cast<size_t>(pred[ui])] + X_p_i.transMul(f_[ui]);
     }
   }
 }

@@ -54,9 +54,7 @@ RBDYN_DLLAPI void imagePointJacobianDot(const Eigen::Vector2d & imagePoint,
  * @param rot_angle_threshold is the minimum angle of an axis angle representation where the angle
  *		is considered as zero
  */
-RBDYN_DLLAPI void poseJacobian(const Eigen::Matrix3d & rotation,
-                               Eigen::Matrix<double, 6, 6> & jac,
-                               const double rot_angle_threshold = 1.0e-8);
+RBDYN_DLLAPI void poseJacobian(const Eigen::Matrix3d & rotation, Eigen::Matrix<double, 6, 6> & jac);
 
 /**
  * Compute the interaction matrix of the depth derivative

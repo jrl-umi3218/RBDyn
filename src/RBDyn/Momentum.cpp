@@ -36,12 +36,18 @@ void computeCentroidalInertia(
 
   sva::PTransformd X_G_0(Vector3d(-com));
 
-  Eigen::Matrix6d phi_tran_inv = (X_G_0.matrix().transpose()).inverse();
+  //Eigen::Matrix6d phi_tran_inv = (X_G_0.matrix().transpose()).inverse();
+
+  sva::PTransformd phi_inv =  X_G_0.inv();
 
   sva::PTransformd X_fb_G =  X_G_0.inv() * X_fb_0;
   
-  cmm = X_fb_G.dualMatrix() * phi_tran_inv * selection * massMatrix;
-  cmmdqd = X_fb_G.dualMatrix() * phi_tran_inv * selection * nMatrix;
+  cmm = X_fb_G.matrix().transpose() * phi_inv.matrix().transpose() * selection * massMatrix;
+  //cmm = X_fb_G.dualMatrix() * phi_inv.matrix().transpose() * selection * massMatrix;
+  //cmm = X_fb_G.dualMatrix() * phi_tran_inv * selection * massMatrix;
+  cmmdqd = X_fb_G.matrix().transpose() * phi_inv.matrix().transpose() * selection * nMatrix;
+  //cmmdqd = X_fb_G.dualMatrix() * phi_inv.matrix().transpose() * selection * nMatrix;
+  //cmmdqd = X_fb_G.dualMatrix() * phi_tran_inv * selection * nMatrix;
 
 }
 

@@ -73,13 +73,13 @@ public:
   /// @return Body at num position in bodies list.
   const Body & body(int num) const
   {
-    return bodies_[num];
+    return bodies_[static_cast<std::size_t>(num)];
   }
 
   /// Set the body num in bodies list.
   void body(int num, const Body & b)
   {
-    bodies_[num] = b;
+    bodies_[static_cast<std::size_t>(num)] = b;
   }
 
   /// @return Joints of the multibody system.
@@ -91,7 +91,7 @@ public:
   /// @return Joint at num position in joint list.
   const Joint & joint(int num) const
   {
-    return joints_[num];
+    return joints_[static_cast<std::size_t>(num)];
   }
 
   /// @return Predeccesor body index of each joint.
@@ -103,7 +103,7 @@ public:
   /// @return Predecessor body of joint num.
   int predecessor(int num) const
   {
-    return pred_[num];
+    return pred_[static_cast<std::size_t>(num)];
   }
 
   /// @return Successor body index of each joint.
@@ -115,7 +115,7 @@ public:
   /// @return Successor body of joint num.
   int successor(int num) const
   {
-    return succ_[num];
+    return succ_[static_cast<std::size_t>(num)];
   }
 
   /// @return Parent body index of each body.
@@ -127,7 +127,7 @@ public:
   /// @return Parent body of body num.
   int parent(int num) const
   {
-    return parent_[num];
+    return parent_[static_cast<std::size_t>(num)];
   }
 
   /// @return Transformation from the body base to joint i
@@ -145,13 +145,13 @@ public:
   /// @return Transformation from the body base to joint num
   const sva::PTransformd & transform(int num) const
   {
-    return Xt_[num];
+    return Xt_[static_cast<std::size_t>(num)];
   }
 
   /// Set the transformation from the body base to joint num
   void transform(int num, const sva::PTransformd & Xt)
   {
-    Xt_[num] = Xt;
+    Xt_[static_cast<std::size_t>(num)] = Xt;
   }
 
   /// @return Index of the body with name 'name'.
@@ -181,13 +181,13 @@ public:
   /// @return the joint i position in parameter vector (q).
   int jointPosInParam(int i) const
   {
-    return jointPosInParam_[i];
+    return jointPosInParam_[static_cast<std::size_t>(i)];
   }
 
   /// @return the joint i position in dof vector (alpha, alphaD…).
   int jointPosInDof(int i) const
   {
-    return jointPosInDof_[i];
+    return jointPosInDof_[static_cast<std::size_t>(i)];
   }
 
   /// @return the joint position in parameter vector (q).
@@ -235,7 +235,7 @@ public:
    */
   const Body & sBody(int num) const
   {
-    return bodies_.at(num);
+    return bodies_.at(static_cast<std::size_t>(num));
   }
 
   /** Safe version of @see body.
@@ -243,7 +243,7 @@ public:
    */
   void sBody(int num, const Body & b)
   {
-    bodies_.at(num) = b;
+    bodies_.at(static_cast<std::size_t>(num)) = b;
   }
 
   /** Safe version of @see joint.
@@ -251,7 +251,7 @@ public:
    */
   const Joint & sJoint(int num) const
   {
-    return joints_.at(num);
+    return joints_.at(static_cast<std::size_t>(num));
   }
 
   /** Safe version of @see predecessor.
@@ -259,7 +259,7 @@ public:
    */
   int sPredecessor(int num) const
   {
-    return pred_.at(num);
+    return pred_.at(static_cast<std::size_t>(num));
   }
 
   /** Safe version of @see successor.
@@ -267,7 +267,7 @@ public:
    */
   int sSuccessor(int num) const
   {
-    return succ_.at(num);
+    return succ_.at(static_cast<std::size_t>(num));
   }
 
   /** Safe version of @see parent.
@@ -275,7 +275,7 @@ public:
    */
   int sParent(int num) const
   {
-    return parent_.at(num);
+    return parent_.at(static_cast<std::size_t>(num));
   }
 
   /** Safe version of @see transforms.
@@ -297,7 +297,7 @@ public:
    */
   const sva::PTransformd & sTransform(int num) const
   {
-    return Xt_.at(num);
+    return Xt_.at(static_cast<std::size_t>(num));
   }
 
   /** Safe version of @see transform.
@@ -305,7 +305,7 @@ public:
    */
   void sTransform(int num, const sva::PTransformd & Xt)
   {
-    Xt_.at(num) = Xt;
+    Xt_.at(static_cast<std::size_t>(num)) = Xt;
   }
 
   /** Safe version of @see jointPosInParam.
@@ -313,7 +313,7 @@ public:
    */
   int sJointPosInParam(int i) const
   {
-    return jointPosInParam_.at(i);
+    return jointPosInParam_.at(static_cast<std::size_t>(i));
   }
 
   /** Safe version of @see jointPosInDof.
@@ -321,7 +321,7 @@ public:
    */
   int sJointPosInDof(int i) const
   {
-    return jointPosInDof_.at(i);
+    return jointPosInDof_.at(static_cast<std::size_t>(i));
   }
 
   /** Safe version of @see bodyIndexByName.

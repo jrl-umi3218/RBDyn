@@ -63,7 +63,7 @@ std::tuple<rbd::MultiBody, rbd::MultiBodyConfig, rbd::MultiBodyGraph> makeSingle
 
 std::vector<double> randVec(int size, double rmin, double rmax, bool normed = false)
 {
-  std::vector<double> v(size, 0);
+  std::vector<double> v(static_cast<size_t>(size), 0);
   Map<VectorXd> r(&v[0], size, 1);
   r = (rmax - rmin) * VectorXd::Random(size).cwiseAbs() + VectorXd::Constant(size, rmin);
 

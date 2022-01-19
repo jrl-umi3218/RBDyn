@@ -162,10 +162,7 @@ void RBDynFromYAML::parseFrame(const YAML::Node & frame,
       {
         throw std::runtime_error("YAML: Invalid array size (" + name + "->intertial->frame->xyz");
       }
-      for(size_t i = 0; i < 3; ++i)
-      {
-        xyz[i] = xyz_data[i];
-      }
+      std::copy_n(std::begin(xyz_data), 3, xyz.data());
     }
     auto rpy_node = frame["rpy"];
     if(rpy_node)
@@ -175,10 +172,7 @@ void RBDynFromYAML::parseFrame(const YAML::Node & frame,
       {
         throw std::runtime_error("YAML: Invalid array size (" + name + "->intertial->frame->rpy");
       }
-      for(size_t i = 0; i < 3; ++i)
-      {
-        rpy[i] = rpy_data[i];
-      }
+      std::copy_n(std::begin(rpy_data), 3, rpy.data());
       if(frame["anglesInDegrees"].as<bool>(angles_in_degrees_))
       {
         rpy *= M_PI / 180.;
@@ -492,10 +486,7 @@ void RBDynFromYAML::parseJointAxis(const YAML::Node & axis, const std::string & 
     {
       throw std::runtime_error("YAML: Invalid array size (" + name + "->intertial->frame->axis");
     }
-    for(size_t i = 0; i < 3; ++i)
-    {
-      joint_axis[i] = axis_data[i];
-    }
+    std::copy_n(std::begin(axis_data), 3, joint_axis.data());
   }
   else
   {

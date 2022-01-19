@@ -14,14 +14,17 @@ namespace rbd
 {
 
 ForwardDynamics::ForwardDynamics(const MultiBody & mb)
-: H_(mb.nrDof(), mb.nrDof()), C_(mb.nrDof()), I_st_(mb.nrBodies()), F_(mb.nrJoints()), acc_(mb.nrBodies()),
-  f_(mb.nrBodies()), tmpFd_(mb.nrDof()), dofPos_(mb.nrJoints()), ldlt_(mb.nrDof())
+: H_(mb.nrDof(), mb.nrDof()), C_(mb.nrDof()), I_st_(static_cast<size_t>(mb.nrBodies())),
+  F_(static_cast<size_t>(mb.nrJoints())), acc_(static_cast<size_t>(mb.nrBodies())),
+  f_(static_cast<size_t>(mb.nrBodies())), tmpFd_(mb.nrDof()), dofPos_(static_cast<size_t>(mb.nrJoints())),
+  ldlt_(mb.nrDof())
 {
   int dofP = 0;
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
-    F_[i].resize(6, mb.joint(i).dof());
-    dofPos_[i] = dofP;
+    const auto ui = static_cast<size_t>(i);
+    F_[ui].resize(6, mb.joint(i).dof());
+    dofPos_[ui] = dofP;
     dofP += mb.joint(i).dof();
   }
 }
@@ -52,37 +55,38 @@ void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc
 
   for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
   {
-    if(pred[i] != -1)
+    const auto ui = static_cast<size_t>(i);
+    if(pred[ui] != -1)
     {
-      const sva::PTransformd & X_p_i = mbc.parentToSon[i];
-      I_st_[pred[i]] += X_p_i.transMul(I_st_[i]);
+      const sva::PTransformd & X_p_i = mbc.parentToSon[ui];
+      I_st_[static_cast<size_t>(pred[ui])] += X_p_i.transMul(I_st_[ui]);
     }
 
-    for(int dof = 0; dof < joints[i].dof(); ++dof)
+    for(int dof = 0; dof < joints[ui].dof(); ++dof)
     {
-      F_[i].col(dof).noalias() = (I_st_[i] * sva::MotionVecd(mbc.motionSubspace[i].col(dof))).vector();
+      F_[ui].col(dof).noalias() = (I_st_[ui] * sva::MotionVecd(mbc.motionSubspace[ui].col(dof))).vector();
     }
 
-    H_.block(dofPos_[i], dofPos_[i], joints[i].dof(), joints[i].dof()).noalias() =
-        mbc.motionSubspace[i].transpose() * F_[i];
+    H_.block(dofPos_[ui], dofPos_[ui], joints[ui].dof(), joints[ui].dof()).noalias() =
+        mbc.motionSubspace[ui].transpose() * F_[ui];
 
-    int j = i;
+    size_t j = ui;
     while(pred[j] != -1)
     {
       const sva::PTransformd & X_p_j = mbc.parentToSon[j];
-      for(int dof = 0; dof < joints[i].dof(); ++dof)
+      for(int dof = 0; dof < joints[ui].dof(); ++dof)
       {
-        F_[i].col(dof) = X_p_j.transMul(sva::ForceVecd(F_[i].col(dof))).vector();
+        F_[ui].col(dof) = X_p_j.transMul(sva::ForceVecd(F_[ui].col(dof))).vector();
       }
-      j = pred[j];
+      j = static_cast<size_t>(pred[j]);
 
       if(joints[j].dof() != 0)
       {
-        H_.block(dofPos_[i], dofPos_[j], joints[i].dof(), joints[j].dof()).noalias() =
-            F_[i].transpose() * mbc.motionSubspace[j];
+        H_.block(dofPos_[ui], dofPos_[j], joints[ui].dof(), joints[j].dof()).noalias() =
+            F_[ui].transpose() * mbc.motionSubspace[j];
 
-        H_.block(dofPos_[j], dofPos_[i], joints[j].dof(), joints[i].dof()).noalias() =
-            H_.block(dofPos_[i], dofPos_[j], joints[i].dof(), joints[j].dof()).transpose();
+        H_.block(dofPos_[j], dofPos_[ui], joints[j].dof(), joints[ui].dof()).noalias() =
+            H_.block(dofPos_[ui], dofPos_[j], joints[ui].dof(), joints[j].dof()).transpose();
       }
     }
   }
@@ -105,7 +109,7 @@ void ForwardDynamics::computeC(const MultiBody & mb, const MultiBodyConfig & mbc
     const sva::MotionVecd & vb_i = mbc.bodyVelB[i];
 
     if(pred[i] != -1)
-      acc_[i] = X_p_i * acc_[pred[i]] + vb_i.cross(vj_i);
+      acc_[i] = X_p_i * acc_[static_cast<size_t>(pred[i])] + vb_i.cross(vj_i);
     else
       acc_[i] = X_p_i * a_0 + vb_i.cross(vj_i);
 
@@ -115,12 +119,13 @@ void ForwardDynamics::computeC(const MultiBody & mb, const MultiBodyConfig & mbc
 
   for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
   {
-    C_.segment(dofPos_[i], joints[i].dof()).noalias() = mbc.motionSubspace[i].transpose() * f_[i].vector();
+    const auto ui = static_cast<size_t>(i);
+    C_.segment(dofPos_[ui], joints[ui].dof()).noalias() = mbc.motionSubspace[ui].transpose() * f_[ui].vector();
 
-    if(pred[i] != -1)
+    if(pred[ui] != -1)
     {
-      const sva::PTransformd & X_p_i = mbc.parentToSon[i];
-      f_[pred[i]] += X_p_i.transMul(f_[i]);
+      const sva::PTransformd & X_p_i = mbc.parentToSon[ui];
+      f_[static_cast<size_t>(pred[ui])] += X_p_i.transMul(f_[ui]);
     }
   }
 }
