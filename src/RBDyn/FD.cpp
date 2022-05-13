@@ -10,15 +10,18 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 
+// #include <iostream>
+
 namespace rbd
 {
 
 ForwardDynamics::ForwardDynamics(const MultiBody & mb)
 : H_(mb.nrDof(), mb.nrDof()), C_(mb.nrDof()), I_st_(static_cast<size_t>(mb.nrBodies())),
-  F_(static_cast<size_t>(mb.nrJoints())), acc_(static_cast<size_t>(mb.nrBodies())),
+  F_(static_cast<size_t>(mb.nrJoints())), HIr_(mb.nrDof(), mb.nrDof()), acc_(static_cast<size_t>(mb.nrBodies())),
   f_(static_cast<size_t>(mb.nrBodies())), tmpFd_(mb.nrDof()), dofPos_(static_cast<size_t>(mb.nrJoints())),
   ldlt_(mb.nrDof())
 {
+  HIr_.setZero();
   int dofP = 0;
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
@@ -39,6 +42,18 @@ void ForwardDynamics::forwardDynamics(const MultiBody & mb, MultiBodyConfig & mb
   tmpFd_ = ldlt_.solve(tmpFd_ - C_);
 
   vectorToParam(tmpFd_, mbc.alphaD);
+}
+
+void ForwardDynamics::computeHIr(const MultiBody& mb)
+{
+  for(int i = 0; i < mb.nrJoints(); ++i)
+  {
+    if(mb.joint(i).type() == Joint::Rev)
+    {
+      double gr = mb.joint(i).gearRatio();
+      HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
+    }
+  }
 }
 
 void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc)
@@ -67,8 +82,11 @@ void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc
       F_[ui].col(dof).noalias() = (I_st_[ui] * sva::MotionVecd(mbc.motionSubspace[ui].col(dof))).vector();
     }
 
-    H_.block(dofPos_[ui], dofPos_[ui], joints[ui].dof(), joints[ui].dof()).noalias() =
+    if ( joints[i].dof() > 0)
+    {
+      H_.block(dofPos_[ui], dofPos_[ui], joints[ui].dof(), joints[ui].dof()).noalias() =
         mbc.motionSubspace[ui].transpose() * F_[ui];
+    }
 
     size_t j = ui;
     while(pred[j] != -1)
@@ -90,6 +108,8 @@ void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc
       }
     }
   }
+
+  H_.noalias() = H_ + HIr_;
 }
 
 void ForwardDynamics::computeC(const MultiBody & mb, const MultiBodyConfig & mbc)
@@ -120,7 +140,11 @@ void ForwardDynamics::computeC(const MultiBody & mb, const MultiBodyConfig & mbc
   for(int i = static_cast<int>(bodies.size()) - 1; i >= 0; --i)
   {
     const auto ui = static_cast<size_t>(i);
-    C_.segment(dofPos_[ui], joints[ui].dof()).noalias() = mbc.motionSubspace[ui].transpose() * f_[ui].vector();
+    
+    if (joints[i].dof() > 0)
+    {
+      C_.segment(dofPos_[ui], joints[ui].dof()).noalias() = mbc.motionSubspace[ui].transpose() * f_[ui].vector();
+    }    
 
     if(pred[ui] != -1)
     {
@@ -148,7 +172,7 @@ void ForwardDynamics::sForwardDynamics(const MultiBody & mb, MultiBodyConfig & m
 void ForwardDynamics::sComputeH(const MultiBody & mb, const MultiBodyConfig & mbc)
 {
   checkMatchParentToSon(mb, mbc);
-  checkMatchMotionSubspace(mb, mbc);
+  // checkMatchMotionSubspace(mb, mbc);  // Commented out by Rafa as a test
 
   computeH(mb, mbc);
 }
@@ -164,5 +188,17 @@ void ForwardDynamics::sComputeC(const MultiBody & mb, const MultiBodyConfig & mb
 
   computeC(mb, mbc);
 }
+
+/*
+Eigen::Matrix3d ForwardDynamics::SkewSymmetric(const Eigen::Vector3d& v)
+{
+  Eigen::Matrix3d R = Eigen::Matrix3d::Zero();
+  R(0,1) = -(R(1,0) = v[2]);
+  R(2,0) = -(R(0,2) = v[1]);
+  R(1,2) = -(R(2,1) = v[0]);
+  
+  return R;
+}
+*/
 
 } // namespace rbd

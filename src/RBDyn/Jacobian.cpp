@@ -14,6 +14,8 @@
 // RBDyn
 #include "RBDyn/MultiBodyConfig.h"
 
+#include <iostream>
+
 namespace rbd
 {
 
