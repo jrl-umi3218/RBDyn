@@ -6,10 +6,10 @@
 
 #define BOOST_TEST_MODULE Coriolis
 #include <RBDyn/Coriolis.h>
-#include <RBDyn/EulerIntegration.h>
 #include <RBDyn/FD.h>
 #include <RBDyn/FK.h>
 #include <RBDyn/FV.h>
+#include <RBDyn/NumericalIntegration.h>
 
 #include <boost/test/unit_test.hpp>
 
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(CoriolisTest)
 
     double dt = 1e-8;
 
-    rbd::eulerIntegration(mb, mbc, dt);
+    rbd::integration(mb, mbc, dt);
 
     rbd::forwardKinematics(mb, mbc);
     rbd::forwardVelocity(mb, mbc);

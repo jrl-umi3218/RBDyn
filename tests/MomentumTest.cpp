@@ -13,13 +13,13 @@
 
 // RBDyn
 #include "RBDyn/CoM.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/Momentum.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // arm
 #include "XYZSarm.h"
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
       BOOST_CHECK_SMALL((cmmMatrix - cmm.matrix()).norm(), TOL);
       BOOST_CHECK_SMALL((cmmMatrixDot - cmm.matrixDot()).norm(), TOL);
 
-      rbd::eulerIntegration(mb, mbc, 1e-8);
+      rbd::integration(mb, mbc, 1e-8);
 
       rbd::forwardKinematics(mb, mbc);
       rbd::forwardVelocity(mb, mbc);

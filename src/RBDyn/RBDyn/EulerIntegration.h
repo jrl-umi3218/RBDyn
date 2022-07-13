@@ -4,43 +4,36 @@
 
 #pragma once
 
-// includes
-// std
-#include <vector>
+#ifdef __GNUC__
+#  define RBDYN_DO_PRAGMA(x) _Pragma(#  x)
+#  define RBDYN_PRAGMA_WARNING(x) RBDYN_DO_PRAGMA(GCC warning #  x)
+#endif //__GNUC__
+#ifdef _MSC_VER
+#  define __RBDYN_STRINGIFY__(x) #  x
+#  define __RBDYN_TOSTRING__(x) __RBDYN_STRINGIFY__(x)
+#  define RBDYN_PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __RBDYN_TOSTRING__(__LINE__) ") : warning: " #  x))
+#endif
 
-// RBDyn
-#include <rbdyn/config.hh>
+RBDYN_PRAGMA_WARNING(EulerIntegration.h is a deprecated header.Use NumericalIntegration.h instead.)
 
-#include "Joint.h"
+#include <rbdyn/deprecated.hh>
+
+#include "NumericalIntegration.h"
 
 namespace rbd
 {
-class MultiBody;
-struct MultiBodyConfig;
 
-/**
- * Integrate joint configuration.
- * @param type Joint type.
- * @param alpha Joint velocity vector.
- * @param alphaD Joint acceleration vector.
- * @param step Integration step.
- * @param q Joint configuration vector.
- */
-RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type,
-                                        const std::vector<double> & alpha,
-                                        const std::vector<double> & alphaD,
-                                        double step,
-                                        std::vector<double> & q);
+/// Old name for @see jointIntegration
+RBDYN_DEPRECATED void eulerJointIntegration(Joint::Type type,
+                                            const std::vector<double> & alpha,
+                                            const std::vector<double> & alphaD,
+                                            double step,
+                                            std::vector<double> & q);
 
-/**
- * Use the euler method to integrate.
- * @param mb MultiBody used has model.
- * @param mbc Use alphaD, alpha and q. Fill alpha and q.
- * @param step Integration step.
- */
-RBDYN_DLLAPI void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
+/// Old name for @see integration
+RBDYN_DEPRECATED void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
 
-/// safe version of @see eulerIntegration.
-RBDYN_DLLAPI void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
+/// Old name for @see sIntegration
+RBDYN_DEPRECATED void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
 
 } // namespace rbd
