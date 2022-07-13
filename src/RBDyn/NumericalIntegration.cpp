@@ -360,13 +360,8 @@ void integration(const MultiBody & mb, MultiBodyConfig & mbc, double step, doubl
   // integrate
   for(std::size_t i = 0; i < joints.size(); ++i)
   {
-<<<<<<<< HEAD:src/RBDyn/EulerIntegration.cpp
-    eulerJointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i], prec);
-    for(size_t j = 0; j < static_cast<size_t>(joints[i].dof()); ++j)
-========
     jointIntegration(joints[i].type(), mbc.alpha[i], mbc.alphaD[i], step, mbc.q[i], prec);
-    for(int j = 0; j < joints[i].dof(); ++j)
->>>>>>>> 85f5532 (Changing eulerIntegration to integration, and keeping eulerIntegration as deprecated):src/NumericalIntegration.cpp
+    for(size_t j = 0; j < static_cast<size_t>(joints[i].dof()); ++j)
     {
       mbc.alpha[i][j] += mbc.alphaD[i][j] * step;
     }
