@@ -11,14 +11,13 @@ on:
 jobs:
 
   clang-format:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    - name: Install clang-format-6.0
+    - name: Install clang-format-10
       run: |
         sudo apt-get -qq update
-        sudo apt-get -qq remove clang-6.0 libclang1-6.0 libclang-common-6.0-dev libllvm6.0
-        sudo apt-get -qq install clang-format-6.0 clang-format
+        sudo apt-get -qq install clang-format-10
     - name: Run clang-format-check
       run: |
         ./.clang-format-check.sh

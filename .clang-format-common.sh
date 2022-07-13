@@ -1,12 +1,12 @@
 # This script is meant to be sourced from other scripts
 
-# Check for clang-format, prefer 6.0 if available
-if [[ -x "$(command -v clang-format-6.0)" ]]; then
-  clang_format=clang-format-6.0
+# Check for clang-format, prefer 10 if available
+if [[ -x "$(command -v clang-format-10)" ]]; then
+  clang_format=clang-format-10
 elif [[ -x "$(command -v clang-format)" ]]; then
   clang_format=clang-format
 else
-  echo "clang-format or clang-format-6.0 must be installed"
+  echo "clang-format or clang-format-10 must be installed"
   exit 1
 fi
 
