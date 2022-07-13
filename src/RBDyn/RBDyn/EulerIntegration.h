@@ -14,7 +14,7 @@
 #  define RBDYN_PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __RBDYN_TOSTRING__(__LINE__) ") : warning: " #  x))
 #endif
 
-RBDYN_PRAGMA_WARNING(EulerIntegration.h is a deprecated header. Use NumericalIntegration.h instead.)
+RBDYN_PRAGMA_WARNING(EulerIntegration.h is a deprecated header.Use NumericalIntegration.h instead.)
 
 #include <rbdyn/deprecated.hh>
 
@@ -28,22 +28,12 @@ RBDYN_DEPRECATED void eulerJointIntegration(Joint::Type type,
                                             const std::vector<double> & alpha,
                                             const std::vector<double> & alphaD,
                                             double step,
-                                            std::vector<double> & q,
-                                            double prec = 1e-10)
-{
-  jointIntegration(type, alpha, alphaD, step, q, prec);
-}
+                                            std::vector<double> & q);
 
 /// Old name for @see integration
-RBDYN_DEPRECATED void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10)
-{
-  integration(mb, mbc, step, prec);
-}
+RBDYN_DEPRECATED void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
 
 /// Old name for @see sIntegration
-RBDYN_DEPRECATED void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, double prec = 1e-10)
-{
-  sIntegration(mb, mbc, step, prec);
-}
+RBDYN_DEPRECATED void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
 
 } // namespace rbd

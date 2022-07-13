@@ -378,4 +378,23 @@ void sIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step, doub
   integration(mb, mbc, step, prec);
 }
 
+void eulerJointIntegration(Joint::Type type,
+                           const std::vector<double> & alpha,
+                           const std::vector<double> & alphaD,
+                           double step,
+                           std::vector<double> & q)
+{
+  jointIntegration(type, alpha, alphaD, step, q);
+}
+
+void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step)
+{
+  integration(mb, mbc, step);
+}
+
+void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step)
+{
+  sIntegration(mb, mbc, step);
+}
+
 } // namespace rbd
