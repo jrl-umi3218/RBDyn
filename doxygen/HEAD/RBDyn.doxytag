@@ -288,27 +288,27 @@
     <name>EulerIntegration.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
     <filename>EulerIntegration_8h</filename>
-    <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
+    <includes id="NumericalIntegration_8h" name="NumericalIntegration.h" local="yes" imported="no">NumericalIntegration.h</includes>
     <namespace>rbd</namespace>
     <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
+      <type>RBDYN_DEPRECATED void</type>
       <name>eulerJointIntegration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a3bd2d0d6d7e28cb91bf1d4595c170eed</anchor>
+      <anchor>aed2a4569b0a8aa7aad3f1c78404265c2</anchor>
       <arglist>(Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q)</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
+      <type>RBDYN_DEPRECATED void</type>
       <name>eulerIntegration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>af1d5e428f8fea58734485e214420ad45</anchor>
+      <anchor>a423e0db04a8ac03f329045af893b63f9</anchor>
       <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
+      <type>RBDYN_DEPRECATED void</type>
       <name>sEulerIntegration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>abd0e7a890bf8ed1ba9790c65f2b172c2</anchor>
+      <anchor>a3585025bb451d2f71fee598e1239d4f9</anchor>
       <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</arglist>
     </member>
   </compound>
@@ -727,6 +727,41 @@
     <class kind="struct">rbd::MultiBodyGraph::Arc</class>
     <class kind="struct">rbd::MultiBodyGraph::Node</class>
     <namespace>rbd</namespace>
+  </compound>
+  <compound kind="file">
+    <name>NumericalIntegration.h</name>
+    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <filename>NumericalIntegration_8h</filename>
+    <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
+    <namespace>rbd</namespace>
+    <member kind="function">
+      <type>RBDYN_DLLAPI std::pair&lt; Eigen::Quaterniond, bool &gt;</type>
+      <name>SO3Integration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>a13c604a41c35cea5a6af6c9e93ea63ca</anchor>
+      <arglist>(const Eigen::Quaterniond &amp;qi, const Eigen::Vector3d &amp;wi, const Eigen::Vector3d &amp;wD, double step, double relEps=1e-12, double absEps=std::numeric_limits&lt; double &gt;::epsilon(), bool breakOnWarning=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI void</type>
+      <name>jointIntegration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>aad15a3f6b4ff8fa1c6ac55e5e8a19a82</anchor>
+      <arglist>(Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q, double prec=1e-10)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI void</type>
+      <name>integration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>a6a1c6081c765ca059ca0546f34281f9e</anchor>
+      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step, double prec=1e-10)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI void</type>
+      <name>sIntegration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>a1a3b41f2766dfb8b81737418c46fd505</anchor>
+      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step, double prec=1e-10)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>VisServo.h</name>
@@ -3693,24 +3728,24 @@
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
+      <type>RBDYN_DEPRECATED void</type>
       <name>eulerJointIntegration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a3bd2d0d6d7e28cb91bf1d4595c170eed</anchor>
+      <anchor>aed2a4569b0a8aa7aad3f1c78404265c2</anchor>
       <arglist>(Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q)</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
+      <type>RBDYN_DEPRECATED void</type>
       <name>eulerIntegration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>af1d5e428f8fea58734485e214420ad45</anchor>
+      <anchor>a423e0db04a8ac03f329045af893b63f9</anchor>
       <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
+      <type>RBDYN_DEPRECATED void</type>
       <name>sEulerIntegration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>abd0e7a890bf8ed1ba9790c65f2b172c2</anchor>
+      <anchor>a3585025bb451d2f71fee598e1239d4f9</anchor>
       <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</arglist>
     </member>
     <member kind="function">
@@ -4013,6 +4048,34 @@
       <anchorfile>namespacerbd.html</anchorfile>
       <anchor>a7c0a3a499a70eddeb7eb992690ab4985</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI std::pair&lt; Eigen::Quaterniond, bool &gt;</type>
+      <name>SO3Integration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>a13c604a41c35cea5a6af6c9e93ea63ca</anchor>
+      <arglist>(const Eigen::Quaterniond &amp;qi, const Eigen::Vector3d &amp;wi, const Eigen::Vector3d &amp;wD, double step, double relEps=1e-12, double absEps=std::numeric_limits&lt; double &gt;::epsilon(), bool breakOnWarning=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI void</type>
+      <name>jointIntegration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>aad15a3f6b4ff8fa1c6ac55e5e8a19a82</anchor>
+      <arglist>(Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q, double prec=1e-10)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI void</type>
+      <name>integration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>a6a1c6081c765ca059ca0546f34281f9e</anchor>
+      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step, double prec=1e-10)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_DLLAPI void</type>
+      <name>sIntegration</name>
+      <anchorfile>namespacerbd.html</anchorfile>
+      <anchor>a1a3b41f2766dfb8b81737418c46fd505</anchor>
+      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step, double prec=1e-10)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>

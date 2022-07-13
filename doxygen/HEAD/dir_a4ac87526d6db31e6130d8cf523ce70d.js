@@ -32,6 +32,7 @@ var dir_a4ac87526d6db31e6130d8cf523ce70d =
       [ "Arc", "structrbd_1_1MultiBodyGraph_1_1Arc.html", "structrbd_1_1MultiBodyGraph_1_1Arc" ],
       [ "Node", "structrbd_1_1MultiBodyGraph_1_1Node.html", "structrbd_1_1MultiBodyGraph_1_1Node" ]
     ] ],
+    [ "NumericalIntegration.h", "NumericalIntegration_8h.html", "NumericalIntegration_8h" ],
     [ "VisServo.h", "VisServo_8h.html", "VisServo_8h" ],
     [ "ZMP.h", "ZMP_8h.html", "ZMP_8h" ]
 ];

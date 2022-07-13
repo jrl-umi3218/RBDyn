@@ -8,6 +8,7 @@ var searchData=
   ['jointbyname',['jointByName',['../classrbd_1_1MultiBodyGraph.html#a0a11ccb56521189c363c76deafb11351',1,'rbd::MultiBodyGraph']]],
   ['jointconfig',['jointConfig',['../structrbd_1_1MultiBodyConfig.html#a3e4c0a9cab659e103634c1f07615cfe9',1,'rbd::MultiBodyConfig']]],
   ['jointindexbyname',['jointIndexByName',['../classrbd_1_1MultiBody.html#a825dd4731bb036de0fc7b94e0a75da14',1,'rbd::MultiBody::jointIndexByName(const std::string &amp;name) const'],['../classrbd_1_1MultiBody.html#abf19db27486757df2cbf7869e7e84a89',1,'rbd::MultiBody::jointIndexByName() const']]],
+  ['jointintegration',['jointIntegration',['../namespacerbd.html#aad15a3f6b4ff8fa1c6ac55e5e8a19a82',1,'rbd']]],
   ['jointnametoind_5f',['jointNameToInd_',['../classrbd_1_1MultiBody.html#acec6b8cf62e7eccb89057ce2172ca5f7',1,'rbd::MultiBody']]],
   ['jointnametojoint_5f',['jointNameToJoint_',['../classrbd_1_1MultiBodyGraph.html#abf0d910d1082456320792a7008b368a2',1,'rbd::MultiBodyGraph']]],
   ['jointposindof',['jointPosInDof',['../classrbd_1_1MultiBody.html#a14a15c3aca901569e5f2d57ab793930f',1,'rbd::MultiBody']]],
