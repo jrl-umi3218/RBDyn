@@ -349,7 +349,8 @@ void jointIntegration(Joint::Type type,
     }
 
     case Joint::Fixed:
-    default:;
+    default:
+      break;
   }
 }
 

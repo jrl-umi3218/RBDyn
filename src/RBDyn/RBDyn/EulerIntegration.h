@@ -5,16 +5,16 @@
 #pragma once
 
 #ifdef __GNUC__
-#  define DO_PRAGMA(x) _Pragma(#  x)
-#  define PRAGMA_WARNING(x) DO_PRAGMA(GCC warning #  x)
+#  define RBDYN_DO_PRAGMA(x) _Pragma(#  x)
+#  define RBDYN_PRAGMA_WARNING(x) RBDYN_DO_PRAGMA(GCC warning #  x)
 #endif //__GNUC__
 #ifdef _MSC_VER
-#  define __STRINGIFY__(x) #  x
-#  define __TOSTRING__(x) __STRINGIFY__(x)
-#  define PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __TOSTRING__(__LINE__) ") : warning: " #  x))
+#  define __RBDYN_STRINGIFY__(x) #  x
+#  define __RBDYN_TOSTRING__(x) __RBDYN_STRINGIFY__(x)
+#  define RBDYN_PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __RBDYN_TOSTRING__(__LINE__) ") : warning: " #  x))
 #endif
 
-PRAGMA_WARNING(EulerIntegration.h is a deprecated header.Please consider using NumericalIntegration.h instead.)
+RBDYN_PRAGMA_WARNING(EulerIntegration.h is a deprecated header. Use NumericalIntegration.h instead.)
 
 #include <rbdyn/deprecated.hh>
 

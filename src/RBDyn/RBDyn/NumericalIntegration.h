@@ -10,7 +10,6 @@
 
 // RBDyn
 #include <rbdyn/config.hh>
-#include <rbdyn/deprecated.hh>
 
 #include "Joint.h"
 
