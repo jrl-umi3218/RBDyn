@@ -24,16 +24,16 @@ namespace rbd
 {
 
 /// Old name for @see jointIntegration
-RBDYN_DEPRECATED void eulerJointIntegration(Joint::Type type,
-                                            const std::vector<double> & alpha,
-                                            const std::vector<double> & alphaD,
-                                            double step,
-                                            std::vector<double> & q);
+RBDYN_DEPRECATED RBDYN_DLLAPI void eulerJointIntegration(Joint::Type type,
+                                                         const std::vector<double> & alpha,
+                                                         const std::vector<double> & alphaD,
+                                                         double step,
+                                                         std::vector<double> & q);
 
 /// Old name for @see integration
-RBDYN_DEPRECATED void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
+RBDYN_DEPRECATED RBDYN_DLLAPI void eulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
 
 /// Old name for @see sIntegration
-RBDYN_DEPRECATED void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
+RBDYN_DEPRECATED RBDYN_DLLAPI void sEulerIntegration(const MultiBody & mb, MultiBodyConfig & mbc, double step);
 
 } // namespace rbd
