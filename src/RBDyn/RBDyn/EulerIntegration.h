@@ -14,7 +14,9 @@
 #  define RBDYN_PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __RBDYN_TOSTRING__(__LINE__) ") : warning: " #  x))
 #endif
 
+#ifndef rbdyn_EXPORTS
 RBDYN_PRAGMA_WARNING(EulerIntegration.h is a deprecated header.Use NumericalIntegration.h instead.)
+#endif
 
 #include <rbdyn/deprecated.hh>
 

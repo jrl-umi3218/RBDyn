@@ -7,6 +7,7 @@
 
 // includes
 // RBDyn
+#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 
