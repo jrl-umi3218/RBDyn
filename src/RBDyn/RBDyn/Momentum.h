@@ -87,6 +87,10 @@ RBDYN_DLLAPI void computeCentroidalInertia(const MultiBody & mb,
                                            Eigen::Matrix6d & ci,
                                            Eigen::Vector6d & av);
 
+
+
+
+
 /**
  * Compute the centroidal momentum at the CoM frame
  * as describe in [Orin and Gosawami 2008].

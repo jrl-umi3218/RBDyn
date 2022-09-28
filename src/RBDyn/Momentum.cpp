@@ -81,7 +81,9 @@ void computeCentroidalInertia(const MultiBody & mb,
 
   ci = Matrix6d::Identity();
 
+  // Inertial frame's origin in the COM frame
   sva::PTransformd X_com_0(Vector3d(-com));
+  sva::PTransformd g_0_com(Vector3d(com));
   size_t nrBodies = static_cast<size_t>(mb.nrBodies());
   for(size_t i = 0; i < nrBodies; ++i)
   {
@@ -92,7 +94,8 @@ void computeCentroidalInertia(const MultiBody & mb,
     auto X_com_i = mbc.bodyPosW[i] * X_com_0;
 
     // Momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
-    av += X_com_i.transMul(hi).vector();
+    //av += X_com_i.transMul(hi).vector();
+    av += X_com_i.matrix().transpose() * hi.vector();
 
     // Sum: X^T_com_i*I_i*X_com_i
     ci += X_com_i.matrix().transpose() * bodies[i].inertia().matrix() * X_com_i.matrix();
