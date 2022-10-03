@@ -314,7 +314,22 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
     Eigen::Vector3d comVelocity = rbd::computeCoMVelocity(mb, mbc);
     rbd::computeCentroidalInertia(mb, mbc, com, ci, av);
 
-    std::cout<<"i is: "<<i<<std::endl;
+    cmm.computeMatrix(mb, mbc, com);
+
+    Eigen::MatrixXd cmmMatrix = cmm.matrix();
+
+    // Eigen::VectorXd alpha(mb.nrDof());
+    Eigen::Vector6d hc = cmmMatrix * alpha;
+
+    std::cout<<"trial: "<<i<<" ==========================="<<std::endl;
+
+    std::cout<<"hc: "<<hc.transpose()<<std::endl;
+
+    std::cout<<" Momemtum diff is: "<<((cmmMatrix * alpha).tail(3) - 6*comVelocity).transpose()<<std::endl;
+
+    std::cout<<"Momentum by ci * av is: "<<(ci * av).transpose() <<std::endl;
+    // std::cout<<"cmm com vel is: "<<(hc.head(3) / 6.0).transpose()<<std::endl;
+    std::cout<<"cmm com vel is: "<<(hc.tail(3) / 6.0).transpose()<<std::endl;
     std::cout<<"com vel is: "<<comVelocity.transpose()<<std::endl;
     std::cout<<"av linear vel is: "<<av.tail(3).transpose()<<std::endl;
     std::cout<<"ci is: "<<std::endl<<ci.matrix()<<std::endl;
