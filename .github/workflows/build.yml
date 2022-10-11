@@ -54,13 +54,13 @@ jobs:
         compiler: ${{ matrix.compiler }}
         build-type: ${{ matrix.build-type }}
         ubuntu: |
-          apt: cython cython3 python-nose python3-nose python-numpy python3-numpy python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev libtinyxml2-dev libyaml-cpp-dev
+          apt: cython cython3 python-nose python3-nose python-numpy python3-numpy python-pytest python3-pytest python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev libtinyxml2-dev libyaml-cpp-dev
         macos: |
           cask: gfortran
           brew: eigen boost tinyxml2 yaml-cpp
-          pip: Cython coverage nose numpy
+          pip: Cython coverage nose numpy pytest
         windows: |
-          pip: Cython coverage nose numpy
+          pip: Cython coverage nose numpy pytest
           github:
             - path: eigenteam/eigen-git-mirror
               ref: 3.3.7
