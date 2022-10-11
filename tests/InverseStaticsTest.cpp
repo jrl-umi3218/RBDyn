@@ -10,7 +10,6 @@
 
 // boost
 #define BOOST_TEST_MODULE Statics
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <boost/test/output_test_stream.hpp>
 
@@ -38,7 +37,7 @@ namespace rbd
 using namespace Eigen;
 Eigen::IOFormat cleanFmt(2, 0, ", ", "\n", "[", "]");
 
-static constexpr double PI = boost::math::constants::pi<double>();
+static constexpr double PI = 3.141592653589793238462643383279502884e+00;
 
 void test(boost::shared_ptr<boost::test_tools::output_test_stream> output,
           rbd::MultiBody & mb,

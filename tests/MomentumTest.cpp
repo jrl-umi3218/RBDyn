@@ -8,7 +8,6 @@
 
 // boost
 #define BOOST_TEST_MODULE MomentumTest
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // RBDyn
@@ -31,7 +30,6 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
@@ -113,7 +111,6 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;

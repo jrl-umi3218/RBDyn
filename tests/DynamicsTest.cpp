@@ -11,7 +11,6 @@
 
 // boost
 #define BOOST_TEST_MODULE Dynamics
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
@@ -31,6 +30,13 @@
 // arm
 #include "XYZSarm.h"
 
+namespace rbd
+{
+
+static constexpr double PI = 3.141592653589793238462643383279502884e+00;
+
+} // namespace rbd
+
 const double TOL = 0.0000001;
 
 BOOST_AUTO_TEST_CASE(OneBody)
@@ -38,7 +44,6 @@ BOOST_AUTO_TEST_CASE(OneBody)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   double mass = 1.;
   Matrix3d I = Matrix3d::Identity();
@@ -74,7 +79,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
   BOOST_CHECK_EQUAL(int(id.f().size()), mb.nrBodies());
   BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
 
-  mbc.q = {{}, {cst::pi<double>()}};
+  mbc.q = {{}, {rbd::PI}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
   id.inverseDynamics(mb, mbc);
@@ -82,7 +87,7 @@ BOOST_AUTO_TEST_CASE(OneBody)
   std::cout << std::endl;
   BOOST_CHECK_SMALL(mbc.jointTorque[1][0], TOL);
 
-  mbc.q = {{}, {cst::pi<double>() / 2.}};
+  mbc.q = {{}, {rbd::PI / 2.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
   id.inverseDynamics(mb, mbc);
@@ -189,7 +194,6 @@ BOOST_AUTO_TEST_CASE(IDvsFDFixed)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   typedef Matrix<double, 1, 1> EScalar;
 
@@ -333,7 +337,6 @@ BOOST_AUTO_TEST_CASE(IDvsFDFree)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   typedef Matrix<double, 1, 1> EScalar;
 

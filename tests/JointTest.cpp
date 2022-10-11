@@ -8,7 +8,6 @@
 
 // boost
 #define BOOST_TEST_MODULE JointTest
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
@@ -19,12 +18,18 @@
 
 const double TOL = 1e-10;
 
+namespace rbd
+{
+
+static constexpr double PI = 3.141592653589793238462643383279502884e+00;
+
+} // namespace rbd
+
 void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d & axis, bool forward)
 {
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   Joint j(type, forward, "rev");
   double dir = forward ? 1. : -1;
@@ -37,7 +42,7 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d & axis, bool f
   MotionVecd motion(S);
 
   // test motion
-  PTransformd rot90(AngleAxisd(-constants::pi<double>() / 2., dir * axis).matrix());
+  PTransformd rot90(AngleAxisd(-rbd::PI / 2., dir * axis).matrix());
 
   // test accessor
   BOOST_CHECK_EQUAL(j.type(), Joint::Rev);
@@ -54,7 +59,7 @@ void testRevolute(rbd::Joint::OldType type, const Eigen::Vector3d & axis, bool f
   BOOST_CHECK_EQUAL_COLLECTIONS(zp.begin(), zp.end(), zeroP.begin(), zeroP.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(zd.begin(), zd.end(), zeroD.begin(), zeroD.end());
 
-  BOOST_CHECK_EQUAL(j.pose<double>({constants::pi<double>() / 2.}), rot90);
+  BOOST_CHECK_EQUAL(j.pose<double>({rbd::PI / 2.}), rot90);
 
   BOOST_CHECK_EQUAL(j.motion({2.}).vector(), (2. * motion).vector());
 }
@@ -64,7 +69,6 @@ void testPrismatic(rbd::Joint::OldType type, const Eigen::Vector3d & axis, bool 
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   Joint j(type, forward, "prism");
   double dir = forward ? 1. : -1;
@@ -195,7 +199,6 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   Joint j(Joint::Spherical, true, "sphere");
 
@@ -204,9 +207,9 @@ BOOST_AUTO_TEST_CASE(SphericalTest)
   S.block(0, 0, 3, 3).setIdentity();
 
   // pose data
-  double rotX = constants::pi<double>() / 2.;
-  double rotY = constants::pi<double>() / 4.;
-  double rotZ = constants::pi<double>();
+  double rotX = rbd::PI / 2.;
+  double rotY = rbd::PI / 4.;
+  double rotZ = rbd::PI;
 
   Quaterniond quat =
       AngleAxisd(rotX, Vector3d::UnitX()) * AngleAxisd(rotY, Vector3d::UnitY()) * AngleAxisd(rotZ, Vector3d::UnitZ());
@@ -261,7 +264,6 @@ BOOST_AUTO_TEST_CASE(PlanarTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   Joint j(Joint::Planar, true, "planar");
 
@@ -270,7 +272,7 @@ BOOST_AUTO_TEST_CASE(PlanarTest)
   S.block(2, 0, 3, 3).setIdentity();
 
   // pose data
-  double rotZ = constants::pi<double>() / 2.;
+  double rotZ = rbd::PI / 2.;
   double transX = 4.;
   double transY = 0.3;
 
@@ -316,7 +318,6 @@ BOOST_AUTO_TEST_CASE(CylindricalTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   Vector3d axis(Vector3d::Random().normalized());
   Joint j(Joint::Cylindrical, axis, true, "cylindrical");
@@ -327,7 +328,7 @@ BOOST_AUTO_TEST_CASE(CylindricalTest)
   S.col(1).tail<3>() = axis;
 
   // pose data
-  double rot = constants::pi<double>() / 2.;
+  double rot = rbd::PI / 2.;
   double trans = 5.;
 
   sva::PTransformd X(AngleAxisd(-rot, axis).matrix(), axis * trans);
@@ -372,7 +373,6 @@ BOOST_AUTO_TEST_CASE(FreeTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   Joint j(Joint::Free, true, "free");
 
@@ -380,9 +380,9 @@ BOOST_AUTO_TEST_CASE(FreeTest)
   MatrixXd S = MatrixXd::Identity(6, 6);
 
   // pose data
-  double rotX = constants::pi<double>() / 2.;
-  double rotY = constants::pi<double>() / 4.;
-  double rotZ = constants::pi<double>();
+  double rotX = rbd::PI / 2.;
+  double rotY = rbd::PI / 4.;
+  double rotZ = rbd::PI;
 
   Quaterniond quat =
       AngleAxisd(rotX, Vector3d::UnitX()) * AngleAxisd(rotY, Vector3d::UnitY()) * AngleAxisd(rotZ, Vector3d::UnitZ());

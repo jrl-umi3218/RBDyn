@@ -8,7 +8,6 @@
 
 // boost
 #define BOOST_TEST_MODULE JointTest
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
@@ -28,7 +27,6 @@
 using namespace Eigen;
 using namespace sva;
 using namespace rbd;
-namespace constants = boost::math::constants;
 
 /** Number of test repetition */
 const int nbTest = 10;
