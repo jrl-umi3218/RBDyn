@@ -16,17 +16,26 @@ ParserResult from_file(const std::string & file_path,
                        bool with_virtual_links,
                        const std::string spherical_suffix)
 {
+  return from_file(file_path, ParserParameters{}
+                                  .fixed(fixed)
+                                  .filtered_links(filtered_links)
+                                  .transform_inertia(transform_inertia)
+                                  .base_link(base_link)
+                                  .remove_virtual_links(!with_virtual_links)
+                                  .spherical_suffix(spherical_suffix));
+}
+
+ParserResult from_file(const std::string & file_path, const ParserParameters & params)
+{
   auto extension_pos = file_path.rfind('.');
   auto extension = file_path.substr(extension_pos + 1);
   if(extension == "yaml" || extension == "yml")
   {
-    return from_yaml_file(file_path, fixed, filtered_links, transform_inertia, base_link, with_virtual_links,
-                          spherical_suffix);
+    return from_yaml_file(file_path, params);
   }
   else if(extension == "urdf")
   {
-    return from_urdf_file(file_path, fixed, filtered_links, transform_inertia, base_link, with_virtual_links,
-                          spherical_suffix);
+    return from_urdf_file(file_path, params);
   }
   else
   {

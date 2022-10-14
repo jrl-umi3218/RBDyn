@@ -247,6 +247,14 @@ RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path,
                                             const std::string & base_link = "",
                                             bool with_virtual_links = true,
                                             const std::string spherical_suffix = "_spherical");
+
+//! \brief Checks the file extension and parses it as URDF or YAML accordingly
+//!
+//! \param file_path Path to the file to parse
+//! \param params Parser parameters
+//! \return ParserResult The parsing result
+RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path, const ParserParameters & params);
+
 /**
  * \brief Ensures that a path is prefixed by either package:// or file://
  *
