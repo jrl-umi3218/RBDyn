@@ -49,9 +49,11 @@ RBDynFromYAML::RBDynFromYAML(const std::string & input,
                              bool transform_inertia,
                              const std::string & base_link,
                              bool with_virtual_links,
-                             const std::string & spherical_suffix)
+                             const std::string & spherical_suffix,
+                             bool remove_filtered_links)
 : verbose_(false), transform_inertia_(transform_inertia), link_idx_(1), joint_idx_(1), filtered_links_(filtered_links),
-  with_virtual_links_(with_virtual_links), spherical_suffix_(spherical_suffix)
+  remove_filtered_links_(remove_filtered_links), with_virtual_links_(with_virtual_links),
+  spherical_suffix_(spherical_suffix)
 {
   joint_types_ = std::map<std::string, rbd::Joint::Type>{
       {"revolute", rbd::Joint::Rev},        {"continuous", rbd::Joint::Rev}, {"prismatic", rbd::Joint::Prism},
@@ -437,20 +439,23 @@ void RBDynFromYAML::parseLink(const YAML::Node & link)
     std::cout << "Parsing link: " << name << std::endl;
   }
 
-  if(std::find(filtered_links_.begin(), filtered_links_.end(), name) == filtered_links_.end())
+  if(!with_virtual_links_ && !link["inertial"])
   {
-    if(!with_virtual_links_)
-    {
-      if(!link["inertial"])
-      {
-        filtered_links_.push_back(name);
-        return;
-      }
-    }
-  }
-  else
-  {
+    removed_links_.push_back(name);
     return;
+  }
+
+  if(std::find(filtered_links_.begin(), filtered_links_.end(), name) != filtered_links_.end())
+  {
+    if(remove_filtered_links_)
+    {
+      removed_links_.push_back(name);
+      return;
+    }
+    else
+    {
+      fixed_links_.push_back(name);
+    }
   }
 
   if(base_link_.empty())
@@ -498,8 +503,15 @@ void RBDynFromYAML::parseLink(const YAML::Node & link)
 bool RBDynFromYAML::parseJointType(const YAML::Node & type,
                                    const std::string & name,
                                    rbd::Joint::Type & joint_type,
-                                   std::string & type_name)
+                                   std::string & type_name,
+                                   bool force_fixed)
 {
+  if(force_fixed)
+  {
+    joint_type = rbd::Joint::Type::Fixed;
+    type_name = "fixed";
+    return false;
+  }
   if(type)
   {
     type_name = type.as<std::string>();
@@ -640,18 +652,23 @@ void RBDynFromYAML::parseJoint(const YAML::Node & joint)
 
   std::string parent = joint["parent"].as<std::string>("link" + std::to_string(joint_idx_));
   std::string child = joint["child"].as<std::string>("link" + std::to_string(joint_idx_ + 1));
-  if(std::find(filtered_links_.begin(), filtered_links_.end(), child) != filtered_links_.end()
-     || std::find(filtered_links_.begin(), filtered_links_.end(), parent) != filtered_links_.end())
+  auto is_removed = [&](const std::string & link) {
+    return std::find(removed_links_.begin(), removed_links_.end(), link) != removed_links_.end();
+  };
+  if(is_removed(child) || is_removed(parent))
   {
     return;
   }
+  auto is_fixed = [&](const std::string & link) {
+    return std::find(fixed_links_.begin(), fixed_links_.end(), link) != fixed_links_.end();
+  };
   std::string type_name;
   rbd::Joint::Type type;
   Eigen::Vector3d axis;
   Eigen::Vector3d xyz;
   Eigen::Vector3d rpy;
 
-  bool is_continuous = parseJointType(joint["type"], name, type, type_name);
+  bool is_continuous = parseJointType(joint["type"], name, type, type_name, is_fixed(child));
   parseJointAxis(joint["axis"], name, axis);
   parseFrame(joint["frame"], name, xyz, rpy);
 
@@ -705,6 +722,14 @@ ParserResult from_yaml(const std::string & content,
       .result();
 }
 
+ParserResult from_yaml(const std::string & content, const ParserParameters & params)
+{
+  return RBDynFromYAML(content, ParserInput::Description, params.fixed_, params.filtered_links_,
+                       params.transform_inertia_, params.base_link_, !params.remove_virtual_links_,
+                       params.spherical_suffix_, params.remove_filtered_links_)
+      .result();
+}
+
 ParserResult from_yaml_file(const std::string & file_path,
                             bool fixed,
                             const std::vector<std::string> & filteredLinksIn,
@@ -715,6 +740,14 @@ ParserResult from_yaml_file(const std::string & file_path,
 {
   return RBDynFromYAML(file_path, ParserInput::File, fixed, filteredLinksIn, transformInertia, baseLinkIn,
                        withVirtualLinks, sphericalSuffix)
+      .result();
+}
+
+ParserResult from_yaml_file(const std::string & file_path, const ParserParameters & params)
+{
+  return RBDynFromYAML(file_path, ParserInput::File, params.fixed_, params.filtered_links_, params.transform_inertia_,
+                       params.base_link_, !params.remove_virtual_links_, params.spherical_suffix_,
+                       params.remove_filtered_links_)
       .result();
 }
 
