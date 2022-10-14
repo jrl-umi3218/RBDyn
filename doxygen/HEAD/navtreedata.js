@@ -36,7 +36,7 @@ var NAVTREEINDEX =
 [
 "Body_8h.html",
 "classrbd_1_1Jacobian.html#a650e1c1a9fc5d6e036cab59a40989adb",
-"namespacetinyxml2.html"
+"namespaces.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

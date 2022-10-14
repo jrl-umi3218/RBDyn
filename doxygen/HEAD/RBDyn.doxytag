@@ -65,6 +65,7 @@
     <class kind="struct">rbd::parsers::Material::Color</class>
     <class kind="struct">rbd::parsers::Material::Texture</class>
     <class kind="struct">rbd::parsers::Visual</class>
+    <class kind="struct">rbd::parsers::ParserParameters</class>
     <class kind="struct">rbd::parsers::ParserResult</class>
     <namespace>rbd</namespace>
     <namespace>rbd::parsers</namespace>
@@ -83,6 +84,13 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a421e0a101b5db4ea6fa03ec2a851229c</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_file</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a615a3dcb54a941a650e7487368ce5c05</anchor>
+      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::string</type>
@@ -119,41 +127,6 @@
       <arglist>(const tinyxml2::XMLElement &amp;dom, const std::string &amp;attr, const Eigen::Vector3d &amp;def=Eigen::Vector3d(0, 0, 0))</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI Eigen::Matrix3d</type>
-      <name>RPY</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a5482476785d5d38926b8aac6e6484bc0</anchor>
-      <arglist>(const double &amp;r, const double &amp;p, const double &amp;y)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI rbd::Joint::Type</type>
-      <name>rbdynFromUrdfJoint</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a847ce2e6d8ab02ecd6431b7224d7deaa</anchor>
-      <arglist>(const std::string &amp;type)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI sva::PTransformd</type>
-      <name>originFromTag</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a07957486fbd709ca6c5e77592f0f1246</anchor>
-      <arglist>(const tinyxml2::XMLElement &amp;root, const std::string &amp;tagName)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI sva::PTransformd</type>
-      <name>originFromTag</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a3c943b9da48b57f1c7091d31016e194a</anchor>
-      <arglist>(const tinyxml2::XMLElement *dom)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI std::string</type>
-      <name>parseMultiBodyGraphFromURDF</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a926c03dc3a56d02f90975b8ef815f850</anchor>
-      <arglist>(ParserResult &amp;res, const std::string &amp;content, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
       <name>from_urdf</name>
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
@@ -166,6 +139,20 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>ad6c06f392bb87b12e8554d674a489659</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_urdf</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>ab0f77256f2b8c8f03f9c07ef07723940</anchor>
+      <arglist>(const std::string &amp;content, const ParserParameters &amp;params)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_urdf_file</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a2262e796ac95a5c19bf1941335ac89fc</anchor>
+      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::string</type>
@@ -200,6 +187,20 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a6d188b64e5c4c1d1d130ec77567ef86f</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_yaml</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>ab62307cb57ebfb3df840137954d03e75</anchor>
+      <arglist>(const std::string &amp;content, const ParserParameters &amp;params)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_yaml_file</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a3292cf6f7c989a80cb06ef155e7716bb</anchor>
+      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::string</type>
@@ -3479,6 +3480,108 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>rbd::parsers::ParserParameters</name>
+    <filename>structrbd_1_1parsers_1_1ParserParameters.html</filename>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>fixed</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a1ffde39bb9a038d2ce576e7fb0e68fa5</anchor>
+      <arglist>(bool fixed) noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>filtered_links</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>aa0a0efa96d5de88a52fb5553e1781490</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;links) noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>remove_filtered_links</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>acd8981a719ed351f0332d556c1d30e59</anchor>
+      <arglist>(bool value) noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>transform_inertia</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a30c78294cf41082acb09ee28ebb7d544</anchor>
+      <arglist>(bool value) noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>base_link</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>ab32d75a71c88a3c7ddf0bc62cdcae9b9</anchor>
+      <arglist>(const std::string &amp;link) noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>remove_virtual_links</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a2dace2c9466b3bee2c256cc9e3b26430</anchor>
+      <arglist>(bool value) noexcept</arglist>
+    </member>
+    <member kind="function">
+      <type>ParserParameters &amp;</type>
+      <name>spherical_suffix</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a9c3985f11af12f976b5747fef6ee523e</anchor>
+      <arglist>(const std::string &amp;suffix) noexcept</arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>fixed_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a17e2a0deafd100d9a3340b9caea1eac1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; std::string &gt;</type>
+      <name>filtered_links_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a1d47bba6247f57ec89db353ace656fd4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>remove_filtered_links_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>ab647a29ccf17ef16a0fe0fe25ae1b5e7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>transform_inertia_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a47eed90746af3dc052c388af15e65da5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>base_link_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a64f438df4c34fec6b5e1ebe2c4cf2300</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>remove_virtual_links_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>aa378704cd06e8d0bb83e0190f461e166</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>spherical_suffix_</name>
+      <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
+      <anchor>a9485565978e8fd131cd9257c3386387f</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>rbd::parsers::ParserResult</name>
     <filename>structrbd_1_1parsers_1_1ParserResult.html</filename>
     <member kind="variable">
@@ -3538,8 +3641,8 @@
       <type></type>
       <name>RBDynFromYAML</name>
       <anchorfile>classrbd_1_1parsers_1_1RBDynFromYAML.html</anchorfile>
-      <anchor>abdd56d27d7e56468eb8a37d496646ee4</anchor>
-      <arglist>(const std::string &amp;input, ParserInput input_type=ParserInput::File, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string &amp;spherical_suffix=&quot;_spherical&quot;)</arglist>
+      <anchor>ac20d056bc2085b5c552abdbe674ab393</anchor>
+      <arglist>(const std::string &amp;input, ParserInput input_type=ParserInput::File, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string &amp;spherical_suffix=&quot;_spherical&quot;, bool remove_filtered_links=true)</arglist>
     </member>
     <member kind="function">
       <type>ParserResult &amp;</type>
@@ -4158,6 +4261,7 @@
     <class kind="struct">rbd::parsers::Geometry</class>
     <class kind="struct">rbd::parsers::Limits</class>
     <class kind="struct">rbd::parsers::Material</class>
+    <class kind="struct">rbd::parsers::ParserParameters</class>
     <class kind="struct">rbd::parsers::ParserResult</class>
     <class kind="class">rbd::parsers::RBDynFromYAML</class>
     <class kind="struct">rbd::parsers::Visual</class>
@@ -4176,6 +4280,13 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a421e0a101b5db4ea6fa03ec2a851229c</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_file</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a615a3dcb54a941a650e7487368ce5c05</anchor>
+      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::string</type>
@@ -4199,41 +4310,6 @@
       <arglist>(const tinyxml2::XMLElement &amp;dom, const std::string &amp;attr, const Eigen::Vector3d &amp;def=Eigen::Vector3d(0, 0, 0))</arglist>
     </member>
     <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI Eigen::Matrix3d</type>
-      <name>RPY</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a5482476785d5d38926b8aac6e6484bc0</anchor>
-      <arglist>(const double &amp;r, const double &amp;p, const double &amp;y)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI rbd::Joint::Type</type>
-      <name>rbdynFromUrdfJoint</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a847ce2e6d8ab02ecd6431b7224d7deaa</anchor>
-      <arglist>(const std::string &amp;type)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI sva::PTransformd</type>
-      <name>originFromTag</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a07957486fbd709ca6c5e77592f0f1246</anchor>
-      <arglist>(const tinyxml2::XMLElement &amp;root, const std::string &amp;tagName)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI sva::PTransformd</type>
-      <name>originFromTag</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a3c943b9da48b57f1c7091d31016e194a</anchor>
-      <arglist>(const tinyxml2::XMLElement *dom)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI std::string</type>
-      <name>parseMultiBodyGraphFromURDF</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a926c03dc3a56d02f90975b8ef815f850</anchor>
-      <arglist>(ParserResult &amp;res, const std::string &amp;content, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
       <name>from_urdf</name>
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
@@ -4246,6 +4322,20 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>ad6c06f392bb87b12e8554d674a489659</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_urdf</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>ab0f77256f2b8c8f03f9c07ef07723940</anchor>
+      <arglist>(const std::string &amp;content, const ParserParameters &amp;params)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_urdf_file</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a2262e796ac95a5c19bf1941335ac89fc</anchor>
+      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::string</type>
@@ -4267,6 +4357,20 @@
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
       <anchor>a6d188b64e5c4c1d1d130ec77567ef86f</anchor>
       <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_yaml</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>ab62307cb57ebfb3df840137954d03e75</anchor>
+      <arglist>(const std::string &amp;content, const ParserParameters &amp;params)</arglist>
+    </member>
+    <member kind="function">
+      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
+      <name>from_yaml_file</name>
+      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
+      <anchor>a3292cf6f7c989a80cb06ef155e7716bb</anchor>
+      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_PARSERS_DLLAPI std::string</type>

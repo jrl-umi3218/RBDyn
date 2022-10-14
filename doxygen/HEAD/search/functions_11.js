@@ -48,6 +48,7 @@ var searchData=
   ['sparamtovector',['sParamToVector',['../namespacerbd.html#aa230afce88a5b03f4cdb24bbe5697709',1,'rbd::sParamToVector(const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)'],['../namespacerbd.html#a4553c85e948490a728217442f42017a5',1,'rbd::sParamToVector(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)']]],
   ['sparent',['sParent',['../classrbd_1_1MultiBody.html#adba5aec8ae3eaf7a274b9cf426272b85',1,'rbd::MultiBody']]],
   ['sphere',['Sphere',['../structrbd_1_1parsers_1_1Geometry_1_1Sphere.html#ae5d857b916dc6d41c4020c97bc95421c',1,'rbd::parsers::Geometry::Sphere']]],
+  ['spherical_5fsuffix',['spherical_suffix',['../structrbd_1_1parsers_1_1ParserParameters.html#a9c3985f11af12f976b5747fef6ee523e',1,'rbd::parsers::ParserParameters']]],
   ['spose',['sPose',['../classrbd_1_1Joint.html#ac5d31face6e08f16e892e1ed37a63442',1,'rbd::Joint']]],
   ['spredecessor',['sPredecessor',['../classrbd_1_1MultiBody.html#a223f868f58b0e07a397ad844fcbd282a',1,'rbd::MultiBody']]],
   ['ssubmultibody',['sSubMultiBody',['../classrbd_1_1Jacobian.html#a5384b8a1626874d8e0776fa6b2a6cc3e',1,'rbd::Jacobian']]],

@@ -1,6 +1,8 @@
 var searchData=
 [
   ['b',['b',['../structrbd_1_1parsers_1_1Material_1_1Color.html#a33017e2153cc2306d67870d34824e28b',1,'rbd::parsers::Material::Color']]],
+  ['base_5flink',['base_link',['../structrbd_1_1parsers_1_1ParserParameters.html#ab32d75a71c88a3c7ddf0bc62cdcae9b9',1,'rbd::parsers::ParserParameters']]],
+  ['base_5flink_5f',['base_link_',['../structrbd_1_1parsers_1_1ParserParameters.html#a64f438df4c34fec6b5e1ebe2c4cf2300',1,'rbd::parsers::ParserParameters']]],
   ['block',['Block',['../structrbd_1_1Block.html',1,'rbd::Block'],['../structrbd_1_1Block.html#ad655df495540f9830ce18c857a16194f',1,'rbd::Block::Block()=default'],['../structrbd_1_1Block.html#a72aad336bed307fedb69b4899c935cb5',1,'rbd::Block::Block(Eigen::DenseIndex startDof, Eigen::DenseIndex startJac, Eigen::DenseIndex length)']]],
   ['blocks',['Blocks',['../namespacerbd.html#addcc00b58bd78ec27ff56ad979f5ff2d',1,'rbd']]],
   ['bodies',['bodies',['../classrbd_1_1MultiBody.html#a11c8909737502423642f67ff6ba2dfd5',1,'rbd::MultiBody::bodies() const'],['../classrbd_1_1MultiBody.html#a3374d2c673adf3410c20d0dae9fd1622',1,'rbd::MultiBody::bodies(std::vector&lt; Body &gt; b)']]],

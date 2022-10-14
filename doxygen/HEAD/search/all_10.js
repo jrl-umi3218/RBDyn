@@ -11,9 +11,12 @@ var searchData=
   ['rbdyn_5fparsers_5fdllimport',['RBDYN_PARSERS_DLLIMPORT',['../api_8h.html#aaf00e7b003e0f4f81cd20dbc593ed530',1,'api.h']]],
   ['rbdyn_5fparsers_5fdlllocal',['RBDYN_PARSERS_DLLLOCAL',['../api_8h.html#a6adad91fbbe49e65788e790947df8a21',1,'api.h']]],
   ['rbdyn_5fparsers_5flocal',['RBDYN_PARSERS_LOCAL',['../api_8h.html#ace10d7f6ce3f44b09fef140064724940',1,'api.h']]],
-  ['rbdynfromurdfjoint',['rbdynFromUrdfJoint',['../namespacerbd_1_1parsers.html#a847ce2e6d8ab02ecd6431b7224d7deaa',1,'rbd::parsers']]],
-  ['rbdynfromyaml',['RBDynFromYAML',['../classrbd_1_1parsers_1_1RBDynFromYAML.html',1,'rbd::parsers::RBDynFromYAML'],['../classrbd_1_1parsers_1_1RBDynFromYAML.html#abdd56d27d7e56468eb8a37d496646ee4',1,'rbd::parsers::RBDynFromYAML::RBDynFromYAML()']]],
+  ['rbdynfromyaml',['RBDynFromYAML',['../classrbd_1_1parsers_1_1RBDynFromYAML.html',1,'rbd::parsers::RBDynFromYAML'],['../classrbd_1_1parsers_1_1RBDynFromYAML.html#ac20d056bc2085b5c552abdbe674ab393',1,'rbd::parsers::RBDynFromYAML::RBDynFromYAML()']]],
   ['readme_2emd',['README.md',['../README_8md.html',1,'']]],
+  ['remove_5ffiltered_5flinks',['remove_filtered_links',['../structrbd_1_1parsers_1_1ParserParameters.html#acd8981a719ed351f0332d556c1d30e59',1,'rbd::parsers::ParserParameters']]],
+  ['remove_5ffiltered_5flinks_5f',['remove_filtered_links_',['../structrbd_1_1parsers_1_1ParserParameters.html#ab647a29ccf17ef16a0fe0fe25ae1b5e7',1,'rbd::parsers::ParserParameters']]],
+  ['remove_5fvirtual_5flinks',['remove_virtual_links',['../structrbd_1_1parsers_1_1ParserParameters.html#a2dace2c9466b3bee2c256cc9e3b26430',1,'rbd::parsers::ParserParameters']]],
+  ['remove_5fvirtual_5flinks_5f',['remove_virtual_links_',['../structrbd_1_1parsers_1_1ParserParameters.html#aa378704cd06e8d0bb83e0190f461e166',1,'rbd::parsers::ParserParameters']]],
   ['removejoint',['removeJoint',['../classrbd_1_1MultiBodyGraph.html#a9de7906c304ab726487e7ef158d81264',1,'rbd::MultiBodyGraph']]],
   ['removejoints',['removeJoints',['../classrbd_1_1MultiBodyGraph.html#adc767caefca5cb2edb685f4875069f54',1,'rbd::MultiBodyGraph']]],
   ['result',['result',['../classrbd_1_1parsers_1_1RBDynFromYAML.html#ae9e45779b7d88f272e2ccd36c00fcec8',1,'rbd::parsers::RBDynFromYAML']]],
@@ -21,6 +24,5 @@ var searchData=
   ['revx',['RevX',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a27319663df173fa147a2d271e0ef355f',1,'rbd::Joint']]],
   ['revy',['RevY',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a3686aba670ebb2c1a6a3b789114884bd',1,'rbd::Joint']]],
   ['revz',['RevZ',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a432be99df9b9483bee433d8d9f948cc2',1,'rbd::Joint']]],
-  ['rootjointname_5f',['rootJointName_',['../classrbd_1_1MultiBodyGraph.html#a80b027812459d999809baa10eae13236',1,'rbd::MultiBodyGraph']]],
-  ['rpy',['RPY',['../namespacerbd_1_1parsers.html#a5482476785d5d38926b8aac6e6484bc0',1,'rbd::parsers']]]
+  ['rootjointname_5f',['rootJointName_',['../classrbd_1_1MultiBodyGraph.html#a80b027812459d999809baa10eae13236',1,'rbd::MultiBodyGraph']]]
 ];
