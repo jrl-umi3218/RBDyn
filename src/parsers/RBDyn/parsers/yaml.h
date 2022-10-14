@@ -30,7 +30,8 @@ public:
                 bool transform_inertia = true,
                 const std::string & base_link = "",
                 bool with_virtual_links = true,
-                const std::string & spherical_suffix = "_spherical");
+                const std::string & spherical_suffix = "_spherical",
+                bool remove_filtered_links = true);
 
   ParserResult & result()
   {
@@ -52,9 +53,12 @@ private:
   size_t joint_idx_;
   std::map<std::string, rbd::Joint::Type> joint_types_;
   std::vector<std::string> filtered_links_;
+  bool remove_filtered_links_;
   bool with_virtual_links_;
   const std::string & spherical_suffix_;
   std::unordered_map<std::string, Material> materials_;
+  std::vector<std::string> fixed_links_;
+  std::vector<std::string> removed_links_;
 
   Eigen::Matrix3d makeInertia(double ixx, double iyy, double izz, double iyz, double ixz, double ixy);
 
@@ -91,7 +95,8 @@ private:
   bool parseJointType(const YAML::Node & type,
                       const std::string & name,
                       rbd::Joint::Type & joint_type,
-                      std::string & type_name);
+                      std::string & type_name,
+                      bool force_fixed);
 
   void parseJointAxis(const YAML::Node & axis, const std::string & name, Eigen::Vector3d & joint_axis);
 
@@ -118,6 +123,10 @@ RBDYN_PARSERS_DLLAPI ParserResult from_yaml_file(const std::string & file_path,
                                                  const std::string & baseLinkIn = "",
                                                  bool withVirtualLinks = true,
                                                  const std::string & sphericalSuffix = "_spherical");
+
+RBDYN_PARSERS_DLLAPI ParserResult from_yaml(const std::string & content, const ParserParameters & params);
+
+RBDYN_PARSERS_DLLAPI ParserResult from_yaml_file(const std::string & file_path, const ParserParameters & params);
 
 RBDYN_PARSERS_DLLAPI std::string to_yaml(const ParserResult & res);
 
