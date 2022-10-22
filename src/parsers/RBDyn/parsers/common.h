@@ -170,7 +170,7 @@ struct RBDYN_PARSERS_DLLAPI ParserParameters
    *
    * \note This is independent of the \ref remove_filtered_links parameter
    */
-  bool remove_virtual_links_ = true;
+  bool remove_virtual_links_ = false;
 
   /** Treat joint with this suffix as spherical joints */
   std::string spherical_suffix_ = "_spherical";
