@@ -1,3 +1,9 @@
+rbdyn (1.7.2-1debian1) unstable; urgency=medium
+
+  * Update upstream version
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Thu, 27 Oct 2022 19:12:31 -0700
+
 rbdyn (1.7.1-1debian1) unstable; urgency=medium
 
   * Update upstream version
