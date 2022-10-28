@@ -42,7 +42,7 @@ jobs:
   #
   # This job does not run on the master branch
   check-tag:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -88,12 +88,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix: &package-matrix
-        dist: [xenial, bionic, focal]
+        dist: [bionic, focal]
         arch: [i386, amd64]
         exclude:
           - dist: focal
             arch: i386
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -150,7 +150,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix: *package-matrix
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -173,7 +173,7 @@ jobs:
   # This job triggers a mirror sync and dependent rebuilds
   mirror-sync-and-trigger:
     needs: upload-packages
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
