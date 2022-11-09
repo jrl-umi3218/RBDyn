@@ -1,11 +1,13 @@
 # distutils: language = c++
+# cython: language_level=3
 
 #
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-cimport rbdyn.c_rbdyn as c_rbdyn
-cimport rbdyn.c_rbdyn_private as c_rbdyn_private
+from . cimport c_rbdyn
+from . cimport c_rbdyn_private
+
 cimport sva.c_sva as c_sva
 cimport eigen.c_eigen as c_eigen
 cimport sva.sva as sva

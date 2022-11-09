@@ -2,6 +2,8 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
+# cython: language_level=3
+
 from eigen.c_eigen cimport *
 from sva.c_sva cimport *
 from libcpp.map cimport map

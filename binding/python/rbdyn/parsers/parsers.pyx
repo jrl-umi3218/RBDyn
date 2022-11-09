@@ -1,11 +1,12 @@
 # distutils: language = c++
+# cython: language_level=3
 
 #
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-cimport c_parsers
-cimport c_parsers_private
+from . cimport c_parsers
+from . cimport c_parsers_private
 
 cimport eigen.eigen as eigen
 cimport sva.sva as sva
@@ -276,7 +277,7 @@ cdef class Geometry(object):
       elif self.impl._type == c_parsers.GeometrySUPERELLIPSOID:
         return GeometrySuperellipsoidFromC(c_parsers_private.getSuperellipsoid(self.impl))
       else:
-        print "No data in the Geometry you are accessing"
+        print("No data in the Geometry you are accessing")
         return None
     def __set__(self, value):
       assert(__EXPERT_MODE__)

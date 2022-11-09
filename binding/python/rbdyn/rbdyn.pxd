@@ -2,9 +2,11 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
+# cython: language_level=3
+
 cimport eigen.eigen as eigen
 cimport sva.sva as sva
-cimport c_rbdyn
+from . cimport c_rbdyn
 from libcpp.vector cimport vector
 from libcpp cimport bool as cppbool
 
