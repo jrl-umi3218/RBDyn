@@ -3,7 +3,7 @@
 #
 
 set(RBDYN_BINDINGS_MODULES rbdyn.rbdyn)
-set(RBDYN_BINDINGS_EXPORT_SOURCES rbdyn/c_rbdyn.pxd rbdyn/rbdyn.pxd rbdyn/__init__.py)
+set(RBDYN_BINDINGS_EXPORT_SOURCES rbdyn/c_rbdyn.pxd rbdyn/rbdyn.pxd)
 set(RBDYN_BINDINGS_PRIVATE_SOURCES include/rbdyn_wrapper.hpp rbdyn/rbdyn.pyx rbdyn/c_rbdyn_private.pxd tests/test_rbdyn_pickle.py)
 set(RBDYN_BINDINGS_TARGETS RBDyn)
 
@@ -22,4 +22,5 @@ ADD_CYTHON_BINDINGS(rbdyn
   MODULES ${RBDYN_BINDINGS_MODULES}
   EXPORT_SOURCES ${RBDYN_BINDINGS_EXPORT_SOURCES}
   PRIVATE_SOURCES ${RBDYN_BINDINGS_PRIVATE_SOURCES}
+  GENERATE_SOURCES rbdyn/__init__.py
 )
