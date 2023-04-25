@@ -166,7 +166,7 @@ std::string to_yaml(const ParserResult & res)
             doc << Key << "mesh" << BeginMap;
             const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
             doc << Key << "filename" << Value << prefix_path(mesh.filename);
-            doc << Key << "scale" << Value << mesh.scale;
+            doc << Key << "scale" << BeginSeq << mesh.scaleV.x() << mesh.scaleV.y() << mesh.scaleV.z() << EndSeq;
             doc << EndMap;
           }
           break;

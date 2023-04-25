@@ -234,7 +234,18 @@ Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
 {
   Geometry::Mesh mesh;
   mesh.filename = meshDom.Attribute("filename");
-  mesh.scale = attrToDouble(meshDom, "scale", 1.0);
+  auto maybeScaleV = attrToList(meshDom, "scale", {1.0});
+  if(maybeScaleV.size() == 3)
+  {
+    mesh.scaleV = Eigen::Map<Eigen::Vector3d>(maybeScaleV.data(), 3);
+    mesh.scale = mesh.scaleV[2];
+  }
+  else
+  {
+    assert(maybeScaleV.size() == 1);
+    mesh.scale = maybeScaleV[0];
+    mesh.scaleV.setConstant(mesh.scale);
+  }
   return mesh;
 }
 

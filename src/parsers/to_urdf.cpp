@@ -176,7 +176,7 @@ std::string to_urdf(const ParserResult & res)
             auto node = doc.NewElement("mesh");
             const auto mesh = boost::get<Geometry::Mesh>(visual.geometry.data);
             node->SetAttribute("filename", prefix_path(mesh.filename).c_str());
-            set_vec3d(node, "scale", Eigen::Vector3d::Constant(mesh.scale));
+            set_vec3d(node, "scale", mesh.scaleV);
             geometry_node->InsertEndChild(node);
           }
           break;

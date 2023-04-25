@@ -43,8 +43,9 @@ struct RBDYN_PARSERS_DLLAPI Geometry
 public:
   struct Mesh
   {
-    Mesh() : scale(1) {}
+    Mesh() : scaleV(Eigen::Vector3d::Ones()), scale(1) {}
     std::string filename;
+    Eigen::Vector3d scaleV;
     double scale;
   };
   struct Box

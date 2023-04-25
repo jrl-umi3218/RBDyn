@@ -8,7 +8,7 @@
 
 constexpr double TOL = 1e-6;
 
-rbd::parsers::ParserResult createRobot()
+inline rbd::parsers::ParserResult createRobot()
 {
   auto create_ptransform = [](double x, double y, double z, double rx, double ry, double rz) {
     Eigen::Quaterniond q = Eigen::AngleAxisd(rx, Eigen::Vector3d::UnitX())
@@ -76,11 +76,15 @@ rbd::parsers::ParserResult createRobot()
     rbd::parsers::Geometry::Mesh mesh;
     v1.origin = create_ptransform(0.1, 0.2, 0.3, 0, 0, 0);
     mesh.filename = "file://test_mesh1.dae";
+    mesh.scale = 1.0;
+    mesh.scaleV = Eigen::Vector3d::Ones();
     v1.geometry.type = rbd::parsers::Geometry::Type::MESH;
     v1.geometry.data = mesh;
 
     v2.origin = create_ptransform(0, 0, 0, 0, 0, 0);
     mesh.filename = "file://test_mesh2.dae";
+    mesh.scale = 0.1;
+    mesh.scaleV = Eigen::Vector3d(0.1, -0.1, 0.1);
     v2.geometry.type = rbd::parsers::Geometry::Type::MESH;
     v2.geometry.data = mesh;
 
@@ -161,54 +165,54 @@ namespace rbd
 namespace parsers
 {
 
-bool operator==(const Geometry::Mesh & m1, const Geometry::Mesh & m2)
+inline bool operator==(const Geometry::Mesh & m1, const Geometry::Mesh & m2)
 {
-  return m1.scale == m2.scale && m1.filename == m2.filename;
+  return m1.scaleV == m2.scaleV && m1.scale == m2.scale && m1.filename == m2.filename;
 }
 
-bool operator==(const Geometry::Box & b1, const Geometry::Box & b2)
+inline bool operator==(const Geometry::Box & b1, const Geometry::Box & b2)
 {
   return b1.size == b2.size;
 }
 
-bool operator==(const Geometry::Sphere & b1, const Geometry::Sphere & b2)
+inline bool operator==(const Geometry::Sphere & b1, const Geometry::Sphere & b2)
 {
   return b1.radius == b2.radius;
 }
 
-bool operator==(const Geometry::Cylinder & b1, const Geometry::Cylinder & b2)
+inline bool operator==(const Geometry::Cylinder & b1, const Geometry::Cylinder & b2)
 {
   return b1.radius == b2.radius && b1.length == b2.length;
 }
 
-bool operator==(const Geometry & g1, const Geometry & g2)
+inline bool operator==(const Geometry & g1, const Geometry & g2)
 {
   return g1.type == g2.type && g1.data == g2.data;
 }
 
-bool operator==(const Material::Color & c1, const Material::Color & c2)
+inline bool operator==(const Material::Color & c1, const Material::Color & c2)
 {
   return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
 }
 
-bool operator==(const Material::Texture & t1, const Material::Texture & t2)
+inline bool operator==(const Material::Texture & t1, const Material::Texture & t2)
 {
   return t1.filename == t2.filename;
 }
 
-bool operator==(const Material & m1, const Material & m2)
+inline bool operator==(const Material & m1, const Material & m2)
 {
   return m1.type == m2.type && (m1.type == Material::Type::NONE || m1.data == m2.data);
 }
 
-bool operator==(const Visual & v1, const Visual & v2)
+inline bool operator==(const Visual & v1, const Visual & v2)
 {
   return v1.name == v2.name && v1.origin.rotation().isApprox(v2.origin.rotation(), TOL)
          && v1.origin.translation().isApprox(v2.origin.translation(), TOL) && v1.geometry == v2.geometry
          && v1.material == v2.material;
 }
 
-bool operator==(const Geometry::Superellipsoid & se1, const Geometry::Superellipsoid & se2)
+inline bool operator==(const Geometry::Superellipsoid & se1, const Geometry::Superellipsoid & se2)
 {
   return (se1.size == se2.size && se1.epsilon1 == se2.epsilon1 && se1.epsilon2 == se2.epsilon2);
 }
@@ -235,7 +239,7 @@ const std::string XYZSarmUrdf(
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <mesh filename="file://test_mesh2.dae"/>
+          <mesh filename="file://test_mesh2.dae" scale="0.1 -0.1 0.1" />
         </geometry>
       </visual>
       <visual>
@@ -371,6 +375,7 @@ const std::string XYZSarmYaml(
           geometry:
             mesh:
               filename: file://test_mesh2.dae
+              scale: [0.1, -0.1, 0.1]
         - frame:
             xyz: [0, 0, 0]
             rpy: [0, 0, 0]
@@ -388,14 +393,14 @@ const std::string XYZSarmYaml(
           Ixz: 0
           Ixy: 0
       visual:
-        - frame: 
+        - frame:
             xyz: [0.4, 0.5, 0.6]
             rpy: [1, 0, 0]
           geometry:
             box:
               size: [1, 2, 3]
       collision:
-        - frame: 
+        - frame:
             xyz: [0.4, 0.5, 0.6]
             rpy: [0, 1, 0]
           geometry:
@@ -415,7 +420,7 @@ const std::string XYZSarmYaml(
           Ixz: 0
           Ixy: 0
       visual:
-        - frame: 
+        - frame:
             xyz: [0.4, 0.5, 0.6]
             rpy: [0, 0, 1]
           geometry:
@@ -436,7 +441,7 @@ const std::string XYZSarmYaml(
           Ixz: 0
           Ixy: 0
       visual:
-        - frame: 
+        - frame:
             xyz: [0.4, 0.5, 0.6]
             rpy: [1, 0, 0]
           geometry:
@@ -460,14 +465,14 @@ const std::string XYZSarmYaml(
           Ixz: 0
           Ixy: 0
       visual:
-        - frame: 
+        - frame:
             xyz: [0.4, 0.5, 0.6]
             rpy: [0, 1, 0]
           geometry:
             superellipsoid:
               size: [0.1, 0.2, 0.3]
               epsilon1: 0.5
-              epsilon2: 1        
+              epsilon2: 1
           material:
             name: Texture
             texture:
