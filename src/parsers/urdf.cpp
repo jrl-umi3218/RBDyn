@@ -234,7 +234,18 @@ Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
 {
   Geometry::Mesh mesh;
   mesh.filename = meshDom.Attribute("filename");
-  mesh.scale = attrToDouble(meshDom, "scale", 1.0);
+  auto maybeScaleV = attrToList(meshDom, "scale", {1.0});
+  if(maybeScaleV.size() == 3)
+  {
+    mesh.scaleV = Eigen::Map<Eigen::Vector3d>(maybeScaleV.data(), 3);
+    mesh.scale = mesh.scaleV[2];
+  }
+  else
+  {
+    assert(maybeScaleV.size() == 1);
+    mesh.scale = maybeScaleV[0];
+    mesh.scaleV.setConstant(mesh.scale);
+  }
   return mesh;
 }
 
@@ -278,7 +289,8 @@ bool visualFromTag(const tinyxml2::XMLElement & dom, const MaterialCache & mater
   }
   const auto & geometryDom = *geometryDomPtr;
   using geometry_fn = Geometry::Data (*)(const tinyxml2::XMLElement & mesh);
-  auto handleGeometry = [&out, &geometryDom](const char * name, Geometry::Type type, geometry_fn get_geom) {
+  auto handleGeometry = [&out, &geometryDom](const char * name, Geometry::Type type, geometry_fn get_geom)
+  {
     auto geom = geometryDom.FirstChildElement(name);
     if(!geom)
     {
@@ -351,7 +363,8 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     tinyxml2::XMLElement * link = robot->FirstChildElement("link");
     while(link)
     {
-      auto handle_link = [&]() {
+      auto handle_link = [&]()
+      {
         std::string linkName = link->Attribute("name");
         bool link_has_inertia = link->FirstChildElement("inertial") != nullptr;
         if(!link_has_inertia && params.remove_virtual_links_)
@@ -451,12 +464,10 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     res.mbg.addBody(b);
   }
 
-  auto is_removed = [&](const std::string & body) {
-    return std::find(removed_links.begin(), removed_links.end(), body) != removed_links.end();
-  };
-  auto is_fixed = [&](const std::string & body) {
-    return std::find(fixed_links.begin(), fixed_links.end(), body) != fixed_links.end();
-  };
+  auto is_removed = [&](const std::string & body)
+  { return std::find(removed_links.begin(), removed_links.end(), body) != removed_links.end(); };
+  auto is_fixed = [&](const std::string & body)
+  { return std::find(fixed_links.begin(), fixed_links.end(), body) != fixed_links.end(); };
 
   std::vector<tinyxml2::XMLElement *> joints;
   // Extract joint elements from the document, remove joints that link with filtered links
@@ -501,7 +512,8 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
       axis = attrToVector(*axisDom, "xyz").normalized();
     }
 
-    auto is_spherical = [&](const std::string & joint) {
+    auto is_spherical = [&](const std::string & joint)
+    {
       return joint.length() >= params.spherical_suffix_.length()
              && joint.substr(joint.length() - params.spherical_suffix_.length(), params.spherical_suffix_.length())
                     == params.spherical_suffix_;
@@ -546,7 +558,8 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
       effort = attrToList(*limitDom, "effort");
       velocity = attrToList(*limitDom, "velocity");
     }
-    auto check_limit = [&j](const std::string & name, const std::vector<double> & limit) {
+    auto check_limit = [&j](const std::string & name, const std::vector<double> & limit)
+    {
       if(limit.size() != static_cast<size_t>(j.dof()))
       {
         std::cerr << "Joint " << name << " limit for " << j.name() << ": size missmatch, expected: " << j.dof()

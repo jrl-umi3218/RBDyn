@@ -5,13 +5,13 @@
 #pragma once
 
 #ifdef __GNUC__
-#  define RBDYN_DO_PRAGMA(x) _Pragma(#  x)
-#  define RBDYN_PRAGMA_WARNING(x) RBDYN_DO_PRAGMA(GCC warning #  x)
+#  define RBDYN_DO_PRAGMA(x) _Pragma(#x)
+#  define RBDYN_PRAGMA_WARNING(x) RBDYN_DO_PRAGMA(GCC warning #x)
 #endif //__GNUC__
 #ifdef _MSC_VER
-#  define __RBDYN_STRINGIFY__(x) #  x
+#  define __RBDYN_STRINGIFY__(x) #x
 #  define __RBDYN_TOSTRING__(x) __RBDYN_STRINGIFY__(x)
-#  define RBDYN_PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __RBDYN_TOSTRING__(__LINE__) ") : warning: " #  x))
+#  define RBDYN_PRAGMA_WARNING(x) __pragma(message(__FILE__ "(" __RBDYN_TOSTRING__(__LINE__) ") : warning: " #x))
 #endif
 
 #ifndef rbdyn_EXPORTS

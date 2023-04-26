@@ -231,19 +231,19 @@ yaml_model = """robot:
 
 
 class TestRBDynParsers(unittest.TestCase):
-  def check_result(self, parser_result):
-    self.assertEqual(parser_result.name, b"XYZSarm")
-    self.assertEqual(len(parser_result.visual), 1)
-    self.assertEqual(len(parser_result.collision), 0)
-    self.assertEqual(len(parser_result.limits.lower), 4)
-    self.assertEqual(len(parser_result.limits.upper), 4)
-    self.assertEqual(len(parser_result.limits.velocity), 4)
-    self.assertEqual(len(parser_result.limits.torque), 4)
-    self.assertEqual(parser_result.mb.nrBodies(), 5)
-    self.assertEqual(parser_result.mb.nrJoints(), 5)
-    self.assertEqual(parser_result.mbg.nrNodes(), 5)
-    self.assertEqual(parser_result.mbg.nrJoints(), 4)
+    def check_result(self, parser_result):
+        self.assertEqual(parser_result.name, b"XYZSarm")
+        self.assertEqual(len(parser_result.visual), 1)
+        self.assertEqual(len(parser_result.collision), 0)
+        self.assertEqual(len(parser_result.limits.lower), 4)
+        self.assertEqual(len(parser_result.limits.upper), 4)
+        self.assertEqual(len(parser_result.limits.velocity), 4)
+        self.assertEqual(len(parser_result.limits.torque), 4)
+        self.assertEqual(parser_result.mb.nrBodies(), 5)
+        self.assertEqual(parser_result.mb.nrJoints(), 5)
+        self.assertEqual(parser_result.mbg.nrNodes(), 5)
+        self.assertEqual(parser_result.mbg.nrJoints(), 4)
 
-  def test(self):
-    self.check_result(rbdyn.parsers.from_urdf(urdf_model))
-    self.check_result(rbdyn.parsers.from_yaml(yaml_model))
+    def test(self):
+        self.check_result(rbdyn.parsers.from_urdf(urdf_model))
+        self.check_result(rbdyn.parsers.from_yaml(yaml_model))

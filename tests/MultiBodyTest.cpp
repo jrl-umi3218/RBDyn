@@ -398,7 +398,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
   // test the successorJoints and predecessorJoint function
   auto testSucc = [](const std::map<std::string, std::vector<std::string>> & s1,
-                     const std::map<std::string, std::vector<std::string>> & s2) {
+                     const std::map<std::string, std::vector<std::string>> & s2)
+  {
     BOOST_CHECK_EQUAL(s1.size(), s2.size());
     auto it1 = s1.begin();
     auto it2 = s2.begin();
@@ -408,7 +409,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
       BOOST_CHECK_EQUAL_COLLECTIONS(it1->second.begin(), it1->second.end(), it2->second.begin(), it2->second.end());
     }
   };
-  auto testPred = [](const std::map<std::string, std::string> & s1, const std::map<std::string, std::string> & s2) {
+  auto testPred = [](const std::map<std::string, std::string> & s1, const std::map<std::string, std::string> & s2)
+  {
     BOOST_CHECK_EQUAL(s1.size(), s2.size());
     auto it1 = s1.begin();
     auto it2 = s2.begin();
