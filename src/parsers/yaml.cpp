@@ -624,7 +624,8 @@ void RBDynFromYAML::parseJointLimits(const YAML::Node & limits,
       effort[0] = limits["effort"].as<double>(infinity);
       velocity[0] = limits["velocity"].as<double>(infinity);
     }
-    auto check_limit = [&joint](const std::string & name, const std::vector<double> & limit) {
+    auto check_limit = [&joint](const std::string & name, const std::vector<double> & limit)
+    {
       if(limit.size() != static_cast<size_t>(joint.dof()))
       {
         std::cerr << "YAML: joint " << name << " limit for " << joint.name()
@@ -663,16 +664,14 @@ void RBDynFromYAML::parseJoint(const YAML::Node & joint)
 
   std::string parent = joint["parent"].as<std::string>("link" + std::to_string(joint_idx_));
   std::string child = joint["child"].as<std::string>("link" + std::to_string(joint_idx_ + 1));
-  auto is_removed = [&](const std::string & link) {
-    return std::find(removed_links_.begin(), removed_links_.end(), link) != removed_links_.end();
-  };
+  auto is_removed = [&](const std::string & link)
+  { return std::find(removed_links_.begin(), removed_links_.end(), link) != removed_links_.end(); };
   if(is_removed(child) || is_removed(parent))
   {
     return;
   }
-  auto is_fixed = [&](const std::string & link) {
-    return std::find(fixed_links_.begin(), fixed_links_.end(), link) != fixed_links_.end();
-  };
+  auto is_fixed = [&](const std::string & link)
+  { return std::find(fixed_links_.begin(), fixed_links_.end(), link) != fixed_links_.end(); };
   std::string type_name;
   rbd::Joint::Type type;
   Eigen::Vector3d axis;

@@ -92,5 +92,3 @@ cdef class ConfigConverter(object):
 
 cdef class IDIM(object):
   cdef c_rbdyn.IDIM impl
-
-

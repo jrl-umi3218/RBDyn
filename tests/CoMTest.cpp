@@ -257,7 +257,8 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
   forwardKinematics(mb, mbc);
 
-  auto testJacCoMVelAcc = [](const rbd::MultiBody & mb, rbd::MultiBodyConfig & mbc, rbd::CoMJacobianDummy & comJac) {
+  auto testJacCoMVelAcc = [](const rbd::MultiBody & mb, rbd::MultiBodyConfig & mbc, rbd::CoMJacobianDummy & comJac)
+  {
     forwardVelocity(mb, mbc);
     forwardAcceleration(mb, mbc);
 

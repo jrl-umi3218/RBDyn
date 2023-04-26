@@ -57,7 +57,7 @@ Given $x \in \mathbb{R}^3$, $\hat{x}$ defines the skew-symmetric matrix correspo
 \begin{equation}
 	\hat{x} = \BIN 0 & -x_3 & x_2 \\ x_3 & 0 & -x_1 \\ -x_2 & x_1 & 0 \BOUT
 \end{equation}
-Conversely, for a skew-symmetric matrix $S$, $ s = \widecheck{S} \in \mathbb{R}^3$ is the vector such that $\hat{s} = S$. 
+Conversely, for a skew-symmetric matrix $S$, $ s = \widecheck{S} \in \mathbb{R}^3$ is the vector such that $\hat{s} = S$.
 
 Without loss of generality, we integrate over $\left[0,\dt\right]$. For a function $x(t)$, we note $x_0 = x(0)$.
 
@@ -89,9 +89,9 @@ The first terms are (\emph{cf} wikipedia), with the shortcut $A_i = A(t_i)$
 \end{align}
 
 \subsection{Application to $\dot{R}^T = - \hat{\w} R^T$}
-For the problem $\dot{R}^T(t) = - \hat{\w}(t) R^T(t)$, $R(0) = R_0$, we have that $R^T(t) = \exp(\Omega(t)) R_0^T(t)$. Thus $R(t) = R_0 \exp(\Omega(t))^T = R_0  \exp(-\Omega(t))$. 
+For the problem $\dot{R}^T(t) = - \hat{\w}(t) R^T(t)$, $R(0) = R_0$, we have that $R^T(t) = \exp(\Omega(t)) R_0^T(t)$. Thus $R(t) = R_0 \exp(\Omega(t))^T = R_0  \exp(-\Omega(t))$.
 
-With $\w(t) = \w_0 + t \dot{\w}_0$, 
+With $\w(t) = \w_0 + t \dot{\w}_0$,
 \begin{align}
 	\Omega_1(t) & = -(\widehat{\w_0} + \frac{t}{2}\widehat{\dw_0})t \\
 	\Omega_2(t) & = \frac{1}{12} \widehat{\dw_0 \times \w_0} t^3 \\
@@ -156,7 +156,7 @@ for some $\xi \in \left[0,\dt\right]$.
 \newline
 For $f(t) = R(t)v(t)$ with $v(t) = v_0 + t \dv_0$, $\w(t) = \w_0 + t \dw_0$ and $\dot{R}(t) = R(t)\hat{\w}(t)$, we have, dropping the dependence in $t$:
 \begin{align}
-	&f^{(4)} = R \left((\norm{\w}^4-3\norm{\dw_0}^2)v -12\dw_0^T \w \dv_0 + (4\dw_0^T \dv_0 - \norm{\w}^2\w^T v)\w\right. \nonumber\\ 
+	&f^{(4)} = R \left((\norm{\w}^4-3\norm{\dw_0}^2)v -12\dw_0^T \w \dv_0 + (4\dw_0^T \dv_0 - \norm{\w}^2\w^T v)\w\right. \nonumber\\
 	& \left. + (3\dw_0^T v + 8\w^T \dv_0)\dw_0+(5\dw_0^T \w v + 4\norm{\w}^2 \dv_0) \times \w + (2 \w^T v\w + \norm{\w}^2 v) \times \dw_0\right)\nonumber
 \end{align}
 (see Appendix for details)
@@ -178,7 +178,7 @@ An important remark is that $\norm{f^{(4)}}$ is independent of $R(t)$ as $R(t)$ 
 \section{Planar joint}
 In the current version of RBDyn, all translation quantities are expressed in the successor's frame. Noting $x$ the translation part for this joint and $\theta$ the rotation angle, we have
 \begin{align}
-&\dot{x}(t) = A(t) x(t) + R(\theta(t)) v(t)\\ 
+&\dot{x}(t) = A(t) x(t) + R(\theta(t)) v(t)\\
 &\mbox{with}\ A(t) = \BIN 0 & \w(t) \\ -\w(t) & 0 \BOUT \ \mbox{and}\ R(u) = \BIN \cos{u} & -\sin{u} \\ \sin{u} & \cos{u}\BOUT \nonumber
 \end{align}
 We define

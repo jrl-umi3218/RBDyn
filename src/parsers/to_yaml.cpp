@@ -18,13 +18,15 @@ std::string to_yaml(const ParserResult & res)
   doc << Key << "name" << Value << res.name;
   doc << Key << "anglesInDegrees" << Value << false;
 
-  auto set_vec3d = [&](const char * name, Eigen::Ref<const Eigen::Vector3d> xyz) {
+  auto set_vec3d = [&](const char * name, Eigen::Ref<const Eigen::Vector3d> xyz)
+  {
     doc << Value << name << Key << Flow << BeginSeq;
     doc << xyz.x() << xyz.y() << xyz.z();
     doc << EndSeq;
   };
 
-  auto set_origin_from_ptransform = [&](const sva::PTransformd & X) {
+  auto set_origin_from_ptransform = [&](const sva::PTransformd & X)
+  {
     const auto & xyz = X.translation();
     const auto rpy = X.rotation().transpose().eulerAngles(0, 1, 2);
     if(!xyz.isZero() || !rpy.isZero())
@@ -62,7 +64,8 @@ std::string to_yaml(const ParserResult & res)
         doc << Key << "mass" << Value << link.inertia().mass();
       }
 
-      const auto com = [&]() -> Eigen::Vector3d {
+      const auto com = [&]() -> Eigen::Vector3d
+      {
         if(link.inertia().mass() > 0.)
         {
           return link.inertia().momentum() / link.inertia().mass();
@@ -99,7 +102,8 @@ std::string to_yaml(const ParserResult & res)
       doc << EndMap;
     }
 
-    auto generate_visual = [&](const char * type, const std::map<std::string, std::vector<Visual>> & visuals) {
+    auto generate_visual = [&](const char * type, const std::map<std::string, std::vector<Visual>> & visuals)
+    {
       auto visuals_it = visuals.find(link.name());
       if(visuals_it == visuals.end())
       {
@@ -205,7 +209,8 @@ std::string to_yaml(const ParserResult & res)
   }
   doc << EndSeq;
 
-  auto is_continuous = [&](const rbd::Joint & joint) -> bool {
+  auto is_continuous = [&](const rbd::Joint & joint) -> bool
+  {
     const bool has_upper_limit = res.limits.upper.count(joint.name()) > 0;
     const bool has_lower_limit = res.limits.lower.count(joint.name()) > 0;
     if(!has_upper_limit && !has_lower_limit)
@@ -226,12 +231,13 @@ std::string to_yaml(const ParserResult & res)
     }
   };
 
-  auto set_vector = [&](const char * name, const std::vector<double> & v) {
-    doc << Key << name << Value << Flow << BeginSeq << v << EndSeq;
-  };
+  auto set_vector = [&](const char * name, const std::vector<double> & v)
+  { doc << Key << name << Value << Flow << BeginSeq << v << EndSeq; };
 
-  auto has_limits = [&](const Joint & joint) {
-    auto check = [](const Joint & joint, const std::map<std::string, std::vector<double>> & limits) {
+  auto has_limits = [&](const Joint & joint)
+  {
+    auto check = [](const Joint & joint, const std::map<std::string, std::vector<double>> & limits)
+    {
       auto it = limits.find(joint.name());
       if(it != limits.end())
       {
@@ -246,8 +252,9 @@ std::string to_yaml(const ParserResult & res)
            && check(joint, res.limits.torque);
   };
 
-  auto set_limit = [&](const Joint & joint, const char * name,
-                       const std::map<std::string, std::vector<double>> & limits) {
+  auto set_limit =
+      [&](const Joint & joint, const char * name, const std::map<std::string, std::vector<double>> & limits)
+  {
     auto it = limits.find(joint.name());
     if(it != limits.end())
     {
@@ -309,7 +316,8 @@ std::string to_yaml(const ParserResult & res)
 
     auto index = res.mb.jointIndexByName(joint.name());
     const auto pred = res.mb.predecessor(index);
-    const auto & parent = [&]() {
+    const auto & parent = [&]()
+    {
       if(pred != -1)
       {
         return res.mb.body(pred);

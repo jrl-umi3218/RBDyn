@@ -10,7 +10,8 @@ constexpr double TOL = 1e-6;
 
 inline rbd::parsers::ParserResult createRobot()
 {
-  auto create_ptransform = [](double x, double y, double z, double rx, double ry, double rz) {
+  auto create_ptransform = [](double x, double y, double z, double rx, double ry, double rz)
+  {
     Eigen::Quaterniond q = Eigen::AngleAxisd(rx, Eigen::Vector3d::UnitX())
                            * Eigen::AngleAxisd(ry, Eigen::Vector3d::UnitY())
                            * Eigen::AngleAxisd(rz, Eigen::Vector3d::UnitZ());

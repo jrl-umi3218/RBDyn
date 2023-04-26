@@ -30,7 +30,8 @@ std::string getContent(std::istream & in)
 
 int main(int argc, const char * argv[])
 {
-  auto print_usage = [&]() {
+  auto print_usage = [&]()
+  {
     std::cout << "Converts between URDF and YAML robot model formats. The input format is detected based on the given "
                  "content.\n";
     std::cout << "Usage:\n";
@@ -67,7 +68,8 @@ int main(int argc, const char * argv[])
     std::exit(-1);
   }
 
-  const auto content = [&]() -> std::string {
+  const auto content = [&]() -> std::string
+  {
     if(file_input)
     {
       std::ifstream file(argv[1]);
@@ -95,7 +97,8 @@ int main(int argc, const char * argv[])
   }
 
   bool is_urdf{true};
-  const auto parser_result = [&]() {
+  const auto parser_result = [&]()
+  {
     if((robot_pos > 0) && (content[robot_pos - 1] == '<'))
     {
       return rbd::parsers::from_urdf(content);
@@ -113,7 +116,8 @@ int main(int argc, const char * argv[])
     }
   }();
 
-  const auto conversion_result = [&]() {
+  const auto conversion_result = [&]()
+  {
     if(is_urdf)
     {
       return rbd::parsers::to_yaml(parser_result);

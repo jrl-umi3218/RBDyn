@@ -164,7 +164,8 @@ MultiBody MultiBodyGraph::makeMultiBody(const std::string & rootBodyName,
       makeTree;
 
   makeTree = [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode, const Joint & joint, int p,
-                 int s, int par, const sva::PTransformd & Xti, const sva::PTransformd & Xbase) {
+                 int s, int par, const sva::PTransformd & Xti, const sva::PTransformd & Xbase)
+  {
     // looking for transformation that go to fromNode
     sva::PTransformd XFrom = Xbase;
     for(Arc & a : curNode->arcs)
@@ -243,8 +244,9 @@ std::map<std::string, sva::PTransformd> MultiBodyGraph::bodiesBaseTransform(cons
                      const sva::PTransformd & Xbase)>
       computeTransform;
 
-  computeTransform = [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode,
-                         const sva::PTransformd & Xbase) {
+  computeTransform =
+      [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode, const sva::PTransformd & Xbase)
+  {
     // looking for transformation that go to fromNode
     sva::PTransformd XFrom = Xbase;
     for(Arc & a : curNode->arcs)
@@ -277,7 +279,8 @@ std::map<std::string, std::vector<std::string>> MultiBodyGraph::successorJoints(
 
   std::function<void(const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode)> computeSuccesors;
 
-  computeSuccesors = [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode) {
+  computeSuccesors = [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode)
+  {
     successorJoints[curNode->body.name()] = {};
     for(Arc & a : curNode->arcs)
     {
@@ -302,8 +305,9 @@ std::map<std::string, std::string> MultiBodyGraph::predecessorJoint(const std::s
                      const std::string & predJointName)>
       computePredecessor;
 
-  computePredecessor = [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode,
-                           const std::string & predJointName) {
+  computePredecessor =
+      [&](const std::shared_ptr<Node> curNode, const std::shared_ptr<Node> fromNode, const std::string & predJointName)
+  {
     predJoint[curNode->body.name()] = predJointName;
 
     for(Arc & a : curNode->arcs)

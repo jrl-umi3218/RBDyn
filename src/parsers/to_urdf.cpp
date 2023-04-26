@@ -16,14 +16,16 @@ std::string to_urdf(const ParserResult & res)
   auto robot = doc.NewElement("robot");
   robot->SetAttribute("name", res.name.c_str());
 
-  auto set_double = [](XMLElement * e, const char * name, double value) {
+  auto set_double = [](XMLElement * e, const char * name, double value)
+  {
     std::stringstream ss;
     ss.imbue(std::locale::classic());
     ss << value;
     e->SetAttribute(name, ss.str().c_str());
   };
 
-  auto set_vec3d = [](XMLElement * e, const char * name, Eigen::Ref<const Eigen::Vector3d> xyz) {
+  auto set_vec3d = [](XMLElement * e, const char * name, Eigen::Ref<const Eigen::Vector3d> xyz)
+  {
     std::stringstream ss;
     ss.imbue(std::locale::classic());
     Eigen::IOFormat f(Eigen::StreamPrecision, Eigen::DontAlignCols);
@@ -31,7 +33,8 @@ std::string to_urdf(const ParserResult & res)
     e->SetAttribute(name, ss.str().c_str());
   };
 
-  auto set_origin_from_ptransform = [&](XMLElement * node, const sva::PTransformd & X) {
+  auto set_origin_from_ptransform = [&](XMLElement * node, const sva::PTransformd & X)
+  {
     const auto & xyz = X.translation();
     const auto rpy = X.rotation().transpose().eulerAngles(0, 1, 2);
     if(!xyz.isZero() || !rpy.isZero())
@@ -64,7 +67,8 @@ std::string to_urdf(const ParserResult & res)
 
       auto inertial_node = doc.NewElement("inertial");
 
-      const auto com = [&]() -> Eigen::Vector3d {
+      const auto com = [&]() -> Eigen::Vector3d
+      {
         if(link.inertia().mass() > 0.)
         {
           return link.inertia().momentum() / link.inertia().mass();
@@ -108,7 +112,8 @@ std::string to_urdf(const ParserResult & res)
       node->InsertEndChild(inertial_node);
     }
 
-    auto generate_visual = [&](const char * type, const std::map<std::string, std::vector<Visual>> & visuals) {
+    auto generate_visual = [&](const char * type, const std::map<std::string, std::vector<Visual>> & visuals)
+    {
       auto visuals_it = visuals.find(link.name());
       if(visuals_it == visuals.end())
       {
@@ -213,7 +218,8 @@ std::string to_urdf(const ParserResult & res)
     robot->InsertEndChild(node);
   }
 
-  auto is_continuous = [&](const rbd::Joint & joint) -> bool {
+  auto is_continuous = [&](const rbd::Joint & joint) -> bool
+  {
     const bool has_upper_limit = res.limits.upper.count(joint.name()) > 0;
     const bool has_lower_limit = res.limits.lower.count(joint.name()) > 0;
     if(!has_upper_limit && !has_lower_limit)
@@ -234,7 +240,8 @@ std::string to_urdf(const ParserResult & res)
     }
   };
 
-  auto set_vector = [](XMLElement * e, const char * name, const std::vector<double> & v) {
+  auto set_vector = [](XMLElement * e, const char * name, const std::vector<double> & v)
+  {
     std::stringstream ss;
     ss.imbue(std::locale::classic());
     for(size_t i = 0; i < v.size(); i++)
@@ -248,8 +255,10 @@ std::string to_urdf(const ParserResult & res)
     e->SetAttribute(name, ss.str().c_str());
   };
 
-  auto has_limits = [&](const Joint & joint) {
-    auto check = [](const Joint & joint, const std::map<std::string, std::vector<double>> & limits) {
+  auto has_limits = [&](const Joint & joint)
+  {
+    auto check = [](const Joint & joint, const std::map<std::string, std::vector<double>> & limits)
+    {
       auto it = limits.find(joint.name());
       if(it != limits.end())
       {
@@ -265,7 +274,8 @@ std::string to_urdf(const ParserResult & res)
   };
 
   auto set_limit = [&](XMLElement * e, const Joint & joint, const char * name,
-                       const std::map<std::string, std::vector<double>> & limits) {
+                       const std::map<std::string, std::vector<double>> & limits)
+  {
     auto it = limits.find(joint.name());
     if(it != limits.end())
     {
@@ -318,7 +328,8 @@ std::string to_urdf(const ParserResult & res)
     auto index = res.mb.jointIndexByName(joint.name());
     const auto pred = res.mb.predecessor(index);
     auto parent_node = doc.NewElement("parent");
-    const auto & parent = [&]() {
+    const auto & parent = [&]()
+    {
       if(pred != -1)
       {
         return res.mb.body(pred);
