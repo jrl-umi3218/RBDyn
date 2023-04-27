@@ -44,8 +44,8 @@ if(BUILD_RBDYN_PARSERS)
     install(FILES "${PROJECT_SOURCE_DIR}/CMakeModules/FindRBDyn_TinyXML2.cmake"
             DESTINATION "${CONFIG_INSTALL_DIR}")
     set(PACKAGE_EXTRA_MACROS
-        "include(\${CMAKE_CURRENT_LIST_DIR}/FindRBDyn_TinyXML2.cmake)"
-        CACHE INTERNAL "")
+        "list(APPEND CMAKE_MODULE_PATH \${CMAKE_CURRENT_LIST_DIR})
+find_package(RBDyn_TinyXML2 REQUIRED)")
   else()
     add_project_dependency(tinyxml2 REQUIRED NO_MODULE)
   endif()
