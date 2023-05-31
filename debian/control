@@ -18,17 +18,17 @@ Build-Depends: debhelper (>= 9),
  libspacevecalg-dev,
  libtinyxml2-dev,
  libyaml-cpp-dev,
- python-all,
- python-dev,
- python-pytest,
- python-setuptools,
- cython,
+#PYTHON2  python-all,
+#PYTHON2  python-dev,
+#PYTHON2  python-pytest,
+#PYTHON2  python-setuptools,
+#PYTHON2  cython,
+ python-spacevecalg,
  python3-all,
  python3-dev,
  python3-pytest,
  python3-setuptools,
  cython3,
- python-spacevecalg,
  python3-spacevecalg
 
 Package: librbdyn-dev
@@ -75,12 +75,12 @@ Description: RBDyn API documentation
  .
  This package provides the complete API documentation in HTML format.
 
-Package: python-rbdyn
-Section: python
-Architecture: any
-Depends: ${python:Depends}, ${misc:Depends}, ${shlibs:Depends}, python-spacevecalg
-Description: RBDyn Python bindings
- Python bindings for the RBDyn library. Compatible with Python 2.
+#PYTHON2 Package: python-rbdyn
+#PYTHON2 Section: python
+#PYTHON2 Architecture: any
+#PYTHON2 Depends: ${python:Depends}, ${misc:Depends}, ${shlibs:Depends}, python-spacevecalg
+#PYTHON2 Description: RBDyn Python bindings
+#PYTHON2  Python bindings for the RBDyn library. Compatible with Python 2.
 
 Package: python3-rbdyn
 Section: python
