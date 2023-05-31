@@ -3,12 +3,12 @@
   <compound kind="file">
     <name>README.md</name>
     <path>/home/runner/work/RBDyn/RBDyn/</path>
-    <filename>README_8md</filename>
+    <filename>README_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>api.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
-    <filename>api_8h</filename>
+    <filename>api_8h.html</filename>
     <member kind="define">
       <type>#define</type>
       <name>RBDYN_PARSERS_DLLIMPORT</name>
@@ -48,7 +48,7 @@
   <compound kind="file">
     <name>common.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
-    <filename>common_8h</filename>
+    <filename>common_8h.html</filename>
     <includes id="Joint_8h" name="Joint.h" local="no" imported="no">RBDyn/Joint.h</includes>
     <includes id="MultiBody_8h" name="MultiBody.h" local="no" imported="no">RBDyn/MultiBody.h</includes>
     <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
@@ -103,7 +103,7 @@
   <compound kind="file">
     <name>urdf.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
-    <filename>urdf_8h</filename>
+    <filename>urdf_8h.html</filename>
     <includes id="Joint_8h" name="Joint.h" local="no" imported="no">RBDyn/Joint.h</includes>
     <includes id="MultiBody_8h" name="MultiBody.h" local="no" imported="no">RBDyn/MultiBody.h</includes>
     <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
@@ -165,7 +165,7 @@
   <compound kind="file">
     <name>yaml.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
-    <filename>yaml_8h</filename>
+    <filename>yaml_8h.html</filename>
     <includes id="MultiBody_8h" name="MultiBody.h" local="no" imported="no">RBDyn/MultiBody.h</includes>
     <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
     <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" imported="no">RBDyn/MultiBodyGraph.h</includes>
@@ -213,7 +213,7 @@
   <compound kind="file">
     <name>Body.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>Body_8h</filename>
+    <filename>Body_8h.html</filename>
     <class kind="class">rbd::Body</class>
     <namespace>rbd</namespace>
     <member kind="function">
@@ -227,7 +227,7 @@
   <compound kind="file">
     <name>CoM.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>CoM_8h</filename>
+    <filename>CoM_8h.html</filename>
     <includes id="Jacobian_8h" name="Jacobian.h" local="yes" imported="no">Jacobian.h</includes>
     <class kind="class">rbd::CoMJacobianDummy</class>
     <class kind="class">rbd::CoMJacobian</class>
@@ -278,7 +278,7 @@
   <compound kind="file">
     <name>Coriolis.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>Coriolis_8h</filename>
+    <filename>Coriolis_8h.html</filename>
     <includes id="CoM_8h" name="CoM.h" local="no" imported="no">RBDyn/CoM.h</includes>
     <includes id="Jacobian_8h" name="Jacobian.h" local="no" imported="no">RBDyn/Jacobian.h</includes>
     <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
@@ -288,7 +288,7 @@
   <compound kind="file">
     <name>EulerIntegration.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>EulerIntegration_8h</filename>
+    <filename>EulerIntegration_8h.html</filename>
     <includes id="NumericalIntegration_8h" name="NumericalIntegration.h" local="yes" imported="no">NumericalIntegration.h</includes>
     <namespace>rbd</namespace>
     <member kind="function">
@@ -316,7 +316,7 @@
   <compound kind="file">
     <name>FA.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>FA_8h</filename>
+    <filename>FA_8h.html</filename>
     <namespace>rbd</namespace>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -336,14 +336,14 @@
   <compound kind="file">
     <name>FD.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>FD_8h</filename>
+    <filename>FD_8h.html</filename>
     <class kind="class">rbd::ForwardDynamics</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>FK.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>FK_8h</filename>
+    <filename>FK_8h.html</filename>
     <namespace>rbd</namespace>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -363,7 +363,7 @@
   <compound kind="file">
     <name>FV.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>FV_8h</filename>
+    <filename>FV_8h.html</filename>
     <namespace>rbd</namespace>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -383,14 +383,14 @@
   <compound kind="file">
     <name>ID.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>ID_8h</filename>
+    <filename>ID_8h.html</filename>
     <class kind="class">rbd::InverseDynamics</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>IDIM.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>IDIM_8h</filename>
+    <filename>IDIM_8h.html</filename>
     <class kind="class">rbd::IDIM</class>
     <namespace>rbd</namespace>
     <member kind="function">
@@ -432,7 +432,7 @@
   <compound kind="file">
     <name>IK.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>IK_8h</filename>
+    <filename>IK_8h.html</filename>
     <includes id="Jacobian_8h" name="Jacobian.h" local="yes" imported="no">Jacobian.h</includes>
     <class kind="class">rbd::InverseKinematics</class>
     <namespace>rbd</namespace>
@@ -441,7 +441,7 @@
   <compound kind="file">
     <name>IS.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>IS_8h</filename>
+    <filename>IS_8h.html</filename>
     <includes id="Jacobian_8h" name="Jacobian.h" local="yes" imported="no">Jacobian.h</includes>
     <class kind="class">rbd::InverseStatics</class>
     <namespace>rbd</namespace>
@@ -449,7 +449,7 @@
   <compound kind="file">
     <name>Jacobian.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>Jacobian_8h</filename>
+    <filename>Jacobian_8h.html</filename>
     <includes id="MultiBody_8h" name="MultiBody.h" local="yes" imported="no">MultiBody.h</includes>
     <class kind="struct">rbd::Block</class>
     <class kind="class">rbd::Jacobian</class>
@@ -465,7 +465,7 @@
   <compound kind="file">
     <name>Joint.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>Joint_8h</filename>
+    <filename>Joint_8h.html</filename>
     <class kind="class">rbd::Joint</class>
     <namespace>rbd</namespace>
     <member kind="function">
@@ -486,7 +486,7 @@
   <compound kind="file">
     <name>Momentum.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>Momentum_8h</filename>
+    <filename>Momentum_8h.html</filename>
     <class kind="class">rbd::CentroidalMomentumMatrix</class>
     <namespace>rbd</namespace>
     <member kind="function">
@@ -521,7 +521,7 @@
   <compound kind="file">
     <name>MultiBody.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>MultiBody_8h</filename>
+    <filename>MultiBody_8h.html</filename>
     <includes id="Body_8h" name="Body.h" local="yes" imported="no">Body.h</includes>
     <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
     <class kind="class">rbd::MultiBody</class>
@@ -530,7 +530,7 @@
   <compound kind="file">
     <name>MultiBodyConfig.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>MultiBodyConfig_8h</filename>
+    <filename>MultiBodyConfig_8h.html</filename>
     <includes id="MultiBody_8h" name="MultiBody.h" local="yes" imported="no">MultiBody.h</includes>
     <class kind="struct">rbd::MultiBodyConfig</class>
     <class kind="class">rbd::ConfigConverter</class>
@@ -721,7 +721,7 @@
   <compound kind="file">
     <name>MultiBodyGraph.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>MultiBodyGraph_8h</filename>
+    <filename>MultiBodyGraph_8h.html</filename>
     <includes id="Body_8h" name="Body.h" local="yes" imported="no">Body.h</includes>
     <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
     <class kind="class">rbd::MultiBodyGraph</class>
@@ -732,7 +732,7 @@
   <compound kind="file">
     <name>NumericalIntegration.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>NumericalIntegration_8h</filename>
+    <filename>NumericalIntegration_8h.html</filename>
     <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
     <namespace>rbd</namespace>
     <member kind="function">
@@ -767,7 +767,7 @@
   <compound kind="file">
     <name>VisServo.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>VisServo_8h</filename>
+    <filename>VisServo_8h.html</filename>
     <namespace>rbd</namespace>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
@@ -822,7 +822,7 @@
   <compound kind="file">
     <name>ZMP.h</name>
     <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
-    <filename>ZMP_8h</filename>
+    <filename>ZMP_8h.html</filename>
     <namespace>rbd</namespace>
     <member kind="function">
       <type>RBDYN_DLLAPI Eigen::Vector3d</type>
@@ -2719,6 +2719,13 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
+      <type>Eigen::Vector3d</type>
+      <name>scaleV</name>
+      <anchorfile>structrbd_1_1parsers_1_1Geometry_1_1Mesh.html</anchorfile>
+      <anchor>a2478d0669f7728dad10f127c3a4b755d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
       <type>double</type>
       <name>scale</name>
       <anchorfile>structrbd_1_1parsers_1_1Geometry_1_1Mesh.html</anchorfile>
@@ -3655,7 +3662,7 @@
       <type></type>
       <name>operator std::tuple&lt; rbd::MultiBody &amp;, rbd::MultiBodyConfig &amp;, rbd::MultiBodyGraph &amp; &gt;</name>
       <anchorfile>classrbd_1_1parsers_1_1RBDynFromYAML.html</anchorfile>
-      <anchor>ad5ecb74cc9d7177ee7c5e64b41b1197f</anchor>
+      <anchor>a2956c65faab7ac402d488bb0e565c8f9</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
