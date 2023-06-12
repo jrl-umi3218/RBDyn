@@ -174,6 +174,26 @@ public:
     return mimicOffset_;
   }
 
+  void setRotorInertia(double Ir)
+  {
+    Ir_ = Ir;
+  }
+
+  double rotorInertia() const
+  {
+    return Ir_;
+  }
+
+  void setGearRatio(double gr)
+  {
+    gr_ = gr;
+  }
+
+  double gearRatio() const
+  {
+    return gr_;
+  }
+
   /// @return Joint motion subspace in successor frame coordinate.
   const Eigen::Matrix<double, 6, Eigen::Dynamic> & motionSubspace() const
   {
@@ -274,6 +294,10 @@ private:
   std::string mimicName_ = "";
   double mimicMultiplier_ = 1.0;
   double mimicOffset_ = 0.0;
+
+  double Ir_ = 0.0;
+  double gr_ = 0.0;
+
 };
 
 inline std::ostream & operator<<(std::ostream & out, const Joint & b)

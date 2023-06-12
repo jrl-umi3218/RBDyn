@@ -214,6 +214,16 @@ public:
     return nrDof_;
   }
 
+  void setJointRotorInertia(int num, double Ir)
+  {
+    joints_[num].setRotorInertia(Ir);
+  }
+
+  void setJointGearRatio(int num, double gr)
+  {
+    joints_[num].setGearRatio(gr);
+  }
+
   // safe accessors version for python binding
 
   /** Safe version of @see bodies.
