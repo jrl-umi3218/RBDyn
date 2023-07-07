@@ -28,6 +28,7 @@ ForwardDynamics::ForwardDynamics(const MultiBody & mb)
     dofPos_[ui] = dofP;
     dofP += mb.joint(i).dof();
   }
+  computeHIr(mb);
 }
 
 void ForwardDynamics::forwardDynamics(const MultiBody & mb, MultiBodyConfig & mbc)

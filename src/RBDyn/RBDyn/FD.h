@@ -67,6 +67,12 @@ public:
     return H_;
   }
 
+  /// @return The inertia matrix H.
+  const Eigen::MatrixXd & HIr() const
+  {
+    return HIr_;
+  }
+
   /// @return The non linear effect vector (coriolis, gravity, external force).
   const Eigen::VectorXd & C() const
   {
