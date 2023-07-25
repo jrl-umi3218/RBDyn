@@ -53,7 +53,11 @@ target_include_directories(
          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
          $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDyn PUBLIC SpaceVecAlg::SpaceVecAlg)
-set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
+if(BUILD_SHARED_LIBS)
+  set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
+else()
+  target_compile_definitions(RBDyn PUBLIC "-DRBDYN_STATIC")
+endif()
 set_target_properties(RBDyn PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
                                        VERSION ${PROJECT_VERSION})
 set_target_properties(RBDyn PROPERTIES CXX_STANDARD 11)
