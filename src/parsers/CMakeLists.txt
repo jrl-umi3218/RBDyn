@@ -15,8 +15,12 @@ target_include_directories(
          $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2 yaml-cpp
                                           Boost::boost)
+if(BUILD_SHARED_LIBS)
 set_target_properties(RBDynParsers PROPERTIES COMPILE_FLAGS
                                               "-DRBDYN_PARSERS_EXPORTS")
+else()
+set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-DRBDYN_STATIC")
+endif()
 set_target_properties(RBDynParsers PROPERTIES CXX_STANDARD 11)
 set_target_properties(RBDynParsers PROPERTIES EXPORT_NAME Parsers)
 set_target_properties(RBDynParsers PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
