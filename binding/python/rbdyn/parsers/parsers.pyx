@@ -4,8 +4,8 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-cimport c_parsers
-cimport c_parsers_private
+cimport rbdyn.parsers.c_parsers as c_parsers
+cimport rbdyn.parsers.c_parsers_private as c_parsers_private
 
 cimport eigen.eigen as eigen
 cimport sva.sva as sva

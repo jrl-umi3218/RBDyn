@@ -4,7 +4,7 @@
 
 cimport eigen.eigen as eigen
 cimport sva.sva as sva
-cimport c_rbdyn
+cimport rbdyn.c_rbdyn as c_rbdyn
 from libcpp.vector cimport vector
 from libcpp cimport bool as cppbool
 

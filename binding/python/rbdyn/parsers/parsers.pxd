@@ -2,7 +2,7 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-cimport c_parsers
+cimport rbdyn.parsers.c_parsers as c_parsers
 
 cdef class Limits(object):
     cdef c_parsers.Limits impl
