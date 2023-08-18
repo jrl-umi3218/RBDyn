@@ -13,8 +13,8 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
          $<INSTALL_INTERFACE:include>)
-target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2 yaml-cpp
-                                          Boost::boost)
+target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2
+                                          ${YAML_CPP_TARGET} Boost::boost)
 if(BUILD_SHARED_LIBS)
   set_target_properties(RBDynParsers PROPERTIES COMPILE_FLAGS
                                                 "-DRBDYN_PARSERS_EXPORTS")

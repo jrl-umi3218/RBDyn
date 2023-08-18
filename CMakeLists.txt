@@ -35,6 +35,11 @@ add_project_dependency(SpaceVecAlg REQUIRED NO_MODULE)
 
 if(BUILD_RBDYN_PARSERS)
   add_project_dependency(yaml-cpp 0.5.0 REQUIRED NO_MODULE)
+  if(TARGET yaml-cpp::yaml-cpp)
+    set(YAML_CPP_TARGET yaml-cpp::yaml-cpp)
+  else()
+    set(YAML_CPP_TARGET yaml-cpp)
+  endif()
 
   find_package(tinyxml2 QUIET NO_MODULE)
   if(NOT ${tinyxml2_FOUND})

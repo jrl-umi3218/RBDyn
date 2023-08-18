@@ -18,7 +18,7 @@ if(${BUILD_RBDYN_PARSERS})
        tests/test_rbdyn_parsers.py)
   list(APPEND RBDYN_BINDINGS_TARGETS RBDyn::Parsers)
   if(NOT BUILD_SHARED_LIBS)
-    list(APPEND RBDYN_BINDINGS_TARGETS yaml-cpp tinyxml2::tinyxml2)
+    list(APPEND RBDYN_BINDINGS_TARGETS ${YAML_CPP_TARGET} tinyxml2::tinyxml2)
   endif()
 endif()
 
