@@ -20,8 +20,25 @@ namespace rbd
 Jacobian::Jacobian() {}
 
 Jacobian::Jacobian(const MultiBody & mb, const std::string & bodyName, const Eigen::Vector3d & point)
-: Jacobian(mb, bodyName, mb.body(0).name(), point)
+: jointsPath_(), point_(point), jac_(), jacDot_()
 {
+  bodyIndex_ = mb.sBodyIndexByName(bodyName);
+  refBodyIndex_ = 0;
+
+  int index = bodyIndex_;
+
+  int dof = 0;
+  while(index != -1)
+  {
+    jointsPath_.insert(jointsPath_.begin(), index);
+    dof += mb.joint(index).dof();
+    jointsSign_.insert(jointsSign_.begin(), 1);
+
+    index = mb.parent(index);
+  }
+
+  jac_.resize(6, dof);
+  jacDot_.resize(6, dof);
 }
 
 Jacobian::Jacobian(const MultiBody & mb,
@@ -38,14 +55,15 @@ Jacobian::Jacobian(const MultiBody & mb,
   int dof = 0;
   while(index != -1)
   {
-    jointsPath_.insert(jointsPath_.begin(), index);
-    dof += mb.joint(index).dof();
-    jointsSign_.insert(jointsSign_.begin(), 1);
-
     if(index == refBodyIndex_)
     {
       break;
     }
+
+    jointsPath_.insert(jointsPath_.begin(), index);
+    dof += mb.joint(index).dof();
+    jointsSign_.insert(jointsSign_.begin(), 1);
+
     index = mb.parent(index);
   }
 
