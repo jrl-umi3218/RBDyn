@@ -77,14 +77,12 @@ inline rbd::parsers::ParserResult createRobot()
     rbd::parsers::Geometry::Mesh mesh;
     v1.origin = create_ptransform(0.1, 0.2, 0.3, 0, 0, 0);
     mesh.filename = "file://test_mesh1.dae";
-    mesh.scale = 1.0;
     mesh.scaleV = Eigen::Vector3d::Ones();
     v1.geometry.type = rbd::parsers::Geometry::Type::MESH;
     v1.geometry.data = mesh;
 
     v2.origin = create_ptransform(0, 0, 0, 0, 0, 0);
     mesh.filename = "file://test_mesh2.dae";
-    mesh.scale = 0.1;
     mesh.scaleV = Eigen::Vector3d(0.1, -0.1, 0.1);
     v2.geometry.type = rbd::parsers::Geometry::Type::MESH;
     v2.geometry.data = mesh;
@@ -168,7 +166,7 @@ namespace parsers
 
 inline bool operator==(const Geometry::Mesh & m1, const Geometry::Mesh & m2)
 {
-  return m1.scaleV == m2.scaleV && m1.scale == m2.scale && m1.filename == m2.filename;
+  return m1.scaleV == m2.scaleV && m1.filename == m2.filename;
 }
 
 inline bool operator==(const Geometry::Box & b1, const Geometry::Box & b2)

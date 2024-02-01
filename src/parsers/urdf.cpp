@@ -238,13 +238,11 @@ Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
   if(maybeScaleV.size() == 3)
   {
     mesh.scaleV = Eigen::Map<Eigen::Vector3d>(maybeScaleV.data(), 3);
-    mesh.scale = mesh.scaleV[2];
   }
   else
   {
     assert(maybeScaleV.size() == 1);
-    mesh.scale = maybeScaleV[0];
-    mesh.scaleV.setConstant(mesh.scale);
+    mesh.scaleV.setConstant(maybeScaleV[0]);
   }
   return mesh;
 }
