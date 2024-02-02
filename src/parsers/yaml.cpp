@@ -317,13 +317,11 @@ bool RBDynFromYAML::parseGeometry(const YAML::Node & geometry, Geometry & data)
         if(maybeScaleV.size() == 3)
         {
           mesh_data.scaleV = Eigen::Map<Eigen::Vector3d>(maybeScaleV.data(), 3);
-          mesh_data.scale = mesh_data.scaleV(2);
         }
         else
         {
           assert(maybeScaleV.size() == 1);
-          mesh_data.scale = maybeScaleV[0];
-          mesh_data.scaleV.setConstant(mesh_data.scale);
+          mesh_data.scaleV.setConstant(maybeScaleV[0]);
         }
         has_geometry = true;
         data.data = mesh_data;
