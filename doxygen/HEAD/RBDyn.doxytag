@@ -2725,13 +2725,6 @@
       <anchor>a2478d0669f7728dad10f127c3a4b755d</anchor>
       <arglist></arglist>
     </member>
-    <member kind="variable">
-      <type>double</type>
-      <name>scale</name>
-      <anchorfile>structrbd_1_1parsers_1_1Geometry_1_1Mesh.html</anchorfile>
-      <anchor>a395f98c8af6825996e850a9742aea6e3</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="class">
     <name>rbd::MultiBody</name>
