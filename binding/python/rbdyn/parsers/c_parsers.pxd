@@ -21,7 +21,7 @@ cdef extern from "<RBDyn/parsers/common.h>" namespace "rbd::parsers":
 
     cdef cppclass GeometryMesh "rbd::parsers::Geometry::Mesh":
         string filename
-        double scale
+        Vector3d scaleV
 
     cdef cppclass GeometryBox "rbd::parsers::Geometry::Box":
         Vector3d size

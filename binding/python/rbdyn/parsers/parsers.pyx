@@ -40,20 +40,20 @@ cdef class GeometryMesh(object):
     property filename:
         def __get__(self):
             return self.impl.filename
-    property scale:
+    property scaleV:
         def __get__(self):
-            return self.impl.scale
+            return eigen.Vector3dFromC(self.impl.scaleV)
 
     def __richcmp__(GeometryMesh self, GeometryMesh other, int op):
         if op == 2:
             return (
                 self.impl.filename == other.impl.filename
-                and self.impl.scale == other.impl.scale
+                and self.impl.scaleV == other.impl.scaleV
             )
         elif op == 3:
             return (
                 self.impl.filename != other.impl.filename
-                and self.impl.scale != other.impl.scale
+                and self.impl.scaleV != other.impl.scaleV
             )
         else:
             raise NotImplementedError("This comparison is not supported")
