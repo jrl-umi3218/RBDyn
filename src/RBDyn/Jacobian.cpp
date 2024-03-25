@@ -721,16 +721,16 @@ void Jacobian::sTranslateJacobian(const Eigen::MatrixXd & jac,
   if(jac.cols() != jac_.cols() || jac.rows() != jac_.rows())
   {
     std::ostringstream str;
-    str << "jac matrix size mismatch: expected size (" << jac_.rows() << " x " << jac_.cols() << ")"
-        << " gived (" << jac.rows() << " x " << jac.cols() << ")";
+    str << "jac matrix size mismatch: expected size (" << jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+        << jac.rows() << " x " << jac.cols() << ")";
     throw std::domain_error(str.str());
   }
 
   if(res.cols() != jac_.cols() || res.rows() != jac_.rows())
   {
     std::ostringstream str;
-    str << "res matrix size mismatch: expected size (" << jac_.rows() << " x " << jac_.cols() << ")"
-        << " gived (" << res.rows() << " x " << res.cols() << ")";
+    str << "res matrix size mismatch: expected size (" << jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+        << res.rows() << " x " << res.cols() << ")";
     throw std::domain_error(str.str());
   }
 
@@ -748,17 +748,16 @@ void Jacobian::sFullJacobian(const MultiBody & mb, const Eigen::MatrixXd & jac, 
   if(jac.cols() != jac_.cols() || jac.rows() != jac_.rows())
   {
     std::ostringstream str;
-    str << "jac matrix size mismatch: expected size (" << jac_.rows() << " x " << jac_.cols() << ")"
-        << " gived (" << jac.rows() << " x " << jac.cols() << ")";
+    str << "jac matrix size mismatch: expected size (" << jac_.rows() << " x " << jac_.cols() << ")" << " gived ("
+        << jac.rows() << " x " << jac.cols() << ")";
     throw std::domain_error(str.str());
   }
 
   if(res.cols() != mb.nrDof() || res.rows() != 6)
   {
     std::ostringstream str;
-    str << "res matrix size mismatch: expected size (" << mb.nrDof() << " x "
-        << "6 )"
-        << " gived (" << res.rows() << " x " << res.cols() << ")";
+    str << "res matrix size mismatch: expected size (" << mb.nrDof() << " x " << "6 )" << " gived (" << res.rows()
+        << " x " << res.cols() << ")";
     throw std::domain_error(str.str());
   }
 
