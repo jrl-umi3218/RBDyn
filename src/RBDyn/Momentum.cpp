@@ -12,23 +12,20 @@
 
 namespace rbd
 {
-void computeCentroidalInertia(
-		const MultiBodyConfig & mbc,
-		const Eigen::MatrixXd & massMatrix, 
-		const Eigen::VectorXd & nMatrix, 
-		const Eigen::Vector3d & com,
-		Eigen::Matrix6d & cmm,
-		Eigen::Vector6d & cmmdqd
-		)
+void computeCentroidalInertia(const MultiBodyConfig & mbc,
+                              const Eigen::MatrixXd & massMatrix,
+                              const Eigen::VectorXd & nMatrix,
+                              const Eigen::Vector3d & com,
+                              Eigen::Matrix6d & cmm,
+                              Eigen::Vector6d & cmmdqd)
 {
 
   using namespace Eigen;
 
-
   Eigen::MatrixXd selection;
 
   selection.resize(6, massMatrix.cols());
-  selection.block<6,6>(0,0).setIdentity();
+  selection.block<6, 6>(0, 0).setIdentity();
 
   // Force transform from the floating-base frame to the centroidal frame
 
@@ -36,36 +33,29 @@ void computeCentroidalInertia(
 
   sva::PTransformd X_G_0(Vector3d(-com));
 
-  //Eigen::Matrix6d phi_tran_inv = (X_G_0.matrix().transpose()).inverse();
+  // Eigen::Matrix6d phi_tran_inv = (X_G_0.matrix().transpose()).inverse();
 
-  sva::PTransformd phi_inv =  X_G_0.inv();
+  sva::PTransformd phi_inv = X_G_0.inv();
 
-  sva::PTransformd X_fb_G =  X_G_0.inv() * X_fb_0;
-  
+  sva::PTransformd X_fb_G = X_G_0.inv() * X_fb_0;
+
   cmm = X_fb_G.matrix().transpose() * phi_inv.matrix().transpose() * selection * massMatrix;
-  //cmm = X_fb_G.dualMatrix() * phi_inv.matrix().transpose() * selection * massMatrix;
-  //cmm = X_fb_G.dualMatrix() * phi_tran_inv * selection * massMatrix;
+  // cmm = X_fb_G.dualMatrix() * phi_inv.matrix().transpose() * selection * massMatrix;
+  // cmm = X_fb_G.dualMatrix() * phi_tran_inv * selection * massMatrix;
   cmmdqd = X_fb_G.matrix().transpose() * phi_inv.matrix().transpose() * selection * nMatrix;
-  //cmmdqd = X_fb_G.dualMatrix() * phi_inv.matrix().transpose() * selection * nMatrix;
-  //cmmdqd = X_fb_G.dualMatrix() * phi_tran_inv * selection * nMatrix;
-
+  // cmmdqd = X_fb_G.dualMatrix() * phi_inv.matrix().transpose() * selection * nMatrix;
+  // cmmdqd = X_fb_G.dualMatrix() * phi_tran_inv * selection * nMatrix;
 }
 
-void computeCentroidalInertia(
-		const Eigen::MatrixXd & massMatrix, 
-		const Eigen::Vector3d & com,
-		Eigen::Matrix6d & ci
-		)
+void computeCentroidalInertia(const Eigen::MatrixXd & massMatrix, const Eigen::Vector3d & com, Eigen::Matrix6d & ci)
 {
 
   using namespace Eigen;
 
   sva::PTransformd X_com_0(Vector3d(-com));
 
-  ci = X_com_0.matrix().transpose() * massMatrix.block<6,6>(0,0) *  X_com_0.matrix();
-
+  ci = X_com_0.matrix().transpose() * massMatrix.block<6, 6>(0, 0) * X_com_0.matrix();
 }
-
 
 void computeCentroidalInertia(const MultiBody & mb,
                               const MultiBodyConfig & mbc,
@@ -94,7 +84,7 @@ void computeCentroidalInertia(const MultiBody & mb,
     auto X_com_i = mbc.bodyPosW[i] * X_com_0;
 
     // Momentum at CoM for link i : {}^iX_{com}^T {}^iI_i {}^iV_i
-    //av += X_com_i.transMul(hi).vector();
+    // av += X_com_i.transMul(hi).vector();
     av += X_com_i.matrix().transpose() * hi.vector();
 
     // Sum: X^T_com_i*I_i*X_com_i
@@ -115,7 +105,6 @@ void computeCentroidalInertia(const MultiBody & mb,
   // Compute the centroidal momentum := inertia * average velocity
   cm = ci * av;
 }
-
 
 sva::ForceVecd computeCentroidalMomentum(const MultiBody & mb, const MultiBodyConfig & mbc, const Eigen::Vector3d & com)
 {

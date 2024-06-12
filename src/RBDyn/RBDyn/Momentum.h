@@ -22,7 +22,7 @@ using Blocks = std::vector<Block>;
 class Jacobian;
 
 /**
- * Compute the centroidal inertia (ci) following the 
+ * Compute the centroidal inertia (ci) following the
  * paper by [Wensing and Orin, IJHR, 2016].
  * @param massMatrix.
  * @param nMatrix coriolios and gravity: C * qDot.
@@ -30,27 +30,23 @@ class Jacobian;
  * @param cmm The centroidal momentum matrix.
  * @param cmmd The derivative of the centroidal momentum matrix.
  */
-RBDYN_DLLAPI void computeCentroidalInertia(
-		const MultiBodyConfig & mbc,
-		const Eigen::MatrixXd & massMatrix, 
-		const Eigen::VectorXd & nMatrix, 
-		const Eigen::Vector3d & com,
-		Eigen::Matrix6d & cmm,
-		Eigen::Vector6d & cmmdqd
-		);
-
+RBDYN_DLLAPI void computeCentroidalInertia(const MultiBodyConfig & mbc,
+                                           const Eigen::MatrixXd & massMatrix,
+                                           const Eigen::VectorXd & nMatrix,
+                                           const Eigen::Vector3d & com,
+                                           Eigen::Matrix6d & cmm,
+                                           Eigen::Vector6d & cmmdqd);
 
 /**
- * Compute the centroidal inertia (ci) following the 
+ * Compute the centroidal inertia (ci) following the
  * paper by [Wensing and Orin, IJHR, 2016].
  * @param massMatrix .
  * @param com CoM position.
  * @param ci Centroidal inertia at the Centroidal frame.
  */
-RBDYN_DLLAPI void computeCentroidalInertia(
-		const Eigen::MatrixXd & massMatrix, 
-		const Eigen::Vector3d & com,
-		Eigen::Matrix6d & ci);
+RBDYN_DLLAPI void computeCentroidalInertia(const Eigen::MatrixXd & massMatrix,
+                                           const Eigen::Vector3d & com,
+                                           Eigen::Matrix6d & ci);
 
 /**
  * Compute the centroidal inertia (ci), centroidal momentum (cm),
@@ -86,10 +82,6 @@ RBDYN_DLLAPI void computeCentroidalInertia(const MultiBody & mb,
                                            const Eigen::Vector3d & com,
                                            Eigen::Matrix6d & ci,
                                            Eigen::Vector6d & av);
-
-
-
-
 
 /**
  * Compute the centroidal momentum at the CoM frame

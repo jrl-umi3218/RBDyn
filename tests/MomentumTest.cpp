@@ -5,6 +5,7 @@
 // includes
 // std
 #include <SpaceVecAlg/SpaceVecAlg>
+
 #include <iostream>
 
 // boost
@@ -14,10 +15,10 @@
 // RBDyn
 #include "RBDyn/CoM.h"
 #include "RBDyn/FA.h"
+#include "RBDyn/FD.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/Momentum.h"
-#include "RBDyn/FD.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/NumericalIntegration.h"
@@ -77,7 +78,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
 
     BOOST_CHECK_SMALL((momentum - momentumM).vector().norm(), TOL);
   }
- // test J·q against CentroidalMomentumMatrix::momentum
+  // test J·q against CentroidalMomentumMatrix::momentum
   for(int i = 0; i < 50; ++i)
   {
     std::vector<double> weight(static_cast<size_t>(mb.nrBodies()));
@@ -233,8 +234,8 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
   rbd::CentroidalMomentumMatrix cmm(mb);
   rbd::ForwardDynamics fd(mb);
 
-  // Test two Composite-rigid-body inertia against each other 
-  //for(int i = 0; i < 100; ++i)
+  // Test two Composite-rigid-body inertia against each other
+  // for(int i = 0; i < 100; ++i)
   //{
   //  q.setRandom();
   //  q.segment<4>(mb.jointPosInParam(mb.jointIndexByName("j3"))).normalize();
@@ -248,7 +249,6 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
 
   //  fd.forwardDynamics(mb, mbc);
 
-
   //  Eigen::Vector3d com = rbd::computeCoM(mb, mbc);
   //  rbd::computeCentroidalInertia(mb, mbc, com, ci, cm, av);
   //  rbd::computeCentroidalInertia(fd.H(), com, ci_improved);
@@ -256,12 +256,11 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
   //  //std::cout<<"The improved Centroidal Inertia is: "<<std::endl<<ci_improved<<std::endl;
   //  //std::cout<<"The Centroidal Inertia is: "<<std::endl<<ci<<std::endl;
 
-
-  //  // Compute the mass: 
+  //  // Compute the mass:
   //  double mass = 0.0;
   //  for (auto & body:mb.bodies())
   //  {
-  //    mass+=body.inertia().mass(); 
+  //    mass+=body.inertia().mass();
   //  }
 
   //  //std::cout<<"The robot mass is: "<<std::endl<<mass<<std::endl;
@@ -279,13 +278,12 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
 
   //  computeCentroidalInertia(
   //      	mbc,
-  //      	fd.H(), 
-  //      	fd.C(), 
+  //      	fd.H(),
+  //      	fd.C(),
   //      	com,
   //      	cmmMatrix,
   //      	cmmMatrixdqd
   //      	);
-
 
   //  // BOOST_CHECK_SMALL((cmmMatrix - cmm.matrix()).norm(), TOL);
 
@@ -318,27 +316,26 @@ BOOST_AUTO_TEST_CASE(centroidalInertia)
     // Eigen::VectorXd alpha(mb.nrDof());
     Eigen::Vector6d hc = cmmMatrix * alpha;
 
-    std::cout<<"trial: "<<i<<" ==========================="<<std::endl;
+    std::cout << "trial: " << i << " ===========================" << std::endl;
 
-    std::cout<<"hc: "<<hc.transpose()<<std::endl;
+    std::cout << "hc: " << hc.transpose() << std::endl;
 
-    std::cout<<" Momemtum diff is: "<<((cmmMatrix * alpha).tail(3) - 6*comVelocity).transpose()<<std::endl;
+    std::cout << " Momemtum diff is: " << ((cmmMatrix * alpha).tail(3) - 6 * comVelocity).transpose() << std::endl;
 
-    std::cout<<"Momentum by ci * av is: "<<(ci * av).transpose() <<std::endl;
+    std::cout << "Momentum by ci * av is: " << (ci * av).transpose() << std::endl;
     // std::cout<<"cmm com vel is: "<<(hc.head(3) / 6.0).transpose()<<std::endl;
-    std::cout<<"cmm com vel is: "<<(hc.tail(3) / 6.0).transpose()<<std::endl;
-    std::cout<<"com vel is: "<<comVelocity.transpose()<<std::endl;
-    std::cout<<"av linear vel is: "<<av.tail(3).transpose()<<std::endl;
-    std::cout<<"ci is: "<<std::endl<<ci.matrix()<<std::endl;
-    //std::cout<<"av angular vel is: "<<av.head(3).transpose()<<std::endl;
-    
+    std::cout << "cmm com vel is: " << (hc.tail(3) / 6.0).transpose() << std::endl;
+    std::cout << "com vel is: " << comVelocity.transpose() << std::endl;
+    std::cout << "av linear vel is: " << av.tail(3).transpose() << std::endl;
+    std::cout << "ci is: " << std::endl << ci.matrix() << std::endl;
+    // std::cout<<"av angular vel is: "<<av.head(3).transpose()<<std::endl;
+
     sva::ForceVecd cm = rbd::computeCentroidalMomentum(mb, mbc, com);
 
-    //std::cout<<"ci * av - rbd::cm is: "<< <<std::endl;
-    BOOST_CHECK_SMALL((ci*av - cm.vector()).norm(), TOL);
+    // std::cout<<"ci * av - rbd::cm is: "<< <<std::endl;
+    BOOST_CHECK_SMALL((ci * av - cm.vector()).norm(), TOL);
 
-    //BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
+    // BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), TOL);
     BOOST_CHECK_SMALL((av.tail(3) - comVelocity).norm(), 1.0);
   }
-  
 }
