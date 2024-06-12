@@ -8,7 +8,6 @@
 
 // boost
 #define BOOST_TEST_MODULE CoMTest
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
@@ -16,16 +15,23 @@
 
 // RBDyn
 #include "RBDyn/CoM.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // arm
 #include "XYZarm.h"
+
+namespace rbd
+{
+
+static constexpr double PI = 3.141592653589793238462643383279502884e+00;
+
+} // namespace rbd
 
 const double TOL = 0.000001;
 
@@ -94,7 +100,6 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBodyGraph mbg;
 
@@ -155,7 +160,7 @@ BOOST_AUTO_TEST_CASE(computeCoMTest)
   BOOST_CHECK_EQUAL(CoMV, Vector3d::Zero());
   BOOST_CHECK_EQUAL(CoMA, Vector3d::Zero());
 
-  mbc.q = {{}, {cst::pi<double>() / 2.}, {0.}, {0.}};
+  mbc.q = {{}, {rbd::PI / 2.}, {0.}, {0.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
   forwardAcceleration(mb, mbc);
@@ -196,7 +201,7 @@ Eigen::Vector3d makeCoMDotFromStep(const rbd::MultiBody & mb, const rbd::MultiBo
   MultiBodyConfig mbcTmp(mbc);
 
   Vector3d oC = computeCoM(mb, mbcTmp);
-  eulerIntegration(mb, mbcTmp, step);
+  integration(mb, mbcTmp, step);
   forwardKinematics(mb, mbcTmp);
   forwardVelocity(mb, mbcTmp);
   Vector3d nC = computeCoM(mb, mbcTmp);
@@ -217,7 +222,7 @@ Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody & mb,
   MultiBodyConfig mbcTmp(mbc);
 
   MatrixXd oJ = jac.jacobian(mb, mbcTmp);
-  eulerIntegration(mb, mbcTmp, step);
+  integration(mb, mbcTmp, step);
   forwardKinematics(mb, mbcTmp);
   forwardVelocity(mb, mbcTmp);
   MatrixXd nJ = jac.jacobian(mb, mbcTmp);
@@ -230,7 +235,6 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   sva::PTransformd I(sva::PTransformd::Identity());
 
@@ -253,7 +257,8 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
 
   forwardKinematics(mb, mbc);
 
-  auto testJacCoMVelAcc = [](const rbd::MultiBody & mb, rbd::MultiBodyConfig & mbc, rbd::CoMJacobianDummy & comJac) {
+  auto testJacCoMVelAcc = [](const rbd::MultiBody & mb, rbd::MultiBodyConfig & mbc, rbd::CoMJacobianDummy & comJac)
+  {
     forwardVelocity(mb, mbc);
     forwardAcceleration(mb, mbc);
 
@@ -313,7 +318,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
    */
 
   Quaterniond q;
-  q = AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ());
+  q = AngleAxisd(rbd::PI / 8., Vector3d::UnitZ());
   mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
   forwardKinematics(mb, mbc);
 
@@ -410,7 +415,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianDummyTest)
    * Same test but with a different q.
    */
 
-  q = AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ());
+  q = AngleAxisd(rbd::PI / 8., Vector3d::UnitZ());
   mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
   forwardKinematics(mb, mbc);
 
@@ -478,7 +483,6 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBodyGraph mbg;
   MultiBody mb;
@@ -509,7 +513,7 @@ BOOST_AUTO_TEST_CASE(CoMJacobianTest)
 
   // change configuration
   Quaterniond q;
-  q = AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ());
+  q = AngleAxisd(rbd::PI / 8., Vector3d::UnitZ());
   mbc.q = {{}, {0.4}, {0.2}, {-0.1}, {q.w(), q.x(), q.y(), q.z()}};
   forwardKinematics(mb, mbc);
 

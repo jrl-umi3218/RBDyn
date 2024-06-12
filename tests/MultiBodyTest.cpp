@@ -8,7 +8,6 @@
 
 // boost
 #define BOOST_TEST_MODULE MultiBodyTest
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
@@ -24,6 +23,11 @@
 
 // arm
 #include "XYZSarm.h"
+
+namespace rbd
+{
+static constexpr double PI = 3.141592653589793238462643383279502884e+00;
+}
 
 BOOST_AUTO_TEST_CASE(MultiBodyGraphTest)
 {
@@ -358,7 +362,6 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace constants = boost::math::constants;
 
   MultiBodyGraph mbg1;
 
@@ -395,7 +398,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
 
   // test the successorJoints and predecessorJoint function
   auto testSucc = [](const std::map<std::string, std::vector<std::string>> & s1,
-                     const std::map<std::string, std::vector<std::string>> & s2) {
+                     const std::map<std::string, std::vector<std::string>> & s2)
+  {
     BOOST_CHECK_EQUAL(s1.size(), s2.size());
     auto it1 = s1.begin();
     auto it2 = s2.begin();
@@ -405,7 +409,8 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
       BOOST_CHECK_EQUAL_COLLECTIONS(it1->second.begin(), it1->second.end(), it2->second.begin(), it2->second.end());
     }
   };
-  auto testPred = [](const std::map<std::string, std::string> & s1, const std::map<std::string, std::string> & s2) {
+  auto testPred = [](const std::map<std::string, std::string> & s1, const std::map<std::string, std::string> & s2)
+  {
     BOOST_CHECK_EQUAL(s1.size(), s2.size());
     auto it1 = s1.begin();
     auto it2 = s2.begin();
@@ -529,8 +534,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
                   "j1");
   mbg2.linkBodies("b2", PTransformd(Vector3d(Vector3d::UnitX())), "b3", PTransformd(Vector3d(-Vector3d::UnitZ())),
                   "j2");
-  mbg2.linkBodies("b2", PTransformd(Matrix3d(sva::RotX(constants::pi<double>() / 2.))), "b4", PTransformd::Identity(),
-                  "j3");
+  mbg2.linkBodies("b2", PTransformd(Matrix3d(sva::RotX(rbd::PI / 2.))), "b4", PTransformd::Identity(), "j3");
 
   // add () around the Vector3d because Clang think that
   // a function declaration
@@ -554,7 +558,7 @@ BOOST_AUTO_TEST_CASE(MakeMultiBodyTest)
   parent = {-1, 0, 1, 1};
 
   Xt = {root, PTransformd(Vector3d(1., 0., 0.)), PTransformd(Vector3d(1., 1., 0.)),
-        PTransformd(RotX(constants::pi<double>() / 2.), Vector3d(0., 1., 0.))};
+        PTransformd(RotX(rbd::PI / 2.), Vector3d(0., 1., 0.))};
 
   // check MultiBody equality
   checkMultiBodyEq(mb4, bodies, joints, pred, succ, parent, Xt);

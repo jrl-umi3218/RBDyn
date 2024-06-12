@@ -1,0 +1,44 @@
+repos:
+- repo: meta
+  hooks:
+  - id: check-useless-excludes
+  - id: check-hooks-apply
+- repo: https://github.com/pre-commit/mirrors-clang-format
+  rev: v17.0.6
+  hooks:
+  - id: clang-format
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: check-added-large-files
+  - id: check-ast
+  - id: check-executables-have-shebangs
+  - id: check-merge-conflict
+  - id: check-yaml
+  - id: debug-statements
+  - id: destroyed-symlinks
+  - id: detect-private-key
+  - id: end-of-file-fixer
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+  - id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: 24.2.0
+  hooks:
+  - id: black
+- repo: https://github.com/MarcoGorelli/cython-lint
+  rev: v0.16.0
+  hooks:
+  - id: cython-lint
+  - id: double-quote-cython-strings
+- repo: https://github.com/PyCQA/flake8
+  rev: 7.0.0
+  hooks:
+  - id: flake8
+    exclude: ^binding/python/rbdyn/.*__init__.py
+    args:
+      - "--max-line-length=88"
+- repo: https://github.com/cheshirekow/cmake-format-precommit
+  rev: v0.6.13
+  hooks:
+  - id: cmake-format

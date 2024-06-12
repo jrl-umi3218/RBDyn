@@ -43,9 +43,9 @@ struct RBDYN_PARSERS_DLLAPI Geometry
 public:
   struct Mesh
   {
-    Mesh() : scale(1) {}
+    Mesh() : scaleV(Eigen::Vector3d::Ones()) {}
     std::string filename;
-    double scale;
+    Eigen::Vector3d scaleV;
   };
   struct Box
   {
@@ -137,6 +137,94 @@ struct RBDYN_PARSERS_DLLAPI Visual
   Material material;
 };
 
+/** Options passed to the parsing function */
+struct RBDYN_PARSERS_DLLAPI ParserParameters
+{
+  /** Create a root free joint if false, fixed otherwise */
+  bool fixed_ = true;
+
+  /** The bodies in this list will be filtered, the exact behavior depends on \ref remove_filtered_links
+   *
+   * If true (default): the links in this list do not appear in the resulting MultiBody
+   *
+   * If false: the links in this list appear in the resulting MultiBody but the joints they are attached to are fixed
+   */
+  std::vector<std::string> filtered_links_ = {};
+
+  /** Control the link filter behavior
+   *
+   * If true (default): the links in \ref filtered_links_ do not appear in the resulting MultiBody
+   *
+   * If false: the links in \ref filtered_links_ appear in the resulting MultiBody but the joints they are attached to
+   * are fixed
+   */
+  bool remove_filtered_links_ = true;
+
+  /** If true, the inertia of links are moved to their CoM frame */
+  bool transform_inertia_ = true;
+
+  /** If non-empty, use this body as the base for the MultiBody, otherwise the first body in the URDF/YAML is used */
+  std::string base_link_ = "";
+
+  /** If true, bodies without inertial parameters are removed from the resulting MultiBody
+   *
+   * \note This is independent of the \ref remove_filtered_links parameter
+   */
+  bool remove_virtual_links_ = false;
+
+  /** Treat joint with this suffix as spherical joints */
+  std::string spherical_suffix_ = "_spherical";
+
+  /** Change the \ref fixed_ parameter to \param fixed and returns self */
+  inline ParserParameters & fixed(bool fixed) noexcept
+  {
+    fixed_ = fixed;
+    return *this;
+  }
+
+  /** Change the \ref filtered_links_ parameter to \param links and returns self */
+  inline ParserParameters & filtered_links(const std::vector<std::string> & links) noexcept
+  {
+    filtered_links_ = links;
+    return *this;
+  }
+
+  /** Change the \ref remove_filtered_links_ parameter to \param value and returns self */
+  inline ParserParameters & remove_filtered_links(bool value) noexcept
+  {
+    remove_filtered_links_ = value;
+    return *this;
+  }
+
+  /** Change the \ref transform_inertia_ parameter to \param value and returns self */
+  inline ParserParameters & transform_inertia(bool value) noexcept
+  {
+    transform_inertia_ = value;
+    return *this;
+  }
+
+  /** Change the \ref base_link_ parameter to \param link and returns self */
+  inline ParserParameters & base_link(const std::string & link) noexcept
+  {
+    base_link_ = link;
+    return *this;
+  }
+
+  /** Change the \ref remove_virtual_links_ parameter to \param value and returns self */
+  inline ParserParameters & remove_virtual_links(bool value) noexcept
+  {
+    remove_virtual_links_ = value;
+    return *this;
+  }
+
+  /** Change the \ref spherical_suffix_ parameter to \param suffix and returns self */
+  inline ParserParameters & spherical_suffix(const std::string & suffix) noexcept
+  {
+    spherical_suffix_ = suffix;
+    return *this;
+  }
+};
+
 struct RBDYN_PARSERS_DLLAPI ParserResult
 {
   rbd::MultiBody mb;
@@ -159,6 +247,14 @@ RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path,
                                             const std::string & base_link = "",
                                             bool with_virtual_links = true,
                                             const std::string spherical_suffix = "_spherical");
+
+//! \brief Checks the file extension and parses it as URDF or YAML accordingly
+//!
+//! \param file_path Path to the file to parse
+//! \param params Parser parameters
+//! \return ParserResult The parsing result
+RBDYN_PARSERS_DLLAPI ParserResult from_file(const std::string & file_path, const ParserParameters & params);
+
 /**
  * \brief Ensures that a path is prefixed by either package:// or file://
  *

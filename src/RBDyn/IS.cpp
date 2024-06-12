@@ -55,7 +55,7 @@ void InverseStatics::setJacobianSize(const MultiBody & mb,
   {
     if(jacMomentsAndForces[i].cols() > nColsWanted)
     {
-      nColsWanted = jacMomentsAndForces[i].cols();
+      nColsWanted = static_cast<long>(jacMomentsAndForces[i].cols());
     }
   }
   for(std::size_t i = 0; i < bodies.size(); ++i)
@@ -108,7 +108,8 @@ void InverseStatics::computeTorqueJacobianJoint(const MultiBody & mb,
 {
   assert(jacMomentsAndForces.size() == static_cast<size_t>(mb.nrBodies()));
 
-  auto transMat = [](const sva::PTransformd & T) {
+  auto transMat = [](const sva::PTransformd & T)
+  {
     Eigen::Matrix6d res;
     Eigen::Matrix3d Rt = T.rotation().transpose();
     res.block(3, 0, 3, 3).setZero();

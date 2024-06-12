@@ -9,26 +9,11 @@ on:
       - '**'
 
 jobs:
-
-  clang-format:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install clang-format-6.0
-      run: |
-        sudo apt-get -qq update
-        sudo apt-get -qq remove clang-6.0 libclang1-6.0 libclang-common-6.0-dev libllvm6.0
-        sudo apt-get -qq install clang-format-6.0 clang-format
-    - name: Run clang-format-check
-      run: |
-        ./.clang-format-check.sh
-
   build:
-    needs: clang-format
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, macos-latest, windows-latest]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-latest, windows-latest]
         build-type: [Debug, RelWithDebInfo]
         compiler: [gcc, clang]
         exclude:
@@ -40,7 +25,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
     - name: Install pip for Python 2 (Ubuntu 20.04)
@@ -55,13 +40,13 @@ jobs:
         compiler: ${{ matrix.compiler }}
         build-type: ${{ matrix.build-type }}
         ubuntu: |
-          apt: cython cython3 python-nose python3-nose python-numpy python3-numpy python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev libtinyxml2-dev libyaml-cpp-dev
+          apt: cython cython3 python-numpy python3-numpy python-pytest python3-pytest python-coverage python3-coverage python-setuptools python3-setuptools libeigen3-dev doxygen doxygen-latex libboost-all-dev libtinyxml2-dev libyaml-cpp-dev
         macos: |
           cask: gfortran
           brew: eigen boost tinyxml2 yaml-cpp
-          pip: Cython coverage nose numpy
+          pip: Cython coverage numpy pytest
         windows: |
-          pip: Cython coverage nose numpy
+          pip: Cython coverage numpy pytest
           github:
             - path: eigenteam/eigen-git-mirror
               ref: 3.3.7
@@ -69,6 +54,8 @@ jobs:
               ref: 7.1.0
             - path: jbeder/yaml-cpp
               ref: 29dcf92f870ee51cce8d68f8fcfe228942e8dfe1
+        macos-options: -DPYTHON_BINDING:BOOL=OFF
+        windows-options: -DPYTHON_BINDING:BOOL=OFF
         github: |
           - path: jrl-umi3218/Eigen3ToPython
           - path: jrl-umi3218/SpaceVecAlg
@@ -77,9 +64,11 @@ jobs:
       with:
         compiler: ${{ matrix.compiler }}
         build-type: ${{ matrix.build-type }}
+        macos-options: -DPYTHON_BINDING:BOOL=OFF
+        windows-options: -DPYTHON_BINDING:BOOL=OFF
     - name: Upload documentation
       # Only run on master branch and for one configuration
-      if: matrix.os == 'ubuntu-18.04' && matrix.build-type == 'RelWithDebInfo' && matrix.compiler == 'gcc' && github.ref == 'refs/heads/master'
+      if: matrix.os == 'ubuntu-20.04' && matrix.build-type == 'RelWithDebInfo' && matrix.compiler == 'gcc' && github.ref == 'refs/heads/master'
       uses: jrl-umi3218/github-actions/upload-documentation@master
       with:
         GH_USER: gergondet

@@ -8,7 +8,6 @@
 
 // boost
 #define BOOST_TEST_MODULE Jacobian
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // SpaceVecAlg
@@ -16,7 +15,6 @@
 
 // RBDyn
 #include "RBDyn/Body.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
@@ -25,11 +23,19 @@
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
 #include "RBDyn/MultiBodyGraph.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // Arm
 #include "SSSarm.h"
 #include "XXXdualarm.h"
 #include "XYZSarm.h"
+
+namespace rbd
+{
+
+static constexpr double PI = 3.141592653589793238462643383279502884e+00;
+
+} // namespace rbd
 
 const double TOL = 0.0000001;
 
@@ -76,7 +82,6 @@ BOOST_AUTO_TEST_CASE(JacobianConstructTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -263,7 +268,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -280,7 +284,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest)
   checkJacobian(mb, mbc, jac1);
   checkJacobian(mb, mbc, jac2);
 
-  mbc.q = {{}, {cst::pi<double>() / 2.}, {0.}, {0.}, {1., 0., 0., 0.}};
+  mbc.q = {{}, {rbd::PI / 2.}, {0.}, {0.}, {1., 0., 0., 0.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
@@ -306,7 +310,6 @@ BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -316,8 +319,7 @@ BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
   Jacobian jac1(mb, "b31", "b32");
   Jacobian jac2(mb, "b32", "b31");
 
-  Quaterniond quat(AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX())
-                   * AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ()));
+  Quaterniond quat(AngleAxisd(rbd::PI / 2., Vector3d::UnitX()) * AngleAxisd(rbd::PI / 8., Vector3d::UnitZ()));
   Vector3d tran = Vector3d::Random() * 10.;
 
   mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()}, {0.}, {0.}, {0.}, {0.}, {0.}};
@@ -328,11 +330,11 @@ BOOST_AUTO_TEST_CASE(JacobianRefBodyTest)
   checkJacobianRefBody(mb, mbc, jac2);
 
   mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()},
-           {cst::pi<double>() / 2.},
-           {cst::pi<double>() / 3.},
-           {cst::pi<double>() / 4.},
-           {cst::pi<double>() / 5.},
-           {cst::pi<double>() / 6.}};
+           {rbd::PI / 2.},
+           {rbd::PI / 3.},
+           {rbd::PI / 4.},
+           {rbd::PI / 5.},
+           {rbd::PI / 6.}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
@@ -358,7 +360,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -368,8 +369,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
   Jacobian jac1(mb, "b3");
   Jacobian jac2(mb, "b4");
 
-  Quaterniond quat(AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX())
-                   * AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ()));
+  Quaterniond quat(AngleAxisd(rbd::PI / 2., Vector3d::UnitX()) * AngleAxisd(rbd::PI / 8., Vector3d::UnitZ()));
   Vector3d tran = Vector3d::Random() * 10.;
 
   mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()}, {0.}, {0.}, {0.}, {1., 0., 0., 0.}};
@@ -379,11 +379,10 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTestFreeFlyer)
   checkJacobian(mb, mbc, jac1);
   checkJacobian(mb, mbc, jac2);
 
-  quat =
-      (AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitX()) * AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitZ()));
+  quat = (AngleAxisd(rbd::PI / 8., Vector3d::UnitX()) * AngleAxisd(rbd::PI / 2., Vector3d::UnitZ()));
   tran = Vector3d::Random() * 10.;
   mbc.q = {{quat.w(), quat.x(), quat.y(), quat.z(), tran.x(), tran.y(), tran.z()},
-           {cst::pi<double>() / 2.},
+           {rbd::PI / 2.},
            {0.},
            {0.},
            {1., 0., 0., 0.}};
@@ -412,7 +411,6 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -427,7 +425,7 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 
   checkJacobian(mb, mbc, jac1);
 
-  Quaterniond q1(AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX()));
+  Quaterniond q1(AngleAxisd(rbd::PI / 2., Vector3d::UnitX()));
   Quaterniond q2 = Quaterniond::Identity();
   Quaterniond q3 = Quaterniond::Identity();
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
@@ -436,21 +434,21 @@ BOOST_AUTO_TEST_CASE(JacobianComputeTest2)
 
   checkJacobian(mb, mbc, jac1);
 
-  q1 = AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX()) * AngleAxisd(cst::pi<double>() / 4., Vector3d::UnitY());
+  q1 = AngleAxisd(rbd::PI / 2., Vector3d::UnitX()) * AngleAxisd(rbd::PI / 4., Vector3d::UnitY());
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
   checkJacobian(mb, mbc, jac1);
 
-  q2 = AngleAxisd(cst::pi<double>() / 4., Vector3d::UnitX());
+  q2 = AngleAxisd(rbd::PI / 4., Vector3d::UnitX());
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
 
   checkJacobian(mb, mbc, jac1);
 
-  q3 = AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ());
+  q3 = AngleAxisd(rbd::PI / 8., Vector3d::UnitZ());
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
   forwardKinematics(mb, mbc);
   forwardVelocity(mb, mbc);
@@ -473,7 +471,7 @@ Eigen::MatrixXd makeJDotFromStep(const rbd::MultiBody & mb,
   MultiBodyConfig mbcTmp(mbc);
 
   MatrixXd oJ = jacComp(mb, mbcTmp);
-  eulerIntegration(mb, mbcTmp, step);
+  integration(mb, mbcTmp, step);
   forwardKinematics(mb, mbcTmp);
   forwardVelocity(mb, mbcTmp);
   MatrixXd nJ = jacComp(mb, mbcTmp);
@@ -505,7 +503,6 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -533,8 +530,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
     }
   }
 
-  Quaterniond q1 =
-      AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX()) * AngleAxisd(cst::pi<double>() / 4., Vector3d::UnitY());
+  Quaterniond q1 = AngleAxisd(rbd::PI / 2., Vector3d::UnitX()) * AngleAxisd(rbd::PI / 4., Vector3d::UnitY());
   Quaterniond q2 = Quaterniond::Identity();
   Quaterniond q3 = Quaterniond::Identity();
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
@@ -554,7 +550,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
     }
   }
 
-  q2 = AngleAxisd(cst::pi<double>() / 4., Vector3d::UnitX());
+  q2 = AngleAxisd(rbd::PI / 4., Vector3d::UnitX());
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
   forwardKinematics(mb, mbc);
   for(int i = 0; i < mb.nrJoints(); ++i)
@@ -572,7 +568,7 @@ BOOST_AUTO_TEST_CASE(JacobianDotComputeTest)
     }
   }
 
-  q3 = AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ());
+  q3 = AngleAxisd(rbd::PI / 8., Vector3d::UnitZ());
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
   forwardKinematics(mb, mbc);
   for(int i = 0; i < mb.nrJoints(); ++i)
@@ -700,7 +696,6 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;
@@ -720,10 +715,9 @@ BOOST_AUTO_TEST_CASE(JacobianTranslateTest)
 
   testTranslateJacobian(mb, mbc, point, jacO, jacP);
 
-  Quaterniond q1 =
-      AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitX()) * AngleAxisd(cst::pi<double>() / 4., Vector3d::UnitY());
-  Quaterniond q2(AngleAxisd(cst::pi<double>() / 4., Vector3d::UnitX()));
-  Quaterniond q3(AngleAxisd(cst::pi<double>() / 8., Vector3d::UnitZ()));
+  Quaterniond q1 = AngleAxisd(rbd::PI / 2., Vector3d::UnitX()) * AngleAxisd(rbd::PI / 4., Vector3d::UnitY());
+  Quaterniond q2(AngleAxisd(rbd::PI / 4., Vector3d::UnitX()));
+  Quaterniond q3(AngleAxisd(rbd::PI / 8., Vector3d::UnitZ()));
   mbc.q = {{}, {q1.w(), q1.x(), q1.y(), q1.z()}, {q2.w(), q2.x(), q2.y(), q2.z()}, {q3.w(), q3.x(), q3.y(), q3.z()}};
 
   forwardKinematics(mb, mbc);
@@ -829,7 +823,6 @@ BOOST_AUTO_TEST_CASE(JacobianVectorVelAccComputeTest)
   using namespace sva;
   using namespace rbd;
   using namespace std::placeholders;
-  namespace cst = boost::math::constants;
 
   MultiBody mb;
   MultiBodyConfig mbc;

@@ -265,7 +265,7 @@ public:
    * Accumulate the projection of the jacobian in the full
    * robot parameters vector using a compact representation
    * of the DoF.
-   * @param compacPath Blocks representing the compact
+   * @param compactPath Blocks representing the compact path
    * @param jac Jacobian to project.
    * @param res Projected Jacobian (must be allocated).
    */
@@ -301,7 +301,7 @@ public:
    * Expand a symmetric product of a jacobian by its
    * transpose onto every DoF and accumulate the result
    * using a compact representation of the DoF.
-   * @param compacPath Blocks representing the compact
+   * @param compactPath Blocks representing the compact path
    * kinematic path of the Jacobian
    * @param jac Result to expand and accumulate
    * @param res Accumulator matrix

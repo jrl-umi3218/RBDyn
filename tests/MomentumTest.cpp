@@ -9,12 +9,10 @@
 
 // boost
 #define BOOST_TEST_MODULE MomentumTest
-#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 // RBDyn
 #include "RBDyn/CoM.h"
-#include "RBDyn/EulerIntegration.h"
 #include "RBDyn/FA.h"
 #include "RBDyn/FK.h"
 #include "RBDyn/FV.h"
@@ -22,6 +20,7 @@
 #include "RBDyn/FD.h"
 #include "RBDyn/MultiBody.h"
 #include "RBDyn/MultiBodyConfig.h"
+#include "RBDyn/NumericalIntegration.h"
 
 // arm
 #include "XYZSarm.h"
@@ -33,7 +32,6 @@ BOOST_AUTO_TEST_CASE(centroidalMomentum)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
@@ -114,7 +112,6 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
   using namespace Eigen;
   using namespace sva;
   using namespace rbd;
-  namespace cst = boost::math::constants;
 
   rbd::MultiBody mb;
   rbd::MultiBodyConfig mbc;
@@ -163,7 +160,7 @@ BOOST_AUTO_TEST_CASE(centroidalMomentumDot)
       BOOST_CHECK_SMALL((cmmMatrix - cmm.matrix()).norm(), TOL);
       BOOST_CHECK_SMALL((cmmMatrixDot - cmm.matrixDot()).norm(), TOL);
 
-      rbd::eulerIntegration(mb, mbc, 1e-8);
+      rbd::integration(mb, mbc, 1e-8);
 
       rbd::forwardKinematics(mb, mbc);
       rbd::forwardVelocity(mb, mbc);

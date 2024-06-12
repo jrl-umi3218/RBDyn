@@ -234,7 +234,16 @@ Geometry::Data geometryFromMesh(const tinyxml2::XMLElement & meshDom)
 {
   Geometry::Mesh mesh;
   mesh.filename = meshDom.Attribute("filename");
-  mesh.scale = attrToDouble(meshDom, "scale", 1.0);
+  auto maybeScaleV = attrToList(meshDom, "scale", {1.0});
+  if(maybeScaleV.size() == 3)
+  {
+    mesh.scaleV = Eigen::Map<Eigen::Vector3d>(maybeScaleV.data(), 3);
+  }
+  else
+  {
+    assert(maybeScaleV.size() == 1);
+    mesh.scaleV.setConstant(maybeScaleV[0]);
+  }
   return mesh;
 }
 
@@ -278,7 +287,8 @@ bool visualFromTag(const tinyxml2::XMLElement & dom, const MaterialCache & mater
   }
   const auto & geometryDom = *geometryDomPtr;
   using geometry_fn = Geometry::Data (*)(const tinyxml2::XMLElement & mesh);
-  auto handleGeometry = [&out, &geometryDom](const char * name, Geometry::Type type, geometry_fn get_geom) {
+  auto handleGeometry = [&out, &geometryDom](const char * name, Geometry::Type type, geometry_fn get_geom)
+  {
     auto geom = geometryDom.FirstChildElement(name);
     if(!geom)
     {
@@ -317,11 +327,7 @@ bool visualFromTag(const tinyxml2::XMLElement & dom, const MaterialCache & mater
 
 std::string parseMultiBodyGraphFromURDF(ParserResult & res,
                                         const std::string & content,
-                                        const std::vector<std::string> & filteredLinksIn,
-                                        bool transformInertia,
-                                        const std::string & baseLinkIn,
-                                        bool withVirtualLinks,
-                                        const std::string & sphericalSuffix)
+                                        const ParserParameters & params)
 {
   tinyxml2::XMLDocument doc;
   doc.Parse(content.c_str());
@@ -346,31 +352,44 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
   }
 
   std::vector<tinyxml2::XMLElement *> links;
-  std::vector<std::string> filteredLinks = filteredLinksIn;
-  // Extract link elements from the document, remove filtered links
+  // Keep those links but fix the joint
+  std::vector<std::string> fixed_links{};
+  // Remove those links
+  std::vector<std::string> removed_links{};
+  // Extract link elements from the document, remove filtered links if needed
   {
     tinyxml2::XMLElement * link = robot->FirstChildElement("link");
     while(link)
     {
-      std::string linkName = link->Attribute("name");
-      if(std::find(filteredLinks.begin(), filteredLinks.end(), linkName) == filteredLinks.end())
+      auto handle_link = [&]()
       {
-        if(!withVirtualLinks)
+        std::string linkName = link->Attribute("name");
+        bool link_has_inertia = link->FirstChildElement("inertial") != nullptr;
+        if(!link_has_inertia && params.remove_virtual_links_)
         {
-          if(link->FirstChildElement("inertial"))
+          removed_links.push_back(linkName);
+          return;
+        }
+        bool is_filtered = std::find(params.filtered_links_.begin(), params.filtered_links_.end(), linkName)
+                           != params.filtered_links_.end();
+        if(is_filtered)
+        {
+          if(params.remove_filtered_links_)
           {
-            links.push_back(link);
+            removed_links.push_back(linkName);
           }
           else
           {
-            filteredLinks.push_back(linkName);
+            fixed_links.push_back(linkName);
+            links.push_back(link);
           }
         }
         else
         {
           links.push_back(link);
         }
-      }
+      };
+      handle_link();
       link = link->NextSiblingElement("link");
     }
   }
@@ -381,7 +400,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     return "";
   }
 
-  std::string baseLink = baseLinkIn == "" ? links[0]->Attribute("name") : baseLinkIn;
+  std::string baseLink = params.base_link_.empty() ? links[0]->Attribute("name") : params.base_link_;
 
   for(tinyxml2::XMLElement * linkDom : links)
   {
@@ -407,7 +426,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
       Eigen::Matrix3d comFrame = RPY(comRPY);
       mass = attrToDouble(*massDom, "value");
       Eigen::Matrix3d inertia = readInertia(*inertiaDom);
-      if(transformInertia)
+      if(params.transform_inertia_)
       {
         inertia_o = sva::inertiaToOrigin(inertia, mass, com, comFrame);
       }
@@ -443,6 +462,11 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     res.mbg.addBody(b);
   }
 
+  auto is_removed = [&](const std::string & body)
+  { return std::find(removed_links.begin(), removed_links.end(), body) != removed_links.end(); };
+  auto is_fixed = [&](const std::string & body)
+  { return std::find(fixed_links.begin(), fixed_links.end(), body) != fixed_links.end(); };
+
   std::vector<tinyxml2::XMLElement *> joints;
   // Extract joint elements from the document, remove joints that link with filtered links
   {
@@ -451,10 +475,13 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     {
       std::string parent_link = joint->FirstChildElement("parent")->Attribute("link");
       std::string child_link = joint->FirstChildElement("child")->Attribute("link");
-      if(std::find(filteredLinks.begin(), filteredLinks.end(), child_link) == filteredLinks.end()
-         && std::find(filteredLinks.begin(), filteredLinks.end(), parent_link) == filteredLinks.end())
+      if(!is_removed(parent_link) && !is_removed(child_link))
       {
         joints.push_back(joint);
+      }
+      if(is_fixed(child_link))
+      {
+        joint->SetAttribute("type", "fixed");
       }
       joint = joint->NextSiblingElement("joint");
     }
@@ -482,10 +509,15 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
     {
       axis = attrToVector(*axisDom, "xyz").normalized();
     }
-    rbd::Joint::Type type = rbdynFromUrdfJoint(
-        jointType, (jointName.length() >= sphericalSuffix.length()
-                    && jointName.substr(jointName.length() - sphericalSuffix.length(), sphericalSuffix.length())
-                           == sphericalSuffix));
+
+    auto is_spherical = [&](const std::string & joint)
+    {
+      return joint.length() >= params.spherical_suffix_.length()
+             && joint.substr(joint.length() - params.spherical_suffix_.length(), params.spherical_suffix_.length())
+                    == params.spherical_suffix_;
+    };
+
+    rbd::Joint::Type type = rbdynFromUrdfJoint(jointType, is_spherical(jointName));
 
     tinyxml2::XMLElement * parentDom = jointDom->FirstChildElement("parent");
     std::string jointParent = parentDom->Attribute("link");
@@ -497,7 +529,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
 
     // Check if this is a mimic joint
     tinyxml2::XMLElement * mimicDom = jointDom->FirstChildElement("mimic");
-    if(mimicDom)
+    if(mimicDom && j.type() != rbd::Joint::Type::Fixed)
     {
       std::string mimicJoint = mimicDom->Attribute("joint");
       j.makeMimic(mimicJoint, attrToDouble(*mimicDom, "multiplier", 1.0), attrToDouble(*mimicDom, "offset"));
@@ -524,7 +556,8 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
       effort = attrToList(*limitDom, "effort");
       velocity = attrToList(*limitDom, "velocity");
     }
-    auto check_limit = [&j](const std::string & name, const std::vector<double> & limit) {
+    auto check_limit = [&j](const std::string & name, const std::vector<double> & limit)
+    {
       if(limit.size() != static_cast<size_t>(j.dof()))
       {
         std::cerr << "Joint " << name << " limit for " << j.name() << ": size missmatch, expected: " << j.dof()
@@ -552,19 +585,13 @@ ParserResult from_urdf(const std::string & content,
                        bool withVirtualLinks,
                        const std::string & sphericalSuffix)
 {
-  ParserResult res;
-
-  std::string baseLink = parseMultiBodyGraphFromURDF(res, content, filteredLinksIn, transformInertia, baseLinkIn,
-                                                     withVirtualLinks, sphericalSuffix);
-
-  res.mb = res.mbg.makeMultiBody(baseLink, fixed);
-  res.mbc = rbd::MultiBodyConfig(res.mb);
-  res.mbc.zero(res.mb);
-
-  rbd::forwardKinematics(res.mb, res.mbc);
-  rbd::forwardVelocity(res.mb, res.mbc);
-
-  return res;
+  return from_urdf(content, ParserParameters{}
+                                .fixed(fixed)
+                                .filtered_links(filteredLinksIn)
+                                .transform_inertia(transformInertia)
+                                .base_link(baseLinkIn)
+                                .remove_virtual_links(!withVirtualLinks)
+                                .spherical_suffix(sphericalSuffix));
 }
 
 ParserResult from_urdf_file(const std::string & file_path,
@@ -575,13 +602,40 @@ ParserResult from_urdf_file(const std::string & file_path,
                             bool withVirtualLinks,
                             const std::string & sphericalSuffix)
 {
+  return from_urdf_file(file_path, ParserParameters{}
+                                       .fixed(fixed)
+                                       .filtered_links(filteredLinksIn)
+                                       .transform_inertia(transformInertia)
+                                       .base_link(baseLinkIn)
+                                       .remove_virtual_links(!withVirtualLinks)
+                                       .spherical_suffix(sphericalSuffix));
+}
+
+ParserResult from_urdf(const std::string & content, const ParserParameters & params)
+{
+  ParserResult res;
+
+  std::string baseLink = parseMultiBodyGraphFromURDF(res, content, params);
+
+  res.mb = res.mbg.makeMultiBody(baseLink, params.fixed_);
+  res.mbc = rbd::MultiBodyConfig(res.mb);
+  res.mbc.zero(res.mb);
+
+  rbd::forwardKinematics(res.mb, res.mbc);
+  rbd::forwardVelocity(res.mb, res.mbc);
+
+  return res;
+}
+
+ParserResult from_urdf_file(const std::string & file_path, const ParserParameters & params)
+{
   std::ifstream file(file_path);
   if(!file.is_open())
   {
     throw std::runtime_error("URDF: Can't open " + file_path + " file for reading");
   }
   std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-  return from_urdf(content, fixed, filteredLinksIn, transformInertia, baseLinkIn, withVirtualLinks, sphericalSuffix);
+  return from_urdf(content, params);
 }
 
 } // namespace parsers

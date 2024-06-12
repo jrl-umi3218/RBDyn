@@ -1,0 +1,246 @@
+\documentclass[]{article}
+
+\usepackage{amsthm} %qed
+\usepackage[cmex10]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\usepackage{mathtools}
+
+\makeatletter
+\DeclareRobustCommand\widecheck[1]{{\mathpalette\@widecheck{#1}}}
+\def\@widecheck#1#2{%
+    \setbox\z@\hbox{\m@th$#1#2$}%
+    \setbox\tw@\hbox{\m@th$#1%
+       \widehat{%
+          \vrule\@width\z@\@height\ht\z@
+          \vrule\@height\z@\@width\wd\z@}$}%
+    \dp\tw@-\ht\z@
+    \@tempdima\ht\z@ \advance\@tempdima2\ht\tw@ \divide\@tempdima\thr@@
+    \setbox\tw@\hbox{%
+       \raise\@tempdima\hbox{\scalebox{1}[-1]{\lower\@tempdima\box
+\tw@}}}%
+    {\ooalign{\box\tw@ \cr \box\z@}}}
+\makeatother
+
+\newcommand{\BIN}{\begin{bmatrix}}
+\newcommand{\BOUT}{\end{bmatrix}}
+
+\newcommand{\diff}[2]{\dfrac{\partial #1}{\partial #2}}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\dt}{\Delta t}
+\newcommand{\w}{\omega}
+\newcommand{\dw}{\dot{\omega}}
+\newcommand{\dv}{\dot{v}}
+\newcommand{\comm}[2]{\left[#1,#2\right]}
+
+
+\begin{document}
+
+\title{\Large Integration of joint speed and acceleration in RBDyn}
+\author{Adrien Escande}
+
+\maketitle
+
+\section{Motivation}
+Given a joint with configuration $q$, velocity $\alpha$ and acceleration $\dot{\alpha}$, we are interested in computing (possibly approximately) the configuration of the joint after a duration $\dt$ for a constant acceleration (the case $\dot{\alpha} = 0$ corresponds to a constant velocity), that is integrate $\alpha(t)$ over the interval $\left[t,t+\dt\right]$. When (i) $q$ is living in an Euclidean space, and (ii) $q$, $\alpha$ and $\dot{\alpha}$ are expressed in the same frame, this is trivial:
+\begin{equation}
+	q(t+\dt) = q(t) + \alpha(t) \dt + \alpha \frac{\dt^2}{2}
+\end{equation}
+In RBdyn, this is the case for the revolute, prismatic and cylindrical joints, but not for the planar, spherical and free joints that respectively do not meet (ii), (i), (i) and (ii).
+The goal of this note is to describe how to perform the integration in these more involved cases.
+
+\section{Notations and assumptions}
+Given $x \in \mathbb{R}^3$, $\hat{x}$ defines the skew-symmetric matrix corresponding to the cross product, \emph{i.e.} $\hat{x}u = x \times u$, or:
+\begin{equation}
+	\hat{x} = \BIN 0 & -x_3 & x_2 \\ x_3 & 0 & -x_1 \\ -x_2 & x_1 & 0 \BOUT
+\end{equation}
+Conversely, for a skew-symmetric matrix $S$, $ s = \widecheck{S} \in \mathbb{R}^3$ is the vector such that $\hat{s} = S$.
+
+Without loss of generality, we integrate over $\left[0,\dt\right]$. For a function $x(t)$, we note $x_0 = x(0)$.
+
+For two matrices $A$ and $B$, we have the matrix commutator $\comm{A}{B} = AB-BA$. $i$ is the identity matrix.
+
+
+\section{Integration for a spherical joint}
+A ball joint configuration is given by an element of SO(3). For the computations, we represent it as a rotation matrix $R$. \newline
+In this section $\w$ denotes the velocity ($\w = \alpha$).
+
+In RBDyn, $\w$ is expressed in the successor frame so that $\dot{R}(t) = R(t) \hat{\w}(t)$. Taking the transpose yields $\dot{R}^T = - \hat{\w} R^T$.
+
+\subsection{Magnus expansion}
+Given a linear ordinary differential equation $\dot{Y}(t) = A(t) Y(t)$, with initial value $Y(0) = Y_0$, an approximate solution can be obtained as
+\begin{equation}
+	Y(t) = \exp(\Omega(t))Y_0
+\end{equation}
+where $\Omega(t) = \Omega_1(t) + \Omega_2(t) + \ldots$ is the \emph{Magnus expansion} for the problem above.
+
+The first terms are (\emph{cf} wikipedia), with the shortcut $A_i = A(t_i)$
+\begin{align}
+	\Omega_1(t)& = \int_0^{t}{A_1 dt_1}\\
+	\Omega_2(t)& = \int_0^{t}{\int_0^{t_1}{\comm{A_1}{A_2} dt_2}\ dt_1}\\
+	\Omega_3(t)& = \int_0^{t}{\hspace{-6pt}\int_0^{t_1}{\hspace{-6pt}\int_0^{t_2}{\comm{A_1}{\comm{A_2}{A_3}} + \comm{A_3}{\comm{A_2}{A_1}} dt_3}\ dt_2}\ dt_1}\\
+	\Omega_4(t)& = \int_0^{t}\hspace{-6pt}\int_0^{t_1}\hspace{-6pt}\int_0^{t_2}\hspace{-6pt}\int_0^{t_3}
+		\comm{\comm{\comm{A_1}{A_2}}{A_3}}{A_4} + \comm{A_1}{\comm{\comm{A_2}{A_3}}{A_4}} \\
+		& + \comm{A_1}{\comm{A_2}{\comm{A_3}{A_4}}} + \comm{A_2}{\comm{A_3}{\comm{A_4}{A_1}}}
+	dt_4\ dt_3\ dt_2\ dt_1 \nonumber
+\end{align}
+
+\subsection{Application to $\dot{R}^T = - \hat{\w} R^T$}
+For the problem $\dot{R}^T(t) = - \hat{\w}(t) R^T(t)$, $R(0) = R_0$, we have that $R^T(t) = \exp(\Omega(t)) R_0^T(t)$. Thus $R(t) = R_0 \exp(\Omega(t))^T = R_0  \exp(-\Omega(t))$.
+
+With $\w(t) = \w_0 + t \dot{\w}_0$,
+\begin{align}
+	\Omega_1(t) & = -(\widehat{\w_0} + \frac{t}{2}\widehat{\dw_0})t \\
+	\Omega_2(t) & = \frac{1}{12} \widehat{\dw_0 \times \w_0} t^3 \\
+	\Omega_3(t) & = -\frac{1}{240} \widehat{\dw_0 \times (\dw_0 \times \w_0)}t^5 \\
+	\Omega_4(t) & = \frac{1}{5040} (\norm{\dw_0}^2 t^2 + 7 \dw_0^T\w_0 t + 7 \norm{\w}^2) \widehat{\dw_0 \times \w_0}t^5 \\
+	\Omega_5(t) & = \frac{1}{241920} \left((5\norm{\dw_0}^2 t^2 + 24\dw_0^T\w_0 t + 24\norm{\w}^2) \widehat{\dw_0 \times (\w_0 \times \dw_0)}\right. \\
+	& \left.+ 8\norm{\w_0 \times \dw_0}^2 (\widehat{\w_0} + \frac{t}{2}\widehat{\dw_0})\right) t^7
+\end{align}
+(adapted from \footnote{\scriptsize \url{https://cwzx.wordpress.com/2013/12/16/numerical-integration-for-rotational-dynamics/}} 3 and checked in Matlab for the three first ones, deduced from Matlab computations for the 4th and 5th ones).
+
+The first two terms are usually enough. The other ones give an idea of the error magnitude and can be computed if needed. Note that when the velocity is constant ($\dw = 0$), $-\Omega(t)$ reduces to $t \widehat{\w_0}$, so that $R(t) = R_0 \exp(\widehat{t\w_0})$, which is the expected result.
+
+Since the squared norm of $\Omega_1$ is $\norm{\dw_0}^2 \frac{t^2}{4} + \dw_0^T \dw t + \norm{\w_0}^2$, we can bound quite tightly $\left|\norm{\dw_0}^2 t^2 + 7 \dw_0^T\w_0 t + 7 \norm{\w}^2 \right|$ and $\left|5\norm{\dw_0}^2 t^2 + 24\dw_0^T\w_0 t + 24\norm{\w}^2\right|$ by $7\norm{\Omega_1}^2$ and $24\norm{\Omega_1}^2$, respectively. Consequently,
+\begin{align}
+	\norm{\Omega_3} &= \frac{\norm{\dw_0} t^2}{20} \norm{\Omega_2} &&= \frac{r \norm{\dw_0} t^2}{20} \norm{\Omega_1}\\
+	\norm{\Omega_4} &\leq \frac{1}{60} \norm{\Omega_1}^2\norm{\Omega_2} &&= \frac{r}{60} \norm{\Omega_1}^3\\
+	\norm{\Omega_5} &\leq \frac{\norm{\dw_0} t^2}{840} \norm{\Omega_1}^2 \norm{\Omega_2} + \frac{1}{210} \norm{\Omega_1} \norm{\Omega_2}^2 &&= \frac{r \norm{\dw_0} t^2 + 4r^2}{840} \norm{\Omega_1}^3
+\end{align}
+where $r$ is the ratio between $\norm{\Omega_1}$ and $\norm{\Omega_2}$: $\norm{\Omega_2} = r \norm{\Omega_1}$.
+
+
+\subsection{Implementation details}
+Since we want to compute $\exp(-\Omega(t))$ and that $\Omega$ is skew-symmetric (whatever the number of terms used), \emph{magnusExpansion} returns -$\widecheck{\Omega}$.
+\newline
+All norms are computed in squared form to avoid taking square roots as much as possible. Noting $\mu = \norm{\dw_0} t^2$,
+\begin{align}
+\norm{\Omega_3}^2 &= \frac{\mu^2}{400} \norm{\Omega_2}^2\\
+\norm{\Omega_4}^2 &\leq \frac{1}{3600} \norm{\Omega_1}^4\norm{\Omega_2}^2\\
+\norm{\Omega_5}^2 &\leq \frac{\norm{\Omega_1}^2 \norm{\Omega_2}^2}{840^2} (\mu \norm{\Omega_1} + 4 \norm{\Omega_2})^2\\ &= \frac{\norm{\Omega_1}^2 \norm{\Omega_2}^2}{840^2}(\mu^2 \norm{\Omega_1}^2 + 8\sqrt{\mu^2 \norm{\Omega_1}^2 \norm{\Omega_2}^2} + 16 \norm{\Omega_2}^2)
+\end{align}
+where the last line is formed to use a single squared root.
+
+\section{Integration for a free joint}
+In this section $v$ and $\w$ denote the linear and angular velocity, respectively ($\alpha = \BIN \w \\ v \BOUT$).
+
+Free joints are peculiar beasts in RBDyn (following Featherstone's book). Their configuration is an element of SE(3) represented by a translation $x$ expressed in parent frame, followed by a rotation $R$. However their velocity is represented in successor frame. Consequently, the linear velocity of a joint in parent frame is given by $\dot{x}(t) = R(t)v(t)$. This makes the integration complicated when $R$ is not constant. When $R$ is constant, we simply have (for constant acceleration)
+\begin{equation}
+	x(t) = x_0 + R(v_0t + \dv_0 \frac{t^2}{2})
+\end{equation}
+
+\subsection{Constant velocity}
+We suppose that $v(t) = v_0$ and $\w(t) = \w_0$, so that $\dot{x}(t) = R_0\exp(t \widehat{\w_0}) v_0$. Using Rodrigues' formula, we have that
+\begin{equation}
+	\dot{x}(t) = R_0 \left(I + \sin(t \norm{\w_0})\frac{\widehat{\w_0}}{\norm{\w_0}} + \left(1-\cos(t \norm{\w_0})\right) \frac{\widehat{\w_0}^2}{\norm{\w_0}^2} \right) v_0
+\end{equation}
+Taking the integral between $0$ and $t$ yields
+\begin{equation}
+	x(t) = x_0 + R_0 \left(tI + (1-\cos(t \norm{\w_0}))\frac{\widehat{\w_0}}{\norm{\w_0}^2} + \left(t-\frac{1}{\norm{\w_0}}\sin(t \norm{\w_0})\right) \frac{\widehat{\w_0}^2}{\norm{\w_0}^2} \right) v_0
+\end{equation}
+
+\subsection{Constant acceleration}
+In the case of constant acceleration, we can't rely on analytical integration anymore because of the rotation part. We then have to use numerical integration. We use Simpson's rule: let $h = \frac{\dt}{2n}$, $t_i = ih,\ i=0..2n$ and $f_i = f(t_i)$, then
+\begin{align}
+	\int_0^{\dt} f(t) dt &= \frac{h}{3}\left(f_0 + 4 f_1 + 2f_2 + 4 f_3 + 2 f_4 + \ldots + 4f_{2n-1} + f_{2n}\right) + \epsilon_n \\
+	& = \frac{h}{3} \left(f_0 + \sum_{j=0}^{n-1} (4 f_{2j+1} + 2 f_{2j+2}) + 4f_{2n-1} + f_{2n}\right) + \epsilon_n
+\end{align}
+with
+\begin{equation}
+	\epsilon_n = \frac{nh^5}{90}f^{(4)}(\xi) = \frac{\dt^5}{2880n^4}f^{(4)}(\xi)
+\end{equation}
+for some $\xi \in \left[0,\dt\right]$.
+\newline
+For $f(t) = R(t)v(t)$ with $v(t) = v_0 + t \dv_0$, $\w(t) = \w_0 + t \dw_0$ and $\dot{R}(t) = R(t)\hat{\w}(t)$, we have, dropping the dependence in $t$:
+\begin{align}
+	&f^{(4)} = R \left((\norm{\w}^4-3\norm{\dw_0}^2)v -12\dw_0^T \w \dv_0 + (4\dw_0^T \dv_0 - \norm{\w}^2\w^T v)\w\right. \nonumber\\
+	& \left. + (3\dw_0^T v + 8\w^T \dv_0)\dw_0+(5\dw_0^T \w v + 4\norm{\w}^2 \dv_0) \times \w + (2 \w^T v\w + \norm{\w}^2 v) \times \dw_0\right)\nonumber
+\end{align}
+(see Appendix for details)
+\newline
+Let's note $M$ the maximum norm of $f^{(4)}$ over $\left[0,\dt\right]$. Then $\norm{\epsilon_n} \leq \frac{\dt^5}{2880n^4}M$, so that a sufficient condition for $\norm{\epsilon_n}$ to be smaller than a target precision $p$ is
+\begin{equation}
+  n \geq \frac{\dt}{2} \sqrt[4]{\frac{M\dt}{180p}}
+\end{equation}
+
+Computing $M$ would be too costly, but a good approximation is to take $M = \max(f^{(4)}(0),f^{(4)}(\dt))$: empirically, it is generally true and when it's not the error is usually small or doesn't change the order of magnitude\footnote{We tested for 1 millions random values of $(R,v,\w,\dv,\dw)$ obtained with Matlab's \emph{randn}. For $\dt=0.1$, the max is not at the bounds in about $0.03\%$ of the cases, and the error is less than $4\%$. For $\dt=1$, the max is not at the bounds in about $0.25\%$ of the cases, and the error is usually less than $10\%$, but go up to $330\%$ in one case. For $\dt=5$, the max is not at the bounds in about $0.1\%$ of the cases, and the error is usually less than $20\%$, but go up to $500\%$ in a few cases.}.
+
+
+\subsection{Implementation details}
+An important remark is that $\norm{f^{(4)}}$ is independent of $R(t)$ as $R(t)$ is orthogonal. This means it can be computed without having to integrate the rotation part of the free joint.
+\newline
+
+
+
+\section{Planar joint}
+In the current version of RBDyn, all translation quantities are expressed in the successor's frame. Noting $x$ the translation part for this joint and $\theta$ the rotation angle, we have
+\begin{align}
+&\dot{x}(t) = A(t) x(t) + R(\theta(t)) v(t)\\
+&\mbox{with}\ A(t) = \BIN 0 & \w(t) \\ -\w(t) & 0 \BOUT \ \mbox{and}\ R(u) = \BIN \cos{u} & -\sin{u} \\ \sin{u} & \cos{u}\BOUT \nonumber
+\end{align}
+We define
+\begin{equation}
+	B(t) = \BIN 0 & \theta(t) \\ -\theta(t) & 0 \BOUT
+\end{equation}
+so that $\dot{B} = A$ and $e^B = R(-\theta) = R^T(\theta)$. $A$ and $B$ commute, so that the solution to the above differential equation for $x(0) = x_0$ and $\theta(0) = \theta_0$ is
+\begin{equation}
+	x = R^T(\theta)\left(R_0 x_0 + \int_0^t R(\theta(u))v(u) du \right) \label{eq:planarSol}
+\end{equation}
+
+
+\subsection{Constant velocity}
+We suppose here that $v(t) = v_0$, $\w(t) = \w_0$ and note $\theta_0 = \theta(0)$.\newline
+In this case, the integration of $R(\theta)v$ has an analytical form:
+\begin{equation}
+	\int R(\theta(t)) dt = \int R(\theta_0+ t \w) dt = \frac{1}{\w} \BIN \sin{\theta(t)} & \cos{\theta(t)} \\ -\cos{\theta(t)} & \sin{\theta(t)} \BOUT
+\end{equation}
+so that
+\begin{align}
+	x & = R(t\w)^T x_0 + \frac{1}{\w}\left( \BIN \sin{t \w} &-\cos{t \w} \\ \cos{t \w} & \sin{t \w} \BOUT + \BIN 0 & 1 \\ -1 & 0 \BOUT \right) v \\
+	  & = R(t\w)^T x_0 + t \BIN \frac{\sin{t \w}}{t \w} & \frac{1-\cos{t \w}}{t \w} \\ \frac{\cos{t \w}-1}{t \w} & \frac{\sin{t \w}}{t \w} \BOUT v
+\end{align}
+
+\subsection{Constant acceleration}
+As for free joints, in the case of constant acceleration, analytical formula is not an option. We use Simpson's rule to integrate $f(t) = R(\theta(t))v(t)$ and use eq.~(\ref{eq:planarSol}) to get the solution.
+The error of the integration is based on
+\begin{equation}
+ f^{(4)} = \left(\w^4 - 3 \dw_0^2 \right) R v - 6 \dw_0 \w^2 U v -12 \dw_0 \w R \dv_0  - 4 \w^3 U \dv_0
+\end{equation}
+where $R$ stands for $R(\theta(t))$ and
+\begin{equation}
+	U = \BIN -\sin{\theta(t)} & -\cos{\theta(t)} \\ \cos{\theta(t)} & -\sin{\theta(t)} \BOUT
+\end{equation}
+The $4$-th derivative is obtained by direct computation, noting that $\dot{R} = \w U$ and $\dot{U} = -\w R$.
+
+Defining $M = R^T U = \BIN 0 & -1 \\ 1 & 0 \BOUT$ and noting that $R^T R = I$, we have that
+\begin{equation}
+	\norm{f^{(4)}} = \norm{R^T f^{(4)}} = \norm{\left(\w^4 - 3 \dw_0^2 \right) v - 6 \dw_0 \w^2 M v -12 \dw_0 \w \dv_0  - 4 \w^3 M \dv_0}
+\end{equation}
+wich is independent of $\theta$.
+
+
+\appendix
+\section{Computation of $f^{(4)}$ in the free joint case}
+Let $f(t) = R(t)v(t)$ with $v(t) = v_0 + t \dv_0$, $\w(t) = \w_0 + t \dw_0$ and $\dot{R}(t) = R(t)\hat{\w}(t)$. We have
+\begin{align*}
+	\dot{f} &= \dot{R}v + R\dot{v}\\
+	&= R \left(\hat{\w}v+\dv_0 \right)\\
+	\ddot{f} &= R \left( \hat{\w}^2v + 2\hat{\w}\dv_0 + \widehat{\dw_0} v\right)\\
+	f^{(3)} &= R \left(\hat{\w}^3v + 3\hat{\w}^2\dv_0 + 2\hat{\w} \widehat{\dw_0} v + \widehat{\dw_0} \hat{\w} v + 3 \widehat{\dw_0} \dv_0 \right)\\
+	f^{(4)} &= R \left(\left(\hat{\w}^4 + 3\hat{\w}^2 \widehat{\dw_0} + \widehat{\dw_0} \hat{\w}^2 + 2\hat{\w}\widehat{\dw_0}\hat{\w} + 3\widehat{\dw_0}^2\right)v + 4\left(\widehat{\dw_0}\hat{\w} + 2 \hat{\w}\widehat{\dw_0} + \hat{\w}^3 \right) \dv_0 \right)
+\end{align*}
+
+Using the fact that $\hat{x}\hat{y} = y x^T - x^T y I$, we have the following simplifications:
+\begin{align*}
+	\hat{\w}^4 &= \norm{\w}^4 I - \norm{\w}^2 \w\w^T \\
+	\hat{\w}^3 &= -\norm{\w}^2 \hat{w} \\
+	\widehat{\dw_0}^2 &= \dw_0 \dw0^T - \norm{\dw_0}^2 I\\
+	3\hat{\w}\widehat{\dw_0} + \widehat{\dw_0}\hat{\w}^2 + 2\hat{\w}\widehat{\dw_0}\hat{\w} &= 2 (\w \times \dw_0) \w^T - \norm{\w}^2\widehat{\dw_0} - 5\dw_0^T\w \hat{\w}\\
+	\widehat{\dw_0}\hat{\w} + 2\hat{\w}\widehat{\dw_0} + \hat{\w}^3 &= \w \dw_0^T + 2 \dw_0 \w^T - 3\dw_0^T\w I -\norm{\w}^2\hat{\w}
+\end{align*}
+which yield the result.
+
+\end{document}
