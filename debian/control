@@ -35,6 +35,7 @@ Package: librbdyn-dev
 Section: libdevel
 Architecture: any
 Depends: pkg-config,
+         libboost-system-dev,
          libeigen3-dev (>= 3.2),
          libspacevecalg-dev,
          libtinyxml2-dev,
