@@ -12,7 +12,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-const double TOL = 0.00001;
+const double TOL = 1e-10;
 
 void setRandomFreeFlyer(rbd::MultiBodyConfig & mbc)
 {
@@ -61,28 +61,16 @@ BOOST_AUTO_TEST_CASE(ExpandJacobianTest)
     Eigen::MatrixXd product = jacMat.transpose() * jacMat;
     Eigen::MatrixXd fullProduct = jac.expand(mb, product);
 
-    #if defined __i386__ || defined __aarch64__
-      BOOST_CHECK_SMALL((fullProduct - res).norm(), TOL);
-    #else
-      BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
-    #endif
+    BOOST_CHECK_SMALL((fullProduct - res).norm(), TOL);
 
     fullProduct.setZero();
     jac.expandAdd(mb, product, fullProduct);
 
-    #if defined __i386__ || defined __aarch64__
-      BOOST_CHECK_SMALL((fullProduct - res).norm(), TOL);
-    #else
-      BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
-    #endif
+    BOOST_CHECK_SMALL((fullProduct - res).norm(), TOL);
 
     fullProduct.setZero();
     jac.expandAdd(compact, product, fullProduct);
 
-    #if defined __i386__ || defined __aarch64__
-      BOOST_CHECK_SMALL((fullProduct - res).norm(), TOL);
-    #else
-      BOOST_CHECK_EQUAL((fullProduct - res).norm(), 0);
-    #endif
+    BOOST_CHECK_SMALL((fullProduct - res).norm(), TOL);
   }
 }
