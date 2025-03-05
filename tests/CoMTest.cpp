@@ -6,6 +6,10 @@
 // std
 #include <iostream>
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+
 // boost
 #define BOOST_TEST_MODULE CoMTest
 #include <boost/test/unit_test.hpp>
