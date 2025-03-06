@@ -24,7 +24,7 @@ var NAVTREE =
 [
   [ "RBDyn", "index.html", [
     [ "Installing", "index.html#autotoc_md0", null ],
-    [ "Ubuntu LTS (16.04, 18.04, 20.04)", "index.html#autotoc_md1", null ],
+    [ "Ubuntu LTS (16.04, 18.04, 20.04, 22.04, 24.04)", "index.html#autotoc_md1", null ],
     [ "vcpkg", "index.html#autotoc_md2", null ],
     [ "Homebrew OS X install", "index.html#autotoc_md3", null ],
     [ "Manually build from source", "index.html#autotoc_md4", [
