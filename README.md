@@ -13,7 +13,7 @@ This implementation is based on [Roy Featherstone Rigid Body Dynamics Algorithms
 Installing
 ------
 
-## Ubuntu LTS (16.04, 18.04, 20.04)
+## Ubuntu LTS (16.04, 18.04, 20.04, 22.04, 24.04)
 
 You must first setup our package mirror:
 
