@@ -24,6 +24,7 @@ include(cmake/base.cmake)
 include(cmake/cython/cython.cmake)
 include(cmake/msvc-specific.cmake)
 
+set(CXX_DISABLE_WERROR True)
 project(
   RBDyn
   LANGUAGES C CXX
