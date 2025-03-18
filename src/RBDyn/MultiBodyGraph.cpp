@@ -156,10 +156,6 @@ MultiBody MultiBodyGraph::makeMultiBody(const std::string & rootBodyName,
   std::vector<int> parent;
   std::vector<sva::PTransformd> Xt;
 
-  if(!bodyNameToNode_.count(rootBodyName))
-  {
-    throw std::runtime_error("[RBDyn] rootBodyName \"" + rootBodyName + "\"  not found");
-  }
   std::shared_ptr<Node> rootNode = bodyNameToNode_.at(rootBodyName);
   Joint rootJoint(rootJointType, axis, true, rootJointName_);
 
