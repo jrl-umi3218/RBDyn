@@ -28,8 +28,7 @@ set(CXX_DISABLE_WERROR True)
 project(
   RBDyn
   LANGUAGES C CXX
-  VERSION "${PROJECT_VERSION}"
-)
+  VERSION "${PROJECT_VERSION}")
 
 option(BENCHMARKS "Generate benchmarks." OFF)
 
@@ -45,25 +44,25 @@ if(BUILD_RBDYN_PARSERS)
 
   find_package(tinyxml2 QUIET NO_MODULE)
   if(NOT ${tinyxml2_FOUND})
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+                          "${PROJECT_SOURCE_DIR}/CMakeModules")
     find_package(RBDyn_TinyXML2 REQUIRED)
     install(FILES "${PROJECT_SOURCE_DIR}/CMakeModules/FindRBDyn_TinyXML2.cmake"
-            DESTINATION "${CONFIG_INSTALL_DIR}"
-    )
-    set(PACKAGE_EXTRA_MACROS "list(APPEND CMAKE_MODULE_PATH \${CMAKE_CURRENT_LIST_DIR})
-find_package(RBDyn_TinyXML2 REQUIRED)"
-    )
+            DESTINATION "${CONFIG_INSTALL_DIR}")
+    set(PACKAGE_EXTRA_MACROS
+        "list(APPEND CMAKE_MODULE_PATH \${CMAKE_CURRENT_LIST_DIR})
+find_package(RBDyn_TinyXML2 REQUIRED)")
   else()
     add_project_dependency(tinyxml2 REQUIRED NO_MODULE)
   endif()
 
-  # Note: technically we don't need system but it is likely to be here and CMake <=
-  # 3.5.0 needs at least one component to define Boost::boost
+  # Note: technically we don't need system but it is likely to be here and CMake
+  # <= 3.5.0 needs at least one component to define Boost::boost
   add_project_dependency(Boost REQUIRED COMPONENTS system)
 endif()
 
-# For MSVC, set local environment variable to enable finding the built dll of the main
-# library when launching ctest with RUN_TESTS
+# For MSVC, set local environment variable to enable finding the built dll of
+# the main library when launching ctest with RUN_TESTS
 if(MSVC)
   set(CMAKE_MSVCIDE_RUN_PATH "\$(SolutionDir)/src/\$(Configuration)")
 endif()

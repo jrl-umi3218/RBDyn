@@ -20,8 +20,7 @@ set(SOURCES
     ZMP.cpp
     IDIM.cpp
     VisServo.cpp
-    Coriolis.cpp
-)
+    Coriolis.cpp)
 set(HEADERS
     RBDyn/Body.h
     RBDyn/Joint.h
@@ -45,25 +44,22 @@ set(HEADERS
     RBDyn/VisServo.h
     RBDyn/util.hh
     RBDyn/util.hxx
-    RBDyn/Coriolis.h
-)
+    RBDyn/Coriolis.h)
 
 add_library(RBDyn ${SOURCES} ${HEADERS})
 target_include_directories(
   RBDyn
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
-         $<INSTALL_INTERFACE:include>
-)
+         $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDyn PUBLIC SpaceVecAlg::SpaceVecAlg)
 if(BUILD_SHARED_LIBS)
   set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
 else()
   target_compile_definitions(RBDyn PUBLIC "-DRBDYN_STATIC")
 endif()
-set_target_properties(
-  RBDyn PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR} VERSION ${PROJECT_VERSION}
-)
+set_target_properties(RBDyn PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
+                                       VERSION ${PROJECT_VERSION})
 set_target_properties(RBDyn PROPERTIES CXX_STANDARD 11)
 
 install(
@@ -71,6 +67,5 @@ install(
   EXPORT "${TARGETS_EXPORT_NAME}"
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-)
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(FILES ${HEADERS} DESTINATION ${INCLUDE_INSTALL_DESTINATION})

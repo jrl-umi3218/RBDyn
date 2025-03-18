@@ -12,13 +12,11 @@ macro(addUnitTest name)
   if(${BUILD_TESTING})
     add_executable(${name} ${name}.cpp ${HEADERS})
     target_link_libraries(
-      ${name} PRIVATE RBDyn Boost::unit_test_framework Boost::system Boost::filesystem
-                      Boost::disable_autolinking
-    )
+      ${name} PRIVATE RBDyn Boost::unit_test_framework Boost::system
+                      Boost::filesystem Boost::disable_autolinking)
     target_compile_definitions(
       ${name} PRIVATE -DBOOST_TEST_DYN_LINK
-                      -DTESTS_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-    )
+                      -DTESTS_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
     add_test(${name}Unit ${name})
     # Adding a project configuration file (for MSVC only)
     generate_msvc_dot_user_file(${name})
@@ -30,12 +28,10 @@ macro(addParserUnitTest name)
     add_executable(${name} ${name}.cpp ${HEADERS})
     target_link_libraries(
       ${name} PRIVATE RBDynParsers Boost::unit_test_framework Boost::system
-                      Boost::filesystem Boost::disable_autolinking
-    )
+                      Boost::filesystem Boost::disable_autolinking)
     target_compile_definitions(
       ${name} PRIVATE -DBOOST_TEST_DYN_LINK
-                      -DTESTS_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-    )
+                      -DTESTS_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
     add_test(${name}Unit ${name})
     # Adding a project configuration file (for MSVC only)
     generate_msvc_dot_user_file(${name})
@@ -68,7 +64,8 @@ addparserunittest("YAMLParserTest")
 addparserunittest("YAMLOutputTest")
 
 if(${BENCHMARKS})
-  option(BENCHMARK_ENABLE_TESTING "Enable testing of the benchmark library." OFF)
+  option(BENCHMARK_ENABLE_TESTING "Enable testing of the benchmark library."
+         OFF)
   if(NOT WIN32)
     add_definitions(-Wno-error)
   endif()
