@@ -334,10 +334,15 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
   tinyxml2::XMLElement * robot = doc.FirstChildElement("robot");
   if(!robot)
   {
-    std::cerr << "No robot tag in the URDF, parsing will stop now" << std::endl;
-    return "";
+    throw std::runtime_error("No <robot> tag in the URDF, parsing will stop now");
   }
-  res.name = robot->Attribute("name");
+
+  auto name = robot->Attribute("name");
+  if(!name)
+  {
+    throw std::runtime_error("[RBDyn] <robot> tag must have a \"name\" attibute, parsing will stop now");
+  }
+  res.name = name;
 
   // Extract all material elements from the root as these can be reference in material nodes
   MaterialCache materials;
@@ -396,8 +401,7 @@ std::string parseMultiBodyGraphFromURDF(ParserResult & res,
 
   if(links.size() == 0)
   {
-    std::cerr << "Failed to extract any link information from the URDF, parsing will stop now" << std::endl;
-    return "";
+    throw std::runtime_error("Failed to extract any link information from the URDF, parsing will stop now");
   }
 
   std::string baseLink = params.base_link_.empty() ? links[0]->Attribute("name") : params.base_link_;
