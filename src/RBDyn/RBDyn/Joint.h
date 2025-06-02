@@ -297,7 +297,6 @@ private:
 
   double Ir_ = 0.0;
   double gr_ = 0.0;
-
 };
 
 inline std::ostream & operator<<(std::ostream & out, const Joint & b)
