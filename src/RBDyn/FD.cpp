@@ -43,14 +43,15 @@ void ForwardDynamics::forwardDynamics(const MultiBody & mb, MultiBodyConfig & mb
   vectorToParam(tmpFd_, mbc.alphaD);
 }
 
-void ForwardDynamics::computeHIr(const MultiBody& mb)
+void ForwardDynamics::computeHIr(const MultiBody & mb)
 {
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
+    const auto ui = static_cast<size_t>(i);
     if(mb.joint(i).type() == Joint::Rev)
     {
       double gr = mb.joint(i).gearRatio();
-      HIr_(dofPos_[i], dofPos_[i]) = mb.joint(i).rotorInertia() * gr * gr;
+      HIr_(dofPos_[ui], dofPos_[ui]) = mb.joint(i).rotorInertia() * gr * gr;
     }
   }
 }
