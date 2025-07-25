@@ -4,6 +4,7 @@
 *.swp
 CMakeLists.txt.user*
 *.autosave
+.cache/
 build*
 compile_commands.json
 result

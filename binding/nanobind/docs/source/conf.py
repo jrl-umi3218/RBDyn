@@ -19,9 +19,7 @@ extensions = ["autoapi.extension"]
 templates_path = ["_templates"]
 exclude_patterns = []
 
-autoapi_dirs = [
-    "/home/vscode/workspace/python-venv/lib/python3.12/site-packages/sva"
-]
+autoapi_dirs = ["/home/vscode/workspace/python-venv/lib/python3.12/site-packages/sva"]
 autoapi_file_patterns = ["*.pyi", "*.py"]
 autoapi_python_class_content = "both"
 
