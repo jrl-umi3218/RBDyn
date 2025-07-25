@@ -46,7 +46,9 @@ set(HEADERS
     RBDyn/util.hxx
     RBDyn/Coriolis.h)
 
+set(ALL_RBDYN_TARGETS)
 add_library(RBDyn ${SOURCES} ${HEADERS})
+list(APPEND ALL_RBDYN_TARGETS RBDyn)
 target_include_directories(
   RBDyn
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

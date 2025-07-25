@@ -54,8 +54,7 @@ nanobind_add_module(
   NB_STATIC
   # Source code goes here
   src/rbdyn_module/rbdyn_module.cpp
-  src/rbdyn_module/bind_MultiBodyConfig.cpp
-)
+  src/rbdyn_module/bind_MultiBodyConfig.cpp)
 
 find_package(RBDyn REQUIRED)
 target_link_libraries(_rbdyn PUBLIC RBDyn::RBDyn)
@@ -79,5 +78,4 @@ nanobind_add_stub(
   ${SKBUILD_PLATLIB_DIR}/rbdyn/
   DEPENDS
   _rbdyn
-  INSTALL_TIME
-)
+  INSTALL_TIME)
