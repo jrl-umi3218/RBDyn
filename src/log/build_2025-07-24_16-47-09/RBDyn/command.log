@@ -1,2 +1,0 @@
-Invoking command in '/home/celian/workspace/src/RBDyn/src/build/RBDyn': /usr/bin/cmake /home/celian/workspace/src/RBDyn/src/RBDyn -DCMAKE_INSTALL_PREFIX=/home/celian/workspace/src/RBDyn/src/install/RBDyn
-Invoked command in '/home/celian/workspace/src/RBDyn/src/build/RBDyn' returned '1': /usr/bin/cmake /home/celian/workspace/src/RBDyn/src/RBDyn -DCMAKE_INSTALL_PREFIX=/home/celian/workspace/src/RBDyn/src/install/RBDyn
