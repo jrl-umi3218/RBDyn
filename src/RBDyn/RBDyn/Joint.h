@@ -17,7 +17,7 @@
 
 namespace rbd
 {
- 
+
 /**
  * Utility function to compute a rotation matrix from the parameter vector.
  * @param q parameter vector with a least 4 values (treated as wxyz).
@@ -143,7 +143,7 @@ public:
   {
     return dof_;
   }
-  
+
   /// @return Joint name.
   const std::string & name() const
   {
