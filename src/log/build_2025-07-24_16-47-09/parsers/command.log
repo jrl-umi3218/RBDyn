@@ -1,0 +1,1 @@
+Invoking command in '/home/celian/workspace/src/RBDyn/src/build/parsers': /usr/bin/cmake /home/celian/workspace/src/RBDyn/src/parsers -DCMAKE_INSTALL_PREFIX=/home/celian/workspace/src/RBDyn/src/install/parsers

@@ -1,0 +1,43 @@
+[0.006s] Invoking command in '/home/celian/workspace/src/RBDyn/src/build/parsers': /usr/bin/cmake /home/celian/workspace/src/RBDyn/src/parsers -DCMAKE_INSTALL_PREFIX=/home/celian/workspace/src/RBDyn/src/install/parsers
+[0.013s] [33mCMake Warning (dev) in CMakeLists.txt:
+[0.013s]   No project() command is present.  The top-level CMakeLists.txt file must
+[0.013s]   contain a literal, direct call to the project() command.  Add a line of
+[0.013s]   code such as
+[0.013s]
+[0.013s]     project(ProjectName)
+[0.013s]
+[0.013s]   near the top of the file, but after cmake_minimum_required().
+[0.013s]
+[0.013s]   CMake is pretending there is a "project(Project)" command on the first
+[0.013s]   line.
+[0.013s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[0.013s] [0m
+[0.013s] [33mCMake Warning (dev) in CMakeLists.txt:
+[0.013s]   cmake_minimum_required() should be called prior to this top-level project()
+[0.013s]   call.  Please see the cmake-commands(7) manual for usage documentation of
+[0.013s]   both commands.
+[0.013s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[0.013s] [0m
+[0.043s] -- The C compiler identification is GNU 11.4.0
+[0.085s] -- The CXX compiler identification is GNU 11.4.0
+[0.090s] -- Detecting C compiler ABI info
+[0.134s] -- Detecting C compiler ABI info - done
+[0.144s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.144s] -- Detecting C compile features
+[0.145s] -- Detecting C compile features - done
+[0.154s] -- Detecting CXX compiler ABI info
+[0.213s] -- Detecting CXX compiler ABI info - done
+[0.224s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.225s] -- Detecting CXX compile features
+[0.225s] -- Detecting CXX compile features - done
+[0.230s] [31mCMake Error in CMakeLists.txt:
+[0.231s]   No cmake_minimum_required command is present.  A line of code such as
+[0.231s]
+[0.231s]     cmake_minimum_required(VERSION 4.0)
+[0.231s]
+[0.231s]   should be added at the top of the file.  The version specified may be lower
+[0.231s]   if you wish to support older CMake versions for this project.  For more
+[0.231s]   information run "cmake --help-policy CMP0000".
+[0.231s]
+[0.231s] [0m
+[0.231s] -- Configuring incomplete, errors occurred!

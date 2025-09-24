@@ -17,7 +17,7 @@
 
 namespace rbd
 {
-
+ 
 /**
  * Utility function to compute a rotation matrix from the parameter vector.
  * @param q parameter vector with a least 4 values (treated as wxyz).
@@ -143,17 +143,7 @@ public:
   {
     return dof_;
   }
-
-  // int act() const
-  // {
-  //   return act_;
-  // }
-
-  // void act(bool var)
-  // {
-  //   act_ = var;
-  // }
-
+  
   /// @return Joint name.
   const std::string & name() const
   {
@@ -277,7 +267,6 @@ private:
 
   int params_;
   int dof_;
-  // bool act_ = false; // actuation for the loop closing
 
   std::string name_;
 

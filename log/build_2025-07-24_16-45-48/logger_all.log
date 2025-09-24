@@ -1,0 +1,13 @@
+[0.058s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.058s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=22, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x79c520bc2770>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x79c520dc74f0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x79c520dc74f0>>)
+[0.085s] ERROR:colcon:colcon build: [Errno 17] File exists: 'build'
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/colcon_core/command.py", line 593, in verb_main
+    rc = context.args.main(context=context)
+  File "/usr/lib/python3/dist-packages/colcon_core/verb/build.py", line 124, in main
+    check_and_mark_build_tool(context.args.build_base)
+  File "/usr/lib/python3/dist-packages/colcon_core/verb/__init__.py", line 89, in check_and_mark_build_tool
+    os.makedirs(build_base, exist_ok=True)
+  File "/usr/lib/python3.10/os.py", line 225, in makedirs
+    mkdir(name, mode)
+FileExistsError: [Errno 17] File exists: 'build'
