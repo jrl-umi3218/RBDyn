@@ -15,10 +15,11 @@ namespace rbd
 
 ForwardDynamics::ForwardDynamics(const MultiBody & mb)
 : H_(mb.nrDof(), mb.nrDof()), C_(mb.nrDof()), I_st_(static_cast<size_t>(mb.nrBodies())),
-  F_(static_cast<size_t>(mb.nrJoints())), acc_(static_cast<size_t>(mb.nrBodies())),
+  F_(static_cast<size_t>(mb.nrJoints())), HIr_(mb.nrDof(), mb.nrDof()), acc_(static_cast<size_t>(mb.nrBodies())),
   f_(static_cast<size_t>(mb.nrBodies())), tmpFd_(mb.nrDof()), dofPos_(static_cast<size_t>(mb.nrJoints())),
   ldlt_(mb.nrDof())
 {
+  HIr_.setZero();
   int dofP = 0;
   for(int i = 0; i < mb.nrJoints(); ++i)
   {
@@ -27,6 +28,7 @@ ForwardDynamics::ForwardDynamics(const MultiBody & mb)
     dofPos_[ui] = dofP;
     dofP += mb.joint(i).dof();
   }
+  computeHIr(mb);
 }
 
 void ForwardDynamics::forwardDynamics(const MultiBody & mb, MultiBodyConfig & mbc)
@@ -39,6 +41,19 @@ void ForwardDynamics::forwardDynamics(const MultiBody & mb, MultiBodyConfig & mb
   tmpFd_ = ldlt_.solve(tmpFd_ - C_);
 
   vectorToParam(tmpFd_, mbc.alphaD);
+}
+
+void ForwardDynamics::computeHIr(const MultiBody & mb)
+{
+  for(int i = 0; i < mb.nrJoints(); ++i)
+  {
+    const auto ui = static_cast<size_t>(i);
+    if(mb.joint(i).type() == Joint::Rev)
+    {
+      double gr = mb.joint(i).gearRatio();
+      HIr_(dofPos_[ui], dofPos_[ui]) = mb.joint(i).rotorInertia() * gr * gr;
+    }
+  }
 }
 
 void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc)
@@ -90,6 +105,8 @@ void ForwardDynamics::computeH(const MultiBody & mb, const MultiBodyConfig & mbc
       }
     }
   }
+
+  H_.noalias() = H_ + HIr_;
 }
 
 void ForwardDynamics::computeC(const MultiBody & mb, const MultiBodyConfig & mbc)
