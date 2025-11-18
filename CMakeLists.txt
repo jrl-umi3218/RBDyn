@@ -95,6 +95,6 @@ if(${BUILD_TESTING} OR ${BENCHMARKS})
   add_subdirectory(tests)
 endif()
 
-if(${PYTHON_BINDING})
-  add_subdirectory(binding/python)
+if(${PYTHON_BINDING} OR ${NANOBIND_BINDINGS})
+  add_subdirectory(binding)
 endif()

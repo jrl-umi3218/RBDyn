@@ -2,6 +2,8 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
+include(${JRL_CMAKE_MODULES}/cython/cython.cmake)
+
 set(RBDYN_BINDINGS_MODULES rbdyn.rbdyn)
 set(RBDYN_BINDINGS_EXPORT_SOURCES rbdyn/c_rbdyn.pxd rbdyn/rbdyn.pxd)
 set(RBDYN_BINDINGS_PRIVATE_SOURCES
