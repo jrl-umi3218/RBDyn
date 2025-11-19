@@ -90,10 +90,10 @@ endif()
 
 add_subdirectory(src)
 
-if(${BUILD_TESTING} OR ${BENCHMARKS})
+if(BUILD_TESTING OR BENCHMARKS)
   add_subdirectory(tests)
 endif()
 
-if(${PYTHON_BINDING} OR ${NANOBIND_BINDINGS})
+if(PYTHON_BINDING OR NANOBIND_BINDINGS)
   add_subdirectory(binding)
 endif()
