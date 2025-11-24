@@ -5,3 +5,5 @@
 CMakeLists.txt.user*
 *.autosave
 build/
+build
+compile_commands.json
