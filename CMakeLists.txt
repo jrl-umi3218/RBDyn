@@ -2,7 +2,7 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -11,7 +11,7 @@ set(PROJECT_NAME RBDyn)
 set(PROJECT_DESCRIPTION "...")
 set(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
 set(PROJECT_DEBUG_POSTFIX "_d")
-set(PROJECT_VERSION 1.9.1)
+set(PROJECT_VERSION 1.9.2)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 
 option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
