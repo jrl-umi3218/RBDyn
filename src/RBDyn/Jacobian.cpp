@@ -6,6 +6,7 @@
 #include "RBDyn/Jacobian.h"
 
 // includes
+#include <cassert>
 // std
 #include <algorithm>
 #include <numeric>
