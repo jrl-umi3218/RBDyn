@@ -56,9 +56,9 @@ find_package(RBDyn_TinyXML2 REQUIRED)")
     add_project_dependency(tinyxml2 REQUIRED NO_MODULE)
   endif()
 
-  # Note: technically we don't need system but it is likely to be here and CMake
-  # <= 3.5.0 needs at least one component to define Boost::boost
-  add_project_dependency(Boost REQUIRED COMPONENTS system)
+  # Note: technically we don't need filesystem but it is likely to be here and
+  # CMake <= 3.5.0 needs at least one component to define Boost::boost
+  add_project_dependency(Boost REQUIRED COMPONENTS filesystem)
 endif()
 
 # For MSVC, set local environment variable to enable finding the built dll of

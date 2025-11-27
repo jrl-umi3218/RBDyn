@@ -2,6 +2,7 @@
  * Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
  */
 
+#include <cassert>
 #include <iostream>
 
 // associated header
