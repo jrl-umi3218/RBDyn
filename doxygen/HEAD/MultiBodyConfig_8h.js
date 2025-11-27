@@ -1,7 +1,7 @@
 var MultiBodyConfig_8h =
 [
-    [ "MultiBodyConfig", "structrbd_1_1MultiBodyConfig.html", "structrbd_1_1MultiBodyConfig" ],
-    [ "ConfigConverter", "classrbd_1_1ConfigConverter.html", "classrbd_1_1ConfigConverter" ],
+    [ "rbd::MultiBodyConfig", "structrbd_1_1MultiBodyConfig.html", "structrbd_1_1MultiBodyConfig" ],
+    [ "rbd::ConfigConverter", "classrbd_1_1ConfigConverter.html", "classrbd_1_1ConfigConverter" ],
     [ "checkMatchAlpha", "MultiBodyConfig_8h.html#a79207fb4bfe485b88f7cced51418f1fa", null ],
     [ "checkMatchAlphaD", "MultiBodyConfig_8h.html#a5a321010d59e162b9e53722eee7a97b3", null ],
     [ "checkMatchBodiesVector", "MultiBodyConfig_8h.html#a962a1e605f4f3936684e8a18c30e10c6", null ],
@@ -16,16 +16,16 @@ var MultiBodyConfig_8h =
     [ "checkMatchMotionSubspace", "MultiBodyConfig_8h.html#a1327f38fc720ddfc67438a26b5d47a64", null ],
     [ "checkMatchParentToSon", "MultiBodyConfig_8h.html#ac65ee5665504496fefb03acd8510c41b", null ],
     [ "checkMatchQ", "MultiBodyConfig_8h.html#a1f429d7788904c24634cb927b04b4dfc", null ],
-    [ "dofToVector", "MultiBodyConfig_8h.html#a35ba4e7bcaf28864ee5b873aa2f7ad98", null ],
-    [ "paramToVector", "MultiBodyConfig_8h.html#a4e97ed59ef038e4668d094c149f4dbf4", null ],
-    [ "paramToVector", "MultiBodyConfig_8h.html#a4bf39e343eab5ea745b6b5ad06e1322c", null ],
-    [ "sDofToVector", "MultiBodyConfig_8h.html#a40551e81dcb5a17dc51f28e51df91ab7", null ],
-    [ "sParamToVector", "MultiBodyConfig_8h.html#a4553c85e948490a728217442f42017a5", null ],
-    [ "sParamToVector", "MultiBodyConfig_8h.html#aa230afce88a5b03f4cdb24bbe5697709", null ],
-    [ "sVectorToDof", "MultiBodyConfig_8h.html#aac7e53f4e1a1bf92a34842130f017325", null ],
-    [ "sVectorToParam", "MultiBodyConfig_8h.html#aa53030956d0aaa3b8f8573f876551cdf", null ],
-    [ "sVectorToParam", "MultiBodyConfig_8h.html#a9a12e59958ebc1de682cb558002236fa", null ],
-    [ "vectorToDof", "MultiBodyConfig_8h.html#a4e26c3bab795feca51d727beb784cf13", null ],
-    [ "vectorToParam", "MultiBodyConfig_8h.html#ae1506b1cecfe2dc93145cdee35024021", null ],
-    [ "vectorToParam", "MultiBodyConfig_8h.html#ad81da92788d049e1111ea95aad747d9a", null ]
+    [ "dofToVector", "MultiBodyConfig_8h.html#ac2dac1e12659f3999941116d0efd5e2b", null ],
+    [ "paramToVector", "MultiBodyConfig_8h.html#af03028c48b7da42ff882a8471c9bcbf5", null ],
+    [ "paramToVector", "MultiBodyConfig_8h.html#ae58d89b9695ce6db3c5f9eb07197f51e", null ],
+    [ "sDofToVector", "MultiBodyConfig_8h.html#a265d9e9ce898f452286b69db71e8e26b", null ],
+    [ "sParamToVector", "MultiBodyConfig_8h.html#a61eab8d6f6bf9f181ccfbd349d4a756d", null ],
+    [ "sParamToVector", "MultiBodyConfig_8h.html#abff39423688ea371bfb80a316b8ddeec", null ],
+    [ "sVectorToDof", "MultiBodyConfig_8h.html#a0165e54c8fb668eb3ffc09e3bbdd01da", null ],
+    [ "sVectorToParam", "MultiBodyConfig_8h.html#aad34d31ab53fbc2009e4830a0ca5b6e3", null ],
+    [ "sVectorToParam", "MultiBodyConfig_8h.html#ab68aac147932c63c12e36ad9b168adab", null ],
+    [ "vectorToDof", "MultiBodyConfig_8h.html#ad4ddf57205b783f8ae1895fabe320c4e", null ],
+    [ "vectorToParam", "MultiBodyConfig_8h.html#a709ebf103d90c1c245c649726e3e7bdc", null ],
+    [ "vectorToParam", "MultiBodyConfig_8h.html#a31bb4f46fd9375cd3b2ac026f5e20c79", null ]
 ];

@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<tagfile>
+<tagfile doxygen_version="1.9.8">
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/runner/work/RBDyn/RBDyn/</path>
+    <path></path>
     <filename>README_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>api.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
+    <path>src/parsers/RBDyn/parsers/</path>
     <filename>api_8h.html</filename>
     <member kind="define">
       <type>#define</type>
@@ -47,13 +47,13 @@
   </compound>
   <compound kind="file">
     <name>common.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
+    <path>src/parsers/RBDyn/parsers/</path>
     <filename>common_8h.html</filename>
-    <includes id="Joint_8h" name="Joint.h" local="no" imported="no">RBDyn/Joint.h</includes>
-    <includes id="MultiBody_8h" name="MultiBody.h" local="no" imported="no">RBDyn/MultiBody.h</includes>
-    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
-    <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" imported="no">RBDyn/MultiBodyGraph.h</includes>
-    <includes id="api_8h" name="api.h" local="no" imported="no">RBDyn/parsers/api.h</includes>
+    <includes id="Joint_8h" name="Joint.h" local="no" import="no" module="no" objc="no">RBDyn/Joint.h</includes>
+    <includes id="MultiBody_8h" name="MultiBody.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBody.h</includes>
+    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyConfig.h</includes>
+    <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyGraph.h</includes>
+    <includes id="api_8h" name="api.h" local="no" import="no" module="no" objc="no">RBDyn/parsers/api.h</includes>
     <class kind="struct">rbd::parsers::Limits</class>
     <class kind="struct">rbd::parsers::Geometry</class>
     <class kind="struct">rbd::parsers::Geometry::Mesh</class>
@@ -69,661 +69,169 @@
     <class kind="struct">rbd::parsers::ParserResult</class>
     <namespace>rbd</namespace>
     <namespace>rbd::parsers</namespace>
-    <member kind="enumeration">
-      <type></type>
-      <name>ParserInput</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a8578b943029e74399e94ba9ec80992f4</anchor>
-      <arglist></arglist>
-      <enumvalue file="namespacerbd_1_1parsers.html" anchor="a8578b943029e74399e94ba9ec80992f4a0b27918290ff5323bea1e3b78a9cf04e">File</enumvalue>
-      <enumvalue file="namespacerbd_1_1parsers.html" anchor="a8578b943029e74399e94ba9ec80992f4ab5a7adde1af5c87d7fd797b6245c2a39">Description</enumvalue>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_file</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a421e0a101b5db4ea6fa03ec2a851229c</anchor>
-      <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filtered_links={}, bool transform_inertia=true, const std::string &amp;base_link=&quot;&quot;, bool with_virtual_links=true, const std::string spherical_suffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_file</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a615a3dcb54a941a650e7487368ce5c05</anchor>
-      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI std::string</type>
-      <name>prefix_path</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a3c153d162b210b4112e026f80b7cd42d</anchor>
-      <arglist>(const std::string &amp;path)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>urdf.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
+    <path>src/parsers/RBDyn/parsers/</path>
     <filename>urdf_8h.html</filename>
-    <includes id="Joint_8h" name="Joint.h" local="no" imported="no">RBDyn/Joint.h</includes>
-    <includes id="MultiBody_8h" name="MultiBody.h" local="no" imported="no">RBDyn/MultiBody.h</includes>
-    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
-    <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" imported="no">RBDyn/MultiBodyGraph.h</includes>
-    <includes id="common_8h" name="common.h" local="no" imported="no">RBDyn/parsers/common.h</includes>
+    <includes id="Joint_8h" name="Joint.h" local="no" import="no" module="no" objc="no">RBDyn/Joint.h</includes>
+    <includes id="MultiBody_8h" name="MultiBody.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBody.h</includes>
+    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyConfig.h</includes>
+    <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyGraph.h</includes>
+    <includes id="common_8h" name="common.h" local="no" import="no" module="no" objc="no">RBDyn/parsers/common.h</includes>
     <namespace>tinyxml2</namespace>
     <namespace>rbd</namespace>
     <namespace>rbd::parsers</namespace>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI std::vector&lt; double &gt;</type>
-      <name>attrToList</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>ae0fa1fe2f10bfa0a335f949476804ba9</anchor>
-      <arglist>(const tinyxml2::XMLElement &amp;dom, const std::string &amp;attr, const std::vector&lt; double &gt; &amp;def={})</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI Eigen::Vector3d</type>
-      <name>attrToVector</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>aac11127f8637888e18bc5c3317f1631d</anchor>
-      <arglist>(const tinyxml2::XMLElement &amp;dom, const std::string &amp;attr, const Eigen::Vector3d &amp;def=Eigen::Vector3d(0, 0, 0))</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_urdf</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a236d3fd7ef86ad93e9c4b05a1a9edcbe</anchor>
-      <arglist>(const std::string &amp;content, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_urdf_file</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>ad6c06f392bb87b12e8554d674a489659</anchor>
-      <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_urdf</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>ab0f77256f2b8c8f03f9c07ef07723940</anchor>
-      <arglist>(const std::string &amp;content, const ParserParameters &amp;params)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_urdf_file</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a2262e796ac95a5c19bf1941335ac89fc</anchor>
-      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI std::string</type>
-      <name>to_urdf</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>afc80e33687206ead50a94223be990c35</anchor>
-      <arglist>(const ParserResult &amp;res)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>yaml.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/parsers/RBDyn/parsers/</path>
+    <path>src/parsers/RBDyn/parsers/</path>
     <filename>yaml_8h.html</filename>
-    <includes id="MultiBody_8h" name="MultiBody.h" local="no" imported="no">RBDyn/MultiBody.h</includes>
-    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
-    <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" imported="no">RBDyn/MultiBodyGraph.h</includes>
-    <includes id="common_8h" name="common.h" local="no" imported="no">RBDyn/parsers/common.h</includes>
+    <includes id="MultiBody_8h" name="MultiBody.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBody.h</includes>
+    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyConfig.h</includes>
+    <includes id="MultiBodyGraph_8h" name="MultiBodyGraph.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyGraph.h</includes>
+    <includes id="common_8h" name="common.h" local="no" import="no" module="no" objc="no">RBDyn/parsers/common.h</includes>
     <class kind="class">rbd::parsers::RBDynFromYAML</class>
     <namespace>YAML</namespace>
     <namespace>rbd</namespace>
     <namespace>rbd::parsers</namespace>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_yaml</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a12db4429e23daa8ec351099198b69d2f</anchor>
-      <arglist>(const std::string &amp;content, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_yaml_file</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a6d188b64e5c4c1d1d130ec77567ef86f</anchor>
-      <arglist>(const std::string &amp;file_path, bool fixed=true, const std::vector&lt; std::string &gt; &amp;filteredLinksIn={}, bool transformInertia=true, const std::string &amp;baseLinkIn=&quot;&quot;, bool withVirtualLinks=true, const std::string &amp;sphericalSuffix=&quot;_spherical&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_yaml</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>ab62307cb57ebfb3df840137954d03e75</anchor>
-      <arglist>(const std::string &amp;content, const ParserParameters &amp;params)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI ParserResult</type>
-      <name>from_yaml_file</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>a3292cf6f7c989a80cb06ef155e7716bb</anchor>
-      <arglist>(const std::string &amp;file_path, const ParserParameters &amp;params)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_PARSERS_DLLAPI std::string</type>
-      <name>to_yaml</name>
-      <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>af2dd3b3cf52c276e7f13a7f6ab9430c5</anchor>
-      <arglist>(const ParserResult &amp;res)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>Body.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>Body_8h.html</filename>
     <class kind="class">rbd::Body</class>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>std::ostream &amp;</type>
-      <name>operator&lt;&lt;</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aef3e2f68a8f7a4ce79266e72ddaabb5e</anchor>
-      <arglist>(std::ostream &amp;out, const Body &amp;b)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>CoM.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>CoM_8h.html</filename>
-    <includes id="Jacobian_8h" name="Jacobian.h" local="yes" imported="no">Jacobian.h</includes>
+    <includes id="Jacobian_8h" name="Jacobian.h" local="yes" import="no" module="no" objc="no">Jacobian.h</includes>
     <class kind="class">rbd::CoMJacobianDummy</class>
     <class kind="class">rbd::CoMJacobian</class>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>computeCoM</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa3d5affc22a2a8da050bec954dbe49e7</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>computeCoMVelocity</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aae7a9a01b7d8e8f0113ac0ced2f3359f</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>computeCoMAcceleration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a66536ad8e1924b87c9b376d151f7321e</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>sComputeCoM</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a1dce1b30151f67949e67f9da9b248960</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>sComputeCoMVelocity</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a546da91f76a26766fe29b6269f4b6eaf</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>sComputeCoMAcceleration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a36f0a66ff371f16920fa8451d48e3014</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>Coriolis.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>Coriolis_8h.html</filename>
-    <includes id="CoM_8h" name="CoM.h" local="no" imported="no">RBDyn/CoM.h</includes>
-    <includes id="Jacobian_8h" name="Jacobian.h" local="no" imported="no">RBDyn/Jacobian.h</includes>
-    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" imported="no">RBDyn/MultiBodyConfig.h</includes>
+    <includes id="CoM_8h" name="CoM.h" local="no" import="no" module="no" objc="no">RBDyn/CoM.h</includes>
+    <includes id="Jacobian_8h" name="Jacobian.h" local="no" import="no" module="no" objc="no">RBDyn/Jacobian.h</includes>
+    <includes id="MultiBodyConfig_8h" name="MultiBodyConfig.h" local="no" import="no" module="no" objc="no">RBDyn/MultiBodyConfig.h</includes>
     <class kind="class">rbd::Coriolis</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>EulerIntegration.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>EulerIntegration_8h.html</filename>
-    <includes id="NumericalIntegration_8h" name="NumericalIntegration.h" local="yes" imported="no">NumericalIntegration.h</includes>
+    <includes id="NumericalIntegration_8h" name="NumericalIntegration.h" local="yes" import="no" module="no" objc="no">NumericalIntegration.h</includes>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DEPRECATED RBDYN_DLLAPI void</type>
-      <name>eulerJointIntegration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ac90d6e494d953788e38b3bdefb1fa3cb</anchor>
-      <arglist>(Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DEPRECATED RBDYN_DLLAPI void</type>
-      <name>eulerIntegration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>abda34166d1da10bcaeff216f82cf5ed9</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DEPRECATED RBDYN_DLLAPI void</type>
-      <name>sEulerIntegration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>adf52dfe7ecbc233f94fc9c2890723d06</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>FA.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>FA_8h.html</filename>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>forwardAcceleration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a7cabedab4efa117bdc2f511c1277899a</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, const sva::MotionVecd &amp;A_0=sva::MotionVecd(Eigen::Vector6d::Zero()))</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>sForwardAcceleration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a24c441619953f5394c7053ccf75714ba</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, const sva::MotionVecd &amp;A_0=sva::MotionVecd(Eigen::Vector6d::Zero()))</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>FD.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>FD_8h.html</filename>
     <class kind="class">rbd::ForwardDynamics</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>FK.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>FK_8h.html</filename>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>forwardKinematics</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a96c3cea742bc063bc8cac29d42411ac9</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>sForwardKinematics</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a11ae46b6402eb8d74f53677aca71babb</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>FV.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>FV_8h.html</filename>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>forwardVelocity</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a45a97f5d7650231c3d723a11c9408cd8</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>sForwardVelocity</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a6fdbf73c467ae855e5aadcc0589b55ab</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>ID.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>ID_8h.html</filename>
     <class kind="class">rbd::InverseDynamics</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>IDIM.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>IDIM_8h.html</filename>
     <class kind="class">rbd::IDIM</class>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Matrix&lt; double, 6, 10 &gt;</type>
-      <name>IMPhi</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a866fa89d4831928b912c77db84f30309</anchor>
-      <arglist>(const sva::MotionVecd &amp;mv)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Matrix&lt; double, 10, 1 &gt;</type>
-      <name>inertiaToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a6269a1cc3506d5512fbd8ec28fcedb84</anchor>
-      <arglist>(const sva::RBInertiad &amp;rbi)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI sva::RBInertiad</type>
-      <name>vectorToInertia</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ab336ae166080460a4b1eedce786f3fc3</anchor>
-      <arglist>(const Eigen::Matrix&lt; double, 10, 1 &gt; &amp;vec)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI sva::RBInertiad</type>
-      <name>sVectorToInertia</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a002a80a20c11b6e84b9dfc200412346b</anchor>
-      <arglist>(const Eigen::VectorXd &amp;vec)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::VectorXd</type>
-      <name>multiBodyToInertialVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a0a9fb61b32a276321b743b72aa27fbbf</anchor>
-      <arglist>(const rbd::MultiBody &amp;mb)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>IK.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>IK_8h.html</filename>
-    <includes id="Jacobian_8h" name="Jacobian.h" local="yes" imported="no">Jacobian.h</includes>
+    <includes id="Jacobian_8h" name="Jacobian.h" local="yes" import="no" module="no" objc="no">Jacobian.h</includes>
     <class kind="class">rbd::InverseKinematics</class>
     <namespace>rbd</namespace>
     <namespace>rbd::ik</namespace>
   </compound>
   <compound kind="file">
     <name>IS.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>IS_8h.html</filename>
-    <includes id="Jacobian_8h" name="Jacobian.h" local="yes" imported="no">Jacobian.h</includes>
+    <includes id="Jacobian_8h" name="Jacobian.h" local="yes" import="no" module="no" objc="no">Jacobian.h</includes>
     <class kind="class">rbd::InverseStatics</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>Jacobian.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>Jacobian_8h.html</filename>
-    <includes id="MultiBody_8h" name="MultiBody.h" local="yes" imported="no">MultiBody.h</includes>
+    <includes id="MultiBody_8h" name="MultiBody.h" local="yes" import="no" module="no" objc="no">MultiBody.h</includes>
     <class kind="struct">rbd::Block</class>
     <class kind="class">rbd::Jacobian</class>
     <namespace>rbd</namespace>
-    <member kind="typedef">
-      <type>std::vector&lt; Block &gt;</type>
-      <name>Blocks</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>addcc00b58bd78ec27ff56ad979f5ff2d</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>Joint.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>Joint_8h.html</filename>
     <class kind="class">rbd::Joint</class>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>Eigen::Matrix3&lt; T &gt;</type>
-      <name>QuatToE</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a7d00127b1f623476b945e05e88eb95d6</anchor>
-      <arglist>(const std::vector&lt; T &gt; &amp;q)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::ostream &amp;</type>
-      <name>operator&lt;&lt;</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ac3088586b9fe6169533319c4dba20e9f</anchor>
-      <arglist>(std::ostream &amp;out, const Joint &amp;b)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>Momentum.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>Momentum_8h.html</filename>
     <class kind="class">rbd::CentroidalMomentumMatrix</class>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI sva::ForceVecd</type>
-      <name>computeCentroidalMomentum</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>af952b30ce2254dab6cebbe22e95baa9c</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI sva::ForceVecd</type>
-      <name>computeCentroidalMomentumDot</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a8988ff9653a5fc0595dabd3938622b37</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI sva::ForceVecd</type>
-      <name>sComputeCentroidalMomentum</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a917e5b58d319f5b36753ea5e158b60b4</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI sva::ForceVecd</type>
-      <name>sComputeCentroidalMomentumDot</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>afe9772d66d45b249d91b081492dddc5e</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;com, const Eigen::Vector3d &amp;comDot)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>MultiBody.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>MultiBody_8h.html</filename>
-    <includes id="Body_8h" name="Body.h" local="yes" imported="no">Body.h</includes>
-    <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
+    <includes id="Body_8h" name="Body.h" local="yes" import="no" module="no" objc="no">Body.h</includes>
+    <includes id="Joint_8h" name="Joint.h" local="yes" import="no" module="no" objc="no">Joint.h</includes>
     <class kind="class">rbd::MultiBody</class>
     <namespace>rbd</namespace>
   </compound>
   <compound kind="file">
     <name>MultiBodyConfig.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>MultiBodyConfig_8h.html</filename>
-    <includes id="MultiBody_8h" name="MultiBody.h" local="yes" imported="no">MultiBody.h</includes>
+    <includes id="MultiBody_8h" name="MultiBody.h" local="yes" import="no" module="no" objc="no">MultiBody.h</includes>
     <class kind="struct">rbd::MultiBodyConfig</class>
     <class kind="class">rbd::ConfigConverter</class>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>paramToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4bf39e343eab5ea745b6b5ad06e1322c</anchor>
-      <arglist>(const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>sParamToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa230afce88a5b03f4cdb24bbe5697709</anchor>
-      <arglist>(const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::VectorXd</type>
-      <name>paramToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4e97ed59ef038e4668d094c149f4dbf4</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::VectorXd</type>
-      <name>sParamToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4553c85e948490a728217442f42017a5</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::VectorXd</type>
-      <name>dofToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a35ba4e7bcaf28864ee5b873aa2f7ad98</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::VectorXd</type>
-      <name>sDofToVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a40551e81dcb5a17dc51f28e51df91ab7</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>vectorToParam</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ae1506b1cecfe2dc93145cdee35024021</anchor>
-      <arglist>(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>sVectorToParam</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa53030956d0aaa3b8f8573f876551cdf</anchor>
-      <arglist>(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
-      <name>vectorToParam</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ad81da92788d049e1111ea95aad747d9a</anchor>
-      <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
-      <name>sVectorToParam</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a9a12e59958ebc1de682cb558002236fa</anchor>
-      <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
-      <name>vectorToDof</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4e26c3bab795feca51d727beb784cf13</anchor>
-      <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
-      <name>sVectorToDof</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aac7e53f4e1a1bf92a34842130f017325</anchor>
-      <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>checkMatchBodiesVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a962a1e605f4f3936684e8a18c30e10c6</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; T &gt; &amp;vec, const std::string &amp;name)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>checkMatchJointsVector</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4a2ee0f62601c711eeeedd9b38191c8c</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; T &gt; &amp;vec, const std::string &amp;name)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchBodyPos</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ab3ad6457f66a076b7e3743ba5883d774</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchParentToSon</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ac65ee5665504496fefb03acd8510c41b</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchBodyVel</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a9052f21a2d371b7cceeca3ae9d7c5027</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchBodyAcc</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a35a9b4e0d1a7d097f947005ae638e398</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchJointConf</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ac3dec972fc9c0669fbb28e584c036f78</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchJointVelocity</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ad9ea39279af93f142550f8aea088a257</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchJointTorque</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ac6f14bfe8a4062f836871f2a42149c28</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchMotionSubspace</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a1327f38fc720ddfc67438a26b5d47a64</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchQ</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a1f429d7788904c24634cb927b04b4dfc</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchAlpha</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a79207fb4bfe485b88f7cced51418f1fa</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchAlphaD</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a5a321010d59e162b9e53722eee7a97b3</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>checkMatchForce</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a7c0a3a499a70eddeb7eb992690ab4985</anchor>
-      <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>MultiBodyGraph.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>MultiBodyGraph_8h.html</filename>
-    <includes id="Body_8h" name="Body.h" local="yes" imported="no">Body.h</includes>
-    <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
+    <includes id="Body_8h" name="Body.h" local="yes" import="no" module="no" objc="no">Body.h</includes>
+    <includes id="Joint_8h" name="Joint.h" local="yes" import="no" module="no" objc="no">Joint.h</includes>
     <class kind="class">rbd::MultiBodyGraph</class>
     <class kind="struct">rbd::MultiBodyGraph::Arc</class>
     <class kind="struct">rbd::MultiBodyGraph::Node</class>
@@ -731,120 +239,22 @@
   </compound>
   <compound kind="file">
     <name>NumericalIntegration.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>NumericalIntegration_8h.html</filename>
-    <includes id="Joint_8h" name="Joint.h" local="yes" imported="no">Joint.h</includes>
+    <includes id="Joint_8h" name="Joint.h" local="yes" import="no" module="no" objc="no">Joint.h</includes>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI std::pair&lt; Eigen::Quaterniond, bool &gt;</type>
-      <name>SO3Integration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a13c604a41c35cea5a6af6c9e93ea63ca</anchor>
-      <arglist>(const Eigen::Quaterniond &amp;qi, const Eigen::Vector3d &amp;wi, const Eigen::Vector3d &amp;wD, double step, double relEps=1e-12, double absEps=std::numeric_limits&lt; double &gt;::epsilon(), bool breakOnWarning=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>jointIntegration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aad15a3f6b4ff8fa1c6ac55e5e8a19a82</anchor>
-      <arglist>(Joint::Type type, const std::vector&lt; double &gt; &amp;alpha, const std::vector&lt; double &gt; &amp;alphaD, double step, std::vector&lt; double &gt; &amp;q, double prec=1e-10)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>integration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a6a1c6081c765ca059ca0546f34281f9e</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step, double prec=1e-10)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>sIntegration</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a1a3b41f2766dfb8b81737418c46fd505</anchor>
-      <arglist>(const MultiBody &amp;mb, MultiBodyConfig &amp;mbc, double step, double prec=1e-10)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>VisServo.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>VisServo_8h.html</filename>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>imagePointJacobian</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a07491bc6c9c4efc66e979df49eec7a77</anchor>
-      <arglist>(const Eigen::Vector2d &amp;point2d, const double depthEstimate, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>imagePointJacobian</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a3f883d5b2cb2d74f03f930d7097aa91e</anchor>
-      <arglist>(const Eigen::Vector3d &amp;point3d, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>imagePointJacobianDot</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a387fb33722a5c4a574a9aefcac1f80e5</anchor>
-      <arglist>(const Eigen::Vector2d &amp;imagePoint, const Eigen::Vector2d &amp;imagePointSpeed, const double depth, const double depthDot, Eigen::Matrix&lt; double, 2, 6 &gt; &amp;jac)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>poseJacobian</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a277d78c0932c547f7deab0bc98a39120</anchor>
-      <arglist>(const Eigen::Matrix3d &amp;rotation, Eigen::Matrix&lt; double, 6, 6 &gt; &amp;jac)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>depthDotJacobian</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aef704a4c74be13842752ab1232da6b52</anchor>
-      <arglist>(const Eigen::Vector2d &amp;imagePointSpeed, const double depthEstimate, Eigen::Matrix&lt; double, 1, 6 &gt; &amp;jac)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>getAngleAxis</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a42e2c6560ae5a3978c5d999e5dfb9375</anchor>
-      <arglist>(const Eigen::Matrix3d &amp;rotation, double &amp;rot_angle, Eigen::Vector3d &amp;rot_axis)</arglist>
-    </member>
-    <member kind="function">
-      <type>RBDYN_DLLAPI void</type>
-      <name>getSkewSym</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>af84dc61728c402a7a3a5b61dc7b8a780</anchor>
-      <arglist>(const Eigen::Vector3d &amp;vector, Eigen::Matrix3d &amp;matrix)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>ZMP.h</name>
-    <path>/home/runner/work/RBDyn/RBDyn/src/RBDyn/RBDyn/</path>
+    <path>src/RBDyn/RBDyn/</path>
     <filename>ZMP_8h.html</filename>
     <namespace>rbd</namespace>
-    <member kind="function">
-      <type>RBDYN_DLLAPI Eigen::Vector3d</type>
-      <name>computeCentroidalZMP</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a394e1cd05547fb851d8dbe8f0ddbbbe5</anchor>
-      <arglist>(MultiBodyConfig &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude)</arglist>
-    </member>
-    <member kind="function">
-      <type>Eigen::Vector3d</type>
-      <name>computeCentroidalZMPNoGravity</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a29fb02f3699713bd952eac420794f673</anchor>
-      <arglist>(Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude)</arglist>
-    </member>
-    <member kind="function">
-      <type>Eigen::Vector3d</type>
-      <name>computeCentroidalZMPComplete</name>
-      <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>afeb4fb0f92e547a41ae4bd57b09febc7</anchor>
-      <arglist>(MultiBodyConfig &amp;mbc, Eigen::Vector3d &amp;com, Eigen::Vector3d &amp;comA, double altitude, sva::ForceVecd wr_external, double mass)</arglist>
-    </member>
   </compound>
   <compound kind="struct">
     <name>rbd::MultiBodyGraph::Arc</name>
@@ -952,14 +362,14 @@
       <type>const std::string &amp;</type>
       <name>name</name>
       <anchorfile>classrbd_1_1Body.html</anchorfile>
-      <anchor>a9c914687006ac4781c9a8ade95904b64</anchor>
+      <anchor>a83ae458d7281c333a98ef9051f8bd049</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const sva::RBInertiad &amp;</type>
       <name>inertia</name>
       <anchorfile>classrbd_1_1Body.html</anchorfile>
-      <anchor>af15db2293baf0fb264c9284b9f4c5408</anchor>
+      <anchor>aedf0fb50a02ed939b9fbc67e4f7ed51b</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1044,14 +454,14 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>matrix</name>
       <anchorfile>classrbd_1_1CentroidalMomentumMatrix.html</anchorfile>
-      <anchor>a2cf1537f878328acc33a98e8ae425f68</anchor>
+      <anchor>a48698eca5bd242f403ff5bb7381f0238</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>matrixDot</name>
       <anchorfile>classrbd_1_1CentroidalMomentumMatrix.html</anchorfile>
-      <anchor>a53c65afd5798ee503336df77c065c930</anchor>
+      <anchor>affd5a35de3fdc85364fc782d546b2548</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1185,7 +595,7 @@
       <type>const std::vector&lt; double &gt; &amp;</type>
       <name>weight</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>a0b1b5f524bc856389d322bde950d2898</anchor>
+      <anchor>afb11cd1bbd3ffeb3eaf6f91cdbf3010c</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1199,28 +609,28 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobian</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>a5e4f4e1e52da2f12f818a1000482f6f4</anchor>
+      <anchor>a1d8e00c615cd3135f7737e481ca0ed10</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobian</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>a3ce191b6c7fe5abf17b0a2af0db1b3bc</anchor>
+      <anchor>aef70a0beffa03f93a3c7c29112b9b1c7</anchor>
       <arglist>() const noexcept</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>a8f3c078468975cb8c4c57e8336c6ea00</anchor>
+      <anchor>a55664e0b984967d0b8645cddf813772e</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>a9ab69b1c01f98f8049ed14bda1a20c0e</anchor>
+      <anchor>accf94e36af72b4d8bae4389535bb4882</anchor>
       <arglist>() const noexcept</arglist>
     </member>
     <member kind="function">
@@ -1262,14 +672,14 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobian</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>aba20997d6eb51888b0865300bfbe2016</anchor>
+      <anchor>a0d4e11e2006e4d59ef470637ad66f04c</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobian.html</anchorfile>
-      <anchor>aa4aad39a862fc8756f4f6eae4b10e89f</anchor>
+      <anchor>ada5a161100a58cb6413b949a678990c9</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
@@ -1329,42 +739,42 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobian</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
-      <anchor>a25c51ef15038a476e629d51c2a7fbff1</anchor>
+      <anchor>a39b99deebf0fe22e268ecaa31bd605f9</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobian</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
-      <anchor>a7954605694e8d9177c03fee7cfef3603</anchor>
+      <anchor>a2c0ac6b7c694258d1e2aabb92428d83f</anchor>
       <arglist>() const noexcept</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
-      <anchor>a4707fb88d4a83ea98107e8fee0e3ce34</anchor>
+      <anchor>ab58612b5cdd6bf1c23c4f0032ba26a30</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
-      <anchor>a59b3060c596515c6a7b2402b8d09c9ae</anchor>
+      <anchor>a9385d0e1b8896d022f2c736590f7fd87</anchor>
       <arglist>() const noexcept</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobian</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
-      <anchor>ac3ce8eac765164e19b299ce0035a2991</anchor>
+      <anchor>a0f553df7c1aab2a83141a2f4c8cb3707</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobianDot</name>
       <anchorfile>classrbd_1_1CoMJacobianDummy.html</anchorfile>
-      <anchor>a0c7ed35a07cbeae6048181a6f594c881</anchor>
+      <anchor>a6fa20f5b7aaa8742d262bfb49bd794ef</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
   </compound>
@@ -1417,7 +827,7 @@
       <type>static ConfigConverter *</type>
       <name>sConstructor</name>
       <anchorfile>classrbd_1_1ConfigConverter.html</anchorfile>
-      <anchor>a0836ef089bb5523266da79bc9a8650ec</anchor>
+      <anchor>a7db9b4ab412cee24a7fde27f6d4a1f03</anchor>
       <arglist>(const MultiBody &amp;from, const MultiBody &amp;to)</arglist>
     </member>
   </compound>
@@ -1435,7 +845,7 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>coriolis</name>
       <anchorfile>classrbd_1_1Coriolis.html</anchorfile>
-      <anchor>a686bade8cef9c1016aee0a794a3c04ab</anchor>
+      <anchor>aba76ac5948cac16deb726f1afb5553d5</anchor>
       <arglist>(const rbd::MultiBody &amp;mb, const rbd::MultiBodyConfig &amp;mbc)</arglist>
     </member>
   </compound>
@@ -1506,21 +916,21 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>H</name>
       <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
-      <anchor>a8158043c6d74e3e1090c919e99e2c58f</anchor>
+      <anchor>af1361629514c8d07e74adaaecfcd894a</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::VectorXd &amp;</type>
       <name>C</name>
       <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
-      <anchor>aded507185805dbc5ab5068269b1f8df5</anchor>
+      <anchor>a869b87a4f7e00b41bdad9d9f37a9888c</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const std::vector&lt; sva::RBInertiad &gt; &amp;</type>
       <name>inertiaSubTree</name>
       <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
-      <anchor>ab2d2dd97bc971871a50f374dd81c1c52</anchor>
+      <anchor>a020c907c1801a0a0eb4095c975a97c51</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1689,7 +1099,7 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>Y</name>
       <anchorfile>classrbd_1_1IDIM.html</anchorfile>
-      <anchor>aa99e315c9da1c0ef6da65e226dfd24cb</anchor>
+      <anchor>a1ba9d300a6d24c7df5cdb17798098264</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1749,7 +1159,7 @@
       <type>const std::vector&lt; sva::ForceVecd &gt; &amp;</type>
       <name>f</name>
       <anchorfile>classrbd_1_1InverseDynamics.html</anchorfile>
-      <anchor>a38cfd1e2c9a504ca3c233dd2a6e6fff1</anchor>
+      <anchor>acea72273569cf8e26faa6bbf52d5c8d3</anchor>
       <arglist>() const</arglist>
     </member>
   </compound>
@@ -1862,14 +1272,14 @@
       <type>const std::vector&lt; sva::ForceVecd &gt; &amp;</type>
       <name>f</name>
       <anchorfile>classrbd_1_1InverseStatics.html</anchorfile>
-      <anchor>a2f3288fa574e589fc3f2a4c70d227a91</anchor>
+      <anchor>a99d6126432330c17e968578f4fd72a8f</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
       <name>jointTorqueDiff</name>
       <anchorfile>classrbd_1_1InverseStatics.html</anchorfile>
-      <anchor>a740673d3cb11b3484d4f33f319bf039a</anchor>
+      <anchor>af10ff653300102f4960a8553a6e8a1f6</anchor>
       <arglist>() const</arglist>
     </member>
   </compound>
@@ -1901,49 +1311,49 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>abba109aec7645809fc5a1b4e54361a50</anchor>
+      <anchor>a1cfc487624f61136511d166707d6f258</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const sva::PTransformd &amp;X_0_p)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a2417e9496d9bcb449070d1c70b6837ca</anchor>
+      <anchor>aeb64302c20e0409cf39b8a4c97c63939</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>bodyJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a9ab4606c9e58d102e68015ccb2c768a8</anchor>
+      <anchor>ad1a6272d0bc55b9303ddd98f9c8288eb</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>vectorJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a20dd50b529f11d23467aca84cd28f0c7</anchor>
+      <anchor>a33cde63f7aba976bea64e36097a6b397</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;vector)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>vectorBodyJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a0d3308ac8f2e127cc6c6fd93c7454924</anchor>
+      <anchor>ad64d31a85da03724455686e80c427bb3</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;vector)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>jacobianDot</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a5318dd2fbbacb52f4cced639da50582b</anchor>
+      <anchor>a307b95596e5d3248df46f058294ecc0e</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>bodyJacobianDot</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>ae6b17e17e474a5bf00cec19c8a5feb60</anchor>
+      <anchor>ae57f41c1fcf41a69cb9b6444fc9eacb3</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
@@ -2083,7 +1493,7 @@
       <type>const std::vector&lt; int &gt; &amp;</type>
       <name>jointsPath</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a8ac14b75a06b6e1bdb903fdde7ecddf4</anchor>
+      <anchor>a06f270b0ed3a7dea2b90d11b5f6e8c68</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2097,7 +1507,7 @@
       <type>const Eigen::Vector3d &amp;</type>
       <name>point</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a337b2b64fb240946ff5174137d87cb6d</anchor>
+      <anchor>a07d7c8400e7b7de45748db549e3050dc</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2111,35 +1521,35 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>ac6a663e740335a4c0d68e025e0ac5cdc</anchor>
+      <anchor>a0f83da6da611d1eaa53b6f066100ca21</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const sva::PTransformd &amp;X_0_p)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a22492f7707bc6bcd3ac2fdb1799b5b8a</anchor>
+      <anchor>a58da81d4ddbe804208e9e6970e3f758d</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sBodyJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a17c99a6c1fc4c1e1abd901bca7e4e403</anchor>
+      <anchor>a30c54e79fa15d7aaec8adb2c2a17bd8c</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sVectorJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a46622bd3bf3709a545de3fb338715156</anchor>
+      <anchor>a644be3a38f49836548e9cde8f6cf9329</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;vec)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sVectorBodyJacobian</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a12fe24d4d2dd0f4ea54003555f7be082</anchor>
+      <anchor>a9766f3a9cfde25b8f20cc34ae0799262</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc, const Eigen::Vector3d &amp;vec)</arglist>
     </member>
     <member kind="function">
@@ -2153,14 +1563,14 @@
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sJacobianDot</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>a69b7e18ecd1b0157163f2fe8727cfd11</anchor>
+      <anchor>aa850611fd6aa2f7bc68d6196000ccdb5</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
       <type>const Eigen::MatrixXd &amp;</type>
       <name>sBodyJacobianDot</name>
       <anchorfile>classrbd_1_1Jacobian.html</anchorfile>
-      <anchor>abb3dc958dd0f3293bbe4a6f17b10e1e6</anchor>
+      <anchor>aaf26f1b1c53f8dbea467f1b6ca36a4b2</anchor>
       <arglist>(const MultiBody &amp;mb, const MultiBodyConfig &amp;mbc)</arglist>
     </member>
     <member kind="function">
@@ -2502,7 +1912,7 @@
       <type>const std::string &amp;</type>
       <name>name</name>
       <anchorfile>classrbd_1_1Joint.html</anchorfile>
-      <anchor>afbfa5cd07f7b634caf9b51fcf0dc26bb</anchor>
+      <anchor>a39f773585b8789dd2c7bee0df90ceb27</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2516,7 +1926,7 @@
       <type>const std::string &amp;</type>
       <name>mimicName</name>
       <anchorfile>classrbd_1_1Joint.html</anchorfile>
-      <anchor>ae3c30df62f2f79358b77a0a3e02f2ba8</anchor>
+      <anchor>a6c0c01a0882750d1f7cb94f3d0704f23</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2537,7 +1947,7 @@
       <type>const Eigen::Matrix&lt; double, 6, Eigen::Dynamic &gt; &amp;</type>
       <name>motionSubspace</name>
       <anchorfile>classrbd_1_1Joint.html</anchorfile>
-      <anchor>a814a490598940a5333e50f3600da6103</anchor>
+      <anchor>a47485a627cfa811597432a1ae9039e37</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2761,7 +2171,7 @@
       <type>const std::vector&lt; Body &gt; &amp;</type>
       <name>bodies</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a11c8909737502423642f67ff6ba2dfd5</anchor>
+      <anchor>a52767e3de5fcc4325b467c683fe1e200</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2775,7 +2185,7 @@
       <type>const Body &amp;</type>
       <name>body</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>ae184ad265d5423190535c390a2f57bab</anchor>
+      <anchor>a5fa0e1830999b13779f00016988e6ff6</anchor>
       <arglist>(int num) const</arglist>
     </member>
     <member kind="function">
@@ -2789,21 +2199,21 @@
       <type>const std::vector&lt; Joint &gt; &amp;</type>
       <name>joints</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>ac64a87bba28257cd8dc97182b5872f11</anchor>
+      <anchor>a9c17131f05747738f90e45c1f9a85121</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const Joint &amp;</type>
       <name>joint</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a7119d38f22799e666a41d877220cd3c2</anchor>
+      <anchor>a069752694452eac21ddee2f35bb96a0a</anchor>
       <arglist>(int num) const</arglist>
     </member>
     <member kind="function">
       <type>const std::vector&lt; int &gt; &amp;</type>
       <name>predecessors</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a46a8f576d147c526338897d983a276bc</anchor>
+      <anchor>aad5419382ca96a67d8a98d9a44c132e9</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2817,7 +2227,7 @@
       <type>const std::vector&lt; int &gt; &amp;</type>
       <name>successors</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a1d19eda17b1475a42c61bf752c962671</anchor>
+      <anchor>a03198b2824a878fb1f9c59c7a0a66326</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2831,7 +2241,7 @@
       <type>const std::vector&lt; int &gt; &amp;</type>
       <name>parents</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a170359392ccef8f3d95cc1444f341975</anchor>
+      <anchor>a47ebc4191ecae80523c9e1277478090b</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2845,7 +2255,7 @@
       <type>const std::vector&lt; sva::PTransformd &gt; &amp;</type>
       <name>transforms</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a63f65ba32c2ba589b1a0029169765fec</anchor>
+      <anchor>aacbea1ee7bc43c57bbd93c075fdf1a33</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2859,7 +2269,7 @@
       <type>const sva::PTransformd &amp;</type>
       <name>transform</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a372902e74164aa867a0ea4648ff0f4d1</anchor>
+      <anchor>acb1f9945604927de9f305f4e552da076</anchor>
       <arglist>(int num) const</arglist>
     </member>
     <member kind="function">
@@ -2887,14 +2297,14 @@
       <type>const std::unordered_map&lt; std::string, int &gt; &amp;</type>
       <name>bodyIndexByName</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a71ecd442b7af26f8d5096a584d89f6e2</anchor>
+      <anchor>a47038d119ca3c7f85d31f13b305e773b</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const std::unordered_map&lt; std::string, int &gt; &amp;</type>
       <name>jointIndexByName</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>abf19db27486757df2cbf7869e7e84a89</anchor>
+      <anchor>a91c64cb21b099f3e85235d5e14276c0b</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2915,14 +2325,14 @@
       <type>const std::vector&lt; int &gt; &amp;</type>
       <name>jointsPosInParam</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a7c50452dad5b9e0d5941264d0a590fa8</anchor>
+      <anchor>a97abd99ae8e190ee11d7409ec3976fb3</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>const std::vector&lt; int &gt; &amp;</type>
       <name>jointsPosInDof</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a402ae0f7b3ead751a50aadd39e150c23</anchor>
+      <anchor>a5fc50a55760eb9f8ff5778b40b254e5c</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -2950,7 +2360,7 @@
       <type>const Body &amp;</type>
       <name>sBody</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a16384d2d590d0582c879af2f44ac4f89</anchor>
+      <anchor>aad6da4dddb0bb872ebc07b721a682c0b</anchor>
       <arglist>(int num) const</arglist>
     </member>
     <member kind="function">
@@ -2964,7 +2374,7 @@
       <type>const Joint &amp;</type>
       <name>sJoint</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a451697157f6c01313633f0875a10f771</anchor>
+      <anchor>a5d7866522a673b79d82f3b0d02756589</anchor>
       <arglist>(int num) const</arglist>
     </member>
     <member kind="function">
@@ -2999,7 +2409,7 @@
       <type>const sva::PTransformd &amp;</type>
       <name>sTransform</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a33457a1452923a80fa8dac7d35721631</anchor>
+      <anchor>a0cb6fa774c43b8aab9f6f061135c113e</anchor>
       <arglist>(int num) const</arglist>
     </member>
     <member kind="function">
@@ -3150,7 +2560,7 @@
       <type>std::vector&lt; Eigen::MatrixXd &gt;</type>
       <name>python_motionSubspace</name>
       <anchorfile>structrbd_1_1MultiBodyConfig.html</anchorfile>
-      <anchor>a177773b30e2d2182b51aeb977952a8f3</anchor>
+      <anchor>aefc11a07bcc0bff9437c702095c02ae4</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -3289,7 +2699,7 @@
       <type>MultiBodyGraph &amp;</type>
       <name>operator=</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a1815789e38b06dc3c53349b90f59cd39</anchor>
+      <anchor>ad4c44e70ad017319825400b3195304e5</anchor>
       <arglist>(const MultiBodyGraph &amp;mbg)</arglist>
     </member>
     <member kind="function">
@@ -3324,14 +2734,14 @@
       <type>const std::shared_ptr&lt; Node &gt;</type>
       <name>nodeByName</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a161214c01b5c4bddb957b0ec16248107</anchor>
+      <anchor>aff9ca812d89b205b1673cb37170d59fe</anchor>
       <arglist>(const std::string &amp;name) const</arglist>
     </member>
     <member kind="function">
       <type>const std::shared_ptr&lt; Joint &gt;</type>
       <name>jointByName</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a0a11ccb56521189c363c76deafb11351</anchor>
+      <anchor>a81840e2def5e1edf94d0745af840c30f</anchor>
       <arglist>(const std::string &amp;name) const</arglist>
     </member>
     <member kind="function">
@@ -3387,28 +2797,28 @@
       <type>void</type>
       <name>mergeSubBodies</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a6c2f62094dc38b89089d09b5c4d4a367</anchor>
-      <arglist>(const std::string &amp;rootBodyName, const std::string &amp;jointName, const std::map&lt; std::string, std::vector&lt; double &gt;&gt; &amp;jointPosByName)</arglist>
+      <anchor>a37590f56ce1c762790b102f28b687b7e</anchor>
+      <arglist>(const std::string &amp;rootBodyName, const std::string &amp;jointName, const std::map&lt; std::string, std::vector&lt; double &gt; &gt; &amp;jointPosByName)</arglist>
     </member>
     <member kind="function">
       <type>std::map&lt; std::string, sva::PTransformd &gt;</type>
       <name>bodiesBaseTransform</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>aa729e4ff4fbb54e6c0fcf92cfda602ff</anchor>
+      <anchor>ab5ba5afd556777836c18ad7e2183b30e</anchor>
       <arglist>(const std::string &amp;rootBodyName, const sva::PTransformd &amp;X_b0_j0=sva::PTransformd::Identity())</arglist>
     </member>
     <member kind="function">
       <type>std::map&lt; std::string, std::vector&lt; std::string &gt; &gt;</type>
       <name>successorJoints</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a04cbebadb99bc2317885d5eebb4ab4ba</anchor>
+      <anchor>a58d32dfdf643fc2593bb9b985d1853e4</anchor>
       <arglist>(const std::string &amp;rootBodyName)</arglist>
     </member>
     <member kind="function">
       <type>std::map&lt; std::string, std::string &gt;</type>
       <name>predecessorJoint</name>
       <anchorfile>classrbd_1_1MultiBodyGraph.html</anchorfile>
-      <anchor>a94dab17b5dab5f94f4908214f5fd128a</anchor>
+      <anchor>a24f73987d22695a35aab86a218946d2d</anchor>
       <arglist>(const std::string &amp;rootBodyName)</arglist>
     </member>
     <member kind="function" static="yes">
@@ -3486,49 +2896,49 @@
       <type>ParserParameters &amp;</type>
       <name>fixed</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>a1ffde39bb9a038d2ce576e7fb0e68fa5</anchor>
+      <anchor>a121ee15281dfcf649c81e829a43c6e10</anchor>
       <arglist>(bool fixed) noexcept</arglist>
     </member>
     <member kind="function">
       <type>ParserParameters &amp;</type>
       <name>filtered_links</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>aa0a0efa96d5de88a52fb5553e1781490</anchor>
+      <anchor>a0a1d79a4882378e10b10877de82b4429</anchor>
       <arglist>(const std::vector&lt; std::string &gt; &amp;links) noexcept</arglist>
     </member>
     <member kind="function">
       <type>ParserParameters &amp;</type>
       <name>remove_filtered_links</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>acd8981a719ed351f0332d556c1d30e59</anchor>
+      <anchor>a6f1b4a1ce5b5b80c3cc31a9c7330fcf7</anchor>
       <arglist>(bool value) noexcept</arglist>
     </member>
     <member kind="function">
       <type>ParserParameters &amp;</type>
       <name>transform_inertia</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>a30c78294cf41082acb09ee28ebb7d544</anchor>
+      <anchor>aa628bd54be31785aef27e9e1a631f9a3</anchor>
       <arglist>(bool value) noexcept</arglist>
     </member>
     <member kind="function">
       <type>ParserParameters &amp;</type>
       <name>base_link</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>ab32d75a71c88a3c7ddf0bc62cdcae9b9</anchor>
+      <anchor>aff2c7c3350edce350ecd169b9439c244</anchor>
       <arglist>(const std::string &amp;link) noexcept</arglist>
     </member>
     <member kind="function">
       <type>ParserParameters &amp;</type>
       <name>remove_virtual_links</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>a2dace2c9466b3bee2c256cc9e3b26430</anchor>
+      <anchor>a946e8caa92863a6c099a4602987b66d2</anchor>
       <arglist>(bool value) noexcept</arglist>
     </member>
     <member kind="function">
       <type>ParserParameters &amp;</type>
       <name>spherical_suffix</name>
       <anchorfile>structrbd_1_1parsers_1_1ParserParameters.html</anchorfile>
-      <anchor>a9c3985f11af12f976b5747fef6ee523e</anchor>
+      <anchor>a619d792133402c888843269abcce7e15</anchor>
       <arglist>(const std::string &amp;suffix) noexcept</arglist>
     </member>
     <member kind="variable">
@@ -3648,7 +3058,7 @@
       <type>ParserResult &amp;</type>
       <name>result</name>
       <anchorfile>classrbd_1_1parsers_1_1RBDynFromYAML.html</anchorfile>
-      <anchor>ae9e45779b7d88f272e2ccd36c00fcec8</anchor>
+      <anchor>a2b3a3c10d70060fef0ac5b758766d3ba</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -3785,7 +3195,7 @@
       <type>std::ostream &amp;</type>
       <name>operator&lt;&lt;</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aef3e2f68a8f7a4ce79266e72ddaabb5e</anchor>
+      <anchor>af85d9f99dd488624ebde7d42e70530bb</anchor>
       <arglist>(std::ostream &amp;out, const Body &amp;b)</arglist>
     </member>
     <member kind="function">
@@ -3897,14 +3307,14 @@
       <type>RBDYN_DLLAPI Eigen::Matrix&lt; double, 6, 10 &gt;</type>
       <name>IMPhi</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a866fa89d4831928b912c77db84f30309</anchor>
+      <anchor>a13ce3101f96e5c1ff3d22805dc445fe8</anchor>
       <arglist>(const sva::MotionVecd &amp;mv)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI Eigen::Matrix&lt; double, 10, 1 &gt;</type>
       <name>inertiaToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a6269a1cc3506d5512fbd8ec28fcedb84</anchor>
+      <anchor>a18452e108ab24c84ecd5fc372f6f17e5</anchor>
       <arglist>(const sva::RBInertiad &amp;rbi)</arglist>
     </member>
     <member kind="function">
@@ -3939,7 +3349,7 @@
       <type>std::ostream &amp;</type>
       <name>operator&lt;&lt;</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ac3088586b9fe6169533319c4dba20e9f</anchor>
+      <anchor>abac0cf0d825e85d41e5498662e52c7c4</anchor>
       <arglist>(std::ostream &amp;out, const Joint &amp;b)</arglist>
     </member>
     <member kind="function">
@@ -3974,84 +3384,84 @@
       <type>RBDYN_DLLAPI void</type>
       <name>paramToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4bf39e343eab5ea745b6b5ad06e1322c</anchor>
-      <arglist>(const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</arglist>
+      <anchor>ae58d89b9695ce6db3c5f9eb07197f51e</anchor>
+      <arglist>(const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
       <name>sParamToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa230afce88a5b03f4cdb24bbe5697709</anchor>
-      <arglist>(const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</arglist>
+      <anchor>abff39423688ea371bfb80a316b8ddeec</anchor>
+      <arglist>(const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v, Eigen::Ref&lt; Eigen::VectorXd &gt; e)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI Eigen::VectorXd</type>
       <name>paramToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4e97ed59ef038e4668d094c149f4dbf4</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
+      <anchor>af03028c48b7da42ff882a8471c9bcbf5</anchor>
+      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI Eigen::VectorXd</type>
       <name>sParamToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4553c85e948490a728217442f42017a5</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
+      <anchor>a61eab8d6f6bf9f181ccfbd349d4a756d</anchor>
+      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI Eigen::VectorXd</type>
       <name>dofToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a35ba4e7bcaf28864ee5b873aa2f7ad98</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
+      <anchor>ac2dac1e12659f3999941116d0efd5e2b</anchor>
+      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI Eigen::VectorXd</type>
       <name>sDofToVector</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a40551e81dcb5a17dc51f28e51df91ab7</anchor>
-      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
+      <anchor>a265d9e9ce898f452286b69db71e8e26b</anchor>
+      <arglist>(const MultiBody &amp;mb, const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
       <name>vectorToParam</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ae1506b1cecfe2dc93145cdee35024021</anchor>
-      <arglist>(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
+      <anchor>a709ebf103d90c1c245c649726e3e7bdc</anchor>
+      <arglist>(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI void</type>
       <name>sVectorToParam</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aa53030956d0aaa3b8f8573f876551cdf</anchor>
-      <arglist>(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt;&gt; &amp;v)</arglist>
+      <anchor>aad34d31ab53fbc2009e4830a0ca5b6e3</anchor>
+      <arglist>(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;e, std::vector&lt; std::vector&lt; double &gt; &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
       <name>vectorToParam</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>ad81da92788d049e1111ea95aad747d9a</anchor>
+      <anchor>a31bb4f46fd9375cd3b2ac026f5e20c79</anchor>
       <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
       <name>sVectorToParam</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a9a12e59958ebc1de682cb558002236fa</anchor>
+      <anchor>ab68aac147932c63c12e36ad9b168adab</anchor>
       <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
       <name>vectorToDof</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a4e26c3bab795feca51d727beb784cf13</anchor>
+      <anchor>ad4ddf57205b783f8ae1895fabe320c4e</anchor>
       <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
     </member>
     <member kind="function">
       <type>RBDYN_DLLAPI std::vector&lt; std::vector&lt; double &gt; &gt;</type>
       <name>sVectorToDof</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>aac7e53f4e1a1bf92a34842130f017325</anchor>
+      <anchor>a0165e54c8fb668eb3ffc09e3bbdd01da</anchor>
       <arglist>(const MultiBody &amp;mb, const Eigen::VectorXd &amp;e)</arglist>
     </member>
     <member kind="function">
@@ -4156,7 +3566,7 @@
       <type>RBDYN_DLLAPI std::pair&lt; Eigen::Quaterniond, bool &gt;</type>
       <name>SO3Integration</name>
       <anchorfile>namespacerbd.html</anchorfile>
-      <anchor>a13c604a41c35cea5a6af6c9e93ea63ca</anchor>
+      <anchor>a5b92a7b664938e998b53a55c504d54cd</anchor>
       <arglist>(const Eigen::Quaterniond &amp;qi, const Eigen::Vector3d &amp;wi, const Eigen::Vector3d &amp;wD, double step, double relEps=1e-12, double absEps=std::numeric_limits&lt; double &gt;::epsilon(), bool breakOnWarning=false)</arglist>
     </member>
     <member kind="function">
@@ -4299,7 +3709,7 @@
       <type>RBDYN_PARSERS_DLLAPI std::vector&lt; double &gt;</type>
       <name>attrToList</name>
       <anchorfile>namespacerbd_1_1parsers.html</anchorfile>
-      <anchor>ae0fa1fe2f10bfa0a335f949476804ba9</anchor>
+      <anchor>ae80ce6f2c6b636faeb1baa8819dd9bac</anchor>
       <arglist>(const tinyxml2::XMLElement &amp;dom, const std::string &amp;attr, const std::vector&lt; double &gt; &amp;def={})</arglist>
     </member>
     <member kind="function">
@@ -4391,6 +3801,7 @@
   <compound kind="page">
     <name>index</name>
     <title>RBDyn</title>
-    <filename>index</filename>
+    <filename>index.html</filename>
+    <docanchor file="index.html" title="RBDyn">md_README</docanchor>
   </compound>
 </tagfile>

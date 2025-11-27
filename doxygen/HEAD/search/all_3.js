@@ -1,9 +1,16 @@
 var searchData=
 [
-  ['data_80',['Data',['../structrbd_1_1parsers_1_1Geometry.html#a41d057e8542e152158fc510f3f4bc437',1,'rbd::parsers::Geometry::Data()'],['../structrbd_1_1parsers_1_1Material.html#a1eb11fc3a225dc02f3a83a90b0889423',1,'rbd::parsers::Material::Data()'],['../structrbd_1_1parsers_1_1Geometry.html#a88c157efdcc952cc050ff6248c5d02aa',1,'rbd::parsers::Geometry::data()'],['../structrbd_1_1parsers_1_1Material.html#aaa2a1eb3605215f2a77903ce486e3f71',1,'rbd::parsers::Material::data()']]],
-  ['depthdotjacobian_81',['depthDotJacobian',['../namespacerbd.html#aef704a4c74be13842752ab1232da6b52',1,'rbd']]],
-  ['description_82',['Description',['../namespacerbd_1_1parsers.html#a8578b943029e74399e94ba9ec80992f4ab5a7adde1af5c87d7fd797b6245c2a39',1,'rbd::parsers']]],
-  ['direction_83',['direction',['../classrbd_1_1Joint.html#a4d6fc0169734d58a5dd6c5aa48b9ab6b',1,'rbd::Joint']]],
-  ['dof_84',['dof',['../classrbd_1_1Jacobian.html#aad4fa59f43ace5ebeb0b2227e5cb86d6',1,'rbd::Jacobian::dof()'],['../classrbd_1_1Joint.html#a43cdf3d3ef2f3d8a7c88a90d0c5ba2ff',1,'rbd::Joint::dof()']]],
-  ['doftovector_85',['dofToVector',['../namespacerbd.html#a35ba4e7bcaf28864ee5b873aa2f7ad98',1,'rbd']]]
+  ['a_0',['a',['../structrbd_1_1parsers_1_1Material_1_1Color.html#a51746deb3aedab36aa52c9d92f583c4f',1,'rbd::parsers::Material::Color']]],
+  ['addbody_1',['addBody',['../classrbd_1_1MultiBodyGraph.html#a6c3c7fa80770ae6d0eea6f4f0a294f03',1,'rbd::MultiBodyGraph']]],
+  ['addfulljacobian_2',['addfulljacobian',['../classrbd_1_1Jacobian.html#aaec2f493ca77e71452df775b5926c7d4',1,'rbd::Jacobian::addFullJacobian(const MultiBody &amp;mb, const Eigen::Ref&lt; const Eigen::MatrixXd &gt; &amp;jac, Eigen::MatrixXd &amp;res) const'],['../classrbd_1_1Jacobian.html#ad011e6e4253b18dab261e5f338d8a9bb',1,'rbd::Jacobian::addFullJacobian(const Blocks &amp;compactPath, const Eigen::Ref&lt; const Eigen::MatrixXd &gt; &amp;jac, Eigen::MatrixXd &amp;res) const']]],
+  ['addjoint_3',['addJoint',['../classrbd_1_1MultiBodyGraph.html#a9ea2e5e03771bf756df8c049e45f6aa4',1,'rbd::MultiBodyGraph']]],
+  ['almost_5fzero_5f_4',['almost_zero_',['../classrbd_1_1InverseKinematics.html#a6bedb6a014d460dd706e66e3fb199783',1,'rbd::InverseKinematics']]],
+  ['alpha_5',['alpha',['../structrbd_1_1MultiBodyConfig.html#ad76e857df948af50e5fa145d246c12da',1,'rbd::MultiBodyConfig']]],
+  ['alphad_6',['alphaD',['../structrbd_1_1MultiBodyConfig.html#a3cb9e1fc41bb794d465099f605800689',1,'rbd::MultiBodyConfig']]],
+  ['api_2eh_7',['api.h',['../api_8h.html',1,'']]],
+  ['arc_8',['arc',['../structrbd_1_1MultiBodyGraph_1_1Arc.html',1,'rbd::MultiBodyGraph::Arc'],['../structrbd_1_1MultiBodyGraph_1_1Arc.html#a255894e301bfdb9e660bbb2b5a75fe7d',1,'rbd::MultiBodyGraph::Arc::Arc()'],['../structrbd_1_1MultiBodyGraph_1_1Arc.html#a644383e1d0afd18757c6daa8a0fc7dd3',1,'rbd::MultiBodyGraph::Arc::Arc(sva::PTransformd X0, const Joint &amp;j, bool forward, std::shared_ptr&lt; Node &gt; n)']]],
+  ['arch_20linux_9',['Arch Linux',['../index.html#autotoc_md8',1,'']]],
+  ['arcs_10',['arcs',['../structrbd_1_1MultiBodyGraph_1_1Node.html#aacec197bdf6de9edf6de089253ffb583',1,'rbd::MultiBodyGraph::Node']]],
+  ['attrtolist_11',['attrToList',['../namespacerbd_1_1parsers.html#ae80ce6f2c6b636faeb1baa8819dd9bac',1,'rbd::parsers']]],
+  ['attrtovector_12',['attrToVector',['../namespacerbd_1_1parsers.html#aac11127f8637888e18bc5c3317f1631d',1,'rbd::parsers']]]
 ];

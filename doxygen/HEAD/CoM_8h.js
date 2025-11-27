@@ -1,7 +1,7 @@
 var CoM_8h =
 [
-    [ "CoMJacobianDummy", "classrbd_1_1CoMJacobianDummy.html", "classrbd_1_1CoMJacobianDummy" ],
-    [ "CoMJacobian", "classrbd_1_1CoMJacobian.html", "classrbd_1_1CoMJacobian" ],
+    [ "rbd::CoMJacobianDummy", "classrbd_1_1CoMJacobianDummy.html", "classrbd_1_1CoMJacobianDummy" ],
+    [ "rbd::CoMJacobian", "classrbd_1_1CoMJacobian.html", "classrbd_1_1CoMJacobian" ],
     [ "computeCoM", "CoM_8h.html#aa3d5affc22a2a8da050bec954dbe49e7", null ],
     [ "computeCoMAcceleration", "CoM_8h.html#a66536ad8e1924b87c9b376d151f7321e", null ],
     [ "computeCoMVelocity", "CoM_8h.html#aae7a9a01b7d8e8f0113ac0ced2f3359f", null ],

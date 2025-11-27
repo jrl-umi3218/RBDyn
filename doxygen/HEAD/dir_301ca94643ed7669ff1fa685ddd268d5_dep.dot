@@ -1,11 +1,14 @@
-digraph "src/parsers/RBDyn/parsers" {
+digraph "src/parsers/RBDyn/parsers"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
   compound=true
-  node [ fontsize="10", fontname="Helvetica"];
-  edge [ labelfontsize="10", labelfontname="Helvetica"];
   subgraph clusterdir_5d4996d05c2d4601ec9b60d0b9215ba6 {
-    graph [ bgcolor="#ddddee", pencolor="black", label="RBDyn" fontname="Helvetica", fontsize="10", URL="dir_5d4996d05c2d4601ec9b60d0b9215ba6.html"]
-  dir_301ca94643ed7669ff1fa685ddd268d5 [shape=box, label="parsers", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_301ca94643ed7669ff1fa685ddd268d5.html"];
+    graph [ bgcolor="#edf0f7", pencolor="grey50", label="RBDyn", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_5d4996d05c2d4601ec9b60d0b9215ba6.html",tooltip=""]
+  dir_301ca94643ed7669ff1fa685ddd268d5 [label="parsers", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_301ca94643ed7669ff1fa685ddd268d5.html",tooltip=""];
   }
-  dir_c8d2c55aee402461ce3a18ffcc64fcc4 [shape=box label="RBDyn" fillcolor="white" style="filled" color="red" URL="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html"];
-  dir_301ca94643ed7669ff1fa685ddd268d5->dir_c8d2c55aee402461ce3a18ffcc64fcc4 [headlabel="11", labeldistance=1.5 headhref="dir_000003_000004.html"];
+  dir_c8d2c55aee402461ce3a18ffcc64fcc4 [label="RBDyn", fillcolor="#edf0f7", color="red", style="filled,dashed", URL="dir_c8d2c55aee402461ce3a18ffcc64fcc4.html",tooltip=""];
+  dir_301ca94643ed7669ff1fa685ddd268d5->dir_c8d2c55aee402461ce3a18ffcc64fcc4 [headlabel="11", labeldistance=1.5 headhref="dir_000001_000003.html" href="dir_000001_000003.html" color="steelblue1" fontcolor="steelblue1"];
 }

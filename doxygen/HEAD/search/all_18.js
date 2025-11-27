@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['zero_376',['zero',['../structrbd_1_1MultiBodyConfig.html#a14f36698c3a42fa9f3ae6e95aa4833cc',1,'rbd::MultiBodyConfig']]],
-  ['zerodof_377',['zeroDof',['../classrbd_1_1Joint.html#ac3581710d443aaf318ba620c5252a96f',1,'rbd::Joint::zeroDof() const'],['../classrbd_1_1Joint.html#a81bbf2ec038ee24dec892858c36263d4',1,'rbd::Joint::ZeroDof(Type type)']]],
-  ['zeroparam_378',['ZeroParam',['../classrbd_1_1Joint.html#a73c50449329d34fdedaeb0684cf6b45e',1,'rbd::Joint::ZeroParam(Type type)'],['../classrbd_1_1Joint.html#ac8d2e2679489b4c20011a15251126523',1,'rbd::Joint::zeroParam() const']]],
-  ['zmp_2eh_379',['ZMP.h',['../ZMP_8h.html',1,'']]]
+  ['weight_0',['weight',['../classrbd_1_1CoMJacobian.html#afb11cd1bbd3ffeb3eaf6f91cdbf3010c',1,'rbd::CoMJacobian::weight() const'],['../classrbd_1_1CoMJacobian.html#a482eb7f57174cb499efd874a073a0770',1,'rbd::CoMJacobian::weight(const MultiBody &amp;mb, std::vector&lt; double &gt; w)']]]
 ];
