@@ -2395,15 +2395,15 @@
       <type>void</type>
       <name>setJointRotorInertia</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>ae8e9dbc33519b3d617eb8b98afcc449a</anchor>
-      <arglist>(int num, double Ir)</arglist>
+      <anchor>ac5d67527b23d83309b47c56a11afe9a0</anchor>
+      <arglist>(int index, double Ir)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>setJointGearRatio</name>
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
-      <anchor>a196ee6ec88c76d4dbe4d718d771ac0bd</anchor>
-      <arglist>(int num, double gr)</arglist>
+      <anchor>a220b21e77f2ed0457bb1a5f7be3f154c</anchor>
+      <arglist>(int index, double gr)</arglist>
     </member>
     <member kind="function">
       <type>void</type>

@@ -152,10 +152,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a110467a196e992eba85413472dd8e461"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaaddfba44611ef4a19a090888b229e9" id="r_aaaaddfba44611ef4a19a090888b229e9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#aaaaddfba44611ef4a19a090888b229e9">nrDof</a> () const</td></tr>
 <tr class="separator:aaaaddfba44611ef4a19a090888b229e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8e9dbc33519b3d617eb8b98afcc449a" id="r_ae8e9dbc33519b3d617eb8b98afcc449a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#ae8e9dbc33519b3d617eb8b98afcc449a">setJointRotorInertia</a> (int num, double Ir)</td></tr>
-<tr class="separator:ae8e9dbc33519b3d617eb8b98afcc449a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a196ee6ec88c76d4dbe4d718d771ac0bd" id="r_a196ee6ec88c76d4dbe4d718d771ac0bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#a196ee6ec88c76d4dbe4d718d771ac0bd">setJointGearRatio</a> (int num, double gr)</td></tr>
-<tr class="separator:a196ee6ec88c76d4dbe4d718d771ac0bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5d67527b23d83309b47c56a11afe9a0" id="r_ac5d67527b23d83309b47c56a11afe9a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#ac5d67527b23d83309b47c56a11afe9a0">setJointRotorInertia</a> (int index, double Ir)</td></tr>
+<tr class="memdesc:ac5d67527b23d83309b47c56a11afe9a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set <a class="el" href="classrbd_1_1Joint.html">Joint</a> Rotor Inertia.  <br /></td></tr>
+<tr class="separator:ac5d67527b23d83309b47c56a11afe9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a220b21e77f2ed0457bb1a5f7be3f154c" id="r_a220b21e77f2ed0457bb1a5f7be3f154c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#a220b21e77f2ed0457bb1a5f7be3f154c">setJointGearRatio</a> (int index, double gr)</td></tr>
+<tr class="memdesc:a220b21e77f2ed0457bb1a5f7be3f154c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set <a class="el" href="classrbd_1_1Joint.html">Joint</a> Gear Ratio.  <br /></td></tr>
+<tr class="separator:a220b21e77f2ed0457bb1a5f7be3f154c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1c373e3a1165f4471e357f38fe17ec7" id="r_aa1c373e3a1165f4471e357f38fe17ec7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#aa1c373e3a1165f4471e357f38fe17ec7">sBodies</a> (std::vector&lt; <a class="el" href="classrbd_1_1Body.html">Body</a> &gt; b)</td></tr>
 <tr class="separator:aa1c373e3a1165f4471e357f38fe17ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad6da4dddb0bb872ebc07b721a682c0b" id="r_aad6da4dddb0bb872ebc07b721a682c0b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classrbd_1_1Body.html">Body</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1MultiBody.html#aad6da4dddb0bb872ebc07b721a682c0b">sBody</a> (int num) const</td></tr>
@@ -1035,8 +1037,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a196ee6ec88c76d4dbe4d718d771ac0bd" name="a196ee6ec88c76d4dbe4d718d771ac0bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a196ee6ec88c76d4dbe4d718d771ac0bd">&#9670;&#160;</a></span>setJointGearRatio()</h2>
+<a id="a220b21e77f2ed0457bb1a5f7be3f154c" name="a220b21e77f2ed0457bb1a5f7be3f154c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a220b21e77f2ed0457bb1a5f7be3f154c">&#9670;&#160;</a></span>setJointGearRatio()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1048,7 +1050,7 @@ Protected Attributes</h2></td></tr>
           <td class="memname">void rbd::MultiBody::setJointGearRatio </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>num</em>, </td>
+          <td class="paramname"><em>index</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1069,10 +1071,19 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set <a class="el" href="classrbd_1_1Joint.html">Joint</a> Gear Ratio. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>joint index </td></tr>
+    <tr><td class="paramname">gr</td><td>gear ratio </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="ae8e9dbc33519b3d617eb8b98afcc449a" name="ae8e9dbc33519b3d617eb8b98afcc449a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8e9dbc33519b3d617eb8b98afcc449a">&#9670;&#160;</a></span>setJointRotorInertia()</h2>
+<a id="ac5d67527b23d83309b47c56a11afe9a0" name="ac5d67527b23d83309b47c56a11afe9a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5d67527b23d83309b47c56a11afe9a0">&#9670;&#160;</a></span>setJointRotorInertia()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1084,7 +1095,7 @@ Protected Attributes</h2></td></tr>
           <td class="memname">void rbd::MultiBody::setJointRotorInertia </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>num</em>, </td>
+          <td class="paramname"><em>index</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1104,6 +1115,15 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set <a class="el" href="classrbd_1_1Joint.html">Joint</a> Rotor Inertia. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>joint index </td></tr>
+    <tr><td class="paramname">Ir</td><td>rotor inertia </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
