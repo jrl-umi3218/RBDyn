@@ -41,6 +41,12 @@ public:
   void forwardDynamics(const MultiBody & mb, MultiBodyConfig & mbc);
 
   /**
+   * Compute the diagonal of rotor inertias HIr that is added to the inertia matrix H.
+   * @param mb MultiBody used has model.
+   */
+  void computeHIr(const MultiBody & mb);
+
+  /**
    * Compute the inertia matrix H.
    * @param mb MultiBody used has model.
    * @param mbc Use parentToSon and motionSubspace.
@@ -59,6 +65,12 @@ public:
   const Eigen::MatrixXd & H() const
   {
     return H_;
+  }
+
+  /// @return The inertia matrix H.
+  const Eigen::MatrixXd & HIr() const
+  {
+    return HIr_;
   }
 
   /// @return The non linear effect vector (coriolis, gravity, external force).
@@ -97,6 +109,7 @@ private:
   // H computation
   std::vector<sva::RBInertiad> I_st_;
   std::vector<Eigen::Matrix<double, 6, Eigen::Dynamic>> F_;
+  Eigen::MatrixXd HIr_;
 
   // C computation
   std::vector<sva::MotionVecd> acc_;
