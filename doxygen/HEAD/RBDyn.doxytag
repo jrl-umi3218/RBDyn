@@ -900,6 +900,13 @@
     </member>
     <member kind="function">
       <type>void</type>
+      <name>computeHIr</name>
+      <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
+      <anchor>a4375c5aebd31538ad143af9638123313</anchor>
+      <arglist>(const MultiBody &amp;mb)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
       <name>computeH</name>
       <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
       <anchor>a19956574f9a161a0aa99d686f5b0894b</anchor>
@@ -917,6 +924,13 @@
       <name>H</name>
       <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
       <anchor>af1361629514c8d07e74adaaecfcd894a</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const Eigen::MatrixXd &amp;</type>
+      <name>HIr</name>
+      <anchorfile>classrbd_1_1ForwardDynamics.html</anchorfile>
+      <anchor>abf3cc8b1d55f0d1de6456705826d7704</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
@@ -1944,6 +1958,34 @@
       <arglist>() const</arglist>
     </member>
     <member kind="function">
+      <type>void</type>
+      <name>setRotorInertia</name>
+      <anchorfile>classrbd_1_1Joint.html</anchorfile>
+      <anchor>aca73e7b94fa7e512ae97aa6efe53978e</anchor>
+      <arglist>(double Ir)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>rotorInertia</name>
+      <anchorfile>classrbd_1_1Joint.html</anchorfile>
+      <anchor>a020a6b06d7dc1396071d6985966dc1fb</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setGearRatio</name>
+      <anchorfile>classrbd_1_1Joint.html</anchorfile>
+      <anchor>a93d94bcdfd79b9b864fbb4d9c93ea23a</anchor>
+      <arglist>(double gr)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>gearRatio</name>
+      <anchorfile>classrbd_1_1Joint.html</anchorfile>
+      <anchor>a3b46f78ad0971784dbf23b233a535437</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
       <type>const Eigen::Matrix&lt; double, 6, Eigen::Dynamic &gt; &amp;</type>
       <name>motionSubspace</name>
       <anchorfile>classrbd_1_1Joint.html</anchorfile>
@@ -2348,6 +2390,20 @@
       <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
       <anchor>aaaaddfba44611ef4a19a090888b229e9</anchor>
       <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setJointRotorInertia</name>
+      <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
+      <anchor>ae8e9dbc33519b3d617eb8b98afcc449a</anchor>
+      <arglist>(int num, double Ir)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setJointGearRatio</name>
+      <anchorfile>classrbd_1_1MultiBody.html</anchorfile>
+      <anchor>a196ee6ec88c76d4dbe4d718d771ac0bd</anchor>
+      <arglist>(int num, double gr)</arglist>
     </member>
     <member kind="function">
       <type>void</type>

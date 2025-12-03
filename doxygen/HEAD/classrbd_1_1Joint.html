@@ -152,6 +152,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a102a48dfd239b3765c1b1162845c30ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e37f08b25dbd4f0615757471eeead00" id="r_a7e37f08b25dbd4f0615757471eeead00"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Joint.html#a7e37f08b25dbd4f0615757471eeead00">mimicOffset</a> () const</td></tr>
 <tr class="separator:a7e37f08b25dbd4f0615757471eeead00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca73e7b94fa7e512ae97aa6efe53978e" id="r_aca73e7b94fa7e512ae97aa6efe53978e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Joint.html#aca73e7b94fa7e512ae97aa6efe53978e">setRotorInertia</a> (double Ir)</td></tr>
+<tr class="separator:aca73e7b94fa7e512ae97aa6efe53978e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a020a6b06d7dc1396071d6985966dc1fb" id="r_a020a6b06d7dc1396071d6985966dc1fb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Joint.html#a020a6b06d7dc1396071d6985966dc1fb">rotorInertia</a> () const</td></tr>
+<tr class="separator:a020a6b06d7dc1396071d6985966dc1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93d94bcdfd79b9b864fbb4d9c93ea23a" id="r_a93d94bcdfd79b9b864fbb4d9c93ea23a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Joint.html#a93d94bcdfd79b9b864fbb4d9c93ea23a">setGearRatio</a> (double gr)</td></tr>
+<tr class="separator:a93d94bcdfd79b9b864fbb4d9c93ea23a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b46f78ad0971784dbf23b233a535437" id="r_a3b46f78ad0971784dbf23b233a535437"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Joint.html#a3b46f78ad0971784dbf23b233a535437">gearRatio</a> () const</td></tr>
+<tr class="separator:a3b46f78ad0971784dbf23b233a535437"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47485a627cfa811597432a1ae9039e37" id="r_a47485a627cfa811597432a1ae9039e37"><td class="memItemLeft" align="right" valign="top">const Eigen::Matrix&lt; double, 6, Eigen::Dynamic &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrbd_1_1Joint.html#a47485a627cfa811597432a1ae9039e37">motionSubspace</a> () const</td></tr>
 <tr class="separator:a47485a627cfa811597432a1ae9039e37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa32392fa85a8c5367f24d6b00392d257" id="r_aa32392fa85a8c5367f24d6b00392d257"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -574,6 +582,31 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a3b46f78ad0971784dbf23b233a535437" name="a3b46f78ad0971784dbf23b233a535437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b46f78ad0971784dbf23b233a535437">&#9670;&#160;</a></span>gearRatio()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rbd::Joint::gearRatio </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ac07aa4802c1518da095d129517579606" name="ac07aa4802c1518da095d129517579606"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac07aa4802c1518da095d129517579606">&#9670;&#160;</a></span>isMimic()</h2>
 
@@ -925,6 +958,83 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Spatial transformation from predecessor to successor frame. </dd></dl>
+
+</div>
+</div>
+<a id="a020a6b06d7dc1396071d6985966dc1fb" name="a020a6b06d7dc1396071d6985966dc1fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a020a6b06d7dc1396071d6985966dc1fb">&#9670;&#160;</a></span>rotorInertia()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rbd::Joint::rotorInertia </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a93d94bcdfd79b9b864fbb4d9c93ea23a" name="a93d94bcdfd79b9b864fbb4d9c93ea23a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93d94bcdfd79b9b864fbb4d9c93ea23a">&#9670;&#160;</a></span>setGearRatio()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rbd::Joint::setGearRatio </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>gr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aca73e7b94fa7e512ae97aa6efe53978e" name="aca73e7b94fa7e512ae97aa6efe53978e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca73e7b94fa7e512ae97aa6efe53978e">&#9670;&#160;</a></span>setRotorInertia()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rbd::Joint::setRotorInertia </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Ir</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

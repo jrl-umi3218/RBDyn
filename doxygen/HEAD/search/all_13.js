@@ -24,5 +24,6 @@ var searchData=
   ['revx_21',['RevX',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a27319663df173fa147a2d271e0ef355f',1,'rbd::Joint']]],
   ['revy_22',['RevY',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a3686aba670ebb2c1a6a3b789114884bd',1,'rbd::Joint']]],
   ['revz_23',['RevZ',['../classrbd_1_1Joint.html#ab948ec84d396e27779015bccdf303536a432be99df9b9483bee433d8d9f948cc2',1,'rbd::Joint']]],
-  ['rootjointname_5f_24',['rootJointName_',['../classrbd_1_1MultiBodyGraph.html#a80b027812459d999809baa10eae13236',1,'rbd::MultiBodyGraph']]]
+  ['rootjointname_5f_24',['rootJointName_',['../classrbd_1_1MultiBodyGraph.html#a80b027812459d999809baa10eae13236',1,'rbd::MultiBodyGraph']]],
+  ['rotorinertia_25',['rotorInertia',['../classrbd_1_1Joint.html#a020a6b06d7dc1396071d6985966dc1fb',1,'rbd::Joint']]]
 ];
