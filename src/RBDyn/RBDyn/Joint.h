@@ -174,21 +174,33 @@ public:
     return mimicOffset_;
   }
 
+  /**
+   * @brief Set Rotor Inertia
+   *
+   * @param Ir
+   */
   void setRotorInertia(double Ir)
   {
     Ir_ = Ir;
   }
 
+  /// @return Rotor Inertia
   double rotorInertia() const
   {
     return Ir_;
   }
 
+  /**
+   * @brief Set Gear Ratio
+   *
+   * @param gr
+   */
   void setGearRatio(double gr)
   {
     gr_ = gr;
   }
 
+  /// @return Gear Ratio
   double gearRatio() const
   {
     return gr_;

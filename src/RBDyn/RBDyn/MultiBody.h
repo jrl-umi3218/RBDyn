@@ -214,14 +214,26 @@ public:
     return nrDof_;
   }
 
-  void setJointRotorInertia(int num, double Ir)
+  /**
+   * @brief Set Joint Rotor Inertia
+   *
+   * @param index joint index
+   * @param Ir rotor inertia
+   */
+  void setJointRotorInertia(int index, double Ir)
   {
-    joints_[static_cast<std::size_t>(num)].setRotorInertia(Ir);
+    joints_[static_cast<std::size_t>(index)].setRotorInertia(Ir);
   }
 
-  void setJointGearRatio(int num, double gr)
+  /**
+   * @brief Set Joint Gear Ratio
+   *
+   * @param index joint index
+   * @param gr gear ratio
+   */
+  void setJointGearRatio(int index, double gr)
   {
-    joints_[static_cast<std::size_t>(num)].setGearRatio(gr);
+    joints_[static_cast<std::size_t>(index)].setGearRatio(gr);
   }
 
   // safe accessors version for python binding
