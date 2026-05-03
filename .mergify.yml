@@ -1,0 +1,25 @@
+pull_request_rules:
+  # automatically queues when a bot pr succeeds (see queue_rules)
+  - name: merge [bot] PRs when CI pass
+    conditions:
+      - or:
+        - author = dependabot[bot]
+        - author = gepetto-flake-updater[bot]
+        - author = mc-rtc-nixpkgs-flake-updater[bot]
+        - author = github-actions[bot]
+        - author = pre-commit-ci[bot]
+    actions:
+      queue:
+
+  # runs when commenting @mergifyio queue
+  - name: queue PRs with "queue" label when all CI checks pass
+    conditions:
+      - label = queued
+    actions:
+      queue:
+
+# ensure that required CI jobs suceed
+queue_rules:
+  - name: default
+    conditions:
+      - check-success = "check-macos-linux-nix"
