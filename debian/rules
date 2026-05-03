@@ -10,7 +10,7 @@ TMP = $(CURDIR)/debian/tmp
 	dh $@ --parallel
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DPYTHON_DEB_ROOT=$(TMP)
+	dh_auto_configure -- -DPYTHON_DEB_ROOT=$(TMP) -DFETCHCONTENT_FULLY_DISCONNECTED=OFF
 
 override_dh_auto_install:
 	dh_auto_install
