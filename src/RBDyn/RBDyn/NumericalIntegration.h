@@ -9,7 +9,7 @@
 #include <vector>
 
 // RBDyn
-#include <rbdyn/config.hh>
+#include <RBDyn/config.hpp>
 
 #include "Joint.h"
 

@@ -17,9 +17,8 @@ void bind_MultiBodyConfig(nb::module_ & rbdyn)
       .def("resize", [](std::vector<std::vector<double>> & self, size_t size) { self.resize(size); })
       .def("append", [](std::vector<std::vector<double>> & self, std::vector<double> vec) { self.push_back(vec); })
       .def(
-          "__getitem__",
-          [](std::vector<std::vector<double>> & self, size_t index) -> std::vector<double> & { return self.at(index); },
-          nb::rv_policy::reference)
+          "__getitem__", [](std::vector<std::vector<double>> & self, size_t index) -> std::vector<double> &
+          { return self.at(index); }, nb::rv_policy::reference)
       .def("__setitem__", [](std::vector<std::vector<double>> & self, size_t index, std::vector<double> vec)
            { self.at(index) = vec; });
 

@@ -13,27 +13,34 @@
         extraDevPyPackages = [ "rbdyn" ];
 
         overlays = [
-          (pkgs-final: pkgs-prev: {
+          (pkgs-final: _pkgs-prev: {
             spacevecalg = inputs.spacevecalg.packages.${pkgs-final.system}.spacevecalg;
           })
         ];
 
-        overrideAttrs.rbdyn = 
-        { pkgs-final, drv-prev, ... }:
-        {
-          src = lib.cleanSource ./.;
-          cmakeFlags = [
-            (lib.cmakeBool "PYTHON_BINDINGS" false)
-            (lib.cmakeBool "NANOBIND_BINDINGS" true)
-          ];
-          nativeBuildInputs = with pkgs-final; [
-            python3Packages.python
-          ] ++ drv-prev.nativeBuildInputs;
-          propagatedBuildInputs = with pkgs-final; [
-            python3Packages.nanoeigenpy
-            python3Packages.nanobind
-          ] ++ drv-prev.propagatedBuildInputs;
-        };
+        overrideAttrs.rbdyn =
+          { pkgs-final, drv-prev, ... }:
+          {
+            src = lib.cleanSource ./.;
+            cmakeFlags = [
+              (lib.cmakeBool "PYTHON_BINDINGS" false)
+              (lib.cmakeBool "NANOBIND_BINDINGS" true)
+            ];
+            nativeBuildInputs =
+              with pkgs-final;
+              [
+                python3Packages.python
+                jrl-cmakemodulesv2
+              ]
+              ++ drv-prev.nativeBuildInputs;
+            propagatedBuildInputs =
+              with pkgs-final;
+              [
+                python3Packages.nanoeigenpy
+                python3Packages.nanobind
+              ]
+              ++ drv-prev.propagatedBuildInputs;
+          };
 
         pyPackages = {
           rbdyn =
