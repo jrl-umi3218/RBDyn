@@ -22,32 +22,34 @@ set(SOURCES
     VisServo.cpp
     Coriolis.cpp)
 set(HEADERS
-    RBDyn/Body.h
-    RBDyn/Joint.h
-    RBDyn/MultiBodyGraph.h
-    RBDyn/MultiBody.h
-    RBDyn/MultiBodyConfig.h
-    RBDyn/FK.h
-    RBDyn/FV.h
-    RBDyn/FA.h
-    RBDyn/Jacobian.h
-    RBDyn/ID.h
-    RBDyn/IK.h
-    RBDyn/IS.h
-    RBDyn/FD.h
-    RBDyn/NumericalIntegration.h
-    RBDyn/EulerIntegration.h
-    RBDyn/CoM.h
-    RBDyn/Momentum.h
-    RBDyn/ZMP.h
-    RBDyn/IDIM.h
-    RBDyn/VisServo.h
-    RBDyn/util.hh
-    RBDyn/util.hxx
-    RBDyn/Coriolis.h)
+    src/RBDyn/RBDyn/Body.h
+    src/RBDyn/RBDyn/Joint.h
+    src/RBDyn/RBDyn/MultiBodyGraph.h
+    src/RBDyn/RBDyn/MultiBody.h
+    src/RBDyn/RBDyn/MultiBodyConfig.h
+    src/RBDyn/RBDyn/FK.h
+    src/RBDyn/RBDyn/FV.h
+    src/RBDyn/RBDyn/FA.h
+    src/RBDyn/RBDyn/Jacobian.h
+    src/RBDyn/RBDyn/ID.h
+    src/RBDyn/RBDyn/IK.h
+    src/RBDyn/RBDyn/IS.h
+    src/RBDyn/RBDyn/FD.h
+    src/RBDyn/RBDyn/NumericalIntegration.h
+    src/RBDyn/RBDyn/EulerIntegration.h
+    src/RBDyn/RBDyn/CoM.h
+    src/RBDyn/RBDyn/Momentum.h
+    src/RBDyn/RBDyn/ZMP.h
+    src/RBDyn/RBDyn/IDIM.h
+    src/RBDyn/RBDyn/VisServo.h
+    src/RBDyn/RBDyn/util.hh
+    src/RBDyn/RBDyn/util.hxx
+    src/RBDyn/RBDyn/Coriolis.h)
 
 set(ALL_RBDYN_TARGETS)
-add_library(RBDyn ${SOURCES} ${HEADERS})
+add_library(RBDyn SHARED)
+target_sources(RBDyn PRIVATE ${SOURCES})
+jrl_target_headers(RBDyn PUBLIC HEADERS ${HEADERS} BASE_DIRS src/RBDyn)
 list(APPEND ALL_RBDYN_TARGETS RBDyn)
 target_include_directories(
   RBDyn
@@ -64,10 +66,10 @@ set_target_properties(RBDyn PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
                                        VERSION ${PROJECT_VERSION})
 set_target_properties(RBDyn PROPERTIES CXX_STANDARD 11)
 
-install(
-  TARGETS RBDyn
-  EXPORT "${TARGETS_EXPORT_NAME}"
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES ${HEADERS} DESTINATION ${INCLUDE_INSTALL_DESTINATION})
+jrl_target_generate_config_header(RBDyn PUBLIC VERSION ${PROJECT_VERSION})
+jrl_target_generate_deprecated_header(RBDyn PUBLIC)
+jrl_add_export_component(NAME RBDyn TARGETS RBDyn)
+# install( TARGETS RBDyn EXPORT "${TARGETS_EXPORT_NAME}" LIBRARY DESTINATION
+# "${CMAKE_INSTALL_LIBDIR}" ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+# RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}") install(FILES ${HEADERS}
+# DESTINATION ${INCLUDE_INSTALL_DESTINATION})
