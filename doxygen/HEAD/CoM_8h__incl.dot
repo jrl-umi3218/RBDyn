@@ -22,7 +22,7 @@ digraph "src/RBDyn/RBDyn/CoM.h"
   Node8 [id="Node000008",label="unordered_map",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
   Node6 -> Node2 [id="edge9_Node000006_Node000002",color="steelblue1",style="solid",tooltip=" "];
   Node6 -> Node9 [id="edge10_Node000006_Node000009",color="steelblue1",style="solid",tooltip=" "];
-  Node9 [id="Node000009",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node9 [id="Node000009",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="/usr/local/share/doc/SpaceVecAlg/doxygen-html/SpaceVecAlg.doxytag$SpaceVecAlg.html",tooltip=" "];
   Node6 -> Node4 [id="edge11_Node000006_Node000004",color="steelblue1",style="solid",tooltip=" "];
   Node6 -> Node10 [id="edge12_Node000006_Node000010",color="steelblue1",style="solid",tooltip=" "];
   Node10 [id="Node000010",label="Body.h",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$Body_8h.html",tooltip=" "];

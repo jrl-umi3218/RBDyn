@@ -10,7 +10,7 @@ digraph "src/RBDyn/RBDyn/MultiBodyConfig.h"
   Node1 -> Node3 [id="edge2_Node000001_Node000003",color="steelblue1",style="solid",tooltip=" "];
   Node3 [id="Node000003",label="vector",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
   Node1 -> Node4 [id="edge3_Node000001_Node000004",color="steelblue1",style="solid",tooltip=" "];
-  Node4 [id="Node000004",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node4 [id="Node000004",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="/usr/local/share/doc/SpaceVecAlg/doxygen-html/SpaceVecAlg.doxytag$SpaceVecAlg.html",tooltip=" "];
   Node1 -> Node5 [id="edge4_Node000001_Node000005",color="steelblue1",style="solid",tooltip=" "];
   Node5 [id="Node000005",label="rbdyn/config.hh",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
   Node1 -> Node6 [id="edge5_Node000001_Node000006",color="steelblue1",style="solid",tooltip=" "];

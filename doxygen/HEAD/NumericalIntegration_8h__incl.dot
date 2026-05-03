@@ -21,5 +21,5 @@ digraph "src/RBDyn/RBDyn/NumericalIntegration.h"
   Node8 [id="Node000008",label="string",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
   Node4 -> Node2 [id="edge8_Node000004_Node000002",color="steelblue1",style="solid",tooltip=" "];
   Node4 -> Node9 [id="edge9_Node000004_Node000009",color="steelblue1",style="solid",tooltip=" "];
-  Node9 [id="Node000009",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node9 [id="Node000009",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="/usr/local/share/doc/SpaceVecAlg/doxygen-html/SpaceVecAlg.doxytag$SpaceVecAlg.html",tooltip=" "];
 }

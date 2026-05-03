@@ -3858,6 +3858,6 @@
     <name>index</name>
     <title>RBDyn</title>
     <filename>index.html</filename>
-    <docanchor file="index.html" title="RBDyn">md_README</docanchor>
+    <docanchor file="index.html">md_README</docanchor>
   </compound>
 </tagfile>

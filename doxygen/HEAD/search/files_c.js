@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['yaml_2eh_0',['yaml.h',['../yaml_8h.html',1,'']]]
+  ['spacevecalg_0',['SpaceVecAlg',['/usr/local/share/doc/SpaceVecAlg/doxygen-html/SpaceVecAlg.html',1,'']]]
 ];

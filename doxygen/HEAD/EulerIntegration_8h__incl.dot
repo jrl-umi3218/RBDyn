@@ -25,5 +25,5 @@ digraph "src/RBDyn/RBDyn/EulerIntegration.h"
   Node10 [id="Node000010",label="string",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
   Node6 -> Node4 [id="edge10_Node000006_Node000004",color="steelblue1",style="solid",tooltip=" "];
   Node6 -> Node11 [id="edge11_Node000006_Node000011",color="steelblue1",style="solid",tooltip=" "];
-  Node11 [id="Node000011",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node11 [id="Node000011",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="/usr/local/share/doc/SpaceVecAlg/doxygen-html/SpaceVecAlg.doxytag$SpaceVecAlg.html",tooltip=" "];
 }

@@ -8,7 +8,7 @@ digraph "src/RBDyn/RBDyn/IK.h"
   Node1 -> Node2 [id="edge1_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
   Node2 [id="Node000002",label="vector",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
   Node1 -> Node3 [id="edge2_Node000001_Node000003",color="steelblue1",style="solid",tooltip=" "];
-  Node3 [id="Node000003",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node3 [id="Node000003",label="SpaceVecAlg/SpaceVecAlg",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="/usr/local/share/doc/SpaceVecAlg/doxygen-html/SpaceVecAlg.doxytag$SpaceVecAlg.html",tooltip=" "];
   Node1 -> Node4 [id="edge3_Node000001_Node000004",color="steelblue1",style="solid",tooltip=" "];
   Node4 [id="Node000004",label="Jacobian.h",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$Jacobian_8h.html",tooltip=" "];
   Node4 -> Node5 [id="edge4_Node000004_Node000005",color="steelblue1",style="solid",tooltip=" "];
