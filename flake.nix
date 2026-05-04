@@ -30,6 +30,8 @@
               (lib.cmakeBool "PYTHON_BINDINGS" false)
               (lib.cmakeBool "NANOBIND_BINDINGS" true)
             ];
+            nativeCheckInputs = with pkgs-final; [ python3Packages.pythonImportsCheckHook ];
+            pythonImportsCheck = [ "rbdyn" ];
             nativeBuildInputs =
               with pkgs-final;
               [
@@ -44,9 +46,10 @@
                 python3Packages.nanobind
               ]
               ++ drv-prev.propagatedBuildInputs;
-            # FIXME: fixupPhase fails during patchelf phase because rpath has a reference to /build/
-            # but i could not find out why
-            fixupPhase = ":";
+            # XXX: Without this fixupPhase fails due to RPATHS references to /build/
+            preFixup = ''
+              patchelf --shrink-rpath --allowed-rpath-prefixes "$NIX_STORE" $out/${pkgs-final.python3Packages.python.sitePackages}/rbdyn/_rbdyn.*.so
+            '';
           };
 
         pyPackages = {
