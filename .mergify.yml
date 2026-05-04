@@ -23,3 +23,5 @@ queue_rules:
   - name: default
     conditions:
       - check-success = "check-macos-linux-nix"
+      - check-success = "check-build-ubuntu"
+      - check-success = "check-package-ubuntu"

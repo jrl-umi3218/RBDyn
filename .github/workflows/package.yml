@@ -35,3 +35,13 @@ jobs:
     secrets:
       CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
       GH_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+  check:
+    if: always()
+    name: check-package-ubuntu
+    runs-on: ubuntu-latest
+    needs:
+      - package
+    steps:
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
