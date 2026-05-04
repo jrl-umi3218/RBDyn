@@ -13,14 +13,18 @@
         extraDevPyPackages = [ "rbdyn" ];
 
         overlays = [
-          (pkgs-final: _pkgs-prev: {
-            spacevecalg = inputs.spacevecalg.packages.${pkgs-final.system}.spacevecalg;
-          })
+          inputs.spacevecalg.overlays.flakoboros
         ];
+
+        # overrides.rbdyn = {pkgs-final, ...}:
+        # {
+        #   spacevecalg = inputs.spacevecalg.packages.${pkgs-final.system}.spacevecalg;
+        # };
 
         overrideAttrs.rbdyn =
           { pkgs-final, drv-prev, ... }:
           {
+            pname = "rbdyn-nanobind";
             src = lib.cleanSource ./.;
             cmakeFlags = [
               (lib.cmakeBool "PYTHON_BINDINGS" false)
