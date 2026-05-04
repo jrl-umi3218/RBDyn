@@ -8,3 +8,4 @@ CMakeLists.txt.user*
 build*
 compile_commands.json
 result
+.direnv/

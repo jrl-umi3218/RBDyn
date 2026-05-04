@@ -1,5 +1,5 @@
 #
-# Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+# Copyright 2012-2026 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
 set(SOURCES common.cpp urdf.cpp to_urdf.cpp yaml.cpp to_yaml.cpp)
@@ -11,10 +11,8 @@ add_library(RBDyn::Parsers ALIAS RBDynParsers)
 target_sources(RBDynParsers PRIVATE ${SOURCES})
 jrl_target_headers(RBDynParsers PUBLIC HEADERS ${HEADERS} BASE_DIRS src/parsers)
 target_include_directories(
-  RBDynParsers
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
-         $<INSTALL_INTERFACE:include>)
+  RBDynParsers PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                      $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2
                                           ${YAML_CPP_TARGET} Boost::boost)
 if(BUILD_SHARED_LIBS)

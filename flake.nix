@@ -40,6 +40,9 @@
                 python3Packages.nanobind
               ]
               ++ drv-prev.propagatedBuildInputs;
+            # FIXME: fixupPhase fails during patchelf phase because rpath has a reference to /build/
+            # but i could not find out why
+            fixupPhase = ":";
           };
 
         pyPackages = {
