@@ -49,6 +49,15 @@ nanobind_add_module(
 )
 jrl_check_python_module_name(_rbdyn)
 target_link_libraries(_rbdyn PRIVATE RBDyn)
+# FIXME: { in nix this is needed otherwise fixupPhase fails with RPATH errors
+# see flake.nix for corresponding cmake flags fix
+set_target_properties(
+    _rbdyn
+    PROPERTIES
+        BUILD_RPATH "${CMAKE_BINARY_DIR}/lib"
+        INSTALL_RPATH "$ORIGIN:$ORIGIN/../.."
+)
+# } FIXME
 jrl_target_set_default_compile_options(_rbdyn PRIVATE)
 jrl_target_set_output_directory(_rbdyn OUTPUT_DIRECTORY
                                 ${CMAKE_BINARY_DIR}/lib/site-packages/rbdyn
