@@ -9,26 +9,30 @@
 # TinyXML Define TinyXML2::TinyXML2 if needed
 
 find_path(
-  TinyXML2_INCLUDE_DIR
-  NAMES tinyxml2.h
-  PATHS ${TinyXML2_PREFIX}
-  PATH_SUFFIXES include/tinyxml2)
-find_library(
-  TinyXML2_LIBRARY
-  NAMES tinyxml2
-  PATHS ${TinyXML2_PREFIX})
+    TinyXML2_INCLUDE_DIR
+    NAMES tinyxml2.h
+    PATHS ${TinyXML2_PREFIX}
+    PATH_SUFFIXES include/tinyxml2
+)
+find_library(TinyXML2_LIBRARY NAMES tinyxml2 PATHS ${TinyXML2_PREFIX})
 
 set(TinyXML2_LIBRARIES ${TinyXML2_LIBRARY})
 set(TinyXML2_INCLUDE_DIRS ${TinyXML2_INCLUDE_DIR})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(RBDyn_TinyXML2 DEFAULT_MSG TinyXML2_LIBRARY
-                                  TinyXML2_INCLUDE_DIR)
+find_package_handle_standard_args(
+    RBDyn_TinyXML2
+    DEFAULT_MSG
+    TinyXML2_LIBRARY
+    TinyXML2_INCLUDE_DIR
+)
 mark_as_advanced(TinyXML2_INCLUDE_DIR TinyXML2_LIBRARY)
 if(RBDyn_TinyXML2_FOUND AND NOT TARGET tinyxml2::tinyxml2)
-  add_library(tinyxml2::tinyxml2 UNKNOWN IMPORTED)
-  set_target_properties(
-    tinyxml2::tinyxml2
-    PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${TinyXML2_INCLUDE_DIRS}
-               IMPORTED_LOCATION ${TinyXML2_LIBRARY})
+    add_library(tinyxml2::tinyxml2 UNKNOWN IMPORTED)
+    set_target_properties(
+        tinyxml2::tinyxml2
+        PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES ${TinyXML2_INCLUDE_DIRS}
+            IMPORTED_LOCATION ${TinyXML2_LIBRARY}
+    )
 endif()

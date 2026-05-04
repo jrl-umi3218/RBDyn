@@ -20,7 +20,8 @@ set(SOURCES
     ZMP.cpp
     IDIM.cpp
     VisServo.cpp
-    Coriolis.cpp)
+    Coriolis.cpp
+)
 set(HEADERS
     src/RBDyn/RBDyn/Body.h
     src/RBDyn/RBDyn/Joint.h
@@ -44,20 +45,24 @@ set(HEADERS
     src/RBDyn/RBDyn/VisServo.h
     src/RBDyn/RBDyn/util.hh
     src/RBDyn/RBDyn/util.hxx
-    src/RBDyn/RBDyn/Coriolis.h)
+    src/RBDyn/RBDyn/Coriolis.h
+)
 
 add_library(RBDyn SHARED)
 target_sources(RBDyn PRIVATE ${SOURCES})
 jrl_target_headers(RBDyn PUBLIC HEADERS ${HEADERS} BASE_DIRS src/RBDyn)
 target_include_directories(
-  RBDyn PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-               $<INSTALL_INTERFACE:include>)
+    RBDyn
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:include>
+)
 target_link_libraries(RBDyn PUBLIC SpaceVecAlg::SpaceVecAlg)
 # XXX: will this work with v2
 if(BUILD_SHARED_LIBS)
-  set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-DRBDYN_EXPORTS")
+    set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-DRBDYN_EXPORTS")
 else()
-  target_compile_definitions(RBDyn PUBLIC "-DRBDYN_STATIC")
+    target_compile_definitions(RBDyn PUBLIC "-DRBDYN_STATIC")
 endif()
 set_target_properties(RBDyn PROPERTIES CXX_STANDARD 11)
 
