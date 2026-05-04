@@ -1117,11 +1117,11 @@
         "mc-rtc-nix": "mc-rtc-nix_2"
       },
       "locked": {
-        "lastModified": 1777549865,
-        "narHash": "sha256-Xfg8lbL3K3yquVYTvwFvc7FQzQI9aCOnBkJjOkw+cSo=",
+        "lastModified": 1777893206,
+        "narHash": "sha256-WBLOh6OQmQqoASHQmBcubaKdFtCpusKhiIT9G1RntOE=",
         "owner": "jrl-umi3218",
         "repo": "SpaceVecAlg",
-        "rev": "7d10cf55eeb48d9c01f207c4450a7e5c2556eb33",
+        "rev": "5ce39a45d7e6a4672a3c95733ee1018ce0a5daf6",
         "type": "github"
       },
       "original": {
