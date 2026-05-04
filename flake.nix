@@ -29,13 +29,6 @@
             cmakeFlags = [
               (lib.cmakeBool "PYTHON_BINDINGS" false)
               (lib.cmakeBool "NANOBIND_BINDINGS" true)
-              # FIXME: {
-              # without this fixupPhase fails during patchelf phase because rpath has a reference to /build/ but I could not figure out why exactly
-              (lib.cmakeBool "CMAKE_SKIP_BUILD_RPATH" true)
-              (lib.cmakeBool "CMAKE_BUILD_WITH_INSTALL_RPATH" true)
-              (lib.cmakeBool "CMAKE_INSTALL_RPATH_USE_LINK_PATH" true)
-              "-DCMAKE_INSTALL_RPATH=$ORIGIN"
-              # } FIXME
             ];
             nativeBuildInputs =
               with pkgs-final;
@@ -51,6 +44,9 @@
                 python3Packages.nanobind
               ]
               ++ drv-prev.propagatedBuildInputs;
+            # FIXME: fixupPhase fails during patchelf phase because rpath has a reference to /build/
+            # but i could not find out why
+            fixupPhase = ":";
           };
 
         pyPackages = {
