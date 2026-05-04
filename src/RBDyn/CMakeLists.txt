@@ -1,5 +1,5 @@
 #
-# Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+# Copyright 2012-2026 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
 set(SOURCES
@@ -46,24 +46,19 @@ set(HEADERS
     src/RBDyn/RBDyn/util.hxx
     src/RBDyn/RBDyn/Coriolis.h)
 
-set(ALL_RBDYN_TARGETS)
 add_library(RBDyn SHARED)
 target_sources(RBDyn PRIVATE ${SOURCES})
 jrl_target_headers(RBDyn PUBLIC HEADERS ${HEADERS} BASE_DIRS src/RBDyn)
-list(APPEND ALL_RBDYN_TARGETS RBDyn)
 target_include_directories(
-  RBDyn
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
-         $<INSTALL_INTERFACE:include>)
+  RBDyn PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+               $<INSTALL_INTERFACE:include>)
 target_link_libraries(RBDyn PUBLIC SpaceVecAlg::SpaceVecAlg)
+# XXX: will this work with v2
 if(BUILD_SHARED_LIBS)
-  set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-Drbdyn_EXPORTS")
+  set_target_properties(RBDyn PROPERTIES COMPILE_FLAGS "-DRBDYN_EXPORTS")
 else()
   target_compile_definitions(RBDyn PUBLIC "-DRBDYN_STATIC")
 endif()
-set_target_properties(RBDyn PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-                                       VERSION ${PROJECT_VERSION})
 set_target_properties(RBDyn PROPERTIES CXX_STANDARD 11)
 
 jrl_target_generate_config_header(RBDyn PUBLIC VERSION ${PROJECT_VERSION})
