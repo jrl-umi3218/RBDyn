@@ -1,0 +1,7 @@
+<map id="rbd::parsers::Visual" name="rbd::parsers::Visual">
+<area shape="rect" id="Node000001" title=" " alt="" coords="112,106,259,134"/>
+<area shape="rect" id="Node000002" href="$structrbd_1_1parsers_1_1Geometry.html" title=" " alt="" coords="5,5,177,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,42,175,104,171,107,112,46"/>
+<area shape="rect" id="Node000003" href="$structrbd_1_1parsers_1_1Material.html" title=" " alt="" coords="200,5,360,33"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="262,47,228,84,203,107,199,103,224,80,258,43"/>
+</map>
