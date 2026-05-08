@@ -44,6 +44,7 @@ else()
 endif()
 include(${JRL_CMAKE_MODULES}/base.cmake)
 include(${JRL_CMAKE_MODULES}/msvc-specific.cmake)
+include(${JRL_CMAKE_MODULES}/cython/cython.cmake)
 
 set(CXX_DISABLE_WERROR True)
 project(
@@ -95,6 +96,5 @@ if(${BUILD_TESTING} OR ${BENCHMARKS})
 endif()
 
 if(${PYTHON_BINDING})
-  include(${JRL_CMAKE_MODULES}/cython/cython.cmake)
   add_subdirectory(binding/python)
 endif()
