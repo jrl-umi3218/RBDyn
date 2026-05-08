@@ -27,6 +27,13 @@ jobs:
           extraPullNames: "ros,gepetto"
       - run: nix flake check -L
       - run: nix build -L
+      - run: nix build -L .#rbdyn.doc
+      - name: Deploy to GitHub Pages (temporarely for nix-nanobind branch)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_PAGES_TOKEN }}
+          publish_dir: ./result-doc/share/doc/rbdyn
+          destination_dir: v2
   check:
     if: always()
     name: check-macos-linux-nix

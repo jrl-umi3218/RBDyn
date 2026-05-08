@@ -14,7 +14,7 @@
 #include <SpaceVecAlg/SpaceVecAlg>
 
 // RBDyn
-#include <rbdyn/config.hh>
+#include <RBDyn/config.hpp>
 
 #include "Body.h"
 #include "Joint.h"

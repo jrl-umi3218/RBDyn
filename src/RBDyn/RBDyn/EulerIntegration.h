@@ -18,7 +18,7 @@
 RBDYN_PRAGMA_WARNING(EulerIntegration.h is a deprecated header.Use NumericalIntegration.h instead.)
 #endif
 
-#include <rbdyn/deprecated.hh>
+#include <RBDyn/deprecated.hpp>
 
 #include "NumericalIntegration.h"
 

@@ -37,6 +37,16 @@ You can then install the package:
 sudo apt install librbdyn-dev python-rbdyn python3-rbdyn
 ```
 
+## Nix
+
+```cmake
+nix develop .#rbdyn
+mkdir build
+cmake -B build -S . $cmakeFlags
+cmake --build build
+direnv allow # optional, set pythonpath to the build folder
+```
+
 ## vcpkg
 
 Use the registry available [here](https://github.com/mc-rtc/vcpkg-registry/)

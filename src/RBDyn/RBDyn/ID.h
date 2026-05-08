@@ -9,7 +9,7 @@
 #include <vector>
 
 // SpaceVecAlg
-#include <rbdyn/config.hh>
+#include <RBDyn/config.hpp>
 
 #include <SpaceVecAlg/SpaceVecAlg>
 

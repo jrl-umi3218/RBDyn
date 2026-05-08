@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <rbdyn/config.hh>
+#include <RBDyn/config.hpp>
 
 namespace rbd
 {
