@@ -661,11 +661,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777541560,
-        "narHash": "sha256-ocTh5PW1+5mgPSvcG3Xq8u1D56SvHPg660M//KB8f6s=",
+        "lastModified": 1778187038,
+        "narHash": "sha256-amQSSCUzeyU3F0PfOqavEpgMPy5NNzwzWB3gqDcMuH4=",
         "owner": "mc-rtc",
         "repo": "nixpkgs",
-        "rev": "8c02d39358386db6a16db6cc843afc7bffe9bc6e",
+        "rev": "413230e1e30afeed89b6ab32e80010e822f8d812",
         "type": "github"
       },
       "original": {
@@ -698,11 +698,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777541560,
-        "narHash": "sha256-ocTh5PW1+5mgPSvcG3Xq8u1D56SvHPg660M//KB8f6s=",
+        "lastModified": 1778187038,
+        "narHash": "sha256-amQSSCUzeyU3F0PfOqavEpgMPy5NNzwzWB3gqDcMuH4=",
         "owner": "mc-rtc",
         "repo": "nixpkgs",
-        "rev": "8c02d39358386db6a16db6cc843afc7bffe9bc6e",
+        "rev": "413230e1e30afeed89b6ab32e80010e822f8d812",
         "type": "github"
       },
       "original": {
@@ -1117,16 +1117,16 @@
         "mc-rtc-nix": "mc-rtc-nix_2"
       },
       "locked": {
-        "lastModified": 1777549865,
-        "narHash": "sha256-Xfg8lbL3K3yquVYTvwFvc7FQzQI9aCOnBkJjOkw+cSo=",
+        "lastModified": 1778235461,
+        "narHash": "sha256-RxY6ga0MW5JYXYAcjuIiOwlK7m1FSC0hoziWJL26aBs=",
         "owner": "jrl-umi3218",
         "repo": "SpaceVecAlg",
-        "rev": "7d10cf55eeb48d9c01f207c4450a7e5c2556eb33",
+        "rev": "cf10de91f74514a519800e47d629021957790d19",
         "type": "github"
       },
       "original": {
         "owner": "jrl-umi3218",
-        "ref": "pull/67/head",
+        "ref": "pull/74/head",
         "repo": "SpaceVecAlg",
         "type": "github"
       }

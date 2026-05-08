@@ -3,7 +3,7 @@
 
   inputs.mc-rtc-nix.url = "github:mc-rtc/nixpkgs";
 
-  inputs.spacevecalg.url = "github:jrl-umi3218/SpaceVecAlg/pull/67/head";
+  inputs.spacevecalg.url = "github:jrl-umi3218/SpaceVecAlg/pull/74/head";
 
   outputs =
     inputs:
