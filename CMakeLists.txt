@@ -16,8 +16,29 @@ endif()
 
 include(cmake/get-jrl-cmakemodules.cmake)
 jrl_option(NANOBIND_BINDINGS "Build nanobind bindings" OFF)
+jrl_option(
+  NANOBIND_DOCUMENTATION
+  "Build nanobind documentation"
+  OFF
+  CONDITION
+  NANOBIND_BINDINGS
+  FALLBACK
+  OFF
+)
 jrl_option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
 jrl_option(BENCHMARKS "Generate benchmarks." OFF)
+jrl_option(BUILD_DOCUMENTATION "Whether doxygen documentation should be built"
+           OFF
+)
+jrl_option(
+  INSTALL_DOCUMENTATION
+  "Generate and install the doxygen documentation"
+  OFF
+  CONDITION
+  BUILD_DOCUMENTATION
+  FALLBACK
+  OFF
+)
 
 set(CXX_DISABLE_WERROR True)
 project(
@@ -72,8 +93,36 @@ if(BUILD_TESTING OR BENCHMARKS)
     add_subdirectory(tests)
 endif()
 
-if(PYTHON_BINDING OR NANOBIND_BINDINGS)
-    add_subdirectory(binding)
+if(BUILD_DOCUMENTATION)
+    jrl_find_package(Doxygen REQUIRED COMPONENTS dot)
+    # Configure Doxygen
+    set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/share/doc/rbdyn/doxygen)
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+    doxygen_add_docs(
+        doc
+        ${PROJECT_SOURCE_DIR}
+        ALL
+        COMMENT "Generating API documentation with Doxygen"
+    )
+
+    if(INSTALL_DOCUMENTATION)
+        install(
+            DIRECTORY ${CMAKE_BINARY_DIR}/share/doc/rbdyn/doxygen/html
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/rbdyn/doxygen
+            COMPONENT doc
+        )
+    endif()
+endif()
+
+if(NANOBIND_BINDINGS)
+    if(NANOBIND_DOCUMENTATION)
+        include(cmake/get-sphinx-cmake.cmake)
+        add_subdirectory(binding/nanobind)
+    endif()
+endif()
+
+if(PYTHON_BINDING)
+    add_subdirectory(binding/python)
 endif()
 
 # Export the package files (headers, targets, config files, etc.)

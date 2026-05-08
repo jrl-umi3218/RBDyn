@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "SpaceVecAlg"
+project = "RBDyn"
 copyright = "2025, CNRS-AIST JRL, LIRMM"
 author = "CNRS-AIST JRL, LIRMM"
 release = "2.12.0"
@@ -14,15 +14,10 @@ release = "2.12.0"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["autoapi.extension"]
+extensions = ["sphinx.ext.autodoc"]
 
 templates_path = ["_templates"]
 exclude_patterns = []
-
-autoapi_dirs = ["/home/vscode/workspace/python-venv/lib/python3.12/site-packages/sva"]
-autoapi_file_patterns = ["*.pyi", "*.py"]
-autoapi_python_class_content = "both"
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

@@ -1,5 +1,5 @@
-SpaceVecAlg python bindings documentation
-=========================================
+RBDyn python bindings documentation
+===================================
 
 Add your content using ``reStructuredText`` syntax. See the
 `reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
@@ -11,4 +11,5 @@ documentation for details.
    :caption: Contents:
 
    introduction
+   api
 .. API is auto-generated from mc_rtc python module with api-autodoc

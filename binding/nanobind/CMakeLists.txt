@@ -1,6 +1,7 @@
 message(STATUS "[${PROJECT_NAME}] Building nanobind Python bindings")
 jrl_find_python(3.8 REQUIRED COMPONENTS Interpreter Development.Module)
 jrl_find_nanobind(2.5.0 CONFIG QUIET)
+jrl_find_package(nanoeigenpy CONFIG REQUIRED)
 
 if(nanobind_ROOT AND NOT nanobind_FOUND)
     message(WARNING "nanobind found at ${nanobind_ROOT} but too old")
@@ -26,8 +27,6 @@ if(NOT nanobind_FOUND)
     )
     FetchContent_MakeAvailable(nanobind)
 endif()
-
-jrl_find_package(nanoeigenpy CONFIG REQUIRED)
 
 # We are now ready to compile the actual extension module
 nanobind_add_module(
@@ -91,3 +90,23 @@ install(
     PATTERN "*.so"
     PATTERN "*.pyd"
 )
+
+if(NANOBIND_DOCUMENTATION)
+    sphinx_add_docs(
+      docs
+      ALL
+      SOURCE_DIRECTORY
+      ${CMAKE_CURRENT_SOURCE_DIR}/docs
+      OUTPUT_DIRECTORY
+      ${CMAKE_BINARY_DIR}/share/doc/rbdyn/nanobind/html
+      PYTHON_PATH_PREPEND
+      ${CMAKE_BINARY_DIR}/lib/site-packages
+      BUILDER
+      html
+    )
+    add_dependencies(docs _rbdyn_stub)
+    install(
+        DIRECTORY ${CMAKE_BINARY_DIR}/share/doc/rbdyn/nanobind/html
+        DESTINATION share/doc/rbdyn/nanobind
+    )
+endif()

@@ -26,9 +26,16 @@
           {
             pname = "rbdyn-nanobind";
             src = lib.cleanSource ./.;
+            outputs = [
+              "out"
+              "doc"
+            ];
             cmakeFlags = [
               (lib.cmakeBool "PYTHON_BINDINGS" false)
+              (lib.cmakeBool "BUILD_DOCUMENTATION" true)
+              (lib.cmakeBool "INSTALL_DOCUMENTATION" true)
               (lib.cmakeBool "NANOBIND_BINDINGS" true)
+              (lib.cmakeBool "NANOBIND_DOCUMENTATION" true)
             ];
             nativeCheckInputs = with pkgs-final; [ python3Packages.pythonImportsCheckHook ];
             pythonImportsCheck = [ "rbdyn" ];
@@ -36,7 +43,14 @@
               with pkgs-final;
               [
                 python3Packages.python
+                doxygen
+                graphviz
                 jrl-cmakemodulesv2
+                # nanobind documentation
+                sphinx
+                sphinx-cmake
+                python3Packages.sphinx-autodoc2
+                python3Packages.sphinx-book-theme
               ]
               ++ drv-prev.nativeBuildInputs;
             propagatedBuildInputs =

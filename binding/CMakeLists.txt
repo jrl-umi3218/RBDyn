@@ -1,5 +1,0 @@
-if(NANOBIND_BINDINGS)
-    add_subdirectory(nanobind)
-elseif(PYTHON_BINDING)
-    add_subdirectory(binding/python)
-endif()
