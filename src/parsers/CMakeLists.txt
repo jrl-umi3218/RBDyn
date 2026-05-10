@@ -2,9 +2,10 @@
 # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
 #
 
-set(SOURCES common.cpp urdf.cpp to_urdf.cpp yaml.cpp to_yaml.cpp)
+set(SOURCES common.cpp urdf.cpp to_urdf.cpp yaml.cpp to_yaml.cpp
+            yaml_closed_loop.cpp)
 set(HEADERS RBDyn/parsers/api.h RBDyn/parsers/common.h RBDyn/parsers/urdf.h
-            RBDyn/parsers/yaml.h)
+            RBDyn/parsers/yaml.h RBDyn/parsers/yaml_closed_loop.h)
 
 add_library(RBDynParsers ${SOURCES} ${HEADERS})
 add_library(RBDyn::Parsers ALIAS RBDynParsers)
