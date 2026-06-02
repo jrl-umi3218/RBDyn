@@ -25,7 +25,7 @@ jobs:
       latest-cmake: true
       matrix: |
           {
-            "dist": ["bionic", "focal", "jammy", "noble"],
+            "dist": ["jammy", "noble", "resolute"],
             "arch": ["amd64"],
             "include":
             [
