@@ -8,9 +8,12 @@
     inputs.mc-rtc-nix.lib.mkFlakoboros inputs (
       { lib, ... }:
       {
-        overrideAttrs.rbdyn = {
-          src = lib.cleanSource ./.;
-        };
+        pyOverrideAttrs.rbdyn =
+          { pkgs-final, drv-prev, ... }:
+          {
+            src = lib.cleanSource ./.;
+            nativeBuildInputs = drv-prev.nativeBuildInputs ++ [ pkgs-final.jrl-cmakemodules ];
+          };
       }
     );
 }
