@@ -15,6 +15,7 @@ set(PROJECT_VERSION 1.9.3)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 
 option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
+option(PYTHON_BINDING "Build cython python bindings" ON)
 
 if(NOT DEFINED BUILD_SHARED_LIBS)
   set(BUILD_SHARED_LIBS ON)
