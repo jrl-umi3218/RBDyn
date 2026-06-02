@@ -45,7 +45,7 @@ endif()
 include(${JRL_CMAKE_MODULES}/base.cmake)
 include(${JRL_CMAKE_MODULES}/msvc-specific.cmake)
 if(${PYTHON_BINDING})
-include(${JRL_CMAKE_MODULES}/cython/cython.cmake)
+  include(${JRL_CMAKE_MODULES}/cython/cython.cmake)
 endif()
 
 set(CXX_DISABLE_WERROR True)

@@ -6,4 +6,5 @@ CMakeLists.txt.user*
 *.autosave
 build*
 compile_commands.json
-result
+result*
+.direnv/
