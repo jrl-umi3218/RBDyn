@@ -4,24 +4,24 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/test/output_test_stream.hpp>
 #include <boost/test/test_case_template.hpp>
 #include <boost/test/unit_test.hpp>
 
-#include <iostream>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 #ifdef TESTS_DATA_DIR
 // See: http://stackoverflow.com/q/26299144/1043187
 #  ifdef __NVCC__
 #    include <boost/preprocessor/stringize.hpp>
-const static boost::filesystem::path tests_data_dir(BOOST_PP_STRINGIZE(TESTS_DATA_DIR));
+const static fs::path tests_data_dir(BOOST_PP_STRINGIZE(TESTS_DATA_DIR));
 #  else
-const static boost::filesystem::path tests_data_dir(TESTS_DATA_DIR);
+const static fs::path tests_data_dir(TESTS_DATA_DIR);
 #  endif //! __NVCC__
 #else
-const static boost::filesystem::path tests_data_dir;
+const static fs::path tests_data_dir;
 #endif //! TESTS_DATA_DIR
 
 namespace rbd
