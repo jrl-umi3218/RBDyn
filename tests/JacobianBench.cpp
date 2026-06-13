@@ -233,4 +233,4 @@ static void BM_MomentumJacobian_jacobianDot(benchmark::State & state)
 }
 BENCHMARK(BM_MomentumJacobian_jacobianDot);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();

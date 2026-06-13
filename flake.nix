@@ -12,7 +12,13 @@
           { pkgs-final, drv-prev, ... }:
           {
             src = lib.cleanSource ./.;
-            nativeBuildInputs = drv-prev.nativeBuildInputs ++ [ pkgs-final.jrl-cmakemodules ];
+            nativeBuildInputs = drv-prev.nativeBuildInputs ++ [
+              pkgs-final.jrl-cmakemodules
+              pkgs-final.gbenchmark
+            ];
+            cmakeFlags = (drv-prev.cmakeFlags or [ ]) ++ [
+              (lib.cmakeBool "BENCHMARKS" true)
+            ];
           };
       }
     );
