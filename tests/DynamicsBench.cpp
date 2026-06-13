@@ -74,4 +74,4 @@ static void BM_Coriolis(benchmark::State & state)
 }
 BENCHMARK(BM_Coriolis);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();

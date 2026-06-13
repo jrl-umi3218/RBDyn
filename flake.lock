@@ -1,5 +1,20 @@
 {
   "nodes": {
+    "ccache-trigger": {
+      "locked": {
+        "lastModified": 1657739266,
+        "narHash": "sha256-vLy8GQr0noEcoA+jX24FgUVBA/poV36zDWAUChN3hIY=",
+        "owner": "boolean-option",
+        "repo": "false",
+        "rev": "d06b4794a134686c70a1325df88a6e6768c6b212",
+        "type": "github"
+      },
+      "original": {
+        "owner": "boolean-option",
+        "repo": "false",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -8,6 +23,22 @@
         "owner": "edolstra",
         "repo": "flake-compat",
         "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "flake-compat_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1696426674,
+        "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
         "type": "github"
       },
       "original": {
@@ -312,20 +343,46 @@
         "type": "github"
       }
     },
+    "make-shell": {
+      "inputs": {
+        "flake-compat": "flake-compat_2"
+      },
+      "locked": {
+        "lastModified": 1733933815,
+        "narHash": "sha256-9JjM7eT66W4NJAXpGUsdyAFXhBxFWR2Z9LZwUa7Hli0=",
+        "owner": "nicknovitski",
+        "repo": "make-shell",
+        "rev": "ffeceae9956df03571ea8e96ef77c2924f13a63c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nicknovitski",
+        "repo": "make-shell",
+        "type": "github"
+      }
+    },
     "mc-rtc-nix": {
       "inputs": {
+        "ccache-trigger": "ccache-trigger",
         "flake-parts": [
           "mc-rtc-nix",
           "gepetto",
           "flake-parts"
         ],
+        "flakoboros": [
+          "mc-rtc-nix",
+          "gepetto",
+          "flakoboros"
+        ],
         "gepetto": "gepetto",
         "jrl-cmakemodulesv2": "jrl-cmakemodulesv2",
+        "make-shell": "make-shell",
         "nixpkgs": [
           "mc-rtc-nix",
           "gepetto",
           "nixpkgs"
         ],
+        "private-trigger": "private-trigger",
         "systems": [
           "mc-rtc-nix",
           "gepetto",
@@ -333,11 +390,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780430434,
-        "narHash": "sha256-X/pA/VpWdxCTHyCg50semDoyMnTmHaaOpk8AQRFTmUo=",
+        "lastModified": 1781370163,
+        "narHash": "sha256-uVEwnQFr2429OVOh94YBFy8tH/lotdST8l/5Mnmou5I=",
         "owner": "mc-rtc",
         "repo": "nixpkgs",
-        "rev": "728d0ce3a9d76eb7f8c709905dcff340eca4a4a6",
+        "rev": "a703b3a2d91ba1f69e589c644ddc26f35c6a8482",
         "type": "github"
       },
       "original": {
@@ -479,6 +536,21 @@
       "original": {
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
+        "type": "github"
+      }
+    },
+    "private-trigger": {
+      "locked": {
+        "lastModified": 1657739266,
+        "narHash": "sha256-vLy8GQr0noEcoA+jX24FgUVBA/poV36zDWAUChN3hIY=",
+        "owner": "boolean-option",
+        "repo": "false",
+        "rev": "d06b4794a134686c70a1325df88a6e6768c6b212",
+        "type": "github"
+      },
+      "original": {
+        "owner": "boolean-option",
+        "repo": "false",
         "type": "github"
       }
     },
