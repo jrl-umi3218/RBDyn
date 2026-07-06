@@ -62,25 +62,7 @@ if(BUILD_RBDYN_PARSERS)
         set(YAML_CPP_TARGET yaml-cpp)
     endif()
 
-    find_package(tinyxml2 QUIET NO_MODULE)
-    # FIXME how to do this with jrl-cmakemodulesv2 is this still required?
-    # if(NOT ${tinyxml2_FOUND})
-    #     set(CMAKE_MODULE_PATH
-    #         ${CMAKE_MODULE_PATH}
-    #         "${PROJECT_SOURCE_DIR}/CMakeModules"
-    #     )
-    #     find_package(RBDyn_TinyXML2 REQUIRED)
-    #     install(
-    #         FILES "${PROJECT_SOURCE_DIR}/CMakeModules/FindRBDyn_TinyXML2.cmake"
-    #         DESTINATION "${CONFIG_INSTALL_DIR}"
-    #     )
-    #     set(PACKAGE_EXTRA_MACROS
-    #         "list(APPEND
-    #     CMAKE_MODULE_PATH \${CMAKE_CURRENT_LIST_DIR}) find_package(RBDyn_TinyXML2 REQUIRED)"
-    #     )
-    # else()
     jrl_find_package(tinyxml2 CONFIG REQUIRED)
-    # endif()
 
     # Note: technically we don't need filesystem but it is likely to be here and
     # CMake <= 3.5.0 needs at least one component to define Boost::boost
@@ -117,8 +99,8 @@ endif()
 if(NANOBIND_BINDINGS)
     if(NANOBIND_DOCUMENTATION)
         include(cmake/get-sphinx-cmake.cmake)
-        add_subdirectory(binding/nanobind)
     endif()
+    add_subdirectory(binding/nanobind)
 endif()
 
 if(PYTHON_BINDING)
