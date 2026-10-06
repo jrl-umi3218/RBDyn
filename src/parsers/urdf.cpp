@@ -127,9 +127,13 @@ inline Eigen::Matrix3d readInertia(const tinyxml2::XMLElement & dom)
 rbd::Joint::Type rbdynFromUrdfJoint(const std::string & type, bool hasSphericalSuffix = false)
 {
   if(type == "revolute")
+  {
     return rbd::Joint::Rev;
+  }
   else if(type == "prismatic")
+  {
     return rbd::Joint::Prism;
+  }
   else if(type == "continuous")
     return rbd::Joint::Rev;
   else if(type == "floating")
@@ -618,7 +622,6 @@ ParserResult from_urdf_file(const std::string & file_path,
 ParserResult from_urdf(const std::string & content, const ParserParameters & params)
 {
   ParserResult res;
-
   std::string baseLink = parseMultiBodyGraphFromURDF(res, content, params);
 
   res.mb = res.mbg.makeMultiBody(baseLink, params.fixed_);
